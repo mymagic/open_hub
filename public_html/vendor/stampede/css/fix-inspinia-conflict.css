@@ -1,0 +1,98 @@
+.uni-header .navbar-header>.navbar-toggle, .navbar-toggle{
+    color:rgb(86, 86, 89) !important;
+}
+
+.header__snav{z-index:20000;}
+
+@media (max-width: 768px){
+    .uni-header .navbar-header, .header__snav .navbar-header {
+        display: block;
+        float: none;
+}
+}
+
+.header__snav .navbar-toggle .icon-bar{background:black !important;}
+.header__snav .navbar-toggle .icon-bar{background:black;}
+.header__snav .menu-open .navbar-toggle .icon-bar{background:white !important;}
+
+.header__snav .nav > li.active{border-left:none; background:none;}
+
+.btn-sd .btn-sd-ghost .btn-sd-ghost-black
+{
+    color: #1d1d1f;
+    margin-left: auto;
+    float: none;
+    position: inherit;
+    padding: 0;
+    background: none;
+    line-height: 42px;
+    height: 42px;
+    font-weight: 500;
+    padding: 0 15px 0 20px;
+}
+
+.lgi__title {
+
+width: 100%;
+}
+
+.nav>li>a{padding:15px;}
+
+body{font-weight:300; height:auto;}
+
+.btn-sd-red {
+	background:#ab4644;
+	color:#fff;
+}
+.btn-sd-red:hover,
+.btn-sd-red:active,
+.btn-sd-red:focus {
+	background:#8b2d2e;
+	color:#fff;
+}
+
+.container-fluid{
+    padding-left:0;
+    padding-right:0;
+}
+
+.container-fluid #main-content{margin:0;}
+.input-group-btn .btn{height:42px;}
+
+
+.bootstrap-select .btn-default:hover, .bootstrap-select .btn-default:focus, .bootstrap-select .btn-default:active, .bootstrap-select .btn-default.active, .bootstrap-select .open .dropdown-toggle.btn-default, .bootstrap-select .btn-default:active:focus, .bootstrap-select .btn-default:active:hover, .btn-default.active:hover, .bootstrap-select .btn-default.active:focus
+{
+    color:#1d1d1f;
+}
+
+.content__block .list-unstyled li::before
+{
+    content:"";
+    width:0;
+}
+
+
+@media (max-width: 768px){
+    .nav_pillars_lang
+    {
+        float: none !important;
+    }
+}
+
+@media (min-width: 769px){
+    .nav_pillars_lang
+    {
+        float: right !important;
+        margin-top: 10px;
+        padding-left: 20px;
+    }
+}
+
+
+@media (min-width: 991px)
+{
+    .layout-plain
+    {
+        padding-top: 0 !important;	
+    }
+}
