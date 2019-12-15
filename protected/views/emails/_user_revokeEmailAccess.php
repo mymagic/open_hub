@@ -1,0 +1,1 @@
+<p>Your access to '<?php echo $organizationTitle ?>' has been rejected or revoked.</p> 

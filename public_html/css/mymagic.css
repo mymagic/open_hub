@@ -1,0 +1,133 @@
+
+  
+  #form-milestone-values .ibox-content .col
+  {
+    padding:5px;
+  }
+  #form-milestone-values .form-group .input-group, #form-milestone-values .form-group .input-group .input-group-addon
+  {
+    border:0;
+    padding:2px;
+  }
+  
+  #form-milestone-values .form-group .input-group .input-weekValue{
+    border:0;
+    padding:2px;
+    border-bottom:1px solid #aaa;
+  }
+  
+  .flashNotices .notice .close{
+    margin-right:0.5em;
+    font-size:180%;
+  }
+  
+  .body-stampede .panel-default>.panel-heading{
+    background-color:#fff !important;
+    font-weight:bold;
+    border-bottom:none;
+  }
+  
+  .testimonial-section {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+  }
+  
+  .title {
+    font-family: Sofia-pro, sans-serif;
+    font-weight: 500;
+  }
+  
+  .title.title__align--center {
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  
+  .slider {
+    height: 100%;
+    padding-bottom: 20px;
+    background-color: transparent;
+  }
+  
+  .icon {
+    width: 60px;
+    height: 60px;
+    padding: 18px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: hsla(0, 0%, 96%, 0);
+    background-color: #fff;
+    -webkit-transition: all 200ms ease;
+    transition: all 200ms ease;
+    color: #bbb;
+    font-size: 23px;
+    font-weight: 700;
+  }
+  
+  .icon:hover {
+    box-shadow: 1px 1px 10px 2px rgba(0, 0, 0, .05);
+  }
+  
+  .icon.right {
+    padding-left: 20px;
+  }
+  
+  .icon.left {
+    padding-left: 16px;
+  }
+  
+  .slider-container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+  
+  .testimonial {
+    padding: 65px 0px;
+  }
+  
+  .testimonial-paragraph {
+    position: relative;
+    padding: 20px 40px 40px;
+  }
+  
+  .short-gnome {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 4px;
+    height: 60px;
+  }
+  
+  .gnome-blue {
+    width: 4px;
+    height: 60%;
+    background-color: #0babc8;
+  }
+  
+  .gnome-orange {
+    width: 4px;
+    height: 20%;
+    background-color: #f47b43;
+  }
+  
+  .gnome-red {
+    width: 4px;
+    height: 20%;
+    background-color: #d9323d;
+  }
+  
+  .paragraph {
+    font-weight: 400;
+  }
+  
+  
+  
+  .btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info{color:white !important;}
+
+  .form-group{margin-bottom:15px !important;}

@@ -1,0 +1,149 @@
+swagger: '2.0'
+info:
+  description: Organisation related APIs
+  version: "v1"
+  title: Organization
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getUserOrganizations:
+    post:
+      tags:
+      - public
+      description: Get list of organisations of a specific user that has access to, together with products and product category
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: jwt
+          type: string
+          description: Acquired it from user/getUserJwt
+          required: true
+      responses:
+        200:
+          description: OK
+  /getUserOrganizationsCanJoin:
+    post:
+      tags:
+      - public
+      description: Get list of organisations where a user can join
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: jwt
+          type: string
+          description: Acquired it from user/getUserJwt
+          required: true
+        - in: formData
+          name: keyword
+          type: string
+          description: Keyword of the organization title, min 2 characters
+          required: true
+      responses:
+        200:
+          description: OK
+  /getOrganizationAllActive:
+    post:
+      tags:
+      - public
+      description: Get a list of organisations with various filters
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: searchTitle
+          type: string
+          description: Keyword to search in title
+          required: false
+        - in: formData
+          name: searchAlpha
+          type: string
+          description: Search by first alphabet of the title
+          required: false
+        - in: formData
+          name: persona
+          type: string
+          description: Persona slug. Please refer to master/getAllPersonas
+          required: false
+        - in: formData
+          name: industry
+          type: string
+          description: Industry slug. Please refer to master/getAllIndustries
+        - in: formData
+          name: magic
+          type: number
+          description: Filter by organization that joined MaGIC event only (alumni startup)
+          required: false
+        - in: formData
+          name: page
+          type: number
+          description: Pagination
+          required: true
+          default: 1
+          x-example: 1
+        - in: formData
+          name: limit
+          type: number
+          description: Limit per page, default to 10, maximum value is 30
+          required: true
+          default: 10
+          x-example: 10
+      responses:
+        200:
+          description: OK
+  /getOrganizationByCode:
+    post:
+      tags:
+      - public
+      description: Get an organisation by its code.
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: code
+          type: string
+          format: uuid
+          description: Organisation code in UUID format
+          required: true
+          x-example: 03119012-86d6-4e25-a6d0-9362f36d6c22 
+      responses:
+        200:
+          description: OK
+  /getOrganizationById:
+    post:
+      tags:
+      - public
+      description: Get an organisation by its ID.
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: id
+          type: string
+          description: Organisation ID
+          required: true
+          x-example: 1 
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

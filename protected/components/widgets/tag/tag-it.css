@@ -1,0 +1,86 @@
+.ui-autocomplete {
+	background-color: #eee;
+	position: absolute;
+	cursor: default;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.ui-autocomplete .ui-menu-item {
+}
+.ui-autocomplete  .ui-menu-item a {
+	display:block;
+	padding:8px;
+	text-decoration:none;
+	line-height:12px;
+    color: #031c24;
+    font-size: 13px;
+}
+.ui-autocomplete .ui-menu-item a.ui-state-hover,
+.ui-autocomplete .ui-menu-item a.ui-state-active {
+	background-color:#78959D;
+	color:#fff;
+	margin:0;
+}
+.ui-autocomplete-loading {
+	background: white url(images/ui-anim_basic_16x16.gif) right center no-repeat;
+}
+
+ul.tagit {
+	border-style:solid;
+	border-width:1px;
+	border-color:#C6C6C6;
+	overflow:auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.tagit li {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px; 
+	display: block;
+	float: left;
+	margin:0 5px 0 0;
+    list-style: none;
+}
+ul.tagit li.tagit-choice {
+    background-color:#DEE7F8;
+    border:1px solid #ABADB3;
+    font-size:14px;
+    margin:3px;
+    padding:0 9px 2px 8px;
+    list-style: none;
+}
+ul.tagit li.tagit-choice:hover {
+	background-color:#bbcef1;
+	border-color:#6d95e0;
+}
+ul.tagit li.tagit-new {
+	padding:2px 4px 3px;	
+}
+
+ul.tagit li.tagit-choice input {
+	display:block;
+	float:left;
+	margin:2px 5px 2px 0;
+}
+ul.tagit li.tagit-choice a.close {
+	color:#777777;
+	cursor:pointer;
+	font-size:12px;
+	font-weight:bold;
+	outline:medium none;
+	padding:2px 0 2px 3px;
+	text-decoration:none;
+}
+ul.tagit input[type="text"] {
+	-moz-box-sizing:border-box;
+	border:none;
+	margin:0;
+	padding:0;
+	width:inherit;
+	border-color:#C6C6C6;
+	background:transparent;
+	color:#333333;
+    height:25px;
+}

@@ -1,0 +1,126 @@
+swagger: '2.0'
+info:
+  description: Provides information of master data structure.
+  version: "v1"
+  title: Master
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getAllLegalForms:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active company legal forms by country (Currently only MY data exists)
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: countryCode
+        type: string
+        description: Country code to filter, default to 'MY'. (Currently only MY data exists)
+        default: MY
+        required: false
+        x-example: MY
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllProductCategories:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active product categories
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllImpacts:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active impact areas. Impact area is use by social enterprise or IDE(impact driven enterprise) to highlight the problem area they aim to solve. It is like the Malaysia version of United Nation SDG (Sustainable Development Goal)
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllClusters:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get list of active clusters. A cluster is a conceptual group of industries that decision maker like to focus at.
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllPersonas:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active personas. Not your Proton Persona, but is the character or role plays by an individual. A person can have multiple personas. 
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllStartupStages:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active startup stages by MaGIC definition. Please refer (http://bit.ly/magicStartupStages) for the graphical representation of it.
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllSdgs:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active Sustainable Development Goals. For more information, please refer to https://sustainabledevelopment.un.org/?menu=1300
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getAllIndustries:
+    post:
+      tags:
+      - public
+      summary: ""
+      description: Get list of active Industries
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

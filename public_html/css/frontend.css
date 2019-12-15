@@ -1,0 +1,226 @@
+.has-error .checkbox .control-label
+{
+	color: #676A6C !important;
+}
+
+#box-signup {
+  padding-top:50px;
+}
+
+.bg-white
+{
+	background:white;
+}
+
+.darkGray-bg{
+	background:#E6E6E6;
+}
+
+#box-signup  .control-label {
+}
+
+#box-signup .help-block{
+	text-align:left;
+}
+
+#box-signup .lead
+{
+	text-align:center;
+}
+#box-signup #logo-magicAccelerator
+{
+	max-width:300px;
+}
+
+#bar-header
+{
+	background:white;
+	padding:10px;
+}
+
+#bar-header img
+{
+	margin-top:1em;
+	height:60px;
+}
+
+#bar-header .nav
+{
+	margin-top:1em;
+	float:right;
+}
+
+#bar-header .nav a
+{
+	color:#3d3d3d;
+}
+
+#bar-header .nav .active
+{
+	border:none;
+	background:none;
+}
+#bar-header .nav li.active>a
+{
+	background:#eee !important;
+}
+
+#main-content{
+	margin-top:1em;
+}
+
+#cpanelCharges .bg-highlight
+{
+	background-color:#f7fff4 !important;
+}
+
+.skin-1 .nav-tabs li.active>a{
+	background:white;
+	border-bottom:1px solid white;
+}
+
+#body-cpanel-forum-index .wrapper-content>.row>.col-lg-12{margin:0 !important; padding:0 !important;}
+#body-cpanel-forum-index .wrapper-content{
+	margin:0 !important;
+	padding:0 !important;
+}
+
+#notice-forumExternalMembership .inlineNotices{padding:0; margin:0;}
+#notice-forumExternalMembership .inlineNotices .notice{ margin:0; border-radius:0;}
+
+
+#form-mentor-private-confirmBooking label{font-weight: 400;}
+#form-mentor-private-confirmBooking .tab-content{
+	margin-top:1em;
+}
+
+.mentor-profile-box .box-portfolio{overflow:hidden;}
+.at-icon-wrapper .mentor-deet{
+    left: none;
+}
+
+#screen-publish-index h2 a{
+	color:#64a947 !important;
+}
+
+.holds-the-iframe {
+	background:url('../images/loader.gif') 500px 35px no-repeat;
+}
+
+.mentor-book-tabs li.active {
+    background: url(/images/stripe.png) !important;
+    background-repeat: repeat-x !important;
+    background-position: 85% bottom !important;
+}
+
+@media (max-width: 479px) {
+	.holds-the-iframe {
+		background:url('../images/loader.gif') 120px 35px no-repeat;
+	}
+label.control-label.col-sm-2{
+    font-weight: 400;
+}
+label{
+  height: 24px;
+  font-family: sofia-pro,Arial,sans-serif;
+  font-size: 16px;
+  color: #000000;
+  text-decoration: none solid rgb(0, 0, 0);
+  line-height: 24px;
+  font-weight:350;
+}
+}
+
+
+#nav-selectLanguage .active .flag
+{
+  filter: none;
+	-webkit-filter: grayscale(0%);
+	-moz-filter:    grayscale(0%);
+	-ms-filter:     grayscale(0%);
+	-o-filter:      grayscale(0%);
+	cursor: pointer;
+}
+
+#nav-selectLanguage .flag
+{
+	filter: none;
+	-webkit-filter: grayscale(100%);
+	-moz-filter:    grayscale(100%);
+	-ms-filter:     grayscale(100%);
+	-o-filter:      grayscale(100%);
+	cursor: pointer;
+	transition: all 300ms ease;
+	width:24px;
+}
+
+.body-psk{
+	padding-top:0;
+}
+.body-psk .uni-header2 .navbar-brand{
+	padding-top:3px;
+}
+.body-psk .uni-header2 li>a{
+	color:white !important;
+	text-decoration:none !important;
+	height:55px !important;
+	padding-top:20px;
+}
+.body-psk .uni-header2 li.active>a{
+	background: #FF4444 !important;
+	color:black !important ;
+	text-decoration:none;
+}
+.body-psk .uni-header2 li.active{
+	border:0;
+}
+.body-psk .navbar-toggle{
+	background-color: #880000 !important;
+	border:none !important;
+	z-index:999999;
+}
+.body-psk .uni-header2 .navbar-header>.navbar-toggle, .navbar-toggle
+{
+	color:white !important;
+}
+.body-psk .navbar-default .navbar-collapse, .body-psk .navbar-header
+{
+	background:red !important;
+	color:white;
+}
+
+#box-psk-contact
+{
+	color:white;
+	text-align:center;
+}
+
+.body-psk #layout-flashNotice{
+	margin-top:50px;
+}
+.body-psk .container{
+	/*margin-top:50px;*/
+}
+#logo-psk{
+	height:50px;
+}
+
+@media (min-width: 1200px)
+{
+	#logo-psk{
+		height:50px;
+	}
+}
+
+.body-psk .box-filter.checkbox.checkbox-info:hover {
+	background: none !important;
+}
+
+@media (max-width: 768px)
+{
+	.body-psk .uni-header .navbar-header, .body-psk .header__snav .navbar-header {
+		display:block;
+		float:none;
+	}	
+}
+ 

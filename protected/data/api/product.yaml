@@ -1,0 +1,160 @@
+swagger: '2.0'
+info:
+  description: Product related API
+  version: "v1"
+  title: Product (not functioning, with bugs)
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /createProduct:
+    post:
+      tags:
+      - public
+      summary: 
+      description: Allow user to create a product under an organization he has access to
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: userEmail
+        type: string
+        format: email
+        description: The user username, in email format
+        required: true
+        x-example: 'exiang83@gmail.com'
+      - in: formData
+        name: organizationCode
+        type: string
+        format: uuid
+        description: The organization where this product belongs to. eg this example code is for 'Dummy YS4 Homeless animal'
+        required: true
+        x-example: '0c809808-7f71-4a70-9778-73d103fef8b5'
+      - in: formData
+        name: productCategoryId
+        type: number
+        description: |
+          Optional. Call master\getAllProductCategories for the list. eg:
+          * 1 - Environment
+          * 4 - Food & beverages
+          * 10 - Eco tourism
+        required: false
+        x-example: '4'
+      - in: formData
+        name: title
+        type: string
+        description: Product title
+        required: true
+        x-example: '2D1N package to National Park'
+      - in: formData
+        name: shortDescription
+        type: string
+        description: Product description in plain text (no html allowed)
+        required: true
+        x-example: 'Bla bla bla...'
+      - in: formData
+        name: typeof
+        type: enum
+        enum: [product, service]
+        description: Product type, is it a product or service?
+        required: true
+      - in: formData
+        name: urlWebsite
+        type: string
+        format: uri
+        description: Product detail webpage in URL
+        required: false
+        x-example: 'https://'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /updateProduct:
+    post:
+      tags:
+      - public
+      summary: 
+      description: Allow user to update a product under an organization he has access to
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: id
+        type: number
+        description: The product id to update
+        required: true
+        x-example: '12'
+      - in: formData
+        name: userEmail
+        type: string
+        format: email
+        description: The user username, in email format
+        required: true
+        x-example: 'exiang83@gmail.com'
+      - in: formData
+        name: organizationCode
+        type: string
+        format: uuid
+        description: The organization where this product belongs to. eg this example code is for 'Dummy Social Travel NGO'
+        required: true
+        x-example: '08126381-09eb-4ace-b377-ea1b62d0ad8d'
+      - in: formData
+        name: productCategoryId
+        type: number
+        description: |
+          Optional. Call master\getAllProductCategories for the list. eg:
+          * 1 - Environment
+          * 4 - Food & beverages
+          * 10 - Eco tourism
+        required: false
+        x-example: '4'
+      - in: formData
+        name: title
+        type: string
+        description: Product title
+        required: true
+        x-example: '2D1N package to National Park'
+      - in: formData
+        name: shortDescription
+        type: string
+        description: Product description in plain text (no html allowed)
+        required: true
+        x-example: 'Bla bla bla...'
+      - in: formData
+        name: typeof
+        type: enum
+        enum: [product, service]
+        description: Product type, is it a product or service?
+        required: true
+      - in: formData
+        name: urlWebsite
+        type: string
+        format: uri
+        description: Product detail webpage in URL
+        required: false
+        x-example: 'https://'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https
