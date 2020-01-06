@@ -1,4 +1,4 @@
-# open_hub
+# About OpenHub
 
 OpenHub is an Open Source ecosystem management tool, committed to help tracking startup, founder, activities and resources in a local startup ecosystem for ecosystem developer. It is written in PHP, is customizable, supports all basic services needs, multilingual and localizable, has a fully responsive design (both front and back office), etc.
 
