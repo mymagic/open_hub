@@ -1,6 +1,6 @@
 <?php
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'layouts.backend',
 	'isDeleteDisabled' => true,
 	'moduleCode' => '',
 	'isAllowMeta' => true,

@@ -1,40 +1,59 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 
 // change the following paths if necessary
-$yiic=dirname(__FILE__).'/../framework/yiic.php';
-include_once(dirname(__FILE__).'/config/phpini.php');
-$config=dirname(__FILE__).'/config/console.php';
+$yiic = dirname(__FILE__) . '/../framework/yiic.php';
+include_once dirname(__FILE__) . '/config/phpini.php';
+$config = dirname(__FILE__) . '/config/console.php';
 
-require_once(dirname(__FILE__).'/vendor/autoload.php');
+ require_once(dirname(__FILE__) . '/vendor/autoload.php');
 //require_once($yiic);
 
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-defined('YII_DEBUG') or define('YII_DEBUG',true);
+defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-require_once(dirname(__FILE__).'/../framework/yii.php');
+ require_once(dirname(__FILE__) . '/../framework/yii.php');
 
 // exiang: path need to be reinclude here to make sure those in config works
-include_once(dirname(__FILE__).'/config/path.php');
-if(isset($config))
-{
-	$app=Yii::createConsoleApplication($config);
-	$app->commandRunner->addCommands(YII_PATH.'/cli/commands');
+include_once dirname(__FILE__) . '/config/path.php';
+if (isset($config)) {
+	$app = Yii::createConsoleApplication($config);
+	$app->commandRunner->addCommands(YII_PATH . '/cli/commands');
+} else {
+	$app = Yii::createConsoleApplication(array('basePath' => dirname(__FILE__) . '/../framework/cli'));
 }
-else
-	$app=Yii::createConsoleApplication(array('basePath'=>dirname(__FILE__).'/../framework/cli'));
 
-$env=@getenv('YII_CONSOLE_COMMANDS');
-if(!empty($env))
+$env = @getenv('YII_CONSOLE_COMMANDS');
+if (!empty($env)) {
 	$app->commandRunner->addCommands($env);
+}
 
-// add modules command
+// add modules commands
 $modules = YeeModule::getParsableModules();
-foreach($modules as $moduleKey=>$moduleParams)
-{
+foreach ($modules as $moduleKey => $moduleParams) {
 	$modulePath = Yii::getPathOfAlias('modules');
 	$filePath = sprintf('%s/%s/commands', $modulePath, $moduleKey);
-	$app->commandRunner->addCommands($filePath);	
+	$app->commandRunner->addCommands($filePath);
 }
+
+// add override commands
+$overridePath = Yii::getPathOfAlias('overrides');
+$filePath = sprintf('%s/commands', $overridePath);
+$app->commandRunner->addCommands($filePath);
 
 $app->run();

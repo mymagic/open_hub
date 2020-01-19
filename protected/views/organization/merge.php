@@ -24,9 +24,8 @@ $this->menu=array(
 	)
 )); ?>
 
-<?php if($this->layout == '//layouts/backend'): ?>
-    <h1><?php echo $this->pageTitle ?> <input type="submit" class="pull-right btn btn-primary" value="Merge!" /></h1>
-<?php endif; ?>
+<h1><?php echo $this->pageTitle ?> <input type="submit" class="pull-right btn btn-primary" value="Merge!" /></h1>
+
 
 <div class="row" id="vue-mergeOrganization">
     <div class="col-sm-6">

@@ -1,11 +1,26 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 class IndividualController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/backend', meaning
 	 * using two-column layout. See 'protected/views/layouts/backend.php'.
 	 */
-	public $layout='//layouts/backend';
+	public $layout = 'backend';
 
 	public function actions()
 	{
@@ -68,7 +83,7 @@ class IndividualController extends Controller
 	public function actionView($id, $realm='backend', $tab='comment')
 	{
 		if(empty($realm)) $realm='backend';
-		if($realm == 'cpanel') $this->layout='//layouts/cpanel';
+		if($realm == 'cpanel') $this->layout = 'cpanel';
 		$this->pageTitle = Yii::t('app', 'View Individual');
 		$model = $this->loadModel($id);
 		$this->pageTitle = Yii::t('app', "View '{IndividualTitle}'", array('{IndividualTitle}'=>$model->full_name));

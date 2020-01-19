@@ -1,8 +1,23 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 
 use Symfony\Component\Yaml\Yaml;
 
-class HUB
+class HUB extends Component
 {
 	public static function now()
 	{
@@ -382,6 +397,16 @@ class HUB
 	}
 
 	//
+	//cpanel
+	//
+
+	public static function cpanelNavItems($controller, $forInterface)
+	{
+		return HubCpanel::cpanelNavItems($controller, $forInterface);
+	}
+
+
+	//
 	// organization
 	public static function getOrCreateOrganization($title, $params)
 	{
@@ -438,8 +463,7 @@ class HUB
 		$useCache = Yii::app()->params['cache'];
 		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getOrganizationAllActive', sha1(json_encode(array('v1', $page, $filter, $limitPerPage))));
 		$return = Yii::app()->cache->get($cacheId);
-		if($return === false || $useCache===false)
-        {
+		if ($return === false || $useCache === false) {
 
 			if (!empty($filter) && is_array($filter)) {
 				// searchTitle
@@ -536,7 +560,7 @@ class HUB
 			}
 			// is it magic sea?
 			elseif ($filter['sea'] == 1 || $filter['sebasic'] == 1) {
-				
+
 				if ($filter['sea'] == 1) {
 					$ideaMembershipType = "mi1.value='idea'"; // 'idea';
 					$extraJoin = '';
@@ -615,8 +639,7 @@ class HUB
 				JOIN event_organization as eo ON (eo.organization_id=o.id) 
 			
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
-			} 
-			else {
+			} else {
 				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
 				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
@@ -651,7 +674,7 @@ class HUB
 			$return['totalPages'] = ceil($return['totalItems'] / $limit);
 
 			// cache for 5min
-            Yii::app()->cache->set($cacheId, $return, 300);
+			Yii::app()->cache->set($cacheId, $return, 300);
 		}
 
 		return $return;
@@ -1944,7 +1967,7 @@ class HUB
 
 			$data['mentorBookings'] = null;
 			$mentorPrograms = HubMentor::getActivePrograms();
-			
+
 			foreach ($mentorPrograms as $mp) {
 				$bookings = HubFuturelab::getProgramBookings($mp->vendor_ref_code);
 				usort($bookings, 'HubFuturelab::cmpBooking');
@@ -2010,7 +2033,8 @@ class HUB
 		$response = $client->request(
 			'GET',
 			$url,
-			['headers' => [
+			[
+				'headers' => [
 					'Accept' => 'application/json',
 					'Content-Type' => 'application/json',
 				],
@@ -2306,8 +2330,7 @@ class HUB
 
 	protected function RemoveAccountMentorSession($email)
 	{
-		try {
-		} catch (Exception $e) {
+		try { } catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -2328,32 +2351,38 @@ class HUB
 	}
 
 	// bumi module
-	public function checkIndividualIsBumiStatus($individual){
+	public function checkIndividualIsBumiStatus($individual)
+	{
 		return HubBumi::checkIndividualIsBumi($individual);
 	}
 
 	// bumi module
-	public function checkOrganizationIsBumiStatus($organization){
+	public function checkOrganizationIsBumiStatus($organization)
+	{
 		return HubBumi::checkOrganizationIsBumi($organization);
 	}
 
 	// bumi module
-	public function checkEventRegistrationIsBumiStatus($eventRegistration){
+	public function checkEventRegistrationIsBumiStatus($eventRegistration)
+	{
 		return HubBumi::checkEventRegistrationIsBumi($eventRegistration);
 	}
 
 	// bumi module
-	public function checkIndividualIsIndianStatus($individual){
+	public function checkIndividualIsIndianStatus($individual)
+	{
 		return HubBumi::checkIndividualIsIndian($individual);
 	}
 
 	// bumi module
-	public function checkEventRegistrationIsIndianStatus($eventRegistration){
+	public function checkEventRegistrationIsIndianStatus($eventRegistration)
+	{
 		return HubBumi::checkEventRegistrationIsIndian($eventRegistration);
 	}
 
 	//bumi module
-	public function updateBumiIndianStatusForEventRegistration($eventRegistration){
+	public function updateBumiIndianStatusForEventRegistration($eventRegistration)
+	{
 		return HubBumi::updateIsBumiIndianForEventRegistration($eventRegistration);
 	}
 }

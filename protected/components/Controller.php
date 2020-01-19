@@ -1,4 +1,20 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
+
 
 /**
  * Controller is the customized base controller class.
@@ -27,7 +43,7 @@ class Controller extends BaseController
     public $activeMenuSub = '';
     public $activeMenuCpanel = '';
     public $activeSubMenuCpanel = '';
-
+    public $cpanelMenuInterface = '';
     public $magicConnect = null;
     public $mixPanel = null;
 
@@ -42,7 +58,7 @@ class Controller extends BaseController
             $httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
             $this->magicConnect = new MyMagic\Connect\Client();
             $this->magicConnect->verifySsl = false;
-            $this->magicConnect->setConnectUrl($httpOrHttps.Yii::app()->params['connectUrl']);
+            $this->magicConnect->setConnectUrl($httpOrHttps . Yii::app()->params['connectUrl']);
         }
 
         if (empty($this->mixPanel) && Yii::app()->params['enableMixPanel']) {
@@ -81,18 +97,18 @@ class Controller extends BaseController
 
         $navItems = array(
             array(
-                'label' => Yii::t('app', 'User').' <b class="caret"></b>', 'url' => '#',
+                'label' => Yii::t('app', 'User') . ' <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
                 'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
                 'items' => array(
                     array('label' => Yii::t('app', 'Member'), 'url' => array('/member/admin'), 'visible' => Yii::app()->user->getState('isMemberManager')),
                     array('label' => Yii::t('app', 'Admin'), 'url' => array('/admin/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
-                    array('label' => Yii::t('app', 'Connect').' <span class="label label-warning">dev</span>', 'url' => array('/backend/connect'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+                    array('label' => Yii::t('app', 'Connect') . ' <span class="label label-warning">dev</span>', 'url' => array('/backend/connect'), 'visible' => Yii::app()->user->getState('isDeveloper')),
                 ),
             ),
             array(
-                'label' => Yii::t('backend', 'Commons').' <b class="caret"></b>', 'url' => '#',
+                'label' => Yii::t('backend', 'Commons') . ' <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true,
                 'active' => $this->activeMenuMain == 'common' ? true : false,
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
@@ -131,7 +147,7 @@ class Controller extends BaseController
                 ),
             ),
             array(
-                'label' => Yii::t('backend', 'Services').' <b class="caret"></b>', 'url' => '#',
+                'label' => Yii::t('backend', 'Services') . ' <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
                 'active' => $this->activeMenuMain == 'service' ? true : false,
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
@@ -140,7 +156,7 @@ class Controller extends BaseController
             ),
 
             array(
-                'label' => Yii::t('backend', 'Master Data').' <b class="caret"></b>', 'url' => '#',
+                'label' => Yii::t('backend', 'Master Data') . ' <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
                 'active' => $this->activeMenuMain == 'masterData' ? true : false,
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
@@ -156,14 +172,14 @@ class Controller extends BaseController
                     array('label' => Yii::t('app', 'Legal Form'), 'url' => array('/legalform/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
 
                     // developer only
-                    array('label' => Yii::t('app', 'Country').' <span class="label label-warning">dev</span>', 'url' => array('/country/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
-                    array('label' => Yii::t('app', 'State').' <span class="label label-warning">dev</span>', 'url' => array('/state/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
-                    array('label' => Yii::t('app', 'City').' <span class="label label-warning">dev</span>', 'url' => array('/city/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
-                    array('label' => Yii::t('app', 'Service').' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+                    array('label' => Yii::t('app', 'Country') . ' <span class="label label-warning">dev</span>', 'url' => array('/country/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+                    array('label' => Yii::t('app', 'State') . ' <span class="label label-warning">dev</span>', 'url' => array('/state/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+                    array('label' => Yii::t('app', 'City') . ' <span class="label label-warning">dev</span>', 'url' => array('/city/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+                    array('label' => Yii::t('app', 'Service') . ' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
                 ),
             ),
             array(
-                'label' => Yii::t('app', 'Site').' <b class="caret"></b>', 'url' => '#',
+                'label' => Yii::t('app', 'Site') . ' <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true && (Yii::app()->user->isSuperAdmin || Yii::app()->user->isContentManager),
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
                 'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
@@ -180,7 +196,7 @@ class Controller extends BaseController
                 ),
             ),
             array(
-                'label' => '<span class="label label-warning">'.Yii::t('backend', 'Dev').'</span> <b class="caret"></b>', 'url' => '#',
+                'label' => '<span class="label label-warning">' . Yii::t('backend', 'Dev') . '</span> <b class="caret"></b>', 'url' => '#',
                 'visible' => Yii::app()->user->getState('accessBackend') == true && Yii::app()->user->getState('isDeveloper'),
                 'active' => $this->activeMenuMain == 'dev' ? true : false,
                 'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
@@ -206,7 +222,7 @@ class Controller extends BaseController
         }
         // logout
         $navUserItems[] =
-        array('label' => Yii::t('app', 'Logout'), 'url' => array('/backend/logout'), 'linkOptions' => array('title' => Yii::app()->user->username, 'data-toggle' => 'tooltip', 'data-placement' => 'bottom'), 'visible' => !Yii::app()->user->isGuest);
+            array('label' => Yii::t('app', 'Logout'), 'url' => array('/backend/logout'), 'linkOptions' => array('title' => Yii::app()->user->username, 'data-toggle' => 'tooltip', 'data-placement' => 'bottom'), 'visible' => !Yii::app()->user->isGuest);
 
         $this->menuUser = $navUserItems;
     }
@@ -277,6 +293,24 @@ class Controller extends BaseController
         if (!empty($this->mixPanel)) {
             $this->mixPanel->track($action, $params);
         }
+    }
+
+    function beforeAction($action)
+    {
+        if (Yii::app()->getModule('interest') && !Yii::app()->user->isGuest) {
+            if (empty(Interest::model()->find('user_id=:userId', array(':userId' => Yii::app()->user->id)))) {
+                if (
+                    !($action->controller->getId() === 'site' && $action->getId() === 'error') &&
+                    !($action->controller->getId() === 'welcome' && $action->getId() === 'index') &&
+                    !($action->controller->getId() === 'api' && $action->getId() === 'member') &&
+                    !($action->controller->getId() === 'welcome' && $action->getId() === 'skip') &&
+                    !($action->controller->getId() === 'v1')
+                )
+                    $this->redirect('/interest/welcome');
+            }
+        }
+
+        return parent::beforeAction($action);
     }
 
     public function piwikTrack($category, $action, $params)

@@ -1,49 +1,36 @@
 {
-	"authors": [
-        {
-            "name": "Tan Yee Siang",
-            "email": "yee.siang@mymagic.my"
+    "authors": [{
+        "name": "Tan Yee Siang",
+        "email": "yee.siang@mymagic.my"
+    }],
+    "autoload": {
+        "psr-0": {
+            "config": "./"
         }
-    ],
-	"autoload": {
-		"psr-0": {
-		  "config": "./"
-		}
-	},
-	"config": {
-		"github-oauth": {
-			"github.com": "6d2803bd09efde9cf78270f3109f0d94118bd77d"
-		}
-	},
-    "require": {
-        "guzzlehttp/guzzle": "~6.0",		
-        "mymagic/connect": "^3.2.3",
-		"exiang/ys-util": "^1.3.0",
-		"ramsey/uuid": "^3.6",
-		"wadeshuler/php-paypal-ipn": "^2.5",
-		"tecnickcom/tcpdf": "^6.2",
-		"elasticsearch/elasticsearch": "^5.2",
-		"wizacha/aws-signature-middleware": "^0.1.0",
-		"jsq/amazon-es-php": "^0.2.0",
-		"firebase/php-jwt": "^5.0",
-		"mpdf/mpdf": "^7.0",
-		"mixpanel/mixpanel-php" : "2.*",
-		"phpoffice/phpspreadsheet": "^1.2",
-		"drewm/mailchimp-api": "^2.5",
-		"phpunit/phpunit-selenium": "^3",
-		"willdurand/geocoder": "^3.3",
-		"geoip2/geoip2": "^2.9",
-		"symfony/yaml": "^3.4",
-		"wgenial/s3-objects-stream-zip-php": "^2.1",
-		"exiang/eventbrite-sdk-php": "^1.0",
-		"composer/semver": "^1.5",
-		"simple-html-dom/simple-html-dom": "^1.5",
-		"aws/aws-sdk-php": "^3.121"
     },
-	"repositories": [
-        {
-            "type": "git",
-            "url":  "git@github.com:mymagic/connect-wrapper.git"
-        }
-    ]
+    "require": {
+        "guzzlehttp/guzzle": "~6.0",
+        "mymagic/connect": "^3.2.3",
+        "exiang/ys-util": "^1.3.0",
+        "ramsey/uuid": "^3.6",
+        "wadeshuler/php-paypal-ipn": "^2.5",
+        "tecnickcom/tcpdf": "^6.2",
+        "elasticsearch/elasticsearch": "^5.2",
+        "wizacha/aws-signature-middleware": "^0.1.0",
+        "jsq/amazon-es-php": "^0.2.0",
+        "firebase/php-jwt": "^5.0",
+        "mpdf/mpdf": "^7.0",
+        "mixpanel/mixpanel-php": "2.*",
+        "phpoffice/phpspreadsheet": "^1.2",
+        "drewm/mailchimp-api": "^2.5",
+        "phpunit/phpunit-selenium": "^3",
+        "willdurand/geocoder": "^3.3",
+        "geoip2/geoip2": "^2.9",
+        "symfony/yaml": "^3.4",
+        "wgenial/s3-objects-stream-zip-php": "^2.1",
+        "exiang/eventbrite-sdk-php": "^1.0",
+        "composer/semver": "^1.5",
+        "simple-html-dom/simple-html-dom": "^1.5",
+        "aws/aws-sdk-php": "^3.121"
+    }
 }

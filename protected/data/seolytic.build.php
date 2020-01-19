@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'layout' => '//layouts/backend',
+    'layout' => 'layouts.backend',
     'menuTemplate' => array(
         'index' => 'admin, create',
         'admin' => 'create',

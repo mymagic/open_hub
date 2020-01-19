@@ -1,70 +1,35 @@
 <?php
 $this->breadcrumbs=array(
-    'Manage Your Newsletters'
+    'Notification'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
 ?>
 
-<div class="sidebard-panel left-bar">
-    <div id="header">
-        <h2>Settings<span class="hidden-desk">
-            <a class="container-arrow scroll-to" href="#">
-                <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>
-            </a></span>
-        </h2>
-        <h4></h4>
-    </div>
-    <div id="content-services">
-        <a id="unsubscribeUserEmail-link" class="service-link active" href="<?php echo $this->createUrl('cpanel/manageUserEmailSubscription') ?>">
-            <div class="m-t-md pad-30 service-box">
-                <h4>Manage Your Newsletters</h4>
-                <h5>View, change or cancel your subscriptions</h5> 
-            </div>
-        </a>    
+<section>
+    <div class="px-8 py-6 shadow-panel" id="vue-manageUserEmailSubscription">
+        <h2>Notifications</h2>
+        <p>We’ll always let you know about important changes, but you pick what else you want to hear about</p>
+        <br>
+        <?php foreach ($lists as $list) : ?>
 
-        <a id="downloadUserData-link" class="service-link" href="<?php echo $this->createUrl('cpanel/downloadUserData') ?>">
-            <div class="m-t-md pad-30 service-box">
-                <h4>Download Your Information</h4>
-                <h5>Get a copy of your data on our platform here</h5> 
-            </div>
-        </a>
-        
-        <a id="deleteUserAccount-link" class="service-link" href="<?php echo $this->createUrl('cpanel/deleteUserAccount') ?>">
-            <div class="m-t-md pad-30 service-box">
-                <h4>Deactivate Your Account</h4>
-                <h5>Permanently deactivate your MaGIC account</h5> 
-            </div>
-        </a>    
-    </div>
-</div>
+            <div class="flex items-center mailchimpListItem" data-list-id="<?php echo $list['id'] ?>">
 
+                <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $list['id'] ?>', $event)" /></span>
 
-<div class="wrapper wrapper-content content-bg content-left-padding">
-    <div id="service-content" class="row">
-        <div class="col col-md-12 margin-bottom-lg">
-            <h2 style="margin-top: 15px; margin-left: 40px; max-width: 700px;margin-right: 50px;">Manage Your Newsletters</h2>
-            <div style="margin-left: 40px; " id="vue-manageUserEmailSubscription">
-
-                <?php foreach($lists as $list): ?>
-                <div class="gray-bg padding-lg margin-bottom-lg border mailchimpListItem" data-list-id="<?php echo $list['id'] ?>">
-                    <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $list['id'] ?>', $event)" /></span>
-                    <b><?php echo $list['name'] ?></b>
+                <div class="ml-4">
+                    <b><?php echo $list['name'] ?></b><br>
                     <p><?php echo $list['permission_reminder'] ?></p>
                 </div>
-                <?php endforeach; ?>
-             
             </div>
-        </div>
-    </div>
-</div>
 
+        <?php endforeach; ?>
 
+</section>
 
 <?php Yii::app()->clientScript->registerScript('cpanel-setting-manageUserEmailSubscription-vuejs', "
 var vue = new Vue({
 	el: '#vue-manageUserEmailSubscription',
 	data: {},
-	ready: function () 
+	mounted: function () 
 	{
         var self = this;
 		$.each($('.mailchimpListItem'), function(index, item) {
@@ -139,5 +104,5 @@ var vue = new Vue({
             });
         }
 	}
-});"); 
+});");
 ?>

@@ -1,6 +1,6 @@
 <?php
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'layouts.backend',
 	'isDeleteDisabled' => true,
 	'menuTemplate' => array(
 		'index'=>'admin, create',

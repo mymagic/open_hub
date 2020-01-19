@@ -1,4 +1,19 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 
 class Individual extends IndividualBase
 {
@@ -201,6 +216,14 @@ class Individual extends IndividualBase
 		}
 		return false;
 	}
+
+	public function getIndividualByEmail($email) {
+		$individual2email = Individual2Email::model()->find('user_email=:email', array(':email' => $email));
+		$individual = Individual::model()->findByPk($individual2email['individual_id']);
+
+		return $individual;
+	}
+
 	public function canJoinByUserEmail($email)
 	{
 		if($this->hasUserEmail($email)) return false;

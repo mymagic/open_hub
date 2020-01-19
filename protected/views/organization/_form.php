@@ -153,7 +153,7 @@
 		 * or else the data will become null when update for those user that do not have role accessBackend
 		 */
 	?>
-	<div class="<?php echo Yii::app()->user->accessBackend ? '' : 'hide' ?>">
+	<div class="<?php echo Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin  ? '' : 'hide' ?>">
 
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error':'' ?>">
 		<?php echo $form->bsLabelEx2($model,'is_active'); ?>

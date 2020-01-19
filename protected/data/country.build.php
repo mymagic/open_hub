@@ -1,6 +1,6 @@
 <?php
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'layouts.backend',
 	'foreignRefer' => array('key'=>'code', 'title'=>'printable_name'),
 	'menuTemplate' => array(
 		'index'=>'admin, create',

@@ -1,4 +1,19 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 
 class OrganizationController extends Controller
 {
@@ -6,12 +21,12 @@ class OrganizationController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/backend', meaning
 	 * using two-column layout. See 'protected/views/layouts/backend.php'.
 	 */
-	public $layout = '//layouts/backend';
+	public $layout = 'backend';
+	public $customParse = '';
 
 	public function actions()
 	{
-		return array(
-		);
+		return array();
 	}
 
 	/**
@@ -32,37 +47,48 @@ class OrganizationController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
+			array(
+				'allow',  // allow all users to perform 'index' and 'view' actions
 				'actions' => array('index'),
 				'users' => array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-				'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend','score'),
+			array(
+				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
+				'actions' => array(
+					'list', 'view', 'create', 'update', 'admin', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
+					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+				),
 				'users' => array('@'),
 				'expression' => '$user->isAdmin==true',
 			),
-			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
+			array(
+				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('housekeeping'),
 				'users' => array('@'),
 				'expression' => '$user->isDeveloper==true',
 			),
-			array('allow',
-				'actions' => array('view', 'create', 'update', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'deleteUserOrganization2Email', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-				'removeOrganizationLogo'),
+			array(
+				'allow',
+				'actions' => array(
+					'view', 'create', 'update', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'deleteUserOrganization2Email', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
+					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+				),
 				'users' => array('@'),
 			),
-			array('allow',
+			array(
+				'allow',
 				'actions' => array('select', 'saveForm', 'deleteOrganization2Email', 'deleteUserOrganization2Email', 'join'),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel==true',
 			),
-			array('allow',
+			array(
+				'allow',
 				'actions' => array('overview', 'view', 'admin'),
 				'users' => array('@'),
 				'expression' => '$user->isEcosystem==true',
 			),
-			array('deny',  // deny all users
+			array(
+				'deny',  // deny all users
 				'users' => array('*'),
 			),
 		);
@@ -70,9 +96,9 @@ class OrganizationController extends Controller
 
 	public function init()
 	{
-		$this->activeMenuCpanel = 'organization';
-		$this->activeMenuMain = 'organization';
 		parent::init();
+		$this->activeMenuMain = 'organization';
+		$this->layoutParams['enableGlobalSearchBox'] = true;
 	}
 
 	/**
@@ -81,15 +107,21 @@ class OrganizationController extends Controller
 	 */
 	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
+		$model = $this->loadModel($id);
+
 		if (empty($realm)) {
 			$realm = 'backend';
 		}
-		if ($realm == 'cpanel') {
-			$this->layout = '//layouts/cpanel';
-		}
 		$this->pageTitle = Yii::t('app', 'View Organization');
-		$model = $this->loadModel($id);
-		$this->pageTitle = Yii::t('app', "View '{OrganizationTitle}'", array('{OrganizationTitle}' => $model->title));
+
+		if ($realm == 'cpanel') {
+			$this->layout = 'cpanel';
+			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+			$this->activeMenuCpanel = 'information';
+			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->customParse = $model->id;
+			$this->pageTitle = Yii::t('app', "View '{OrganizationTitle}'", array('{OrganizationTitle}' => $model->title));
+		}
 
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
@@ -106,13 +138,13 @@ class OrganizationController extends Controller
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationActions')) {
-					$actions = array_merge($actions, (array)Yii::app()->getModule($moduleKey)->getOrganizationActions($model, 'backend'));
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationActions')) {
-					$actions = array_merge($actions, (array)Yii::app()->getModule($moduleKey)->getOrganizationActions($model, 'cpanel'));
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationActions($model, 'cpanel'));
 				}
 			}
 		}
@@ -141,11 +173,18 @@ class OrganizationController extends Controller
 
 		if (empty($realm)) {
 			$realm = 'backend';
+			$this->pageTitle = Yii::t('app', 'Create Organization');
 		}
+
 		if ($realm == 'cpanel') {
-			$this->layout = '//layouts/cpanel';
+
+			$this->layout = 'cpanel';
+			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+			$this->pageTitle = 'Create Company';
+			$this->cpanelMenuInterface = 'cpanelNavCompany';
+			$this->activeMenuCpanel = 'create';
+			$this->pageTitle = Yii::t('app', 'Create Company');
 		}
-		$this->pageTitle = Yii::t('app', 'Create Organization');
 
 		$model = new Organization;
 		$model->scenario = $scenario;
@@ -178,15 +217,22 @@ class OrganizationController extends Controller
 	 */
 	public function actionUpdate($id, $realm = 'backend', $scenario = 'update', $returnUrl = '')
 	{
+		$model = $this->loadModel($id);
+
 		if (empty($realm)) {
 			$realm = 'backend';
 		}
-		if ($realm == 'cpanel') {
-			$this->layout = '//layouts/cpanel';
-		}
 		$this->pageTitle = Yii::t('app', 'Update Organization');
+		
+		if ($realm == 'cpanel') {
+			$this->layout = 'cpanel';
+			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+			$this->activeMenuCpanel = 'information';
+			$this->pageTitle = Yii::t('app', 'Update Company');
+			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->customParse = $model->id;
+		}
 
-		$model = $this->loadModel($id);
 		$model->scenario = $scenario;
 
 		// check for member access, not admin
@@ -257,15 +303,72 @@ class OrganizationController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionList()
+	public function actionList($realm = 'backend')
 	{
-		$dataProvider = new CActiveDataProvider('Organization');
-		$dataProvider->pagination->pageSize = 5;
-		$dataProvider->pagination->pageVar = 'page';
+		if ($realm === 'backend') {
+			$dataProvider = new CActiveDataProvider('Organization');
+			$dataProvider->pagination->pageSize = 5;
+			$dataProvider->pagination->pageVar = 'page';
 
-		$this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
+			$this->render('index', array(
+				'dataProvider' => $dataProvider,
+				'realm' => 	$realm,
+			));
+		}
+		if ($realm === 'cpanel') {
+
+			$this->layout = 'cpanel';
+			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+			$this->pageTitle = 'Company List';
+			$this->cpanelMenuInterface = 'cpanelNavCompany';
+			$this->activeMenuCpanel = 'list';
+
+
+			$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'approve');
+			$this->render('index', array(
+				'model' => $model,
+				'realm' => 	$realm,
+			));
+		}
+	}
+
+	public function actionTeam($id)
+	{
+		$model = $this->loadModel($id);
+
+		if (!$model->canAccessByUserEmail(Yii::app()->user->username))
+			$this->redirect(array('/company/list'));
+
+		$this->layout = 'cpanel';
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+		$this->pageTitle = 'Team Members';
+		$this->activeMenuCpanel = 'team';
+		$this->customParse = $model->id;
+
+		$org2email = HUB::getOrganization2Emails($id);
+
+		$approve = array();
+		$reject = array();
+		$pending = array();
+
+		foreach ($org2email['model'] as $email) {
+			if ($email->status === 'approve') {
+				array_push($approve, $email);
+			}
+			if ($email->status === 'reject') {
+				array_push($reject, $email);
+			}
+			if ($email->status === 'pending') {
+				array_push($pending, $email);
+			}
+		}
+
+		$emails['approve'] = $approve;
+		$emails['reject'] = $reject;
+		$emails['pending'] = $pending;
+
+		$this->render('team', array('model' => $model, 'emails' => $emails));
 	}
 
 	/**
@@ -294,7 +397,7 @@ class OrganizationController extends Controller
 	public function actionSelect($keyword = '')
 	{
 		$this->pageTitle = Yii::t('app', 'Select Organization');
-		$this->layout = '//layouts/cpanel';
+		$this->layout = 'cpanel';
 
 		$keyword = $_GET['keyword'];
 
@@ -312,23 +415,17 @@ class OrganizationController extends Controller
 		));
 	}
 
-	// public function actionJoin ($keyword='')
-	// {
-	// 	$this->pageTitle = Yii::t('app', 'Join Existing Organization');
-	// 	$this->layout='//layouts/cpanel';
+	public function actionJoin()
+	{
+		$this->layout = 'cpanel';
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->pageTitle = 'Join Company';
+		$this->cpanelMenuInterface = 'cpanelNavCompany';
+		$this->activeMenuCpanel = 'join';
+		$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'pending');
+		$this->render('join', array('model' => $model));
+	}
 
-	//     $keyword = $_GET['keyword'];
-
-	// 	$tmps = HUB::getUserOrganizationsCanJoin($keyword, Yii::app()->user->username);
-
-	// 	foreach($tmps as $tmp)
-	// 	{
-	// 	$result[] = $tmp->toApi(array('-products', '-impacts'));
-	// 	}
-	// 	$this->render('join',array(
-	// 		'model'=>$result
-	// 	));
-	// }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -356,7 +453,7 @@ class OrganizationController extends Controller
 		$this->renderPartial('_getOrganization2Emails', $model, false, true);
 	}
 
-	public function actionDeleteOrganization2Email($id, $realm = '')
+	public function actionDeleteOrganization2Email($id, $realm = 'backend', $scenario = 'join')
 	{
 		$model = HUB::getOrganization2Email($id);
 		// check for member access, not admin
@@ -383,10 +480,25 @@ class OrganizationController extends Controller
 			}
 
 			if ($copy->user_email == Yii::app()->user->username) {
-				$this->redirect(array('organization/select', 'realm' => $realm));
+				if ($realm === 'backend') {
+					$this->redirect(array('organization/select', 'realm' => $realm));
+				}
+				if ($realm === 'cpanel') {
+					$this->redirect(array('organization/join'));
+				}
 			}
 
-			$this->redirect(array('organization/view', 'id' => $organization->id, 'realm' => $realm));
+			if ($realm === 'backend') {
+				$this->redirect(array('organization/view', 'id' => $organization->id, 'realm' => $realm));
+			}
+			if ($realm === 'cpanel') {
+				if ($scenario === 'join') {
+					$this->redirect(array('join', 'realm' => $realm));
+				}
+				if ($scenario === 'team') {
+					$this->redirect(array('team', 'id' => $model->organization->id, 'realm' => $realm));
+				}
+			}
 		}
 	}
 
@@ -395,10 +507,11 @@ class OrganizationController extends Controller
 		$result = HUB::getOrganization2EmailUserID($organizationID, $userEmail);
 
 		Notice::page(Yii::t('notice', 'You are about to remove your access request to the organization. Click OK to continue.'), Notice_WARNING, array(
-			'url' => $this->createUrl('organization/deleteOrganization2Email', array('id' => $result, 'realm' => $realm)), 'cancelUrl' => $this->createUrl('organization/select')));
+			'url' => $this->createUrl('organization/deleteOrganization2Email', array('id' => $result, 'realm' => $realm)), 'cancelUrl' => ($realm === 'backend') ? $this->createUrl('organization/select') : $this->createUrl('organization/join')
+		));
 	}
 
-	public function actionAddOrganization2Email($organizationId, $realm = 'backend')
+	public function actionAddOrganization2Email($organizationId, $realm = 'backend', $scenario = 'join')
 	{
 		$organization = $this->loadModel($organizationId);
 		// check for member access, not admin
@@ -429,10 +542,15 @@ class OrganizationController extends Controller
 			}
 		}
 
-		$this->redirect(array('view', 'id' => $model->organization_id, 'realm' => $realm));
+		if ($scenario === 'join') {
+			$this->redirect(array('view', 'id' => $model->organization_id, 'realm' => $realm));
+		}
+		if ($scenario === 'team') {
+			$this->redirect(array('team', 'id' => $model->organization->id, 'realm' => $realm));
+		}
 	}
 
-	public function actionToggleOrganization2EmailStatus($id, $realm = 'backend')
+	public function actionToggleOrganization2EmailStatus($id, $realm = 'backend', $scenario = 'join')
 	{
 		$model = HUB::getOrganization2Email($id);
 		// check for member access, not admin
@@ -461,7 +579,36 @@ class OrganizationController extends Controller
 
 			Notice::flash(Yii::t('notice', "Successfully changed status to '{status}'", ['{status}' => $model->formatEnumStatus($model->status)]), Notice_SUCCESS);
 		}
-		$this->redirect(array('view', 'id' => $model->organization_id, 'realm' => $realm));
+
+		if ($scenario === 'join') {
+			$this->redirect(array('view', 'id' => $model->organization_id, 'realm' => $realm));
+		}
+
+		if ($scenario === 'team') {
+			$this->redirect(array('team', 'id' => $model->organization->id, 'realm' => $realm));
+		}
+	}
+
+	public function actionToggleOrganization2EmailStatusReject($id)
+	{
+		$model = HUB::getOrganization2Email($id);
+
+		if (!Yii::app()->user->accessBackend) {
+			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username))
+				$this->redirect(array('/organization/list'));
+		}
+
+		$model->status = 'reject';
+
+		if ($model->save()) {
+
+			$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($model);
+			HUB::sendEmail($model->user_email, $model->user_email, $notifMaker['title'], $notifMaker['content']);
+
+			Notice::flash(Yii::t('notice', "Successfully changed status to '{status}'", ['{status}' => $model->formatEnumStatus($model->status)]), Notice_SUCCESS);
+		}
+
+		$this->redirect(array('team', 'id' => $model->organization->id, 'realm' => 'cpanel'));
 	}
 
 	public function actionRequestJoinEmail($organizationId, $email, $realm = 'cpanel')
@@ -483,7 +630,13 @@ class OrganizationController extends Controller
 			}
 		}
 
-		$this->redirect(array('select', 'id' => $model->organization_id, 'realm' => $realm));
+		if ($realm === 'backend') {
+			$this->redirect(array('select', 'id' => $model->organization_id, 'realm' => $realm));
+		}
+
+		if ($realm === 'cpanel') {
+			$this->redirect(array('organization/join'));
+		}
 	}
 
 	public function actionOverview()
@@ -706,7 +859,7 @@ class OrganizationController extends Controller
 		$modules = YeeModule::getParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationViewTabs')) {
-				$tabs = array_merge($tabs, (array)Yii::app()->getModule($moduleKey)->getOrganizationViewTabs($model, $realm));
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getOrganizationViewTabs($model, $realm));
 			}
 		}
 
@@ -743,11 +896,12 @@ class OrganizationController extends Controller
 		$org_name = $model->title;
 
 		$application = HubAtas::getApplicationFromStartupName($org_name);
-		$application_id=$application['map_application_id'];
+		$application_id = $application['map_application_id'];
 		$this->render('score', array(
 			'model' => $model,
 			'organization' => $model,
-			'application_id'=>$application_id));
+			'application_id' => $application_id
+		));
 		// Get startup_id
 		// Get map_application id 
 		// $this->render('score', array());

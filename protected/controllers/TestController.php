@@ -1,4 +1,19 @@
 <?php
+/**
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the BSD 3-Clause License
+* that is bundled with this package in the file LICENSE.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/BSD-3-Clause
+*
+*
+* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+* @link https://github.com/mymagic/open_hub
+* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+* @license https://opensource.org/licenses/BSD-3-Clause
+*/
 
 use Aws\Credentials\CredentialProvider;
 use Aws\Credentials\Credentials;
@@ -14,7 +29,7 @@ use Composer\Semver\Semver;
 
 class TestController extends Controller
 {
-	public $layout = '//layouts/frontend';
+	public $layout = 'frontend';
 
 	public function actionIndex()
 	{
@@ -32,6 +47,35 @@ class TestController extends Controller
 		Yii::t('test', 'Testing 2 in controller');
 
 		$this->render('index', array('actions' => $actions));
+	}
+
+	// attach event to activeRecord model after saved
+	public function actionJunkCreatedHook()
+	{
+		$j = new Junk;
+		$j->code = 'test-junkAfterSave-' . time();
+		$j->content = 'test-junkAfterSave-' . time();
+		// use the default event in model
+		$j->onAfterSave->add(function () {echo " onAftersave event raised, custom function 1 called\n";});
+		// use the custom event in model
+		$j->onJunkCreated->add(function () {echo " onJunkCreated event raised, custom function 2 called\n";});
+		$j->save();
+		echo sprintf('<p>id: %s</p>', $j->id);
+	}
+
+	public function actionJunkSavedHook($id)
+	{
+		if (empty($id)) {
+			echo 'Please provide id in GET';
+		}
+		
+		$j = Junk::model()->findByPk($id);
+		$j->content = 'changed on' . time();
+		// use the default event in model
+		$j->onAfterSave->add(function () {echo " onAftersave event raised, custom function 1 called\n";});
+		// this event should not be triggered since it is an existing record
+		$j->onJunkCreated->add(function () {echo " onJunkCreated event raised, custom function 2 called\n";});
+		$j->save();
 	}
 
 	public function actionGetThumbnailSetting()

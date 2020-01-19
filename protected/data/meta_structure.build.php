@@ -1,6 +1,6 @@
 <?php
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'layouts.backend',
 	'isDeleteDisabled' => true,
 	'foreignRefer' => array('key'=>'id', 'title'=>'code'),
 	'menuTemplate' => array(

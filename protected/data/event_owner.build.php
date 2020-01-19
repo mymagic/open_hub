@@ -1,6 +1,6 @@
 <?php
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'layouts.backend',
 	'moduleCode' => 'event',
 	'isAllowMeta' => true,
 	'foreignRefer' => array('key'=>'id', 'title'=>'organization_code'),

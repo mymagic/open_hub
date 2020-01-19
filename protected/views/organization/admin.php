@@ -23,8 +23,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<?php if($this->layout == '//layouts/backend'): ?><h1><?php echo $this->pageTitle ?></h1><?php endif; ?>
-
+<h1><?php echo $this->pageTitle ?></h1>
 
 <div class="panel panel-default">
 <div class="panel-heading">
