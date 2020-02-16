@@ -1,0 +1,278 @@
+swagger: '2.0'
+info:
+  description: Collection related API where we aim to cover all collection data in local ecosystem.
+  version: "v1"
+  title: Resource
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /addCollectionItem:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Add an item into a new or existing collection
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: itemId
+        type: number
+        description: Item ID
+        required: true
+        x-example: 2
+      - in: formData
+        name: tableName
+        type: string
+        description: Table Name
+        required: true
+        x-example: organization
+      - in: formData
+        name: collection
+        type: string
+        description: Collection name or id. insert Name for new collection, id for existing. Hence, collection name do not allow numeric only value. If not inserted, system will use the default collection.
+        required: false
+        x-example: default
+      - in: formData
+        name: collectionSub
+        type: string
+        description: Sub collection name or id. insert Name for new sub collection, id for existing. Hence, sub collection name do not allow numeric only value. If not inserted, system will use the default sub collection.
+        required: false
+        x-example: default
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /renameCollection:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Rename a specific collection
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the collection
+        required: true
+        x-example: 99
+      - in: formData
+        name: newTitle
+        type: string
+        description: new title for this collection
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /renameCollection:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Rename a collection
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the collection
+        required: true
+        x-example: 99
+      - in: formData
+        name: newTitle
+        type: string
+        description: new name for this collection
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /deleteCollection:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Delete a specific collection and everything in it
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the collection
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /deleteCollectionSub:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Add a specific collection sub group and all items in it
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the sub collection group
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /moveCollectionSub:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Move a sub collection group and all its items to another collection own by the same user
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the sub collection group
+        required: true
+        x-example: 99
+      - in: formData
+        name: targetCollectionId
+        type: number
+        description: id of the destination collection to move this sub group into
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /renameCollectionSub:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Rename a sub collection group
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the sub collection group
+        required: true
+        x-example: 99
+      - in: formData
+        name: newTitle
+        type: string
+        description: new name for this sub collection group
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /deleteCollectionItem:
+    post:
+      tags:
+      - admin
+      summary: "" 
+      description: Delete a specific collection item
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Please acquired it from user/getUserJwt
+        required: true
+        x-example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE1NjY4MTEzNjksImp0aSI6Ilg2Q1lBYVE5MmVTU2JyUkJBMm5XcDJ1eGNDRlU4cXNGWWxqam1LOEZ0bU09IiwiaXNzIjoiaHViZC5teW1hZ2ljLm15IiwibmJmIjoxNTY2ODExMzc5LCJleHAiOjE1NjY4MTQ5NzksImRhdGEiOnsidXNlcklkIjoiMiIsInVzZXJuYW1lIjoieWVlLnNpYW5nQG15bWFnaWMubXkifX0.dOLSCA1YKG88HFol2fLzKlMjg7Wm3F2g3LokAwI3WiPK5rbhKieFpVPDE2errOeu9hyJfT893JHsfnTWA8nnCA
+      - in: formData
+        name: id
+        type: number
+        description: id of the collection item
+        required: true
+        x-example: 99
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

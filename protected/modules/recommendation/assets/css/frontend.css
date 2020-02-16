@@ -1,0 +1,17 @@
+#owl-nav-right {
+    background: white;
+    height: 60px;
+    width: 60px;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.05);
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#owl-nav-right .icon-right-small {
+    color: #000000;
+}
+
+.lock-ratio {
+    height: 240px;
+    width: auto;
+}

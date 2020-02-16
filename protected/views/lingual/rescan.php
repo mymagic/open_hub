@@ -1,0 +1,2 @@
+<h1><?php echo Yii::t('core', 'Rescan Languages Tags'); ?><a class="btn btn-default pull-right" href="<?php echo $this->createUrl('lingual/index') ?>"><?php echo Yii::t('core', 'Back') ?></a></h1>
+<iframe src="<?php echo $this->createUrl('language/default/generateMessage') ?>" class="full-width" frameBorder="0" height="400px"></iframe>

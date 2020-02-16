@@ -1,0 +1,124 @@
+swagger: '2.0'
+info:
+  description: Group of test APIs
+  version: "v1"
+  title: Test API
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /now:
+    get:
+      tags:
+      - public
+      description: |
+        Return current GMT timestamp
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /sum:
+    get:
+      tags:
+      - public
+      description: |
+        Test Sending GET Data with 2 input parameters, response will sum up these 2 input into number
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: query
+          name: num1
+          type: number
+          description: Number 1
+          required: true
+          default: 30
+        - in: query
+          name: num2
+          type: number
+          description: Number 2
+          required: true
+          default: 3
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /testPost:
+    post:
+      tags:
+      - public
+      description: |
+        Test Sending POST Data with 2 input parameters, response will concat these input into a string
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: var1
+          type: string
+          description: Variable 1
+          required: true
+          default: Hello
+        - in: formData
+          name: var2
+          type: string
+          description: Variable 2
+          required: true
+          default: World
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /secureTestPost:
+    post:
+      tags:
+      - public
+      description: |
+        Test Sending POST Data with 2 input parameters, response will concat these input into a string, required api key
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: var1
+          type: string
+          description: Variable 1
+          required: true
+          default: Hello
+        - in: formData
+          name: var2
+          type: string
+          description: Variable 2
+          required: true
+          default: World
+      produces:
+      - application/json
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header

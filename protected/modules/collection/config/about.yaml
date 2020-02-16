@@ -1,0 +1,9 @@
+code: "collection"
+version: "1.0"
+title: "Collection"
+oneliner: "Allows admin to group different items like organisations, individual, events, resources... under 1 page."
+lastUpdate: "2019-08-23"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

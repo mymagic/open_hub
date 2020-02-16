@@ -1,0 +1,111 @@
+swagger: '2.0'
+info:
+  description: User related APIs
+  version: "v1"
+  title: User
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getUserJwt:
+    post:
+      tags:
+      - public
+      description: Get user Json Web Token, valid for one hour only
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: username
+          type: string
+          format: email
+          description: Username in email format
+          required: true
+          x-example: exiang83@gmail.com
+      responses:
+        200:
+          description: OK
+  /getUserProfile:
+    post:
+      tags:
+      - public
+      description: Get user profile with Json Web Token
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: jwt
+          type: string
+          description: acquired it from user/getUserJwt
+          required: true
+      responses:
+        200:
+          description: OK
+  /requestUserDataDownload:
+    post:
+      tags:
+      - public
+      description: |
+        Create request to download user data with Json Web Token. The following data will be downloaded:
+        * user profile
+        * session
+        * role
+        * charge
+        * events joined
+        * form submission
+        * bookmarked services
+        * milestone
+        * organization
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: jwt
+          type: string
+          description: Please acquired it from user/getUserJwt
+          required: true
+        - in: formData
+          name: format
+          type: string
+          description: Output format, can be html (default) or json
+          required: true
+          default: html
+          x-example: html
+      responses:
+        200:
+          description: OK
+  /listUserDataDownload:
+    post:
+      tags:
+      - public
+      description: Get a list of available user data download of a specific user
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: jwt
+          type: string
+          description: Please acquired it from user/getUserJwt
+          required: true
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

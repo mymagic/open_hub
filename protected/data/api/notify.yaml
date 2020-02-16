@@ -1,0 +1,188 @@
+swagger: '2.0'
+info:
+  description: Notify is an uniform messaging system utilizing multiple channels (sms, email, db) to member, organisation, admin
+  version: "v1"
+  title: Notify
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /notifyX:
+    post:
+      tags:
+      - public
+      description: |
+        Send notification from system to a user or an organisation
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: userType
+          type: string
+          description: |
+            Receiver user type: 
+              * member
+              * organization
+              * admin
+          required: true
+          x-example: member
+        - in: formData
+          name: username
+          type: string
+          description: Receiver username or UUID code for Organization
+          required: true
+          x-example: exiang83@gmail.com
+        - in: formData
+          name: message
+          type: string
+          description: Message in plain text or json format, not more than 500 characters
+          required: true
+        - in: formData
+          name: title
+          type: string
+          description: Use as email title
+          required: false
+        - in: formData
+          name: content
+          type: string
+          description: Use as email content body, can be in HTML format
+          required: false
+        - in: formData
+          name: priority
+          type: number
+          description: 1-5, 1 is less important, 5 is very important
+          default: 3
+          required: false
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getNotifies:
+    post:
+      tags:
+      - public
+      description: |
+        Get list of notifies by user
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: userType
+          type: string
+          description: |
+            Receiver user type: 
+              * member
+              * organization
+              * admin
+          required: true
+          x-example: member
+        - in: formData
+          name: username
+          type: string
+          description: Receiver username or UUID code for Organization
+          required: true
+          x-example: exiang83@gmail.com
+        - in: formData
+          name: currentPage
+          type: number
+          description: Pagination page number
+          default: 0
+          required: false
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /sendEmailNotify:
+    post:
+      tags:
+      - internal
+      description: |
+        Send Email only notification
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: userType
+          type: string
+          description: |
+            Receiver user type: 
+              * member
+              * organization
+              * admin
+          required: true
+          x-example: member
+        - in: formData
+          name: username
+          type: string
+          description: Receiver username or UUID code for Organization
+          required: true
+          x-example: exiang83@gmail.com
+        - in: formData
+          name: title
+          type: string
+          description: Email title
+          required: true
+          x-example: sendEmailNotify test from...
+        - in: formData
+          name: content
+          type: string
+          description: Email content in HTML format
+          required: true
+          x-example: Hello <strong>World</strong>
+  /sendSmsNotify:
+    post:
+      tags:
+      - internal
+      description: |
+        Send SMS only notification to user. Only user with verified mobile number will get the SMS.
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: userType
+          type: string
+          description: |
+            Receiver user type: 
+              * member
+              * organization
+              * admin
+          required: true
+          x-example: member
+        - in: formData
+          name: username
+          type: string
+          description: Receiver username
+          required: true
+          x-example: exiang83@gmail.com
+        - in: formData
+          name: message
+          type: string
+          description: Email content in HTML format
+          required: true
+          x-example: SMS Message in plain text, not more than 500 characters
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

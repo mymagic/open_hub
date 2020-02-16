@@ -57,8 +57,8 @@ body{font-weight:300; height:auto;}
 }
 
 .container-fluid #main-content{margin:0;}
+#screen-site-error, #screen-site-warning, #screen-site-warning, #screen-site-notice{margin-top:6em;}
 .input-group-btn .btn{height:42px;}
-
 
 .bootstrap-select .btn-default:hover, .bootstrap-select .btn-default:focus, .bootstrap-select .btn-default:active, .bootstrap-select .btn-default.active, .bootstrap-select .open .dropdown-toggle.btn-default, .bootstrap-select .btn-default:active:focus, .bootstrap-select .btn-default:active:hover, .btn-default.active:hover, .bootstrap-select .btn-default.active:focus
 {

@@ -1,0 +1,8 @@
+[submodule "protected/yeebase"]
+	path = protected/yeebase
+	branch = master
+url=https://exiang-magic:magic123@gitlab.com/exiang/yee-base.git
+[submodule "public_html/themes/inspinia"]
+	path = public_html/themes/inspinia
+	branch = master
+url=https://exiang-magic:magic123@gitlab.com/exiang/yee-inspinia.git

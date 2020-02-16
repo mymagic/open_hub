@@ -1,0 +1,68 @@
+swagger: '2.0'
+info:
+  description: Currency and exchange related API
+  version: "v1"
+  title: Currency
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /convertCurrency:
+    post:
+      tags:
+      - public
+      summary: 
+      description: Convert an amount from one currency to another on a date. System will check with local database for the rate, if not found, will get from live api and cache to local database for future use. In return, you will get the currency rate.
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: amount
+        type: number
+        format: double
+        description: Amount of source currency.
+        required: true
+        x-example: '100.00'
+      - in: formData
+        name: fromCurrencyCode
+        type: string
+        description: Source currency code (3 digits).
+        required: true
+        x-example: 'MYR'
+      - in: formData
+        name: toCurrencyCode
+        type: string
+        description: Target currency code (3 digits).
+        required: true
+        x-example: 'SGD'
+      - in: formData
+        name: date
+        type: string
+        format: date
+        description: The date of of conversion happens.
+        required: true
+        x-example: '2018-08-30'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

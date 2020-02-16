@@ -1,0 +1,93 @@
+swagger: '2.0'
+info:
+  description: Activity Feed related APIs.
+  version: "v1"
+  title: ActivityFeed
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getUserActFeed:
+    post:
+      tags:
+      - public
+      summary: Get a user's activity feed
+      description: Return a list of user activity feed
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: jwt
+        type: string
+        description: Acquired it from getUserJwt
+        required: true
+      - in: formData
+        name: year
+        type: string
+        description: If not supply, current year will be use as default value
+        required: false
+        x-example: 2018
+      - in: formData
+        name: services
+        type: string
+        description: Multiple selection, separate service code by comma. If not supply, all activities will be use as default value
+        required: false
+        x-xample: mentor,event
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getSystemActFeed:
+    post:
+      tags:
+      - admin
+      summary: Get a system activity feed
+      description: Get system activity feed with a date range not more than 60 days. Returned data are such as event happening, new organization created, new request to join organization, resources changes, new user, mentorship session happening. Each data type are limited to max 30 records return.
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: dateStart
+        type: string
+        format: date
+        description: The starting date
+        required: true
+        x-example: 2018-01-01
+      - in: formData
+        name: dateEnd
+        type: string
+        format: date
+        description: The ending date. Must not more than 60 days from dateStart.
+        required: true
+        x-example: 2018-03-01
+      - in: formData
+        name: forceRefresh
+        type: integer
+        description: Default is 0. when set to 1, it will force this function to refresh data and ignore cached. The cache last for 15 min.
+        required: false
+        x-xample: 0
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

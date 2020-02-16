@@ -1,0 +1,9 @@
+code: "comment"
+version: "1.0"
+title: "Comment"
+oneliner: "Allow admin to add comment to common services like organization, individual, event and resources"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"
