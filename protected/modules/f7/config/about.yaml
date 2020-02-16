@@ -1,0 +1,9 @@
+code: "f7"
+version: "1.0"
+title: "Form 7"
+oneliner: "A module to allow custom forms to be easily created"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

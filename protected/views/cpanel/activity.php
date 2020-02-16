@@ -66,6 +66,10 @@ new Vue({
     name: 'timeline',
     mounted () {
         this . getTimeline();
+        let dt = new Date();
+        for (let i = dt.getFullYear(); i >= 2014 ; i-- ) {
+            this.years.push({id: i, label: i});
+        }
     },
     filters: {
         capitalize: function (value) {
@@ -76,32 +80,7 @@ new Vue({
     },
     data: () => ({
         year: '" . $years . "',
-        years: [
-            { 
-                id: 2019,
-                label: 2019
-            },
-            { 
-                id: 2018,
-                label: 2018
-            },
-            { 
-                id: 2017,
-                label: 2017
-            },
-            { 
-                id: 2016,
-                label: 2016
-            },
-            { 
-                id: 2015,
-                label: 2015
-            },
-            { 
-                id: 2014,
-                label: 2014
-            }
-        ],
+        years: [],
         service: null,
         services: " . CJSON::encode($serviceList) . ",
         loading: false,

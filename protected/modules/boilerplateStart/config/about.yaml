@@ -1,0 +1,9 @@
+code: "boilerplatStart"
+version: "1.0"
+title: "Boilerplate Starter"
+oneliner: "Serve as a template for new module to guide developer"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

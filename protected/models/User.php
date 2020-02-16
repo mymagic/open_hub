@@ -82,7 +82,8 @@ class User extends UserBase
 
             array('stat_reset_password_count, stat_login_count, stat_login_success_count, is_active, date_activated, date_added, date_modified', 'numerical', 'integerOnly' => true),
 
-            array('username, password', 'length', 'max' => 128),
+            array('username', 'length', 'max' => 128),
+            array('password', 'length', 'max' => 255),
             array('reset_password_key', 'length', 'max' => 32),
 
             array('username', 'required', 'on' => 'lostPassword'),
@@ -290,8 +291,8 @@ class User extends UserBase
     protected function beforeSave()
     {
         if (parent::beforeSave()) {
-            if (!empty($this->password) && !ysUtil::isSha1($this->password)) {
-                $this->password = sha1($this->password);
+            if (!empty($this->password) && !self::isHashedPassword($this->password)) {
+                $this->password = $this->hashPassword($this->password);
             }
 
             if (!empty($this->date_last_login)) {
@@ -468,10 +469,10 @@ class User extends UserBase
             'id' => $this->id,
             'username' => $this->username,
             'socialProvider' => $this->social_provider,
-            'socialIdentifier' => $this->social_identifier,
-            'jsonSocialParams' => $this->json_social_params,
-            'password' => $this->password,
-            'resetPasswordKey' => $this->reset_password_key,
+            //'socialIdentifier' => $this->social_identifier,
+            //'jsonSocialParams' => $this->json_social_params,
+            //'password' => $this->password,
+            //'resetPasswordKey' => $this->reset_password_key,
             'statResetPasswordCount' => $this->stat_reset_password_count,
             'statLoginCount' => $this->stat_login_count,
             'statLoginSuccessCount' => $this->stat_login_success_count,
@@ -499,4 +500,28 @@ class User extends UserBase
 
         return $return;
     }
+
+    protected function isHashedPassword($password)
+    {
+		if (strlen($password) == 60 && substr($password, 0, 4) == '$2y$') {
+			return true;
+        }
+
+		return false;
+    }
+
+    protected function hashPassword($password)
+    {
+        $salt = sprintf('%s.%s', $this->username, Yii::app()->params['saltSecret']);
+        $bcryptHashed = password_hash(hash_hmac("sha256", $password, $salt), PASSWORD_BCRYPT);
+
+		return $bcryptHashed;
+    }
+
+    public function matchPassword($userInputPassword)
+    {
+        $salt = sprintf('%s.%s', $this->username, Yii::app()->params['saltSecret']);
+		return password_verify(hash_hmac('sha256', $userInputPassword, $salt), $this->password);
+    }
+
 }

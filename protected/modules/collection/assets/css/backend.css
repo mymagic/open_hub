@@ -1,0 +1,9 @@
+#body-me-view #section-collection-list .thumbnail
+{
+    border:0;
+    cursor:pointer !important;
+}
+
+#collection-me-listing .fa-trash{
+    cursor:pointer !important;
+}

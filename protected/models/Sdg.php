@@ -57,6 +57,9 @@ class Sdg extends SdgBase
 	{
 		// custom code here
 		// ...
+		if (Yii::app()->neo4j->getStatus()) {
+			Neo4jSdg::model($this)->sync();
+		}
 
 		return parent::afterSave();
 	}

@@ -1,0 +1,230 @@
+swagger: '2.0'
+info:
+  description: Resources related API where we aim to cover all resources data in local ecosystem.
+  version: "v1"
+  title: Resource
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getResourceAllActive:
+    post:
+      tags:
+      - public
+      description: Get list of active resources with filter, result returned in pagination format.  Use it to search resource such as funding available, award, development agency from the ecosystem. Please note that these data are crowdsourced from MaGIC Central user and information may be out dated or lack of detail.
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: keyword
+        type: string
+        description: Search keyword. This will search across all resources title including the owner organisation name.
+        required: false
+        x-example: cradle
+      - in: formData
+        name: persona
+        type: string
+        description: Persona slug, please refer to resource/getResourcePersonas
+        required: false
+        x-example: student,startups
+      - in: formData
+        name: stage
+        type: string
+        description: Startup stage slug, please refer to resource/getResourceStartupStages
+        required: false
+        x-example: discovery,validation
+      - in: formData
+        name: cat
+        type: string
+        description: 'eg: other.talent-access, or other.* for all other typefor; please refer to resource/getResourceCategories'
+        required: false
+        x-example: fund.*
+      - in: formData
+        name: industry
+        type: string
+        description: Industry slug, please refer to resource/getResourceIndustries
+        required: false
+        x-example:
+      - in: formData
+        name: location
+        type: string
+        description: Geofocus slug, please refer to resource/getResourceGeoFocuses
+        required: false
+        x-example: ''
+      - in: formData
+        name: page
+        type: integer
+        description: Page number to show
+        default: 1
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceAllFeatured:
+    post:
+      tags:
+      - public
+      description: Get list of featured and active resources. Return top 100 order by Title in ascending, without pagination.
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResource:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a specific resource item detail
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: id
+        type: number
+        description: Resource id
+        required: true
+        x-example: 1770
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceBySlug:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a resource detail by slug
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: slug
+        type: string
+        description: Resource slug
+        required: true
+        x-example: 1337-innovation-consulting
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceIndustries:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of active industry use by resource service
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourcePersonas:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of active persona use by resource service
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceStartupStages:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of active startup stages use by resource service
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceCategories:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of active resource category use by resource service. This list is hierarchical with parent child node representing sub category.
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceGeoFocuses:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of active resource geo focuses use by resource service. This list is hierarchical with parent child node representing sub geographical focus. Please note that not all resources data are tagged properly, leave blank to search all.
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourceOrganizations:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get a list of organisations that has resources under them
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+  /getResourcesByOrganizationId:
+    post:
+      tags:
+      - public
+      summary: "" 
+      description: Get list of resources owned by an organisation
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: id
+        type: number
+        description: Organization ID
+        required: true
+        x-example: 187
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

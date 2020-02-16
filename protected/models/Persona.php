@@ -59,6 +59,9 @@ class Persona extends PersonaBase
 	{
 		// custom code here
 		// ...
+		if (Yii::app()->neo4j->getStatus()) {
+			Neo4jPersona::model($this)->sync();
+		}
 
 		return parent::afterSave();
 	}

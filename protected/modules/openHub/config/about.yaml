@@ -1,0 +1,9 @@
+code: "openHub"
+version: "1.0"
+title: "Open HUB"
+oneliner: "Open source HUB website"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

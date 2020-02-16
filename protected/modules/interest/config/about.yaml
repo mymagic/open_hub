@@ -1,0 +1,9 @@
+code: "interest"
+version: "1.0"
+title: "Interest"
+oneliner: "Manage members interest to provide recommendation"
+lastUpdate: "2019-18-12"
+developer:
+  author: "Rosaan Ramasamy"
+  organization: "MaGIC"
+  email: "rosaan@mymagic.my"

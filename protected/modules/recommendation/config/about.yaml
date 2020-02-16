@@ -1,0 +1,9 @@
+code: "recommendation"
+version: "1.0"
+title: "Recommendation"
+oneliner: "Frontend for recommendation on cpanel to display list of recommendation for members"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Rosaan Ramasamy"
+  organization: "MaGIC"
+  email: "rosaan@mymagic.my"

@@ -4,35 +4,18 @@
 <?php //Yii::app()->clientScript->registerScriptFile("//www.mymagic.my/universal-assets/css/bootstrap-social.css", CClientScript::POS_END);
 ?>
 <?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/mymagic.css'); ?>
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/vendor/magic/css/app.css'); ?>
 
-
-<?php Yii::app()->ClientScript->registerScriptFile(Yii::app()->baseUrl . '/vendor/magic/js/universal.js', CClientScript::POS_END); ?>
-<?php Yii::app()->ClientScript->registerScriptFile('//mymagic.my/universal-assets/uniheader-new.js', CClientScript::POS_END); ?>
-<?php Yii::app()->getClientScript()->registerScriptFile('//mymagic.my/universal-assets/unifooter.js', CClientScript::POS_END); ?>
+<?php Yii::app()->getClientScript()->registerCssFile('https://mymagic-central.s3-ap-southeast-1.amazonaws.com/universal-assets/dist/css/app.css'); ?>
+<?php Yii::app()->ClientScript->registerScriptFile('https://mymagic-central.s3-ap-southeast-1.amazonaws.com/universal-assets/dist/js/universal.js', CClientScript::POS_END); ?>
 
 <?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css'); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js'); ?>
 
 
-
 <link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/images/favicon.ico" type="image/x-icon" />
 
-<?php
-                                /*Yii::app()->clientScript->registerScript("uniheader", sprintf('$(function() {
-    _muh.config.selectedMenu1="academy";
-    _muh.config.disableLanguage=true;
-    _muh.config.disableAccount=false;
-    _muh.config.isLogin=%s;
-    _muh.config.currentUrl = "//hub.mymagic.my";
-    _muh.config.logoutUrl = "//hub.mymagic.my/site/logout";
-    _muh.render();
-});', Yii::app()->user->isGuest?'false':'true'), CClientScript::POS_END); */
-?>
 <?php $this->layoutParams['bodyClass'] .= ' body-stampede layout-frontend'; ?>
 <?php $this->layoutParams['hideFlashes'] = false; ?>
-<?php //$this->layoutParams['bodyClass'] .= ' push-body';
-?>
 
 <?php if (!$this->layoutParams['hideFlashes'] && Notice::hasFlashes()) : ?>
     <div id="layout-flashNotice">
@@ -91,27 +74,41 @@
 </style>
 
 <?php
-                                foreach ($this->menuSub as $key => $menu) {
-                                    $this->menuSub[$key]['url'] = CHtml::normalizeUrl($menu['url']);
-                                }
+foreach ($this->menuSub as $key => $menu) {
+    $this->menuSub[$key]['url'] = CHtml::normalizeUrl($menu['url']);
+}
 ?>
 
-<header id="universal-header">
-    <universal-header <?php echo ($this->layoutParams['enableGlobalSearchBox']) ? 'search-box' : '' ?> sub-menu='<?php echo CJSON::encode($this->menuSub) ?>' bucket-url="<?php echo StorageHelper::getUrl(''); ?>" central-url="<?php echo Yii::app()->baseUrl; ?>">
-        <template slot="breadcrumb">
-            <?php $this->renderBreadcrumb(true, true) ?>
-        </template>
-        <template slot="language">
+<header id="universal-header" class="sticky top-0 z-40">
+    <universal-header sub-menu='<?php echo CJSON::encode($this->menuSub) ?>' bucket-url="<?php echo Yii::app()->params->s3Url; ?>" central-url="<?php echo Yii::app()->baseUrl; ?>">
+        <template slot="language" class="mr-2">
             <?php if ($this->layoutParams['isShowMenuSubLanguageSelector']) : ?>
-                <div class="nav_pillars_lang" style="margin: 0">
+                <div class="flex items-center">
                     <?php if (count(Yii::app()->params['frontendLanguages']) > 1) : ?>
-                        <ul id="nav-selectLanguage" class="list-inline">
-                            <?php foreach (Yii::app()->params['frontendLanguages'] as $langCode => $langTitle) : ?>
-                                <li class="<?php echo (Yii::app()->language == $langCode) ? 'active' : ''; ?>">
-                                    <a href="<?php echo $this->createMultilanguageReturnUrl($langCode); ?>" title="<?php echo $langTitle; ?>"><img src="/images/languages/<?php echo strtolower($langCode); ?>.png" class="flag" alt="<?php echo $langTitle; ?>" width="16px" /></a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <?php $last_key = end(array_keys(Yii::app()->params['frontendLanguages'])); foreach (Yii::app()->params['frontendLanguages'] as $langCode => $langTitle) : ?>
+                            <div>
+                                <a href="<?php echo $this->createMultilanguageReturnUrl($langCode); ?>" title="<?php echo $langTitle; ?>" class="<?php echo (Yii::app()->language == $langCode) ? 'text-magic-nav font-black' : ''; ?> text-black hover:text-black focus:text-black sofia-pro" style="text-decoration: none"><?php echo $langTitle; ?></a>
+                            </div>
+                            <?php if ($langCode !== $last_key) : ?>
+                                <span class="mx-1"> | </span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </template>
+        <template slot="language-mobile" class="mr-2">
+            <?php if ($this->layoutParams['isShowMenuSubLanguageSelector']) : ?>
+                <div class="flex">
+                    <?php if (count(Yii::app()->params['frontendLanguages']) > 1) : ?>
+                        <?php $last_key = end(array_keys(Yii::app()->params['frontendLanguages'])); foreach (Yii::app()->params['frontendLanguages'] as $langCode => $langTitle) : ?>
+                            <div>
+                                <a href="<?php echo $this->createMultilanguageReturnUrl($langCode); ?>" title="<?php echo $langTitle; ?>" class="<?php echo (Yii::app()->language == $langCode) ? 'text-black font-black' : 'text-white'; ?> hover:text-white focus:text-white sofia-pro font-medium tracking-wider no-underline" style="text-decoration: none"><?php echo $langTitle; ?></a>
+                            </div>
+                            <?php if ($langCode !== $last_key) : ?>
+                                <span class="mx-1 text-white"> | </span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -119,6 +116,10 @@
     </universal-header>
 </header>
 
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KJ9387R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- container -->
 <div class="<?php echo $this->layoutParams['containerFluid'] ? 'container-fluid' : 'container'; ?>">
@@ -134,12 +135,14 @@
 <!-- /container -->
 
 <!-- universal footer -->
-<footer class="uni-footer"></footer>
+<footer id="universal-footer">
+    <universal-footer central-url="<?php echo Yii::app()->baseUrl; ?>"></universal-footer>
+</footer>
 <!-- /universal footer -->
 
 
-
 <?php if (Yii::app()->params['environment'] == 'production') : ?>
+    <?php /* ?>
     <script>
         (function(i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
@@ -167,6 +170,10 @@
         <?php if (!empty(Yii::app()->user->username)) : ?> ga('set', 'userId', '<?php echo Yii::app()->user->username; ?>');
         <?php endif; ?>
     </script>
+    <?php // */ ?>
+
+    <!-- Google Tag Manager -->
+    <!-- End Google Tag Manager -->
 <?php endif; ?>
 
 <?php if (Yii::app()->params['environment'] == 'production') : ?>
@@ -271,7 +278,7 @@
                 {
                     return h + (h.indexOf('?') != -1 ? "&utm_source=<?php echo $utm_source; ?>&utm_medium=<?php echo $utm_medium; ?>&utm_campaign=<?php echo $utm_campaign; ?>&utm_term=<?php echo $utm_term; ?>&utm_content=<?php echo $utm_content; ?>" : "?utm_source=<?php echo $utm_source; ?>&utm_medium=<?php echo $utm_medium; ?>&utm_campaign=<?php echo $utm_campaign; ?>&utm_term=<?php echo $utm_term; ?>&utm_content=<?php echo $utm_content; ?>");
                 }
-                
+
             });*/
         });
     });

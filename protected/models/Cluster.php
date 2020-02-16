@@ -34,4 +34,16 @@ class Cluster extends ClusterBase
 			
 		return $return;
 	}
+
+	protected function afterSave()
+	{
+		// custom code here
+		// ...
+
+		if(Yii::app()->neo4j->getStatus()) {
+			Neo4jCluster::model($this)->sync();
+		}
+
+		return parent::afterSave();
+	}
 }

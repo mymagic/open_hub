@@ -1,19 +1,20 @@
 <?php
+
 /**
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the BSD 3-Clause License
-* that is bundled with this package in the file LICENSE.
-* It is also available through the world-wide-web at this URL:
-* https://opensource.org/licenses/BSD-3-Clause
-*
-*
-* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
-* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
-* @license https://opensource.org/licenses/BSD-3-Clause
-*/
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the BSD 3-Clause License
+ * that is bundled with this package in the file LICENSE.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ *
+ * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
+ * @link https://github.com/mymagic/open_hub
+ * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
+ * @license https://opensource.org/licenses/BSD-3-Clause
+ */
 
 
 /**
@@ -296,11 +297,24 @@ class Controller extends BaseController
     }
 
     function beforeAction($action)
-    {
-        if (Yii::app()->getModule('interest') && !Yii::app()->user->isGuest) {
+    {       
+        if (in_array($_SERVER['HTTP_ORIGIN'], Yii::app()->params->allowedDomains)) {
+            header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+            header('Access-Control-Allow-Credentials: true');
+        }
+        
+        if (
+            Yii::app()->getModule('interest')
+            && !Yii::app()->user->isGuest
+            && Yii::app()->db->schema->getTable('interest', true)
+            && Yii::app()->db->schema->getTable('interest_user2sdg', true)
+            && Yii::app()->db->schema->getTable('interest_user2cluster', true)
+            && Yii::app()->db->schema->getTable('interest_user2startup_stage', true)
+        ) {
             if (empty(Interest::model()->find('user_id=:userId', array(':userId' => Yii::app()->user->id)))) {
                 if (
                     !($action->controller->getId() === 'site' && $action->getId() === 'error') &&
+                    !($action->controller->getId() === 'site' && $action->getId() === 'logout') &&
                     !($action->controller->getId() === 'welcome' && $action->getId() === 'index') &&
                     !($action->controller->getId() === 'api' && $action->getId() === 'member') &&
                     !($action->controller->getId() === 'welcome' && $action->getId() === 'skip') &&

@@ -235,6 +235,7 @@ class BackendController extends Controller
 		if (Yii::app()->user->isGuest) {
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
+		
 		// magic connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
@@ -249,7 +250,7 @@ class BackendController extends Controller
 				if ($modelToSave === null) {
 					throw new CHttpException(404, 'The requested user does not exist.');
 				}
-				if (sha1($model->opassword) == $modelToSave->user->password) {
+				if ($modelToSave->user->matchPassword($model->opassword)) {
 					$modelToSave->user->password = $model->cpassword;
 					if ($modelToSave->user->save(false)) {
 						Notice::flash(Yii::t('notice', 'Your new password is updated successfully.'), Notice_SUCCESS);

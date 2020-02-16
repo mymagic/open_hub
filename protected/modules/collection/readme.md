@@ -1,0 +1,1 @@
+Collection module allows admin to group different items like organisations, individual, events, resources... under 1 page.

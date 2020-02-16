@@ -59,6 +59,9 @@ class StartupStage extends StartupStageBase
 	{
 		// custom code here
 		// ...
+		if (Yii::app()->neo4j->getStatus()) {
+			Neo4jStartupStage::model($this)->sync();
+		}
 
 		return parent::afterSave();
 	}

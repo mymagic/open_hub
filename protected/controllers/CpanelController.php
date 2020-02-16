@@ -158,7 +158,7 @@ class CpanelController extends Controller
 		$model = Individual::getIndividualByEmail(Yii::app()->user->username);
 
 		if ($model === null) {
-			$account = $this->magicConnect->getUser($_COOKIE['x-token-access']);
+			$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 			$gender = null;
 			if ($account->gender === 'M') {
 				$gender = 'male';
@@ -548,7 +548,8 @@ class CpanelController extends Controller
 			try {
 				$listId = Yii::app()->params['mailchimpLists']['magicNewsletter'];
 				$result = HubMailchimp::unsubscribeMailchimpList($email, $listId);
-			} catch (Exception $e) { }
+			} catch (Exception $e) {
+			}
 
 			Notice::flash(Yii::t('notice', "User $email is successfully deactivated."), Notice_SUCCESS);
 
@@ -617,7 +618,8 @@ class CpanelController extends Controller
 		try {
 			if (!empty($id) && !empty($programId))
 				HubFuturelab::cancelBooking($id, $programId);
-		} catch (Exception $e) { }
+		} catch (Exception $e) {
+		}
 		$this->redirect('services');
 	}
 

@@ -1,7 +1,3 @@
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/vendor/magic/css/app.css'); ?>
-<?php Yii::app()->ClientScript->registerScriptFile(Yii::app()->baseUrl . '/vendor/magic/js/universal.js', CClientScript::POS_END); ?>
-
-
 <?php $this->beginContent('//layouts/frontend'); ?>
 
 <div class="container">

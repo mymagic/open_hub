@@ -76,6 +76,9 @@ class Resource extends ResourceBase
 	{
 		// custom code here
 		// ...
+		if (Yii::app()->neo4j->getStatus()) {
+			Neo4jResource::model($this)->sync();
+		}
 
 		return parent::afterSave();
 	}

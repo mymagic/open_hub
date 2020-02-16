@@ -31,6 +31,11 @@
         "exiang/eventbrite-sdk-php": "^1.0",
         "composer/semver": "^1.5",
         "simple-html-dom/simple-html-dom": "^1.5",
-        "aws/aws-sdk-php": "^3.121"
+        "aws/aws-sdk-php": "^3.121",
+        "graphaware/neo4j-php-client": "^4.0",
+        "graphaware/neo4j-php-ogm": "@rc"
+    },
+    "require-dev": {
+        "nette/php-generator": "^3.3"
     }
 }

@@ -1,0 +1,9 @@
+code: "eventbrite"
+version: "1.0"
+title: "Eventbrite"
+oneliner: "Integration with Eventbrite services"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

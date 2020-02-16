@@ -49,6 +49,52 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionResetUserPassword($username, $password)
+	{
+		$username = rawurldecode($username);
+		$user = User::username2obj($username);
+		$user->password = $password;
+		$user->save();
+
+		echo sprintf("reset user '%s' to %s -> %s", $username, $password, $user->password);
+	}
+
+	public function actionMatchUserPassword($username, $password)
+	{
+		$username = rawurldecode($username);
+		$user = User::username2obj($username);
+		echo sprintf('Match: %s', $user->matchPassword($password));
+
+	}
+
+	public function actionCreateUserPassword($username, $password)
+	{
+		$username = rawurldecode($username);
+		$user = new User;
+		$user->username = $username;
+		$user->password = $password;
+		$user->signup_type = 'admin';
+		$user->signup_ip = Yii::app()->request->userHostAddress;
+		$user->is_active = 1;
+		$user->save();
+
+		echo $user->username;
+	}
+
+	public function actionPasswordHash()
+	{
+		$password = '123456';
+		$salt = sprintf('%s.%s', 'exiang83@yahoo.com', Yii::app()->params['saltSecret']);
+
+		$sha1 = sha1($password);
+		echo sprintf('SHA1: %s<br>', $sha1);
+		$bcryptHashed = password_hash(hash_hmac("sha256", $password, $salt), PASSWORD_BCRYPT);
+		echo sprintf('BCRYPT HASHED: %s<br>', $bcryptHashed);
+
+		echo sprintf('Match: %s', password_verify(hash_hmac('sha256', $password, $salt), $bcryptHashed));
+
+	}
+
 	// attach event to activeRecord model after saved
 	public function actionJunkCreatedHook()
 	{

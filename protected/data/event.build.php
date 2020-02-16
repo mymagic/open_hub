@@ -67,5 +67,10 @@ return array(
 		'backend'=>array(
 			'tagTable'=>'tag', 'tagBindingTable'=>'tag2event', 'modelTableFk'=>'event_id', 'tagTablePk'=>'id', 'tagTableName'=>'name', 'tagBindingTableTagId'=>'tag_id', 'cacheID'=>'cacheTag2Event'),
 	),
-	
+	'neo4j' => array(
+		'attributes' => array(
+			'id' => 'string',
+			'title' => 'string'
+		)
+	)
 ); 

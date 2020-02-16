@@ -123,7 +123,7 @@ class ProfileController extends Controller
 			{
 				$modelToSave = $this->loadModelByUserId(Yii::app()->user->id);
 				
-				if(sha1($model->opassword) == $modelToSave->user->password)
+				if($modelToSave->user->matchPassword($model->opassword))
 				{
 					$modelToSave->user->password = $model->cpassword;
 					if($modelToSave->user->save(false))

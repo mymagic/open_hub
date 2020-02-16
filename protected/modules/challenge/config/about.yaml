@@ -1,0 +1,12 @@
+code: "challenge"
+version: "1.0"
+title: "Innovation Challenge"
+oneliner: "Innovation Challenge, allow user to post challenge and solve by others"
+lastUpdate: "2019-08-12"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"
+dependency:
+  - module: 'f7'
+    version: '1.0'

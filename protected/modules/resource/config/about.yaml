@@ -1,0 +1,9 @@
+code: "resource"
+version: "1.0"
+title: "Resource Directory"
+oneliner: "Module for ecosystem resources directory"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

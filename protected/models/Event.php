@@ -64,7 +64,10 @@ class Event extends EventBase
     {
         // custom code here
         // ...
-
+        if(Yii::app()->neo4j->getStatus()) {
+            Neo4jEvent::model($this)->sync();
+		}
+       
         return parent::afterSave();
     }
 

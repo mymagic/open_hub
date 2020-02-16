@@ -59,6 +59,10 @@ class Industry extends IndustryBase
 		// custom code here
 		// ...
 
+		if (Yii::app()->neo4j->getStatus()) {
+			Neo4jIndustry::model($this)->sync();
+		}
+		
 		return parent::afterSave();
 	}
 

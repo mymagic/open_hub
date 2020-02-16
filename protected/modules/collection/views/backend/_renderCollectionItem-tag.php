@@ -1,0 +1,1 @@
+<h3><?php echo $model->name; ?></h3>
