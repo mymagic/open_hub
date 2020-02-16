@@ -1,0 +1,9 @@
+code: "journey"
+version: "1.0"
+title: "Journey"
+oneliner: "Provide functions to search and track startup & individual activities recorded in this system"
+lastUpdate: "2019-08-01"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"
