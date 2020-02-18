@@ -1,0 +1,3 @@
+[submodule "protected/yee-base"]
+	path = protected/yee-base
+	url = https://exiang-magic:magic123@gitlab.com/exiang/yee-base.git
