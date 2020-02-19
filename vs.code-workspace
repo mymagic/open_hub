@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../open_hub"
+		},
+		{
+			"path": "/Users/yeesiang/docker/magic_hub_docker/magic_hub_modules"
 		}
 	],
 	"settings": {
