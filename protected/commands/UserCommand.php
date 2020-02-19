@@ -26,23 +26,21 @@ class UserCommand extends ConsoleCommand
 		echo "\n";
 	}
 
-	// 1:55 start ??:?? end for x records 
-	public function actionForceResetUserPassword($offset=0)
+	// about 30 min to process 20k records
+	public function actionForceResetUserPassword($offset = 0)
 	{
 		$count = 0;
 		$criteria = new CDbCriteria;
 		$criteria->offset = $offset;
 		$users = User::model()->findAll($criteria);
 
-		foreach($users as $user)
-		{
+		foreach ($users as $user) {
 			$newPassword = ysUtil::generateRandomPassword();
 			$user->password = $newPassword;
-			if($user->save()){
+			if ($user->save()) {
 				echo sprintf("reset user #%s - '%s' password to '%s' (after hashed: %s)\n", $user->id, $user->username, $newPassword, $user->password);
 				$count++;
 			}
-
 		}
 
 		echo sprintf("Successfully processed %s users password reset\n", $count);
