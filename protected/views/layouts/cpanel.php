@@ -1,4 +1,4 @@
-<?php $this->beginContent('//layouts/frontend'); ?>
+<?php $this->beginContent('layouts.frontend'); ?>
 
 <div class="container">
     <?php if ($this->cpanelMenuInterface === 'cpanelNavCompanyInformation') {  ?>

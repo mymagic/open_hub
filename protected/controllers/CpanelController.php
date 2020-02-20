@@ -58,7 +58,7 @@ class CpanelController extends Controller
 	public function init()
 	{
 		parent::init();
-		$this->layout = 'cpanel';
+		$this->layout = 'layouts.cpanel';
 		$this->pageTitle = 'Activity Feed';
 		$this->cpanelMenuInterface = 'cpanelNavDashboard';
 		$this->activeMenuCpanel = 'activity';
@@ -149,7 +149,6 @@ class CpanelController extends Controller
 
 	public function actionProfile()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 		$this->pageTitle = 'Profile Settings';
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
@@ -412,7 +411,6 @@ class CpanelController extends Controller
 
 	public function actionDownload()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 		$this->pageTitle = 'Download Account Information';
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
@@ -458,7 +456,6 @@ class CpanelController extends Controller
 
 	public function actionDeleteUserAccount()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 		$this->pageTitle = 'Deactivate Account';
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
@@ -470,8 +467,6 @@ class CpanelController extends Controller
 
 	public function actionTerminateAccount()
 	{
-
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 		$this->pageTitle = 'Deactivate Account';
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
@@ -567,7 +562,6 @@ class CpanelController extends Controller
 
 	public function actionNotification()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 		$this->pageTitle = 'Notification Settings';
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
