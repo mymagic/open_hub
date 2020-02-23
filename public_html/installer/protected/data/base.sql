@@ -38,6 +38,51 @@ CREATE TABLE IF NOT EXISTS `admin` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `challenge`
+--
+
+CREATE TABLE IF NOT EXISTS `challenge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_organization_id` int(11) NOT NULL,
+  `creator_user_id` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `text_short_description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `html_content` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_cover` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_header` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url_video` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url_application_form` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `html_deliverable` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `html_criteria` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `prize_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `html_prize_detail` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_open` int(11) DEFAULT NULL,
+  `date_close` int(11) DEFAULT NULL,
+  `ordering` float DEFAULT NULL,
+  `text_remark` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `json_extra` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('new','pending','processing','reject','approved','completed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'new',
+  `timezone` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_publish` tinyint(1) NOT NULL DEFAULT 0,
+  `is_highlight` tinyint(1) NOT NULL DEFAULT 0,
+  `process_by` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_submit` int(11) DEFAULT NULL,
+  `date_process` int(11) DEFAULT NULL,
+  `date_added` int(11) DEFAULT NULL,
+  `date_modified` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `process_by` (`process_by`),
+  KEY `creator_user_id` (`creator_user_id`),
+  KEY `is_active` (`is_active`),
+  KEY `is_publish` (`is_publish`),
+  KEY `is_highlight` (`is_highlight`),
+  KEY `fk_challenge-owner_organization_id` (`owner_organization_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=17 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `charge`
 --
 
@@ -7804,6 +7849,15 @@ ALTER TABLE `admin`
 --
 ALTER TABLE `city`
   ADD CONSTRAINT `city_ibfk_1` FOREIGN KEY (`state_code`) REFERENCES `state` (`code`);
+
+--
+-- Constraints for table `challenge`
+--
+ALTER TABLE `challenge`
+  ADD CONSTRAINT `fk_challenge-creator_user_id` FOREIGN KEY (`creator_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_challenge-owner_organization_id` FOREIGN KEY (`owner_organization_id`) REFERENCES `organization` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_challenge-process_by` FOREIGN KEY (`process_by`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 --
 -- Constraints for table `collection`
