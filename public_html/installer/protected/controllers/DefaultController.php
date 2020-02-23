@@ -1,7 +1,6 @@
 <?php
 
 use Symfony\Component\Yaml\Yaml;
-use Exiang\YsUtil;
 
 class DefaultController extends CController
 {
