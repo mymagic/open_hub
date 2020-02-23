@@ -1,7 +1,5 @@
 /.env
 /protected/.env
-/protected/config/path.php
-/protected/config/domain.php
 protected/modules/*/config/console.php
 protected/modules/*/config/main.php
 /protected/runtime/
@@ -17,3 +15,4 @@ protected/modules/*/config/main.php
 php_errors.log
 .DS_Store
 laradock
+

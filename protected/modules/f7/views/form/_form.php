@@ -71,7 +71,7 @@
 				<?php echo $form->bsError($model, 'json_structure'); ?>
 			<?php } else { ?>
 				<br>
-				<json-form-structure :json='<?php echo ($model->json_structure) ? $model->json_structure : 'null' ?>'></json-form-structure>
+				<json-form-structure json='<?php echo ($model->json_structure) ? htmlentities(json_encode($model->json_structure, true), ENT_QUOTES, 'UTF-8') : 'null' ?>'></json-form-structure>
 			<?php } ?>
 		</div>
 	</div>
@@ -165,19 +165,20 @@
 </div><!-- form -->
 
 
+<?php 
+// Yii::app()->clientScript->registerScript('f7-form-_form', "
+// $('#Form_json_structure').bind('change paste', function(e){
+// 	var str = $(this).val();
+// 	var result = false;
+// 	try {
+// 		JSON.parse(str);
+// 		result = true;
+//     } catch (e) {
+// 		$('#btn-submit').addClass('disabled').attr('disabled', true);
+// 		return;
+// 	}
 
-<?php Yii::app()->clientScript->registerScript('f7-form-_form', "
-$('#Form_json_structure').bind('change paste', function(e){
-	var str = $(this).val();
-	var result = false;
-	try {
-		JSON.parse(str);
-		result = true;
-    } catch (e) {
-		$('#btn-submit').addClass('disabled').attr('disabled', true);
-		return;
-	}
-
-	if(result) $('#btn-submit').removeClass('disabled').removeAttr('disabled', true);
-} );
-"); ?>
+// 	if(result) $('#btn-submit').removeClass('disabled').removeAttr('disabled', true);
+// } );
+// "); 
+?>

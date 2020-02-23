@@ -74,7 +74,7 @@
         <circle cx="10" cy="110" r="8" />
         <rect x="25" y="105" rx="5" ry="5" width="220" height="10" />
       </content-loader>
-      <codemirror :options="cmOptions" v-if="viewJson" v-model="stringCode"></codemirror>
+      <codemirror :options="cmOptions" v-if="viewJson" v-model="formStructureManual"></codemirror>
       <div v-if="!viewJson">
         <draggable
           class="list-group"
@@ -285,14 +285,21 @@ export default {
         this.renderJson();
       },
       deep: true
+    },
+    formStructureManual: {
+      handler() {
+        this.formStructure = JSON.parse(this.formStructureManual);
+      },
+      deep: true
     }
   },
   data() {
     return {
       formStructure: {
         form_type: "vertical",
-        builder: "vue",
+        builder: "vue"
       },
+      formStructureManual: {},
       jscript: [],
       list: [],
       drawer: {
@@ -555,20 +562,12 @@ export default {
         },
         lineNumbers: true,
         line: true,
-        theme: "monokai",
-        readOnly: 'nocursor'
+        theme: "monokai"
+        // readOnly: "nocursor"
       }
     };
   },
   computed: {
-    stringCode: {
-      get: function() {
-        return JSON.stringify(this.formStructure, null, 2);
-      },
-      set: function(newValue) {
-        this.formStructure = JSON.parse(JSON.stringify(newValue));
-      }
-    },
     dragOptions() {
       return {
         animation: 200,
@@ -581,16 +580,26 @@ export default {
   methods: {
     toogle() {
       this.viewJson = !this.viewJson;
+      if (this.viewJson) {
+        this.formStructureManual = JSON.stringify(this.formStructure, null, 2);
+      }
+      if (!this.viewJson) {
+        this.jscript = [];
+        this.list = [];
+        this.reapplyBuilder();
+      }
     },
     renderJson: async function() {
       let me = this;
       this.formStructure = {
         form_type: "vertical",
-        builder: "vue",
+        builder: "vue"
       };
       await this.list.forEach((data, key) => {
-        data.sort = key;
-        me.formStructure[key] = JSON.parse(JSON.stringify(data));
+        if (data !== "vue") {
+          data.sort = key;
+          me.formStructure[key] = JSON.parse(JSON.stringify(data));
+        }
       });
       await this.renderJsonJscript();
     },
@@ -675,10 +684,14 @@ export default {
       }
       return str;
     },
+    htmlDecode(input) {
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
+    },
     formLoad: function() {
       if (this.json) {
-        this.formStructure = JSON.parse(JSON.stringify(this.json));
-        let structure = JSON.parse(JSON.stringify(this.json));
+        this.formStructure = JSON.parse(JSON.parse(this.htmlDecode(this.json)));
+        let structure = JSON.parse(JSON.parse(this.htmlDecode(this.json)));
         if (structure["jscript"]) {
           this.jscript = JSON.parse(JSON.stringify(structure["jscript"]));
         }
@@ -690,6 +703,19 @@ export default {
           me.list.push(JSON.parse(JSON.stringify(structure[key])));
         });
       }
+    },
+    reapplyBuilder: function() {
+      let structure = JSON.parse(this.formStructureManual);
+      if (structure["jscript"]) {
+        this.jscript = JSON.parse(JSON.stringify(structure["jscript"]));
+      }
+      delete structure.jscript;
+      delete structure.form_type;
+      let me = this;
+
+      Object.keys(structure).forEach(key => {
+        me.list.push(JSON.parse(JSON.stringify(structure[key])));
+      });
     }
   }
 };

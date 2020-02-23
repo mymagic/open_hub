@@ -6,13 +6,14 @@ main:
             title: "General"
             items:
                 -   var: name
+                    varInstaller: appName
                     file: main.php
                     env: HUB_NAME
                     title: Name your application
                     example: Open Hub (Staging)
                     datatype: string
-                    showInInstaller: true
                 -   var: params.environment
+                    varInstaller: environment
                     file: params.php
                     env: ENVIRONMENT
                     title: Installation Environment
@@ -21,7 +22,6 @@ main:
                     datatype: enum
                     datatype_value: "development|staging|production"
                     default: production
-                    showInInstaller: true
                     getter: "Yii::app()->params['environment'];"
                 -   var: theme
                     file: main.php
@@ -31,7 +31,6 @@ main:
                     datatype: enum
                     datatype_value: "inspinia|bootstrap3"
                     default: inspinia
-                    showInInstaller: false
                     getter: 'Yii::app()->theme->name;'
                 -   var: params.maintenance
                     file: params.php
@@ -41,7 +40,6 @@ main:
                     example: false
                     default: false
                     datatype: boolean
-                    showInInstaller: false
                     getter: "Yii::app()->params['maintenance'];"
                 -   var: params.dev
                     file: params.php
@@ -51,9 +49,9 @@ main:
                     example: false
                     default: false
                     datatype: boolean
-                    showInInstaller: false
                     getter: "Yii::app()->params['dev'];"
                 -   var: params.masterDomain
+                    varInstaller: domainName
                     file: params.php
                     env: MASTER_DOMAIN
                     title: Master Domain
@@ -61,7 +59,6 @@ main:
                     example: central.mymagic.my
                     default: openhubd.mymagic.my
                     datatype: string
-                    showInInstaller: false
                     getter: "Yii::app()->params['masterDomain'];"
                 -   var: params.masterUrl
                     file: params.php
@@ -71,7 +68,6 @@ main:
                     example: //central.mymagic.my
                     default: //openhubd.mymagic.my
                     datatype: string
-                    showInInstaller: false
                     getter: "Yii::app()->params['masterUrl'];"
                 -   var: params.baseDomain
                     file: params.php
@@ -81,7 +77,6 @@ main:
                     example: central1.mymagic.my
                     default: openhubd1.mymagic.my
                     datatype: string
-                    showInInstaller: false
                     getter: "Yii::app()->params['baseDomain'];"
                 -   var: params.baseUrl
                     file: params.php
@@ -91,7 +86,6 @@ main:
                     example: //central1.mymagic.my
                     default: //openhubd1.mymagic.my
                     datatype: string
-                    showInInstaller: false
                     getter: "Yii::app()->params['baseUrl'];"
         -   key: i18n
             title: "Internationalization"
@@ -104,7 +98,6 @@ main:
                     example: en
                     default: en
                     datatype: string
-                    showInInstaller: true
                 -   var: params.languages
                     file: params.php
                     env: LANGUAGES
@@ -114,7 +107,6 @@ main:
                     default:
                     datatype: string
                     datatype_value:
-                    showInInstaller: true
                     getter: "urldecode(http_build_query(Yii::app()->params['languages'], '', ';'));"
                 -   var: params.frontendLanguages
                     file: params.php
@@ -125,7 +117,6 @@ main:
                     default:
                     datatype: string
                     datatype_value:
-                    showInInstaller: true
                     getter: "urldecode(http_build_query(Yii::app()->params['frontendLanguages'], '', ';'));"
                 -   var: params.backendLanguages
                     file: params.php
@@ -136,7 +127,6 @@ main:
                     default:
                     datatype: string
                     datatype_value:
-                    showInInstaller: true
                     getter: "urldecode(http_build_query(Yii::app()->params['backendLanguages'], '', ';'));"
                 -   var: params.autoLanguageLink
                     file: params.php
@@ -147,7 +137,6 @@ main:
                     default: false
                     datatype: boolean
                     datatype_value:
-                    showInInstaller: false
                     getter: "Yii::app()->params['autoLanguageLink'];"
                 -   var: currency
                     file: params.php
@@ -157,7 +146,6 @@ main:
                     example: MYR
                     default: MYR
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['currency'];"
                 -   var: sourceCurrency
                     file: params.php
@@ -167,12 +155,12 @@ main:
                     example: USD
                     default: USD
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['sourceCurrency'];"
         -   key: database
             title: "Database"
             items:
                 -   var: components.db.host
+                    varInstaller: dbHost
                     file: main.php
                     env: DB_HOST
                     title: Database Host
@@ -181,9 +169,9 @@ main:
                     default: localhost
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "YeeBase::parseStrSelect(Yii::app()->components['db']->connectionString, 'mysql:host');"
                 -   var: components.db.name
+                    varInstaller: dbName
                     file: main.php
                     env: DB_DATABASE
                     title: Database Name
@@ -192,9 +180,9 @@ main:
                     default: default
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "YeeBase::parseStrSelect(Yii::app()->components['db']->connectionString, 'dbname');"
                 -   var: components.db.port
+                    varInstaller: dbPort
                     file: main.php
                     env: DB_PORT
                     title: Database Port
@@ -203,20 +191,20 @@ main:
                     default: 3306
                     datatype:
                     datatype_value:
-                    showInInstaller:
                     getter: "YeeBase::parseStrSelect(Yii::app()->components['db']->connectionString, 'port');"
                 -   var: components.db.username
+                    varInstaller: dbUsername
                     file: main.php
                     env: DB_USERNAME
                     title: Database Username
                     hint: 
                     example: user1
                     default: default
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->components['db']->username;"
                 -   var: components.db.password
+                    varInstaller: dbPassword
                     file: main.php
                     env: DB_PASSWORD
                     title: Database Password
@@ -225,114 +213,195 @@ main:
                     default: secret
                     datatype: password
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->components['db']->password"
+        -   key: neo4j
+            title: "Neo4J"
+            items:
+                -   var: components.neo4j.enable
+                    varInstaller: neo4jEnabled
+                    file: main.php
+                    env: NEO4J_ENABLE
+                    title: Enable Neo4j
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: boolean
+                    getter: "Yii::app()->neo4j->enable;"
+                -   var: components.neo4j.port
+                    varInstaller: neo4jPort
+                    file: main.php
+                    env: NEO4J_PORT
+                    title: Neo4j Port
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->neo4j->neoConnectionString;"
+                -   var: components.neo4j.protocol
+                    varInstaller: neo4jProtocol
+                    file: main.php
+                    env: NEO4J_PROTOCOL
+                    title: Neo4j Protocol
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->neo4j->neoConnectionString;"
+                -   var: components.neo4j.host
+                    varInstaller: neo4jHost
+                    file: main.php
+                    env: NEO4J_HOST
+                    title: Neo4j Host
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->neo4j->neoConnectionString;"
+                -   var: components.neo4j.username
+                    varInstaller: neo4jUsername
+                    file: main.php
+                    env: NEO4J_USERNAME
+                    title: Neo4j Username
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->neo4j->neoConnectionString;"
+                -   var: components.neo4j.password
+                    varInstaller: neo4jPassword
+                    file: main.php
+                    env: NEO4J_PASSWORD
+                    title: Neo4J Password
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->neo4j->neoConnectionString;"
         -   key: storage
             title: "File Storage"
             items:
                 -   var: params.storageMode
                     file: 
-                    env: 
+                    env: STORAGE_MODE
                     title: File Storage Mode
                     hint: 
                     example: 
                     default: s3
                     datatype: enum
                     datatype_value: local|s3
-                    showInInstaller:
                     getter: "Yii::app()->params['storageMode'];"
                 -   var: params.thumbMode
                     file: 
-                    env: 
+                    env: THUMB_MODE
                     title: Thumbnail generation mode
                     hint: To pre generate (recommended) thumbnail on all user uploaded images or generate them on the fly (live)
                     example: 
                     default: pre
                     datatype: enum
                     datatype_value: live|pre
-                    showInInstaller:
                     getter: "Yii::app()->params['thumbMode'];"
                 -   var: params.s3Region
+                    varInstaller: s3Region
                     file: 
-                    env: 
+                    env: S3_REGION
                     title: S3 Bucket Region
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3Region'];"
+                -   var: components.s3.aKey
+                    varInstaller: s3AccessKey
+                    file: main.php
+                    env: S3_ACCESS_KEY
+                    title: S3 Access Key
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    datatype_value:
+                    getter: "Yii::app()->s3->aKey;"
+                -   var: pcomponents.s3.sKey
+                    varInstaller: s3SecretKey
+                    file: main.php
+                    env: S3_SECRET_KEY
+                    title: S3 Secret Key
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    datatype_value:
+                    getter: "Yii::app()->s3->sKey;"
                 -   var: params.s3Version
                     file: 
-                    env: 
+                    env: S3_VERSION
                     title: S3 Bucket Version
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3Version'];"
                 -   var: params.s3Url
+                    varInstaller: s3PublicBucketUrl
                     file: 
-                    env: 
+                    env: S3_URL
                     title: S3 Bucket URL
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: url
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3Url'];"
                 -   var: params.s3Bucket
+                    varInstaller: s3PublicBucketName
                     file: 
-                    env: 
+                    env: S3_BUCKET
                     title: S3 Bucket Name
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3Bucket'];"
                 -   var: params.s3UrlSecure
+                    varInstaller: s3SecureBucketUrl
                     file: 
-                    env: 
+                    env: S3_URL_SECURE
                     title: Secure S3 Bucket URL
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: url
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3UrlSecure'];"
                 -   var: params.s3BucketSecure
+                    varInstaller: s3SecureBucketName
                     file: 
-                    env: 
+                    env: S3_BUCKET_SECURE
                     title: Secure S3 Bucket Name
                     hint: 
                     example: 
                     default: 
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3BucketSecure'];"
                 -   var: params.s3UrlSecureExpiryTime
                     file: 
-                    env: 
+                    env: S3_URL_SECURE_EXPIRY_TIME
                     title: Secure S3 URL Expired Time 
                     hint: 
                     example: +3 minutes
                     default: 
-                    datatype:
+                    datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['s3UrlSecureExpiryTime'];"
         -   key: cache
             title: "Cache"
             items:
                 -   var: params.cache
+                    varInstaller: cacheEnabled
                     file: params.php
                     env: CACHE
                     title: Enable Cache
@@ -340,9 +409,9 @@ main:
                     example: true
                     default: true
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['cache'];"
                 -   var: components.cache.class
+                    varInstaller: cacheDriver
                     env: CACHE_DRIVER
                     title: Cache Driver
                     hint: CFileCache will use your local web server storage. CRedisCache use a dedicated cache server (highly recommended).
@@ -350,25 +419,24 @@ main:
                     default: CFileCache
                     datatype: enum
                     datatype_value: "CFileCache|CRedisCache"
-                    showInInstaller: true
                     getter: "get_class(Yii::app()->components['cache']);"
                 -   var: components.cache.hostname
+                    varInstaller: cacheHostname
                     env: CACHE_HOSTNAME
                     title: REDIS Server Host
                     hint: Required if using Redis as cache driver
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->components['cache']['hostname'];"
                 -   var: components.cache.port
+                    varInstaller: cachePort
                     env: CACHE_PORT
                     title: REDIS Server Port
                     hint: Required if using Redis as cache driver
                     example: 6379
                     default: 6379
                     datatype: integer
-                    showInInstaller: true
                     getter: "Yii::app()->components['cache']['port'];"
         -   key: api
             title: "API"
@@ -380,7 +448,6 @@ main:
                     example: 
                     default: 
                     datatype: url
-                    showInInstaller: true
                     getter: "Yii::app()->params['baseApiUrl'];"
                 -   var: params.enforceApiSSL
                     env: ENFORCE_API_SSL
@@ -389,7 +456,6 @@ main:
                     example: 
                     default: true
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['enforceApiSSL'];"
                 -   var: params.enableApiAuth
                     env: ENABLE_API_AUTH
@@ -398,7 +464,6 @@ main:
                     example: 
                     default: false
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['enableApiAuth'];"
                 -   var: params.apiUsername
                     env: API_USERNAME
@@ -407,7 +472,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['apiUsername'];"
                 -   var: params.apiPassword
                     env: API_PASSWORD
@@ -416,7 +480,6 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['apiPassword'];"
                 -   var: params.jwtSecret
                     env: JWT_SECRET
@@ -425,7 +488,6 @@ main:
                     example: 
                     default: thisismysecretkey
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['jwtSecret'];"
         -   key: authentication
             title: "Authentication"
@@ -437,26 +499,34 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['saltSecret'];"
                 -   var: params.connectUrl
+                    varInstaller: connectUrl
                     env: CONNECT_URL
                     title: MaGIC Connect URL
                     hint: URL to MaGIC Connect Server for Single Sign On
                     example: 
                     default: 
                     datatype: url
-                    showInInstaller: true
                     getter: "Yii::app()->params['connectUrl'];"
                 -   var: params.connectClientId
+                    varInstaller: connectClientId
                     env: CONNECT_CLIENT_ID
                     title: MaGIC Connect Client ID
                     hint: Registered Client ID given by MaGIC Connect for this installation
                     example: 
                     default: 
                     datatype: integer
-                    showInInstaller: true
                     getter: "Yii::app()->params['connectClientId'];"
+                -   var: params.connectSecretKey
+                    varInstaller: connectSecretKey
+                    env: CONNECT_SECRET_KEY
+                    title: MaGIC Connect Secret Key
+                    hint: Secret key for this Client ID
+                    example: 
+                    default: 
+                    datatype: password
+                    getter: "Yii::app()->params['connectSecretKey'];"
                 -   var: params.connectSecretKeyApi
                     env: CONNECT_SECRET_KEY_API
                     title: MaGIC Connect API Secret Key
@@ -464,67 +534,66 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['connectSecretKeyApi'];"
         -   key: contact
             title: "Contact"
             items:
                 -   var: params.adminEmail
+                    varInstaller: adminUsername
                     env: ADMIN_EMAIL
                     title: Admin's Email
                     hint: Email address of system admin
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['adminEmail'];"
                 -   var: params.webmasterEmail
+                    varInstaller: publicEmail
                     env: WEBMASTER_EMAIL
                     title: Webmaster's Email
                     hint: Email address of webmaster, to display in frontend
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['webmasterEmail'];"
                 -   var: params.contactName
+                    varInstaller: appName
                     env: CONTACT_NAME
                     title: Contact's Name
                     hint: 
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['contactName'];"
                 -   var: params.contactEmail
+                    varInstaller: publicEmail
                     env: CONTACT_EMAIL
                     title: Contact's Email
                     hint: 
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['contactEmail'];"
                 -   var: params.routineEmails
+                    varInstaller: adminUsername
                     env: ROUTINE_EMAILS
                     title: Routine's Email
-                    hint: One or multiple emails address seperated by comma (,) to send cron job reporting to.
+                    hint: One or multiple emails address separated by semicolon (;) to send cron job reporting to.
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "implode(', ', Yii::app()->params['routineEmails']);"
         -   key: meta
             title: "Website Meta"
             items:
                 -   var: params.metaTitle
+                    varInstaller: appName
                     env: META_TITLE
                     title: Meta Title
                     hint: 
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['metaTitle'];"
                 -   var: params.metaDescription
                     env: META_DESCRIPTION
@@ -533,7 +602,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['metaDescription'];"
                 -   var: params.metaKeywords
                     env: META_KEYWORDS
@@ -542,7 +610,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['metaKeywords'];"
         -   key: email
             title: "Email"
@@ -554,7 +621,6 @@ main:
                     example: 
                     default: true
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['logSentMail'];"
                 -   var: params.blockSendMail
                     env: BLOCK_SEND_MAIL
@@ -563,7 +629,6 @@ main:
                     example: 
                     default: true
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['blockSendMail'];"
                 -   var: params.smtpAuth
                     env: SMTP_AUTH
@@ -572,88 +637,87 @@ main:
                     example: 
                     default: true
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpAuth'];"
                 -   var: params.smtpHost
+                    varInstaller: smtpHost
                     env: SMTP_HOST
                     title: SMTP Host
                     hint: 
                     example: smtp.mandrillapp.com
                     default: smtp.mandrillapp.com
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpHost'];"
                 -   var: params.smtpPort
+                    varInstaller: smtpPort
                     env: SMTP_PORT
                     title: SMTP Port
                     hint: 
                     example: 587
                     default: 587
                     datatype: integer
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpPort'];"
                 -   var: params.smtpUsername
+                    varInstaller: smtpUsername
                     env: SMTP_USERNAME
                     title: SMTP Username
                     hint: 
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpUsername'];"
                 -   var: params.smtpPassword
+                    varInstaller: smtpPassword
                     env: SMTP_PASSWORD
                     title: SMTP Password
                     hint: 
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpPassword'];"
                 -   var: params.smtpSenderEmail
+                    varInstaller: smtpOutgoingEmail
                     env: SMTP_SENDER_EMAIL
                     title: SMTP Sender Email
                     hint: 
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpSenderEmail'];"
                 -   var: params.smtpSenderName
+                    varInstaller: appName
                     env: SMTP_SENDER_NAME
                     title: SMTP Sender Name
                     hint: 
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpSenderName'];"
                 -   var: params.smtpTestReceiverEmail
+                    varInstaller: adminUsername
                     env: SMTP_TEST_RECEIVER_EMAIL
                     title: Receiver Email for Test
                     hint: 
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpTestReceiverEmail'];"
                 -   var: params.smtpTestReceiverName
+                    varInstaller: appName
                     env: SMTP_TEST_RECEIVER_NAME
                     title: Receiver Name for Test
                     hint: 
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['smtpTestReceiverName'];"
                 -   var: params.emailPrefix
+                    varInstaller: appName
                     env: EMAIL_PREFIX
                     title: Prefix for all outgoing email
                     hint: Insert your branding here, it will prepand at all outgoing email subject within a bracket [].
                     example: OpenHub
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['emailPrefix'];"
         -   key: sms
             title: "SMS"
@@ -665,7 +729,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['mobileFrom'];"
                 -   var: params.mobileVerificationResendLimit
                     env: MOBILE_VERIFICATION_RESEND_LIMIT
@@ -674,7 +737,6 @@ main:
                     example: 3
                     default: 3
                     datatype: integer
-                    showInInstaller: true
                     getter: "Yii::app()->params['mobileVerificationResendLimit'];"
                 -   var: params.nexmoKey
                     env: NEXMO_KEY
@@ -683,7 +745,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['nexmoKey'];"
                 -   var: params.nexmoSecret
                     env: NEXMO_SECRET
@@ -692,7 +753,6 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['nexmoSecret'];"
                 -   var: params.nexmoKey2
                     env: NEXMO_TWO_KEY
@@ -701,7 +761,6 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['nexmoKey2'];"
                 -   var: params.nexmoSecret2
                     env: NEXMO_TWO_SECRET
@@ -710,41 +769,51 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    showInInstaller: true
                     getter: "Yii::app()->params['nexmoSecret2'];"
         -   key: google
             title: "Google"
             items:
                 -   var: params.googleApiKey
+                    varInstaller: googleMapApiKey
                     env: GOOGLE_API_KEY
                     title: Google API Key
                     hint: Required, use to trasnlate address to lat long location etc.
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: false
                     getter: "Yii::app()->params['googleApiKey'];"
                 -   var: params.googleMapApiKey
+                    varInstaller: googleMapApiKey
                     env: GOOGLE_MAP_API_KEY
                     title: Google Map API Key
                     hint: Required for geo location data functions to work.
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['googleMapApiKey'];"
         -   key: openExchange
             title: "Open Exchange"
             items:
                 -   var: params.openExchangeRatesAppId
+                    varInstaller: openExchangeRatesAppId
                     env: OPEN_EXCHANGE_RATES_APP_ID
                     title: Open Exchange Rates APP Id
                     hint: Required for currency conversion to works. All monetary value stored in database in USD. Get a free account here https://openexchangerates.org/signup/free.
                     example: 
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['openExchangeRatesAppId'];"
+        -   key: facebook
+            title: "Facebook"
+            items:
+                -   var: params.fbAppId
+                    env: FACEBOOK_APP_ID
+                    title: Facebook APP Id
+                    hint: 
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->params['fbAppId'];"
         -   key: paypal
             title: "Paypal"
             items:
@@ -755,7 +824,6 @@ main:
                     example: 
                     default: 
                     datatype: boolean
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalIsSandbox'];"
                 -   var: params.paypalSsl
                     env: PAYPAL_SSL
@@ -764,7 +832,6 @@ main:
                     example: https://www.paypal.com/cgi-bin/webscr
                     default: 
                     datatype: url
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalSsl'];"
                 -   var: params.paypalSslHost
                     env: PAYPAL_SSL_HOST
@@ -773,7 +840,6 @@ main:
                     example: www.paypal.com
                     default: 
                     datatype: string
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalSslHost'];"
                 -   var: params.paypalSslPort
                     env: PAYPAL_SSL_PORT
@@ -782,7 +848,6 @@ main:
                     example: 443
                     default: 443
                     datatype: integer
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalSslPort'];"
                 -   var: params.paypalUrl
                     env: PAYPAL_URL
@@ -791,7 +856,6 @@ main:
                     example: 
                     default: https://www.paypal.com
                     datatype: url
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalUrl'];"
                 -   var: params.paypalBusiness
                     env: PAYPAL_BUSINESS
@@ -800,8 +864,89 @@ main:
                     example: 
                     default: 
                     datatype: email
-                    showInInstaller: true
                     getter: "Yii::app()->params['paypalBusiness'];"
+        -   key: piwiik
+            title: "Piwik Tracker"
+            items:
+                -   var: params.piwikTrackerUrl
+                    file: params.php
+                    env: PIWIK_TRACKER_URL
+                    title: Piwik Server URL
+                    hint: 
+                    example: '//misc.mymagic.my/piwik/'
+                    datatype: string
+                    getter: "Yii::app()->params['piwikTrackerUrl'];"
+                -   var: params.piwikTokenAuth
+                    file: params.php
+                    env: PIWIK_TOKEN_AUTH
+                    title: Piwik Token
+                    hint: 
+                    example: ''
+                    datatype: password
+                    getter: "Yii::app()->params['piwikTokenAuth'];"
+        -   key: mixpanel
+            title: "Mixpanel Tracker"
+            items:
+                -   var: enableMixPanel
+                    file: params.php
+                    env: MIXPANEL_ENABLE
+                    title: Enable Mixpabel?
+                    hint: 
+                    example:
+                    datatype: boolean
+                    getter: "Yii::app()->params['enableMixPanel'];"
+                -   var: mixpanelToken
+                    file: params.php
+                    env: MIXPANEL_TOKEN
+                    title: Mixpanel Token
+                    hint: 
+                    example: ''
+                    datatype: password
+                    getter: "Yii::app()->params['mixpanelToken'];"
+        -   key: others
+            title: "Others"
+            items:
+                -   var: params.srcServerUrl
+                    file: params.php
+                    env: SRC_SERVER_URL
+                    title: SRC Server URL
+                    hint: 
+                    example: 'https://src.mymagic.my'
+                    datatype: string
+                    getter: "Yii::app()->params['srcServerUrl'];"
+                -   var: params.baseApiUrl
+                    file: params.php
+                    env: BASE_API_URL
+                    title: Base API URL
+                    hint: 
+                    example: 'https://api-central.mymagic.my/v1'
+                    datatype: string
+                    getter: "Yii::app()->params['baseApiUrl'];"
+                -   var: params.allowedDomains
+                    file: params.php
+                    env: CORS
+                    title: Allowed domains
+                    hint: 
+                    example: 'http://domain1.com;https://domain2.com'
+                    datatype: string
+                    getter: "implode(Yii::app()->params['allowedDomains'], ';');"
+                -   var: components.request.csrfCookie.domain
+                    file: main.php
+                    env: CSRF_COOKIE
+                    title: CSRF Cookie
+                    hint: 
+                    example: .mymagic.my
+                    default: .mymagic.my
+                    datatype: string
+                    getter: "Yii::app()->request->csrfCookie['domain'];"
+                -   var: componenets.image.driver
+                    file: main.php
+                    env: IMAGE_DRIVER
+                    title: Image Driver
+                    hint: 
+                    example: 'GD'
+                    datatype: string
+                    getter: "Yii::app()->image->driver;"
                 
 console: 
     title: "Console Specific"
@@ -817,7 +962,6 @@ console:
                     example: 
                     default: 
                     datatype: url
-                    showInInstaller: true
                     getter: "getenv('REQUEST_HOST_INFO')"
 
 defaultModules: 
@@ -835,7 +979,7 @@ defaultModules:
                 default:
                 datatype: string
                 datatype_value:
-                showInInstaller:
+                
                 getter: "Yii::app()->params['mailchimpApiKey'];"
             -   var: params.mailchimpLists
                 file: params.php
@@ -846,12 +990,12 @@ defaultModules:
                 default:
                 datatype: string
                 datatype_value:
-                showInInstaller: true
                 getter: "urldecode(http_build_query(Yii::app()->params['mailchimpLists'], '', ';'));"
         -   key: esLog
             title: "Elastic Search Audit Log"
             items:
                 -   var: params.enableEsLog
+                    varInstaller: esEnabled
                     file: params.php
                     env: ESLOG_ENABLE
                     title: Enable Elastic Search Log
@@ -860,7 +1004,6 @@ defaultModules:
                     default: false
                     datatype: boolean
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['enableEsLog'];"
                 -   var: params.esLogIndexCode
                     file: params.php
@@ -871,9 +1014,9 @@ defaultModules:
                     default: log-default
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['esLogIndexCode'];"
                 -   var: params.esLogEndpoint
+                    varInstaller: esEndpoint
                     file: params.php
                     env: ESLOG_ENDPOINT
                     title: Elastic Search Log Endpoint
@@ -882,9 +1025,9 @@ defaultModules:
                     default: //domain.tld:443
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['esLogEndpoint'];"
                 -   var: params.esLogKey
+                    varInstaller: esKey
                     file: params.php
                     env: ESLOG_KEY
                     title: Elastic Search Server Access Key
@@ -893,9 +1036,9 @@ defaultModules:
                     default: 0000
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['esLogKey'];"
                 -   var: params.esLogSecret
+                    varInstaller: esSecret
                     file: params.php
                     env: ESLOG_SECRET
                     title: Elastic Search Server Secret Key
@@ -904,9 +1047,9 @@ defaultModules:
                     default: 0000
                     datatype: password
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['esLogSecret'];"
                 -   var: params.esLogRegion
+                    varInstaller: esRegion
                     file: params.php
                     env: ESLOG_REGION
                     title: AWS Elastic Search Server Region
@@ -915,7 +1058,6 @@ defaultModules:
                     default: ap-southeast-3
                     datatype: string
                     datatype_value:
-                    showInInstaller:
                     getter: "Yii::app()->params['esLogRegion'];"
         -   key: egg
             title: "Egg"
@@ -927,9 +1069,8 @@ defaultModules:
                 hint: 
                 example: 
                 default:
-                datatype: string
+                datatype: password
                 datatype_value:
-                showInInstaller: true
                 getter: "Yii::app()->modules['egg']['password'];"
             -   var: modules.egg.ipFilters
                 file: module.php
@@ -940,7 +1081,6 @@ defaultModules:
                 default:
                 datatype: string
                 datatype_value:
-                showInInstaller: false
                 getter: "implode(Yii::app()->modules['egg']['ipFilters'], ', ');"
         -   key: gii
             title: "Gii"
@@ -952,9 +1092,8 @@ defaultModules:
                 hint: 
                 example: 
                 default:
-                datatype: string
+                datatype: password
                 datatype_value:
-                showInInstaller: true
                 getter: "Yii::app()->modules['gii']['password'];"
             -   var: modules.gii.ipFilters
                 file: module.php
@@ -965,7 +1104,6 @@ defaultModules:
                 default:
                 datatype: string
                 datatype_value:
-                showInInstaller: false
                 getter: "implode(Yii::app()->modules['gii']['ipFilters'], ', ');"
         -   key: yee
             title: "Yee"
@@ -977,9 +1115,8 @@ defaultModules:
                 hint: 
                 example: 
                 default:
-                datatype: string
+                datatype: password
                 datatype_value:
-                showInInstaller: true
                 getter: "Yii::app()->modules['yee']['password'];"
             -   var: modules.yee.ipFilters
                 file: module.php
@@ -990,7 +1127,6 @@ defaultModules:
                 default:
                 datatype: string
                 datatype_value:
-                showInInstaller: false
                 getter: "implode(Yii::app()->modules['yee']['ipFilters'], ', ');"
 path: 
     title: "Path"
@@ -1008,7 +1144,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('wwwroot');"
                 -   var: path.uploads
                     file: 
@@ -1020,7 +1155,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('uploads');"
                 -   var: path.static
                     file: 
@@ -1032,7 +1166,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('static');"
         -   key: protectedPath
             title: "Protected Path"
@@ -1047,7 +1180,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('runtime');"
                 -   var: path.data
                     file: 
@@ -1059,7 +1191,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('data');"
                 -   var: path.components
                     file: 
@@ -1071,7 +1202,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('components');"
                 -   var: controllers
                     file: 
@@ -1083,7 +1213,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('controllers');"
                 -   var: path.models
                     file: 
@@ -1095,7 +1224,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('models');"
                 -   var: path.modules
                     file: 
@@ -1107,7 +1235,6 @@ path:
                     datatype:
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('modules');"
                 -   var: path.views
                     file: 
@@ -1119,7 +1246,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('views');"
                 -   var: path.messages
                     file: 
@@ -1131,7 +1257,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('messages');"
                 -   var: path.overrides
                     file: 
@@ -1143,7 +1268,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('overrides');"
         -   key: cronPath
             title: "Cron Path"
@@ -1158,7 +1282,6 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('cronRoutine');"
                 -   var: path.cronLog
                     file: 
@@ -1170,5 +1293,4 @@ path:
                     datatype: string
                     datatype_value:
                     isAliasPath: true
-                    showInInstaller: false
                     getter: "Yii::getPathOfAlias('cronLog');"

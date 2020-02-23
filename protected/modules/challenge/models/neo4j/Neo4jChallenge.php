@@ -257,7 +257,7 @@ class Neo4jChallenge extends Neo4j
         WHERE toInteger(challenge.date_close) > $time AND challenge.is_active = 1 AND challenge.is_publish = 1
         RETURN challenge.id, count(challenge) as frequency
         ORDER BY frequency DESC
-        LIMIT 10")->execute();
+        LIMIT 4")->execute();
 
         $challengeIds = array();
 

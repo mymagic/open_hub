@@ -80,6 +80,7 @@ class HubForm
         $jScripts = $decoded['jscripts'];
         unset($decoded['form_type']);
         unset($decoded['form_type']);
+        unset($decoded['builder']);
 
         $jsTags = '';
         if (!empty($jScripts)) {

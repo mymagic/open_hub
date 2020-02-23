@@ -53,13 +53,15 @@
             <h3>Collection Of Products And Services</h3>
             <div class="row">
                 <?php foreach ($resources as $resource) : ?>
-                    <a href="<?php echo $this->createUrl("/resource/frontend/view", array('id' => $resource->id)) ?>" class="text-gray-700 hover:text-gray-600">
-                        <div class="col-sm-4 my-4">
+
+                    <div class="col-sm-4 my-4">
+                        <a href="<?php echo $this->createUrl("/resource/frontend/view", array('id' => $resource->id)) ?>" class="text-gray-700 hover:text-gray-600">
                             <div class="font-bold"><?php echo $resource->title; ?></div>
                             <div><?php echo ysUtil::truncate(strip_tags($resource->getAttrData('html_content'), 250)); ?></div>
                             <span class="badge"><?php echo $resource->resourceCategories[0]->title; ?></span>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
+
                 <?php endforeach; ?>
             </div>
         </section>

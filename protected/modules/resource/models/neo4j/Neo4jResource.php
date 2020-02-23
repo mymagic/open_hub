@@ -295,7 +295,7 @@ class Neo4jResource extends Neo4j
         WHERE resource.is_active = 1 AND resource.is_blocked = 0
         RETURN resource.id, count(resource) as frequency
         ORDER BY frequency DESC
-        LIMIT 9")->execute();
+        LIMIT 3")->execute();
 
         $resourceIds = array();
 

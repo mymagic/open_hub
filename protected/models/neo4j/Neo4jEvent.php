@@ -330,7 +330,7 @@ class Neo4jEvent extends Neo4j
         WHERE event.is_active = '1' AND event.is_cancelled = '0' AND toInteger(event.date_ended) > $time
         RETURN event.id, count(event) as frequency
         ORDER BY frequency DESC
-        LIMIT 10")->execute();
+        LIMIT 3")->execute();
 
         $eventIds = array();
 

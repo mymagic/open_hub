@@ -26,7 +26,14 @@ class TestCommand extends ConsoleCommand
 		echo "  * createJunk --note=anything\nCreate a junk instance and pass in value, for testing cron job running properly or not\n";
 		echo "  * guzzle\nconnect to futurelab and list all program using guzzle to check is guzzle working or not\n";
 		echo "  * yiiPath\nto check yii path is correct or not\n";
+		echo "  * getPath\nget path from alias\n";
 		echo "\n";
+	}
+
+	public function actionGetPath()
+	{
+		echo Yii::getPathOfAlias('wwwroot')."\n";
+		echo Yii::getPathOfAlias('components')."\n";
 	}
 
 	public function actionOrganizationComments()
