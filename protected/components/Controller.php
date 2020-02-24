@@ -240,6 +240,24 @@ class Controller extends BaseController
             'link'=>array('label'=>Yii::t('app','Friendly Link'), 'url'=>array('site/link')),
             'contact'=>array('label'=>Yii::t('app','Contact Us'), 'url'=>array('site/contact')),
         );*/
+
+        //
+        // user menu
+        // my account
+        if(!Yii::app()->user->isGuest)
+        {
+            // cpanel dashboard
+            $navUserItems[] = array('label' => Yii::t('app', 'Dashboard'), 'url' => array('/cpanel/index'), 'visible' => true, 'items');
+            // profile
+			$navUserItems[] = array('label' => Yii::t('app', 'Settings'), 'url' => array('/cpanel/profile'), 'visible' => true, 'items');
+            // logout
+            $navUserItems[] =
+                array('label' => Yii::t('app', 'Logout'), 'url' => array('/site/logout'), 'linkOptions' => array('title' => Yii::app()->user->username, 'data-toggle' => 'tooltip', 'data-placement' => 'bottom'), 'visible' => !Yii::app()->user->isGuest);
+            
+            $this->menuUser = $navUserItems;
+        }
+        
+
     }
 
     protected function initCpanelMenu()

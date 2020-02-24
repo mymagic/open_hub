@@ -3,6 +3,7 @@
 
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/javascript/frontend.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/mymagic.css'); ?>
+
 <?php Yii::app()->getClientScript()->registerCssFile('https://mymagic-central.s3-ap-southeast-1.amazonaws.com/universal-assets/dist/css/app.css'); ?>
 <?php Yii::app()->ClientScript->registerScriptFile('https://mymagic-central.s3-ap-southeast-1.amazonaws.com/universal-assets/dist/js/universal.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css'); ?>
@@ -11,7 +12,7 @@
 
 <link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/images/favicon.ico" type="image/x-icon" />
 
-<?php $this->layoutParams['bodyClass'] .= ' body-stampede layout-frontend'; ?>
+<?php $this->layoutParams['bodyClass'] .= ' layout-frontend'; ?>
 <?php $this->layoutParams['hideFlashes'] = false; ?>
 
 <?php if (!$this->layoutParams['hideFlashes'] && Notice::hasFlashes()) : ?>
@@ -25,10 +26,48 @@ foreach ($this->menuSub as $key => $menu) {
     $this->menuSub[$key]['url'] = CHtml::normalizeUrl($menu['url']);
 }
 ?>
+<!-- nav-main -->
+<div class="container-fluid border-bottom">
+<nav class="navbar navbar-default" id="nav-main" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <?php echo Html::link(Yii::app()->name, $this->createUrl('/site/index'), array('class' => 'navbar-brand')); ?>
+    </div>
 
-<header id="universal-header" class="sticky top-0 z-40">
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <!-- Main nav -->
+        <?php $this->initFrontendMenu(); ?>
 
-</header>
+        <?php 
+		
+            if(!Yii::app()->user->isGuest)
+            {
+                $labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), YsUtil::truncate($this->user->profile->full_name, 8)); 
+                    
+                $this->menuSub['user'] = array(
+                    'label' => $labelMe . ' <b class="caret"></b>', 'url' => '#',
+                    'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
+                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
+                    'items' => $this->menuUser,
+                ); 
+            }
+        ?>
+        
+        <?php $this->widget('zii.widgets.CMenu', array(
+            'htmlOptions' => array('class' => 'nav navbar-nav navbar-right'),
+            'encodeLabel' => false,
+            'items' => $this->menuSub,
+        )); ?>
+
+    </div>
+</nav>
+</div>
+<!-- /nav-main -->
 
 <!-- container -->
 <div class="<?php echo $this->layoutParams['containerFluid'] ? 'container-fluid' : 'container'; ?>">

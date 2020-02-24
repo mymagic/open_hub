@@ -50,6 +50,11 @@ class SiteController extends Controller
         $this->redirect(array('/cpanel'));
     }
 
+    public function actionWelcome()
+    {
+		$this->render('welcome');
+    }
+
     public function actionBooking()
     {
         $this->redirect(array('/mentor'));
