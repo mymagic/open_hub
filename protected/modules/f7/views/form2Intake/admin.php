@@ -2,13 +2,13 @@
 /* @var $this Form2IntakeController */
 /* @var $model Form2Intake */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Form2 Intakes')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Form2 Intakes') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create Form2Intake'), 'url'=>array('/f7/form2Intake/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create Form2Intake'), 'url' => array('/f7/form2Intake/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,27 +30,27 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-form2IntakeSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'form2-intake-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
-		array('name'=>'intake_id', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->intake->title', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>Intake::model()->getForeignReferList(false, true)),
-		array('name'=>'form_id', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->form->title', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>Form::model()->getForeignReferList(false, true)),
-		array('name'=>'is_primary', 'cssClassExpression'=>'boolean', 'type'=>'raw', 'value'=>'Html::renderBoolean($data->is_primary)', 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'is_active', 'cssClassExpression'=>'boolean', 'type'=>'raw', 'value'=>'Html::renderBoolean($data->is_active)', 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'ordering', 'headerHtmlOptions'=>array('class'=>'ordering'), 'class'=>'application.yeebase.extensions.OrderColumn.OrderColumn'),
+	'id' => 'form2-intake-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
+		array('name' => 'intake_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->intake->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Intake::model()->getForeignReferList(false, true)),
+		array('name' => 'form_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->form->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Form::model()->getForeignReferList(false, true)),
+		array('name' => 'is_primary', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_primary)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'ordering', 'headerHtmlOptions' => array('class' => 'ordering'), 'class' => 'application.yeebase.extensions.OrderColumn.OrderColumn'),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 					),
 	),
 )); ?>

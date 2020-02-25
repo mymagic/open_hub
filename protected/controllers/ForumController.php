@@ -18,9 +18,10 @@
 class ForumController extends Controller
 {
 	public $layout = 'cpanel';
-/**
-	 * @return array action filters
-	 */
+
+	/**
+		 * @return array action filters
+		 */
 	public function filters()
 	{
 		return array(
@@ -37,23 +38,23 @@ class ForumController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('index'
+				'actions' => array('index'
 				),
-				'users'=>array('@'),
-				'expression'=>"\$user->accessCpanel===true",
+				'users' => array('@'),
+				'expression' => '$user->accessCpanel===true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
-	
+
 	public function init()
 	{
 		$this->activeMenuMain = 'forum';
 		parent::init();
 	}
-	
+
 	public function actionIndex()
 	{
 		$this->activeSubMenuCpanel = 'qa';

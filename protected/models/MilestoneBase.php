@@ -40,82 +40,79 @@
  * @property User $username0
  */
  class MilestoneBase extends ActiveRecordBase
-{
-	public $uploadPath;
+ {
+ 	public $uploadPath;
 
-	
-	public $sdate_added, $edate_added;
-	public $sdate_modified, $edate_modified;
+ 	public $sdate_added;
 
-	// json
-	public $jsonArray_target;
-	public $jsonArray_value;
-	public $jsonArray_extra;
-	
-	public function init()
-	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.$this->tableName();
+ 	public $edate_added;
+ 	public $sdate_modified;
+ 	public $edate_modified;
 
-		if($this->scenario == "search")
-		{
-			$this->is_star = null;
-			$this->is_active = null;
-			$this->is_disclosed = null;
-		}
-		else
-		{
-		}
-	}
-	
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'milestone';
-	}
+ 	// json
+ 	public $jsonArray_target;
+ 	public $jsonArray_value;
+ 	public $jsonArray_extra;
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
+ 	public function init()
+ 	{
+ 		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . $this->tableName();
+
+ 		if ($this->scenario == 'search') {
+ 			$this->is_star = null;
+ 			$this->is_active = null;
+ 			$this->is_disclosed = null;
+ 		} else {
+ 		}
+ 	}
+
+ 	/**
+ 	 * @return string the associated database table name
+ 	 */
+ 	public function tableName()
+ 	{
+ 		return 'milestone';
+ 	}
+
+ 	/**
+ 	 * @return array validation rules for model attributes.
+ 	 */
+ 	public function rules()
+ 	{
+ 		// NOTE: you should only define rules for those attributes that
+ 		// will receive user inputs.
+ 		return array(
 			array('username, title', 'required'),
-			array('organization_id, is_star, is_active, date_added, date_modified, is_disclosed', 'numerical', 'integerOnly'=>true),
-			array('username', 'length', 'max'=>128),
-			array('preset_code', 'length', 'max'=>64),
-			array('title, source', 'length', 'max'=>255),
+			array('organization_id, is_star, is_active, date_added, date_modified, is_disclosed', 'numerical', 'integerOnly' => true),
+			array('username', 'length', 'max' => 128),
+			array('preset_code', 'length', 'max' => 64),
+			array('title, source', 'length', 'max' => 255),
 			array('text_short_description', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, username, organization_id, preset_code, title, text_short_description, json_target, json_value, json_extra, is_star, is_active, date_added, date_modified, is_disclosed, source, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on'=>'search'),
+			array('id, username, organization_id, preset_code, title, text_short_description, json_target, json_value, json_extra, is_star, is_active, date_added, date_modified, is_disclosed, source, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
 		);
+ 	}
 
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
+ 	/**
+ 	 * @return array relational rules.
+ 	 */
+ 	public function relations()
+ 	{
+ 		// NOTE: you may need to adjust the relation name and the related
+ 		// class name for the relations automatically generated below.
+ 		return array(
 			'organization' => array(self::BELONGS_TO, 'Organization', 'organization_id'),
 			'username0' => array(self::BELONGS_TO, 'User', 'username'),
-
 		);
-	}
+ 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		$return = array(
+ 	/**
+ 	 * @return array customized attribute labels (name=>label)
+ 	 */
+ 	public function attributeLabels()
+ 	{
+ 		$return = array(
 		'id' => Yii::t('app', 'ID'),
 		'username' => Yii::t('app', 'Username'),
 		'organization_id' => Yii::t('app', 'Organization'),
@@ -133,66 +130,61 @@
 		'source' => Yii::t('app', 'Source'),
 		);
 
+ 		return $return;
+ 	}
 
+ 	/**
+ 	 * Retrieves a list of models based on the current search/filter conditions.
+ 	 *
+ 	 * Typical usecase:
+ 	 * - Initialize the model fields with values from filter form.
+ 	 * - Execute this method to get CActiveDataProvider instance which will filter
+ 	 * models according to data in model fields.
+ 	 * - Pass data provider to CGridView, CListView or any similar widget.
+ 	 *
+ 	 * @return CActiveDataProvider the data provider that can return the models
+ 	 * based on the search/filter conditions.
+ 	 */
+ 	public function search()
+ 	{
+ 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		return $return;
-	}
+ 		$criteria = new CDbCriteria;
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+ 		$criteria->compare('id', $this->id);
+ 		$criteria->compare('username', $this->username, true);
+ 		$criteria->compare('organization_id', $this->organization_id);
+ 		$criteria->compare('preset_code', $this->preset_code, true);
+ 		$criteria->compare('title', $this->title, true);
+ 		$criteria->compare('text_short_description', $this->text_short_description, true);
+ 		$criteria->compare('json_target', $this->json_target, true);
+ 		$criteria->compare('json_value', $this->json_value, true);
+ 		$criteria->compare('json_extra', $this->json_extra, true);
+ 		$criteria->compare('is_star', $this->is_star);
+ 		$criteria->compare('is_active', $this->is_active);
+ 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
+ 			$sTimestamp = strtotime($this->sdate_added);
+ 			$eTimestamp = strtotime("{$this->edate_added} +1 day");
+ 			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
+ 		}
+ 		if (!empty($this->sdate_modified) && !empty($this->edate_modified)) {
+ 			$sTimestamp = strtotime($this->sdate_modified);
+ 			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
+ 			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
+ 		}
+ 		$criteria->compare('is_disclosed', $this->is_disclosed);
+ 		$criteria->compare('source', $this->source, true);
 
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id);
-		$criteria->compare('username',$this->username,true);
-		$criteria->compare('organization_id',$this->organization_id);
-		$criteria->compare('preset_code',$this->preset_code,true);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('text_short_description',$this->text_short_description,true);
-		$criteria->compare('json_target',$this->json_target,true);
-		$criteria->compare('json_value',$this->json_value,true);
-		$criteria->compare('json_extra',$this->json_extra,true);
-		$criteria->compare('is_star',$this->is_star);
-		$criteria->compare('is_active',$this->is_active);
-		if(!empty($this->sdate_added) && !empty($this->edate_added))
-		{
-			$sTimestamp = strtotime($this->sdate_added);
-			$eTimestamp = strtotime("{$this->edate_added} +1 day");
-			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
-		}
-		if(!empty($this->sdate_modified) && !empty($this->edate_modified))
-		{
-			$sTimestamp = strtotime($this->sdate_modified);
-			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
-			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
-		}
-		$criteria->compare('is_disclosed',$this->is_disclosed);
-		$criteria->compare('source',$this->source,true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-
+ 		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
 		));
-	}
+ 	}
 
-	public function toApi($params='')
-	{
-		$this->fixSpatial();
-		
-		$return = array(
+ 	public function toApi($params = '')
+ 	{
+ 		$this->fixSpatial();
+
+ 		$return = array(
 			'id' => $this->id,
 			'username' => $this->username,
 			'organizationId' => $this->organization_id,
@@ -205,181 +197,192 @@
 			'isStar' => $this->is_star,
 			'isActive' => $this->is_active,
 			'dateAdded' => $this->date_added,
-			'fDateAdded'=>$this->renderDateAdded(),
+			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
-			'fDateModified'=>$this->renderDateModified(),
+			'fDateModified' => $this->renderDateModified(),
 			'isDisclosed' => $this->is_disclosed,
 			'source' => $this->source,
-		
 		);
-			
-		// many2many
 
-		return $return;
-	}
-	
-	//
-	// image
+ 		// many2many
 
-	//
-	// date
-	public function getTimezone()
-	{
-		return date_default_timezone_get();
-	}
+ 		return $return;
+ 	}
 
-	public function renderDateAdded()
-	{
-		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
-	}
-	public function renderDateModified()
-	{
-		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
-	}
+ 	//
+ 	// image
 
-	public function scopes()
-    {
-		return array
-		(
+ 	//
+ 	// date
+ 	public function getTimezone()
+ 	{
+ 		return date_default_timezone_get();
+ 	}
+
+ 	public function renderDateAdded()
+ 	{
+ 		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function renderDateModified()
+ 	{
+ 		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function scopes()
+ 	{
+ 		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 
-			'isStar' => array('condition'=>'t.is_star = 1'),
-			'isActive' => array('condition'=>'t.is_active = 1'),
-			'isDisclosed' => array('condition'=>'t.is_disclosed = 1'),
-
+			'isStar' => array('condition' => 't.is_star = 1'),
+			'isActive' => array('condition' => 't.is_active = 1'),
+			'isDisclosed' => array('condition' => 't.is_disclosed = 1'),
 		);
-    }
+ 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return Milestone the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+ 	/**
+ 	 * Returns the static model of the specified AR class.
+ 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+ 	 * @param string $className active record class name.
+ 	 * @return Milestone the static model class
+ 	 */
+ 	public static function model($className = __CLASS__)
+ 	{
+ 		return parent::model($className);
+ 	}
 
-	/**
-	 * This is invoked before the record is validated.
-	 * @return boolean whether the record should be saved.
-	 */
-	public function beforeValidate() 
-	{
-		if($this->isNewRecord)
-		{
-		}
-		else
-		{
-		}
+ 	/**
+ 	 * This is invoked before the record is validated.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	public function beforeValidate()
+ 	{
+ 		if ($this->isNewRecord) {
+ 		} else {
+ 		}
 
-		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
+ 		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
 
-		return parent::beforeValidate();
-	}
+ 		return parent::beforeValidate();
+ 	}
 
-	protected function afterSave()
-	{
+ 	protected function afterSave()
+ 	{
+ 		return parent::afterSave();
+ 	}
 
-		return parent::afterSave();
-	}
+ 	/**
+ 	 * This is invoked before the record is saved.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	protected function beforeSave()
+ 	{
+ 		if (parent::beforeSave()) {
+ 			// auto deal with date added and date modified
+ 			if ($this->isNewRecord) {
+ 				$this->date_added = $this->date_modified = time();
+ 			} else {
+ 				$this->date_modified = time();
+ 			}
 
-	
-	/**
-	 * This is invoked before the record is saved.
-	 * @return boolean whether the record should be saved.
-	 */
-	protected function beforeSave()
-	{
-		if(parent::beforeSave())
-		{
+ 			// json
+ 			$this->json_target = json_encode($this->jsonArray_target);
+ 			if ($this->json_target == 'null') {
+ 				$this->json_target = null;
+ 			}
+ 			$this->json_value = json_encode($this->jsonArray_value);
+ 			if ($this->json_value == 'null') {
+ 				$this->json_value = null;
+ 			}
+ 			$this->json_extra = json_encode($this->jsonArray_extra);
+ 			if ($this->json_extra == 'null') {
+ 				$this->json_extra = null;
+ 			}
 
-			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
-			}
-			else
-			{
-				$this->date_modified=time();
-			}
-	
+ 			// save as null if empty
+ 			if (empty($this->organization_id) && $this->organization_id != 0) {
+ 				$this->organization_id = null;
+ 			}
+ 			if (empty($this->text_short_description)) {
+ 				$this->text_short_description = null;
+ 			}
+ 			if (empty($this->json_target)) {
+ 				$this->json_target = null;
+ 			}
+ 			if (empty($this->json_value)) {
+ 				$this->json_value = null;
+ 			}
+ 			if (empty($this->json_extra)) {
+ 				$this->json_extra = null;
+ 			}
+ 			if (empty($this->source)) {
+ 				$this->source = null;
+ 			}
 
-			// json
-			$this->json_target = json_encode($this->jsonArray_target);
-			if($this->json_target == 'null') $this->json_target = null;
-			$this->json_value = json_encode($this->jsonArray_value);
-			if($this->json_value == 'null') $this->json_value = null;
-			$this->json_extra = json_encode($this->jsonArray_extra);
-			if($this->json_extra == 'null') $this->json_extra = null;
+ 			return true;
+ 		} else {
+ 			return false;
+ 		}
+ 	}
 
-// save as null if empty
-					if(empty($this->organization_id) && $this->organization_id !=0) $this->organization_id = null;
-						if(empty($this->text_short_description)) $this->text_short_description = null;
-						if(empty($this->json_target)) $this->json_target = null;
-						if(empty($this->json_value)) $this->json_value = null;
-						if(empty($this->json_extra)) $this->json_extra = null;
-						if(empty($this->source)) $this->source = null;
-	
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * This is invoked after the record is found.
-	 */
-	protected function afterFind()
-	{
-		// boolean
-		if($this->is_star != '' || $this->is_star != null) $this->is_star = intval($this->is_star);
-		if($this->is_active != '' || $this->is_active != null) $this->is_active = intval($this->is_active);
-		if($this->is_disclosed != '' || $this->is_disclosed != null) $this->is_disclosed = intval($this->is_disclosed);
+ 	/**
+ 	 * This is invoked after the record is found.
+ 	 */
+ 	protected function afterFind()
+ 	{
+ 		// boolean
+ 		if ($this->is_star != '' || $this->is_star != null) {
+ 			$this->is_star = intval($this->is_star);
+ 		}
+ 		if ($this->is_active != '' || $this->is_active != null) {
+ 			$this->is_active = intval($this->is_active);
+ 		}
+ 		if ($this->is_disclosed != '' || $this->is_disclosed != null) {
+ 			$this->is_disclosed = intval($this->is_disclosed);
+ 		}
 
-		$this->jsonArray_target = json_decode($this->json_target);
-		$this->jsonArray_value = json_decode($this->json_value);
-		$this->jsonArray_extra = json_decode($this->json_extra);
+ 		$this->jsonArray_target = json_decode($this->json_target);
+ 		$this->jsonArray_value = json_decode($this->json_value);
+ 		$this->jsonArray_extra = json_decode($this->json_extra);
 
+ 		parent::afterFind();
+ 	}
 
-
-		parent::afterFind();
-	}
-	
-	function behaviors() 
-	{
-		return array
-		(
-			
+ 	public function behaviors()
+ 	{
+ 		return array(
 		);
-	}
-	
+ 	}
 
+ 	/**
+ 	 * These are function for foregin refer usage
+ 	 */
+ 	public function getForeignReferList($isNullable = false, $is4Filter = false)
+ 	{
+ 		$language = Yii::app()->language;
 
-	/**
-	 * These are function for foregin refer usage
-	 */
-	public function getForeignReferList($isNullable=false, $is4Filter=false)
-	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
-		$result = Yii::app()->db->createCommand()->select("id as key, title as title")->from(self::tableName())->queryAll();
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
-		return $result;
-	}
+ 		if ($is4Filter) {
+ 			$isNullable = false;
+ 		}
+ 		if ($isNullable) {
+ 			$result[] = array('key' => '', 'title' => '');
+ 		}
+ 		$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->queryAll();
+ 		if ($is4Filter) {
+ 			$newResult = array();
+ 			foreach ($result as $r) {
+ 				$newResult[$r['key']] = $r['title'];
+ 			}
+ 			return $newResult;
+ 		}
 
+ 		return $result;
+ 	}
 
-	/**
-	* These are function for spatial usage
-	*/
-	public function fixSpatial()
-	{
-	}
-
-
-}
+ 	/**
+ 	* These are function for spatial usage
+ 	*/
+ 	public function fixSpatial()
+ 	{
+ 	}
+ }

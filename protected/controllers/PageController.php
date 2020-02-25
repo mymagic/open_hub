@@ -42,16 +42,16 @@ class PageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions' => array('index', 'view'),
+				'users' => array('*'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('create','update', 'admin','delete','deleteConfirmed'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isContentManager==true",
+				'actions' => array('create', 'update', 'admin', 'delete', 'deleteConfirmed'),
+				'users' => array('@'),
+				'expression' => '$user->isContentManager==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -62,8 +62,8 @@ class PageController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -73,24 +73,21 @@ class PageController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Page;
+		$model = new Page;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Page']))
-		{
-			$model->attributes=$_POST['Page'];
+		if (isset($_POST['Page'])) {
+			$model->attributes = $_POST['Page'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -101,24 +98,21 @@ class PageController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Page']))
-		{
-			$model->attributes=$_POST['Page'];
+		if (isset($_POST['Page'])) {
+			$model->attributes = $_POST['Page'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
@@ -130,33 +124,31 @@ class PageController extends Controller
 	public function actionDelete($id)
 	{
 		$page = $this->loadModel($id);
-		if($page->is_default == 0)
-		{
-			Notice::page(Yii::t('notice', sprintf("Are you sure to delete this page '%s'?", $page->getAttributeDataByLanguage($page, 'title'))), Notice_WARNING, 
-			array('url'=>$this->createUrl('deleteConfirmed', array('id'=>$id)), 'cancelUrl'=>$this->createUrl('view', array('id'=>$id))));
-		}
-		else
-		{
+		if ($page->is_default == 0) {
+			Notice::page(
+				Yii::t('notice', sprintf("Are you sure to delete this page '%s'?", $page->getAttributeDataByLanguage($page, 'title'))),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deleteConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
 			Notice::flash(Yii::t('notice', sprintf("'%s' is an undeletable default page", $page->getAttributeDataByLanguage($page, 'title'))), Notice_ERROR);
-			$this->redirect(array('page/view', 'id'=>$id));
+			$this->redirect(array('page/view', 'id' => $id));
 		}
 	}
+
 	public function actionDeleteConfirmed($id)
 	{
 		$page = Page::model()->findByPk($id);
-		if($page===null)	throw new CHttpException(404,'The requested record does not exist.');
-		
-		if($page->delete())
-		{
-			Notice::flash(Yii::t('notice', sprintf("Page '%s' is successfully deleted.", $page->getAttributeDataByLanguage($page, 'title'))), Notice_SUCCESS);
+		if ($page === null) {
+			throw new CHttpException(404, 'The requested record does not exist.');
 		}
-		else
-		{
+		if ($page->delete()) {
+			Notice::flash(Yii::t('notice', sprintf("Page '%s' is successfully deleted.", $page->getAttributeDataByLanguage($page, 'title'))), Notice_SUCCESS);
+		} else {
 			Notice::flash(Yii::t('notice', sprintf("Failed to delete page '%s' due to unknown reason.", $page->getAttributeDataByLanguage($page, 'title'))), Notice_ERROR);
 		}
-		
-		if(!isset($_GET['ajax']))
-		{
+
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(array('page/admin'));
 		}
 	}
@@ -166,9 +158,9 @@ class PageController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Page');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+		$dataProvider = new CActiveDataProvider('Page');
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -177,13 +169,15 @@ class PageController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Page('search');
+		$model = new Page('search');
 		// $model->unsetAttributes();  // clear any default values
 		// if(isset($_GET['Page']))	$model->attributes=$_GET['Page'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -196,9 +190,10 @@ class PageController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Page::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Page::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -208,8 +203,7 @@ class PageController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='page-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'page-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

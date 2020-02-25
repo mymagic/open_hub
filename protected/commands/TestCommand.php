@@ -32,8 +32,8 @@ class TestCommand extends ConsoleCommand
 
 	public function actionGetPath()
 	{
-		echo Yii::getPathOfAlias('wwwroot')."\n";
-		echo Yii::getPathOfAlias('components')."\n";
+		echo Yii::getPathOfAlias('wwwroot') . "\n";
+		echo Yii::getPathOfAlias('components') . "\n";
 	}
 
 	public function actionOrganizationComments()

@@ -21,7 +21,7 @@ class ReportController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout = 'backend';
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -42,20 +42,18 @@ class ReportController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index', 
+				'actions' => array('index',
 				),
-				'users'=>array('@'),
-				'expression'=>"\$user->isReportManager==true && \$user->accessBackend==true",
+				'users' => array('@'),
+				'expression' => '$user->isReportManager==true && $user->accessBackend==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
 
-	
 	public function actionIndex()
 	{
-		
 	}
 }

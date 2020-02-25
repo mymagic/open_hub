@@ -1,5 +1,5 @@
 <?php
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	Yii::t('app', 'Admin'),
 );?>
 <h1><?php echo Yii::t('app', 'Backend') ?></h1>

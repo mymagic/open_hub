@@ -1,19 +1,19 @@
 <?php $this->beginContent(sprintf('webroot.themes.%s.views.layouts._frontend', Yii::app()->theme->name)); ?>
-<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . "/javascript/app.js", CClientScript::POS_END); ?>
-<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/javascript/frontend.js", CClientScript::POS_END); ?>
-<?php //Yii::app()->clientScript->registerScriptFile("//www.mymagic.my/universal-assets/css/bootstrap-social.css", CClientScript::POS_END); ?>
+<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/app.js', CClientScript::POS_END); ?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/javascript/frontend.js', CClientScript::POS_END); ?>
+<?php //Yii::app()->clientScript->registerScriptFile("//www.mymagic.my/universal-assets/css/bootstrap-social.css", CClientScript::POS_END);?>
 
 
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/vendor/stampede/js/uniheader-new.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/vendor/stampede/js/unifooter.js', CClientScript::POS_END); ?>
 <?php
 /*Yii::app()->clientScript->registerScript("uniheader", sprintf('$(function() {
-	_muh.config.selectedMenu1="academy"; 
-	_muh.config.disableLanguage=true; 
+	_muh.config.selectedMenu1="academy";
+	_muh.config.disableLanguage=true;
 	_muh.config.disableAccount=false;
 	_muh.config.isLogin=%s;
 	_muh.config.currentUrl = "//hub.mymagic.my";
-    _muh.config.logoutUrl = "//hub.mymagic.my/site/logout";
+	_muh.config.logoutUrl = "//hub.mymagic.my/site/logout";
 	_muh.render();
 });', Yii::app()->user->isGuest?'false':'true'), CClientScript::POS_END);*/
 ?>
@@ -21,9 +21,9 @@
 <?php $this->layoutParams['hideFlashes'] = false; ?>
 <?php $this->layoutParams['bodyClass'] .= ' body-stampede'; ?>
 
-<?php //$this->layoutParams['bodyClass'] .= ' push-body'; ?>
+<?php //$this->layoutParams['bodyClass'] .= ' push-body';?>
 
-<?php if(Notice::hasFlashes()) :?>
+<?php if (Notice::hasFlashes()) :?>
 <div id="layout-flashNotice">
 	<?php echo Notice::renderFlashes() ?>
 </div>
@@ -69,9 +69,9 @@
                             </div>
                         </form>
                         <ul class="nav_pillars">   
-                         <!--    <li role="presentation" class="<?php if($this->activeMenuMain=="start"): ?>active<?php endif; ?>"><a href="<?php echo $this->createUrl('//resource/frontend/index') ?>">Resource Directory</a></li>
-							<li role="presentation" class="<?php if($this->activeMenuMain=="forum"): ?>active<?php endif; ?>"><a href="http://magiccentral.userecho.com/">Q&amp;A Forum</a></li>
-							<li role="presentation" class="<?php if($this->activeMenuMain=="appointment"): ?>active<?php endif; ?>"><a href="http://magic.acuityscheduling.com/schedule.php?calendarID=299677">Mentorship</a></li> -->
+                         <!--    <li role="presentation" class="<?php if ($this->activeMenuMain == 'start'): ?>active<?php endif; ?>"><a href="<?php echo $this->createUrl('//resource/frontend/index') ?>">Resource Directory</a></li>
+							<li role="presentation" class="<?php if ($this->activeMenuMain == 'forum'): ?>active<?php endif; ?>"><a href="http://magiccentral.userecho.com/">Q&amp;A Forum</a></li>
+							<li role="presentation" class="<?php if ($this->activeMenuMain == 'appointment'): ?>active<?php endif; ?>"><a href="http://magic.acuityscheduling.com/schedule.php?calendarID=299677">Mentorship</a></li> -->
                         </ul>
                     </div>
                     <ul class="nav_main hidden-md hidden-lg">
@@ -112,7 +112,7 @@
 <footer class="uni-footer"></footer>
 <!-- /universal footer -->
 
-<?php if(Yii::app()->params['environment'] == 'production'):?>
+<?php if (Yii::app()->params['environment'] == 'production'):?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -130,7 +130,7 @@
 
 
 
-<?php //Yii::app()->getClientScript()->registerCssFile('https://fonts.googleapis.com/css?family=Montserrat'); ?>
+<?php //Yii::app()->getClientScript()->registerCssFile('https://fonts.googleapis.com/css?family=Montserrat');?>
 <?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/vendor/stampede/css/jpushmenu.css'); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/vendor/stampede/js/jpushmenu.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/vendor/stampede/css/base.css'); ?>

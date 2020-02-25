@@ -2,13 +2,13 @@
 /* @var $this RegistryController */
 /* @var $model Registry */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Registries')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Registries') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create Registry'), 'url'=>array('/registry/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create Registry'), 'url' => array('/registry/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,25 +30,25 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-registrySearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'registry-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+	'id' => 'registry-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'code',
 		'the_value',
-		array('name'=>'date_modified', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'date_modified', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
-			'buttons' => array('delete' => array('visible'=>false)),		),
+			'class' => 'application.components.widgets.ButtonColumn',
+			'buttons' => array('delete' => array('visible' => false)),		),
 	),
 )); ?>

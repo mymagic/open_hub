@@ -3,7 +3,7 @@
 
 <div id="f7-publish">
 <div class="row">
-	<div class="col-lg-<?php echo $model->hasIntake()?'8':'12' ?>">
+	<div class="col-lg-<?php echo $model->hasIntake() ? '8' : '12' ?>">
 		<div class="wrapper wrapper-content animated fadeInUp">
 			<div class="">
 
@@ -21,22 +21,22 @@
 	</div>
 	
 
-    <?php if($model->hasIntake()):?>
+    <?php if ($model->hasIntake()):?>
 	<div class="col-lg-4">
 		<div class="wrapper wrapper-content project-manager">
 			
-			<?php if(!empty($model->getIntake()->image_logo)): ?>
-				<?php echo Html::thumb(StorageHelper::getUrl($model->getIntake()->image_logo), array('class'=>'img-responsive margin-bottom-lg'))?>
+			<?php if (!empty($model->getIntake()->image_logo)): ?>
+				<?php echo Html::thumb(StorageHelper::getUrl($model->getIntake()->image_logo), array('class' => 'img-responsive margin-bottom-lg'))?>
 			<?php endif; ?>
 
 			<div class="job_provider_info">
 				<h4><?php echo $model->getIntake()->title ?></h4>
-				<?php if(!empty($model->getIntake()->text_oneliner)): ?>
+				<?php if (!empty($model->getIntake()->text_oneliner)): ?>
 					<p><?php echo $model->getIntake()->text_oneliner ?></p>
 				<?php endif; ?>
 				
 				<div>
-				<?php if(!empty($model->getIntake()->text_short_description)): ?>
+				<?php if (!empty($model->getIntake()->text_short_description)): ?>
 					<?php echo nl2br($model->getIntake()->text_short_description) ?>
 				<?php endif; ?>
 				</div>
@@ -45,9 +45,9 @@
 			<div>
 			<h5>Available forms for this intake</h5>
 			<ul class="job_provider_vacancy">
-				<?php $activeForms = $model->getIntake()->activeForms; foreach($activeForms as $activeForm): ?>
-				<?php if($activeForm->isAvailableForPublic()): ?>
-				<li class="<?php if($activeForm->slug==$model->slug): ?>bg-success<?php endif; ?>">
+				<?php $activeForms = $model->getIntake()->activeForms; foreach ($activeForms as $activeForm): ?>
+				<?php if ($activeForm->isAvailableForPublic()): ?>
+				<li class="<?php if ($activeForm->slug == $model->slug): ?>bg-success<?php endif; ?>">
 					<a href="<?php echo $activeForm->getPublicUrl() ?>">
 					<strong><?php echo $activeForm->title ?></strong><br />
 					</a>

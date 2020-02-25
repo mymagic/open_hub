@@ -2,42 +2,41 @@
 /* @var $this OrganizationController */
 /* @var $model Organization */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Journey')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Journey') => array('index'),
 	Yii::t('backend', 'Search'),
 );
 
-$this->menu=array(
+$this->menu = array(
 	//array('label'=>Yii::t('app','Create Organization'), 'url'=>array('/organization/create')),
 );
 ?>
 
 <div class="row padding-top-lg">
 <div class="col col-sm-4">
-	<?php if($this->layout == '//layouts/backend'): ?><h1 class="nopadding"><?php echo $this->pageTitle ?></h1><?php endif; ?>
+	<?php if ($this->layout == '//layouts/backend'): ?><h1 class="nopadding"><?php echo $this->pageTitle ?></h1><?php endif; ?>
 </div>
 <div class="col col-sm-8 text-right">
-	<?php $form=$this->beginWidget('ActiveForm', array(
-		'htmlOptions'=>array
-		(
-			'class'=>'form-inline',
-			'role'=>'form'
+	<?php $form = $this->beginWidget('ActiveForm', array(
+		'htmlOptions' => array(
+			'class' => 'form-inline',
+			'role' => 'form'
 		),
-		'action'=>$this->createUrl('/journey/backend/searchJourney'),
+		'action' => $this->createUrl('/journey/backend/searchJourney'),
 	)); ?>
 	<div class="form-group">Insert Either: </div>
 
 	<div class="form-group">
-		<?php echo $form->bsTextField($model['form'], 'email', array('placeholder'=>'Email: abc@gmail.com', 'size'=>20)); ?>
+		<?php echo $form->bsTextField($model['form'], 'email', array('placeholder' => 'Email: abc@gmail.com', 'size' => 20)); ?>
 	</div>
 	<div class="form-group">
-		<?php echo $form->bsTextField($model['form'], 'mobileNo', array('placeholder'=>'Mobile Number', 'size'=>16)); ?>
+		<?php echo $form->bsTextField($model['form'], 'mobileNo', array('placeholder' => 'Mobile Number', 'size' => 16)); ?>
 	</div>
 	<div class="form-group">
-		<?php echo $form->bsTextField($model['form'], 'fullName', array('placeholder'=>'Full Name', 'size'=>16)); ?>
+		<?php echo $form->bsTextField($model['form'], 'fullName', array('placeholder' => 'Full Name', 'size' => 16)); ?>
 	</div>
 	<div class="form-group hidden">
-		<?php echo $form->bsTextField($model['form'], 'organization', array('placeholder'=>'Organization', 'size'=>16)); ?>
+		<?php echo $form->bsTextField($model['form'], 'organization', array('placeholder' => 'Organization', 'size' => 16)); ?>
 	</div>
 	<?php echo $form->bsBtnSubmit('Search'); ?>
 
@@ -47,16 +46,16 @@ $this->menu=array(
 
 <div class="row margin-top-2x">
 	<div class="col col-sm-10">
-		<?php if(!empty($model['profiles'])): ?>
+		<?php if (!empty($model['profiles'])): ?>
 		Matched:
-		<?php foreach($model['profiles'] as $profile): ?>
+		<?php foreach ($model['profiles'] as $profile): ?>
 			<span>
-			<?php if($model['searchMode'] == 'fullName'): ?>
-				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('fullName'=>"'{$profile->full_name}'")) ?>"><?php echo $profile->full_name ?></a>
-			<?php elseif($model['searchMode'] == 'email'): ?>
-				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('email'=>$profile->email)) ?>"><?php echo $profile->email ?></a>
-			<?php elseif($model['searchMode'] == 'mobileNo'): ?>
-				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('mobileNo'=>$profile->mobileNo)) ?>"><?php echo $profile->mobileNo ?></a>
+			<?php if ($model['searchMode'] == 'fullName'): ?>
+				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('fullName' => "'{$profile->full_name}'")) ?>"><?php echo $profile->full_name ?></a>
+			<?php elseif ($model['searchMode'] == 'email'): ?>
+				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('email' => $profile->email)) ?>"><?php echo $profile->email ?></a>
+			<?php elseif ($model['searchMode'] == 'mobileNo'): ?>
+				<a class="label label-primary margin-right-sm" style="display:inline-block" href="<?php echo $this->createUrl('/journey/backend/searchJourney', array('mobileNo' => $profile->mobileNo)) ?>"><?php echo $profile->mobileNo ?></a>
 			<?php endif; ?>
 			</span>
 		<?php endforeach; ?><?php endif; ?>
@@ -68,18 +67,18 @@ $this->menu=array(
 
 
 
-<?php if(!empty($model['events'])): ?>
+<?php if (!empty($model['events'])): ?>
 <div id="vertical-timeline" class="vertical-container light-timeline center-orientation padding-lg full-width rounded-md" style="background:#ddd !important">
-<?php foreach($model['events'] as $event): ?>
+<?php foreach ($model['events'] as $event): ?>
 	<div class="vertical-timeline-block">
 		<div class="vertical-timeline-icon blue-bg">
 			<i class="fa fa-calendar"></i>
 		</div>
 
 		<div class="vertical-timeline-content">
-			<h2><a href="<?php echo $this->createUrl('/event/view', array('id'=>$event->id)) ?>" target="_blank"><?php echo $event->title ?></a><br />
+			<h2><a href="<?php echo $this->createUrl('/event/view', array('id' => $event->id)) ?>" target="_blank"><?php echo $event->title ?></a><br />
 			
-			<small><?php if($event->date_started != $event->date_ended): ?>
+			<small><?php if ($event->date_started != $event->date_ended): ?>
 				From <span><?php echo Html::formatDateTime($event->date_started, 'medium', false) ?></span> to <span><?php echo Html::formatDateTime($event->date_ended, 'medium', false) ?></span>
 				<?php endif; ?>
 				 at <span><?php echo Html::encodeDisplay($event->at) ?></span>

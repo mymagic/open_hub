@@ -1,5 +1,5 @@
 <?php $this->layoutParams['form'] = $model; ?>
-<?php $this->renderPartial('_submissionPartial', array('model'=>$model)) ?>
+<?php $this->renderPartial('_submissionPartial', array('model' => $model)) ?>
 <hr />
 <?php echo $form?>
 
@@ -223,7 +223,7 @@ function geocodePlaceId(placeId) {
 </script>
 
 <?php 
-	$url=sprintf('https://maps.googleapis.com/maps/api/js?key=%s&libraries=places&callback=initAutocomplete',Yii::app()->params['googleMapApiKey']);
+	$url = sprintf('https://maps.googleapis.com/maps/api/js?key=%s&libraries=places&callback=initAutocomplete', Yii::app()->params['googleMapApiKey']);
 ?>
 
 <script src="<?php echo $url ?>" async defer></script>

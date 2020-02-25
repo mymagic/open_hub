@@ -2,17 +2,17 @@
 /* @var $this SettingController */
 /* @var $model Setting */
 
-$this->breadcrumbs=array(
-	'Settings'=>array('index'),
+$this->breadcrumbs = array(
+	'Settings' => array('index'),
 	$model->id,
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Setting Panel'), 'url'=>array('panel')),
-	array('label'=>Yii::t('app','Manage Setting'), 'url'=>array('admin')),
-	array('label'=>Yii::t('app','Create Setting'), 'url'=>array('create')),
-	array('label'=>Yii::t('app','Update Setting'), 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>Yii::t('app','Delete Setting'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id), 'csrf'=>Yii::app()->request->enableCsrfValidation, 'confirm'=>Yii::t('core', 'Are you sure you want to delete this item?'))),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Setting Panel'), 'url' => array('panel')),
+	array('label' => Yii::t('app', 'Manage Setting'), 'url' => array('admin')),
+	array('label' => Yii::t('app', 'Create Setting'), 'url' => array('create')),
+	array('label' => Yii::t('app', 'Update Setting'), 'url' => array('update', 'id' => $model->id)),
+	array('label' => Yii::t('app', 'Delete Setting'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?'))),
 );
 ?>
 
@@ -20,16 +20,16 @@ $this->menu=array(
 
 <div class="crud-view">
 <?php $this->widget('application.components.widgets.DetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
+	'data' => $model,
+	'attributes' => array(
 		'id',
 		'code',
-		array('name'=>'value', 'type'=>'raw', 'value'=>$model->renderValue($model)),
-		array('name'=>'datatype', 'value'=>$model->formatEnumDatatype($model->datatype)),
+		array('name' => 'value', 'type' => 'raw', 'value' => $model->renderValue($model)),
+		array('name' => 'datatype', 'value' => $model->formatEnumDatatype($model->datatype)),
 		'datatype_value',
 		'note',
-		array('label'=>$model->attributeLabel('date_added'), 'value'=>Html::formatDateTime($model->date_added, 'long', 'medium')),
-		array('label'=>$model->attributeLabel('date_modified'), 'value'=>Html::formatDateTime($model->date_modified, 'long', 'medium')),
+		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
+		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 	),
 )); ?>
 

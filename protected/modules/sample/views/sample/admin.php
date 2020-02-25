@@ -2,13 +2,13 @@
 /* @var $this SampleController */
 /* @var $model Sample */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Samples')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Samples') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create Sample'), 'url'=>array('/sample/sample/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create Sample'), 'url' => array('/sample/sample/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,30 +30,30 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-sampleSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'sample-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+	'id' => 'sample-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'title_en',
-		array('name'=>'sample_group_id', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->getAttributeDataByLanguage($data->sampleGroup, "title")', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>SampleGroup::model()->getForeignReferList(false, true)),
-		array('name'=>'sample_zone_code', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->sampleZone->label', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>SampleZone::model()->getForeignReferList(false, true)),
-		array('name'=>'image_main', 'cssClassExpression'=>'image', 'type'=>'raw', 'value'=>'Html::activeThumb($data, \'image_main\')', 'headerHtmlOptions'=>array('class'=>'image'), 'filter'=>false),
-		array('name'=>'gender', 'cssClassExpression'=>'enum', 'value'=>'$data->formatEnumGender($data->gender)', 'headerHtmlOptions'=>array('class'=>'enum'), 'filter'=>$model->getEnumGender(false, true)), 
-		array('name'=>'ordering', 'headerHtmlOptions'=>array('class'=>'ordering'), 'class'=>'application.yeebase.extensions.OrderColumn.OrderColumn'),
-		array('name'=>'is_active', 'cssClassExpression'=>'boolean', 'type'=>'raw', 'value'=>'Html::renderBoolean($data->is_active)', 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'date_posted', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_posted, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'sample_group_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->getAttributeDataByLanguage($data->sampleGroup, "title")', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => SampleGroup::model()->getForeignReferList(false, true)),
+		array('name' => 'sample_zone_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->sampleZone->label', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => SampleZone::model()->getForeignReferList(false, true)),
+		array('name' => 'image_main', 'cssClassExpression' => 'image', 'type' => 'raw', 'value' => 'Html::activeThumb($data, \'image_main\')', 'headerHtmlOptions' => array('class' => 'image'), 'filter' => false),
+		array('name' => 'gender', 'cssClassExpression' => 'enum', 'value' => '$data->formatEnumGender($data->gender)', 'headerHtmlOptions' => array('class' => 'enum'), 'filter' => $model->getEnumGender(false, true)),
+		array('name' => 'ordering', 'headerHtmlOptions' => array('class' => 'ordering'), 'class' => 'application.yeebase.extensions.OrderColumn.OrderColumn'),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'date_posted', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_posted, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 					),
 	),
 )); ?>

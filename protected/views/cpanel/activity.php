@@ -57,7 +57,7 @@
 <?php Yii::app()->ClientScript->registerScriptFile('https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js'); ?>
 
 
-<?php Yii::app()->clientScript->registerScript("v-timeline", "
+<?php Yii::app()->clientScript->registerScript('v-timeline', "
 
 Vue . component('treeselect', VueTreeselect . Treeselect);
 

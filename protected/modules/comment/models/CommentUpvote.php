@@ -2,19 +2,22 @@
 
 class CommentUpvote extends CommentUpvoteBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -22,7 +25,7 @@ class CommentUpvote extends CommentUpvoteBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -50,7 +53,7 @@ class CommentUpvote extends CommentUpvoteBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -60,9 +63,9 @@ class CommentUpvote extends CommentUpvoteBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -78,6 +81,6 @@ class CommentUpvote extends CommentUpvoteBase
 
 	public function isExists($commentId, $userId)
 	{
-		return self::model()->exists('comment_id=:commentId AND user_id=:userId', array(":commentId"=>$commentId, ":userId"=>$userId));
+		return self::model()->exists('comment_id=:commentId AND user_id=:userId', array(':commentId' => $commentId, ':userId' => $userId));
 	}
 }

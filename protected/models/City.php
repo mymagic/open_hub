@@ -17,8 +17,11 @@
 
 class City extends CityBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
-	
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
+
 	public function toApi()
 	{
 		return array(

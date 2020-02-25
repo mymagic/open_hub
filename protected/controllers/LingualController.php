@@ -24,11 +24,10 @@ class LingualController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -49,46 +48,44 @@ class LingualController extends Controller
 	{
 		return array(
 			array('deny',  // deny if make is reporting
-				'expression'=>"\Yii::app()->params['make']==reporting",
+				'expression' => "\Yii::app()->params['make']==reporting",
 			),
 			array('allow',
-				'actions'=>array('index','admin'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isContentManager==true || \$user->isSuperAdmin==true",
+				'actions' => array('index', 'admin'),
+				'users' => array('@'),
+				'expression' => '$user->isContentManager==true || $user->isSuperAdmin==true',
 			),
 			array('allow',
-				'actions'=>array('translate'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isContentManager==true || \$user->isSuperAdmin==true",
+				'actions' => array('translate'),
+				'users' => array('@'),
+				'expression' => '$user->isContentManager==true || $user->isSuperAdmin==true',
 			),
 			array('allow',
-				'actions'=>array('editPredefined','rescan'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isDeveloper==true || \$user->isSuperAdmin==true",
+				'actions' => array('editPredefined', 'rescan'),
+				'users' => array('@'),
+				'expression' => '$user->isDeveloper==true || $user->isSuperAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
-	
+
 	public function actionIndex()
 	{
 		$this->redirect('admin');
 	}
-	
+
 	public function actionAdmin()
 	{
-		$scopeFiles = scandir(Yii::getPathOfAlias('messages').DIRECTORY_SEPARATOR.Yii::app()->language);
-		foreach($scopeFiles as $sf)
-		{
-			if($sf != '.' && $sf != '..')
-			{
+		$scopeFiles = scandir(Yii::getPathOfAlias('messages') . DIRECTORY_SEPARATOR . Yii::app()->language);
+		foreach ($scopeFiles as $sf) {
+			if ($sf != '.' && $sf != '..') {
 				$scopes[] = str_replace('.php', '', $sf);
 			}
 		}
-		
-		$this->render('admin', array('scopes'=>$scopes));
+
+		$this->render('admin', array('scopes' => $scopes));
 	}
 
 	public function actionTranslate($scope, $lingual)
@@ -98,53 +95,47 @@ class LingualController extends Controller
 		$items = array();
 
 		$filePath = sprintf('%s%s%s%s%s.php', Yii::getPathOfAlias('messages'), DIRECTORY_SEPARATOR, $lingual, DIRECTORY_SEPARATOR, $scope);
-		$items[$lingual] = include($filePath);
-		$totalInputRequired =  ceil(count($items[$lingual])*2.1);
-		if($phpMaxInputLimit < $totalInputRequired)
-		{
-			Notice::flash(Yii::t('backend', 'Form has been disabled to prevent error while saving. Please contact your server admin to increase your PHP max_input_vars value to at least {totalInputRequired} or more.', ['{totalInputRequired}'=>$totalInputRequired]), Notice_ERROR);
+		$items[$lingual] = include $filePath;
+		$totalInputRequired = ceil(count($items[$lingual]) * 2.1);
+		if ($phpMaxInputLimit < $totalInputRequired) {
+			Notice::flash(Yii::t('backend', 'Form has been disabled to prevent error while saving. Please contact your server admin to increase your PHP max_input_vars value to at least {totalInputRequired} or more.', ['{totalInputRequired}' => $totalInputRequired]), Notice_ERROR);
 			$canSave = false;
 		}
-		
-		if(isset($_POST['YII_CSRF_TOKEN']))
-		{
+
+		if (isset($_POST['YII_CSRF_TOKEN'])) {
 			$buffer = "<?php\nreturn array (\n";
 			$totalLine = count($_POST['langKey']);
 
-			for($i=0; $i<$totalLine; $i++)
-			{
+			for ($i = 0; $i < $totalLine; $i++) {
 				$buffer .= sprintf("\n\t'%s' => '%s',", addcslashes($_POST['langKey'][$i], "'"), addcslashes(trim($_POST['langValue'][$i]), "'"));
 			}
 			$buffer .= "\n);\n?>";
-			if(file_put_contents($filePath, $buffer)) 
-			{
-				Notice::flash(Yii::t('notice', 'Your translation on \'{scope}\' for language \'{language}\' is successfully saved.', ['{scope}'=>$scope, '{language}'=>Yii::app()->params['languages'][$lingual]]),  Notice_SUCCESS);
-				$this->redirect(array('lingual/translate', 'scope'=>$scope, 'lingual'=>$lingual, 'rand'=>rand()));
+			if (file_put_contents($filePath, $buffer)) {
+				Notice::flash(Yii::t('notice', 'Your translation on \'{scope}\' for language \'{language}\' is successfully saved.', ['{scope}' => $scope, '{language}' => Yii::app()->params['languages'][$lingual]]), Notice_SUCCESS);
+				$this->redirect(array('lingual/translate', 'scope' => $scope, 'lingual' => $lingual, 'rand' => rand()));
 			}
 		}
-		
-		$this->render('translate', array('scope'=>$scope, 'lingual'=>$lingual, 'items'=>$items, 'canSave'=>$canSave));
+
+		$this->render('translate', array('scope' => $scope, 'lingual' => $lingual, 'items' => $items, 'canSave' => $canSave));
 	}
-	
+
 	public function actionRescan()
 	{
 		$this->render('rescan');
 	}
-	
+
 	public function actionEditPredefined($scope)
 	{
-		$filePath = Yii::getPathOfAlias('data').DIRECTORY_SEPARATOR.'message'.DIRECTORY_SEPARATOR.$scope.'.tag.tpl';
-		
-		if(isset($_POST['YII_CSRF_TOKEN']) && isset($_POST['content']))
-		{
+		$filePath = Yii::getPathOfAlias('data') . DIRECTORY_SEPARATOR . 'message' . DIRECTORY_SEPARATOR . $scope . '.tag.tpl';
+
+		if (isset($_POST['YII_CSRF_TOKEN']) && isset($_POST['content'])) {
 			$buffer = $_POST['content'];
 			file_put_contents($filePath, $buffer);
-			Notice::flash(Yii::t('notice', 'Your predefined tag on \'{scope}\' is successfully saved.', ['{scope}'=>$scope]),  Notice_SUCCESS);
+			Notice::flash(Yii::t('notice', 'Your predefined tag on \'{scope}\' is successfully saved.', ['{scope}' => $scope]), Notice_SUCCESS);
 		}
-		
+
 		$content = file_get_contents($filePath);
-		
-		
-		$this->render('editPredefined', array('scope'=>$scope, 'filePath'=>$filePath, 'content'=>$content, 'canSave'=>$canSave));
+
+		$this->render('editPredefined', array('scope' => $scope, 'filePath' => $filePath, 'content' => $content, 'canSave' => $canSave));
 	}
 }

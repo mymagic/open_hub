@@ -2,30 +2,32 @@
 
 class Comment extends CommentBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-	public function relations() 
-	{ 
-		// NOTE: you may need to adjust the relation name and the related 
-		// class name for the relations automatically generated below. 
-		return array( 
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
 			'commentUpvotes' => array(self::HAS_MANY, 'CommentUpvote', 'comment_id'),
-			'countCommentUpvotes' => array(self::STAT,'CommentUpvote','comment_id'),
+			'countCommentUpvotes' => array(self::STAT, 'CommentUpvote', 'comment_id'),
+		);
+	}
 
-		); 
-	} 
-	
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -33,7 +35,7 @@ class Comment extends CommentBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -61,7 +63,7 @@ class Comment extends CommentBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -71,9 +73,9 @@ class Comment extends CommentBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -89,17 +91,19 @@ class Comment extends CommentBase
 
 	public function hasUserUpvote($userId)
 	{
-		foreach($this->commentUpvotes as $upvote)
-		{
-			if($upvote->user_id == $userId) return true;
+		foreach ($this->commentUpvotes as $upvote) {
+			if ($upvote->user_id == $userId) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
 	public function countByObjectKey($objectKey)
 	{
 		return Comment::model()->countByAttributes(array(
-            'object_key'=> $objectKey
-        ));
+			'object_key' => $objectKey
+		));
 	}
 }

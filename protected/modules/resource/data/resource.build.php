@@ -1,48 +1,46 @@
 <?php
+
 return array(
 	'layout' => '//layouts/backend',
 	'moduleCode' => 'resource',
 	'isAllowMeta' => true,
-	'foreignRefer' => array('key'=>'id', 'title'=>'title'),
+	'foreignRefer' => array('key' => 'id', 'title' => 'title'),
 	'menuTemplate' => array(
-		'index'=>'admin, create',
-		'admin'=>'create',
-		'create'=>'admin',
-		'update'=>'admin, create, view',
-		'view'=>'admin, create, update, delete',
+		'index' => 'admin, create',
+		'admin' => 'create',
+		'create' => 'admin',
+		'update' => 'admin, create, view',
+		'view' => 'admin, create, update, delete',
 	),
 	'admin' => array(
 		'list' => array('id', 'typefor', 'title', 'is_featured', 'is_active', 'date_added'),
 		'sortDefaultOrder' => 't.id DESC',
 	),
 	'structure' => array(
-        'slug' => array
-		(
-			'isUnique'=>true,
+		'slug' => array(
+			'isUnique' => true,
 		),
-		'orid' => array('isHiddenInForm'=>true),
-		'owner' => array('isHiddenInForm'=>true),
-        'typefor' => array
-		(
+		'orid' => array('isHiddenInForm' => true),
+		'owner' => array('isHiddenInForm' => true),
+		'typefor' => array(
 			// define enum here, so generator can support database system that dont even supprot this data type such as sqlite
-			'isEnum'=>true, 'enumSelections'=>array('award'=>'Award','fund'=>'Fund','legislation'=>'Legislation','media'=>'Media','program'=>'Program','space'=>'Space','other'=>'Others'),
-        ),
-        'image_logo' => array
-		(
-			'resize'=>'500x500', 
-			'hints'=>'Image will be automatically resize to 500x500 px.'
+			'isEnum' => true, 'enumSelections' => array('award' => 'Award', 'fund' => 'Fund', 'legislation' => 'Legislation', 'media' => 'Media', 'program' => 'Program', 'space' => 'Space', 'other' => 'Others'),
 		),
-		'latlong_address' => array('isSpatial'=>true),
-		'json_extra'=>array('isJson'=>true),
+		'image_logo' => array(
+			'resize' => '500x500',
+			'hints' => 'Image will be automatically resize to 500x500 px.'
+		),
+		'latlong_address' => array('isSpatial' => true),
+		'json_extra' => array('isJson' => true),
 	),
-    // this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
-    'json'=>array(
-		'extra'=>array(
+	// this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
+	'json' => array(
+		'extra' => array(
 		),
 	),
-    'spatial'=>array(
-		'latlong_address'=>array(
-			'onChangeLinked'=>array('full_address')
+	'spatial' => array(
+		'latlong_address' => array(
+			'onChangeLinked' => array('full_address')
 		),
 	),
 	/*
@@ -55,22 +53,21 @@ return array(
 		label: optional
 		notMasterData: optional boolean, default: false. If set true, means the target table can be huge so the input method will be different
 	*/
-	'many2many'=>array(
-		'organization'=>array('className'=>'Organization', 'relationName'=>'organizations', 'relationTable'=>'resource2organization', 'notMasterData'=>true),
-		
-		'industry'=>array('className'=>'Industry', 'relationName'=>'industries', 'relationTable'=>'resource2industry'),
-		
-		'persona'=>array('className'=>'Persona', 'relationName'=>'personas', 'relationTable'=>'resource2persona'),
-		
-		'startup_stage'=>array('className'=>'StartupStage', 'relationName'=>'startupStages', 'relationTable'=>'resource2stage'),
-		
-		'resource_category'=>array('className'=>'ResourceCategory', 'relationName'=>'resourceCategories', 'relationTable'=>'resource2resource_category', 'linkClassName'=>'ResourceCategory2Resource', 'filterBy'=>'typefor'),
-		
-		'resource_geofocus'=>array('className'=>'ResourceGeofocus', 'relationName'=>'resourceGeofocuses', 'relationTable'=>'resource2resource_geofocus', 'linkClassName'=>'ResourceGeofocus2Resource', 'label'=>'Geo Focus'),
+	'many2many' => array(
+		'organization' => array('className' => 'Organization', 'relationName' => 'organizations', 'relationTable' => 'resource2organization', 'notMasterData' => true),
+
+		'industry' => array('className' => 'Industry', 'relationName' => 'industries', 'relationTable' => 'resource2industry'),
+
+		'persona' => array('className' => 'Persona', 'relationName' => 'personas', 'relationTable' => 'resource2persona'),
+
+		'startup_stage' => array('className' => 'StartupStage', 'relationName' => 'startupStages', 'relationTable' => 'resource2stage'),
+
+		'resource_category' => array('className' => 'ResourceCategory', 'relationName' => 'resourceCategories', 'relationTable' => 'resource2resource_category', 'linkClassName' => 'ResourceCategory2Resource', 'filterBy' => 'typefor'),
+
+		'resource_geofocus' => array('className' => 'ResourceGeofocus', 'relationName' => 'resourceGeofocuses', 'relationTable' => 'resource2resource_geofocus', 'linkClassName' => 'ResourceGeofocus2Resource', 'label' => 'Geo Focus'),
 	),
-	'tag'=>array(
-		'backend'=>array(
-			'tagTable'=>'tag', 'tagBindingTable'=>'tag2resource', 'modelTableFk'=>'resource_id', 'tagTablePk'=>'id', 'tagTableName'=>'name', 'tagBindingTableTagId'=>'tag_id', 'cacheID'=>'cacheTag2Resource'),
+	'tag' => array(
+		'backend' => array(
+			'tagTable' => 'tag', 'tagBindingTable' => 'tag2resource', 'modelTableFk' => 'resource_id', 'tagTablePk' => 'id', 'tagTableName' => 'name', 'tagBindingTableTagId' => 'tag_id', 'cacheID' => 'cacheTag2Resource'),
 	),
-	
-); 
+);

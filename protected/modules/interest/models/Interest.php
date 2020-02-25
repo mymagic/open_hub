@@ -2,19 +2,22 @@
 
 class Interest extends InterestBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -22,7 +25,7 @@ class Interest extends InterestBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -45,7 +48,8 @@ class Interest extends InterestBase
 		if (Yii::app()->neo4j->getStatus()) {
 			Neo4jInterest::model($this)->sync();
 		}
-        return parent::afterSave();
+
+		return parent::afterSave();
 	}
 
 	protected function afterDelete()
@@ -56,14 +60,15 @@ class Interest extends InterestBase
 		$model = Neo4jInterest::model()->findOneByPk($this->id);
 		$model->deleteRelationships();
 		Neo4jInterest::model()->deleteOneByPk($this->id);
-        return parent::afterDelete();
+
+		return parent::afterDelete();
 	}
 
 	protected function beforeFind()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -73,9 +78,9 @@ class Interest extends InterestBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 

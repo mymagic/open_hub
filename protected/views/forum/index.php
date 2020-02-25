@@ -1,8 +1,8 @@
 <?php
-$this->breadcrumbs=array(
-    'Q&A Forum'
+$this->breadcrumbs = array(
+	'Q&A Forum'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 ?>
 
@@ -12,7 +12,7 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
 <iframe src="https://magiccentral.userecho.com" class="full-width" border="0" style="border:0; position: absolute; height:100%"></iframe>
 </div>
 
-<?php if(Yii::app()->params['environment'] == 'production'):?>
+<?php if (Yii::app()->params['environment'] == 'production'):?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

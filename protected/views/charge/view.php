@@ -2,15 +2,15 @@
 /* @var $this ChargeController */
 /* @var $model Charge */
 
-$this->breadcrumbs=array(
-	'Charges'=>array('index'),
+$this->breadcrumbs = array(
+	'Charges' => array('index'),
 	$model->title,
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage Charge'), 'url'=>array('/charge/admin')),
-	array('label'=>Yii::t('app','Create Charge'), 'url'=>array('/charge/create')),
-	array('label'=>Yii::t('app','Update Charge'), 'url'=>array('/charge/update', 'id'=>$model->id)),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage Charge'), 'url' => array('/charge/admin')),
+	array('label' => Yii::t('app', 'Create Charge'), 'url' => array('/charge/create')),
+	array('label' => Yii::t('app', 'Update Charge'), 'url' => array('/charge/update', 'id' => $model->id)),
 );
 ?>
 
@@ -18,21 +18,21 @@ $this->menu=array(
 
 <div class="crud-view">
 <?php $this->widget('application.components.widgets.DetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
+	'data' => $model,
+	'attributes' => array(
 		//'id',
 		'code',
 		'title',
-		array('name'=>'amount', 'value'=>Html::formatMoney($model->amount, $model->currency_code)),
-		array('name'=>'text_description', 'type'=>'raw', 'value'=>nl2br($model->text_description)),
-		array('label'=>$model->attributeLabel('date_started'), 'value'=>Html::formatDateTime($model->date_started, 'long', 'medium')),
-		array('label'=>$model->attributeLabel('date_expired'), 'value'=>Html::formatDateTime($model->date_expired, 'long', 'medium')),
-		array('name'=>'status', 'value'=>$model->formatEnumStatus($model->status)),
-		array('name'=>'is_active', 'type'=>'raw', 'value'=>Html::renderBoolean($model->is_active)), 
-		array('name'=>'charge_to', 'value'=>$model->formatEnumChargeTo($model->charge_to)),
-		array('name'=>'charge_to_code', 'value'=>$model->charge_to_code),
-		array('label'=>$model->attributeLabel('date_added'), 'value'=>Html::formatDateTime($model->date_added, 'long', 'medium')),
-		array('label'=>$model->attributeLabel('date_modified'), 'value'=>Html::formatDateTime($model->date_modified, 'long', 'medium')),
+		array('name' => 'amount', 'value' => Html::formatMoney($model->amount, $model->currency_code)),
+		array('name' => 'text_description', 'type' => 'raw', 'value' => nl2br($model->text_description)),
+		array('label' => $model->attributeLabel('date_started'), 'value' => Html::formatDateTime($model->date_started, 'long', 'medium')),
+		array('label' => $model->attributeLabel('date_expired'), 'value' => Html::formatDateTime($model->date_expired, 'long', 'medium')),
+		array('name' => 'status', 'value' => $model->formatEnumStatus($model->status)),
+		array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
+		array('name' => 'charge_to', 'value' => $model->formatEnumChargeTo($model->charge_to)),
+		array('name' => 'charge_to_code', 'value' => $model->charge_to_code),
+		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
+		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 	),
 )); ?>
 
@@ -53,7 +53,7 @@ $this->menu=array(
 	</tr></thead>
 	<tbody>
 	
-	<?php foreach($model->transactions as $tx): ?>
+	<?php foreach ($model->transactions as $tx): ?>
 	<tr>
 		<td><?php echo $tx->txnid ?></td>
 		<td><?php echo Html::formatDateTime($tx->date_added) ?></td>

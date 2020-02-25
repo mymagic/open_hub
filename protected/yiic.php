@@ -19,7 +19,7 @@
 $yiic = dirname(__FILE__) . '/../framework/yiic.php';
 include_once dirname(__FILE__) . '/config/phpini.php';
 
-require_once(dirname(__FILE__) . '/vendor/autoload.php');
+require_once dirname(__FILE__) . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../protected');
 $dotenv->load();
 
@@ -31,7 +31,7 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-require_once(dirname(__FILE__) . '/../framework/yii.php');
+require_once dirname(__FILE__) . '/../framework/yii.php';
 
 // exiang: path need to be reinclude here to make sure those in config works
 include_once dirname(__FILE__) . '/config/path.php';

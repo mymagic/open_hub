@@ -1,16 +1,20 @@
 <?php $this->beginContent('layouts.frontend'); ?>
 
 <div class="container">
-    <?php if ($this->cpanelMenuInterface === 'cpanelNavCompanyInformation') {  ?>
+    <?php if ($this->cpanelMenuInterface === 'cpanelNavCompanyInformation') {
+	?>
         <div class="col-md-3">
             <h2 style="margin: 0;" class="break-word"><?php echo HUB::cpanelNavItems($this, ($this->cpanelMenuInterface === 'cpanelNavCompanyInformation') ? 'company-information' : 'default')[0]['label'] ?></h2>
             <a href="<?php echo $this->createUrl('/organization/list', array('realm' => 'cpanel')); ?>">
                 <p>Back to company list</p>
             </a>
         </div>
-    <?php } else {  ?>
+    <?php
+} else {
+		?>
         <h2><?php echo HUB::cpanelNavItems($this, ($this->cpanelMenuInterface === 'cpanelNavCompanyInformation') ? 'company-information' : 'default')[0]['label'] ?></h2>
-    <?php } ?>
+    <?php
+	} ?>
 </div>
 
 <div class="col-md-3 mb-12">

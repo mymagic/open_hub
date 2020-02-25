@@ -2,19 +2,19 @@
 /* @var $this OrganizationController */
 /* @var $model Organization */
 if ($realm == 'backend') {
-    $this->breadcrumbs = array(
-        'Organizations' => array('index'),
-        Yii::t('backend', 'Create'),
-    );
+	$this->breadcrumbs = array(
+		'Organizations' => array('index'),
+		Yii::t('backend', 'Create'),
+	);
 
-    $this->menu = array(
-        array('label' => Yii::t('app', 'Manage Organization'), 'url' => array('/organization/admin')),
-    );
+	$this->menu = array(
+		array('label' => Yii::t('app', 'Manage Organization'), 'url' => array('/organization/admin')),
+	);
 } elseif ($realm == 'cpanel') {
-    $this->breadcrumbs = array(
-        'Organization' => array('index'),
-        $model->title,
-    );
+	$this->breadcrumbs = array(
+		'Organization' => array('index'),
+		$model->title,
+	);
 }
 ?>
 

@@ -1,7 +1,7 @@
 <?php
 
 $return = array();
-    
+
 $modules_dir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR;
 $handle = opendir($modules_dir);
 while (false !== ($file = readdir($handle))) {
@@ -10,4 +10,5 @@ while (false !== ($file = readdir($handle))) {
 	}
 }
 closedir($handle);
+
 return $return;

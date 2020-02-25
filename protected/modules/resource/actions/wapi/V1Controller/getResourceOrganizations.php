@@ -2,10 +2,10 @@
 
 class getResourceOrganizations extends Action
 {
-    public function run()
+	public function run()
 	{
-        $result = HUB::getResourceOrganizations();
+		$result = HUB::getResourceOrganizations();
 
 		$this->getController()->outputSuccess($result);
-    }
+	}
 }

@@ -2,19 +2,19 @@
 /* @var $this Form2IntakeController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Form2 Intakes',
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage Form2Intake'), 'url'=>array('/f7/form2Intake/admin')),
-	array('label'=>Yii::t('app','Create Form2Intake'), 'url'=>array('/f7/form2Intake/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage Form2Intake'), 'url' => array('/f7/form2Intake/admin')),
+	array('label' => Yii::t('app', 'Create Form2Intake'), 'url' => array('/f7/form2Intake/create')),
 );
 ?>
 
 <h1><?php echo Yii::t('backend', 'Form2 Intakes'); ?></h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
+	'dataProvider' => $dataProvider,
+	'itemView' => '_view',
 )); ?>

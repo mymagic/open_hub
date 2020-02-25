@@ -17,7 +17,6 @@
 
 class HubCpanel
 {
-
 	public function cpanelDefaultNavItems($controller, $forInterface)
 	{
 		switch ($forInterface) {

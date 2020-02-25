@@ -17,19 +17,22 @@
 
 class Tag2Individual extends Tag2IndividualBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Tag2Individual extends Tag2IndividualBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Tag2Individual extends Tag2IndividualBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class Tag2Individual extends Tag2IndividualBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 

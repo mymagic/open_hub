@@ -24,10 +24,10 @@ class EmailController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
+
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
@@ -37,21 +37,21 @@ class EmailController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','admin'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isEmailManager==true && \$user->accessBackend==true",
+				'actions' => array('index', 'admin'),
+				'users' => array('@'),
+				'expression' => '$user->isEmailManager==true && $user->accessBackend==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
-	
+
 	public function actionIndex()
 	{
 		$this->redirect('admin');
 	}
-	
+
 	public function actionAdmin()
 	{
 		$this->render('admin');

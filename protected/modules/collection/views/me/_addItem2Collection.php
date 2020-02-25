@@ -8,22 +8,21 @@
       <h5 class="modal-title">Add to Collection</h5>
     </div>
     <?php $form = $this->beginWidget('ActiveForm', array(
-    'id' => 'collection-form',
-    'action'=>Yii::app()->createUrl('/collection/me/addItem2Collection', array('tableName'=>$tableName, 'refId'=>$refId)),
+	'id' => 'collection-form',
+	'action' => Yii::app()->createUrl('/collection/me/addItem2Collection', array('tableName' => $tableName, 'refId' => $refId)),
 	  // Please note: When you enable ajax validation, make sure the corresponding
 	  // controller action is handling ajax validation correctly.
 	  // There is a call to performAjaxValidation() commented in generated controller code.
 	  // See class documentation of CActiveForm for details on this.
-    'enableAjaxValidation' => true,
-    'clientOptions'=>array
-    (
-      'validateOnSubmit'=>true,
-      'afterValidate'=>'js:onAddItem2CollectionValidated'
-    ),
+	'enableAjaxValidation' => true,
+	'clientOptions' => array(
+	  'validateOnSubmit' => true,
+	  'afterValidate' => 'js:onAddItem2CollectionValidated'
+	),
 	  'htmlOptions' => array(
-      'class' => 'form-horizontal crud-form',
-      'role' => 'form',
-      'enctype' => 'multipart/form-data',
+	  'class' => 'form-horizontal crud-form',
+	  'role' => 'form',
+	  'enctype' => 'multipart/form-data',
 	  ),
 	)); ?>
     <div class="modal-body">

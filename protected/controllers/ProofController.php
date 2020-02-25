@@ -24,11 +24,10 @@ class ProofController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class ProofController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,16 +48,16 @@ class ProofController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin','delete' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -69,8 +68,8 @@ class ProofController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -78,77 +77,71 @@ class ProofController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate($refTable='', $refId='')
+	public function actionCreate($refTable = '', $refId = '')
 	{
 		$forRecord = null;
 
-		$model=new Proof;
+		$model = new Proof;
 		$model->user_username = Yii::app()->user->username;
 
-		if(!empty($refTable)) $model->ref_table = $refTable;
-		if(!empty($refId)) $model->ref_id = $refId;
+		if (!empty($refTable)) {
+			$model->ref_table = $refTable;
+		}
+		if (!empty($refId)) {
+			$model->ref_id = $refId;
+		}
 
-		if(!empty($model->ref_table) && !empty($model->ref_id))
-		{
+		if (!empty($model->ref_table) && !empty($model->ref_id)) {
 			$forRecord['obj'] = Proof::getForRecord($model->ref_table, $model->ref_id);
 
-			if($model->ref_table == 'idea_rfp')
+			if ($model->ref_table == 'idea_rfp') {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->title);
-			else
+			} else {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->organization->title);
+			}
 		}
-		
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if($model->datatype == 'image')
-		{
+		if ($model->datatype == 'image') {
 			$model->imageFile_value = UploadedFile::getInstance($model, 'imageFile_value');
-		}
-		elseif($model->datatype == 'file')
-		{
+		} elseif ($model->datatype == 'file') {
 			$model->uploadFile_value = UploadedFile::getInstance($model, 'uploadFile_value');
 		}
 
-		if(isset($_POST['Proof']))
-		{
-			$model->attributes=$_POST['Proof'];
-			
-			if($model->datatype == 'image')
-			{
+		if (isset($_POST['Proof'])) {
+			$model->attributes = $_POST['Proof'];
+
+			if ($model->datatype == 'image') {
 				$model->imageFile_value = UploadedFile::getInstance($model, 'imageFile_value');
-			}
-			elseif($model->datatype == 'file')
-			{
+			} elseif ($model->datatype == 'file') {
 				$model->uploadFile_value = UploadedFile::getInstance($model, 'uploadFile_value');
 			}
-			
-			if($model->save())
-			{
-				if($model->datatype == 'image' && is_object($model->imageFile_value))
-				{
+
+			if ($model->save()) {
+				if ($model->datatype == 'image' && is_object($model->imageFile_value)) {
 					$image = new Image($model->imageFile_value->tempName);
 					$saveFileName = sprintf('%s.%s.%s', 'value', $model->id, strtolower(ysUtil::getFileExtension($model->imageFile_value->name)));
-					$image->save(sprintf($model->uploadPath.DIRECTORY_SEPARATOR.'%s', $saveFileName));
+					$image->save(sprintf($model->uploadPath . DIRECTORY_SEPARATOR . '%s', $saveFileName));
 					$model->value = sprintf('uploads/%s/%s', $model->tableName(), $saveFileName);
 					$model->save();
 
 					UploadManager::storeImage($model, 'value', $model->tableName(), null, '', 'value');
-				}
-				elseif($model->datatype == 'file' && is_object($model->uploadFile_value))
-				{
+				} elseif ($model->datatype == 'file' && is_object($model->uploadFile_value)) {
 					UploadManager::storeFile($model, 'value', $model->tableName(), '', 'value');
 				}
 
-				if(!empty($forRecord))
+				if (!empty($forRecord)) {
 					$this->redirect($model->getUrl('return2Record'));
-				else
-				$this->redirect(array('view','id'=>$model->id));
+				} else {
+					$this->redirect(array('view', 'id' => $model->id));
+				}
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model, 'forRecord'=>$forRecord
+		$this->render('create', array(
+			'model' => $model, 'forRecord' => $forRecord
 		));
 	}
 
@@ -159,65 +152,58 @@ class ProofController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
-		if(!empty($model->ref_table) && !empty($model->ref_id))
-		{
+		if (!empty($model->ref_table) && !empty($model->ref_id)) {
 			$forRecord['obj'] = Proof::getForRecord($model->ref_table, $model->ref_id);
 
-			if($model->ref_table == 'idea_rfp')
+			if ($model->ref_table == 'idea_rfp') {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->title);
-			else
+			} else {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->organization->title);
+			}
 		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if($model->datatype == 'image')
-		{
+		if ($model->datatype == 'image') {
 			$model->imageFile_value = UploadedFile::getInstance($model, 'imageFile_value');
-		}
-		elseif($model->datatype == 'file')
-		{
+		} elseif ($model->datatype == 'file') {
 			$model->uploadFile_value = UploadedFile::getInstance($model, 'uploadFile_value');
 		}
-		
-		if(isset($_POST['Proof']))
-		{
-			$model->attributes=$_POST['Proof'];
+
+		if (isset($_POST['Proof'])) {
+			$model->attributes = $_POST['Proof'];
 			$model->user_username = Yii::app()->user->username;
-			
-			if($model->save())
-			{
-				if($model->datatype == 'image' && is_object($model->imageFile_value))
-				{
+
+			if ($model->save()) {
+				if ($model->datatype == 'image' && is_object($model->imageFile_value)) {
 					$image = new Image($model->imageFile_value->tempName);
 					$saveFileName = sprintf('%s.%s.%s', 'value', $model->id, strtolower(ysUtil::getFileExtension($model->imageFile_value->name)));
-					$image->save(sprintf($model->uploadPath.DIRECTORY_SEPARATOR.'%s', $saveFileName));
+					$image->save(sprintf($model->uploadPath . DIRECTORY_SEPARATOR . '%s', $saveFileName));
 					$model->value = sprintf('uploads/%s/%s', $model->tableName(), $saveFileName);
 					$model->save();
 
 					UploadManager::storeImage($model, 'value', $model->tableName(), null, '', 'value');
-				}
-				elseif($model->datatype == 'file' && is_object($model->uploadFile_value))
-				{
+				} elseif ($model->datatype == 'file' && is_object($model->uploadFile_value)) {
 					UploadManager::storeFile($model, 'value', $model->tableName(), '', 'value');
 				}
 
-				if(!empty($forRecord))
+				if (!empty($forRecord)) {
 					$this->redirect($model->getUrl('return2Record'));
-				else
-				$this->redirect(array('view','id'=>$model->id));
+				} else {
+					$this->redirect(array('view', 'id' => $model->id));
+				}
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model, 'forRecord'=>$forRecord
+		$this->render('update', array(
+			'model' => $model, 'forRecord' => $forRecord
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -227,10 +213,11 @@ class ProofController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -244,12 +231,12 @@ class ProofController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('Proof');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('Proof');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -258,13 +245,17 @@ class ProofController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Proof('search');
+		$model = new Proof('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Proof'])) $model->attributes=$_GET['Proof'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Proof'])) {
+			$model->attributes = $_GET['Proof'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -277,9 +268,10 @@ class ProofController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Proof::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Proof::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -289,8 +281,7 @@ class ProofController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='proof-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'proof-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

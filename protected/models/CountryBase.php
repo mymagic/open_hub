@@ -15,7 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 /**
  * This is the model class for table "country".
  *
@@ -32,17 +31,16 @@
 		 * @property integer $date_added
 		 * @property integer $date_modified
  */
- 
+
 class CountryBase extends ActiveRecordBase
 {
 	public $uploadPath;
-	
-	
+
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'country';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'country';
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -60,13 +58,13 @@ class CountryBase extends ActiveRecordBase
 		// will receive user inputs.
 		return array(
 			array('code, name, printable_name', 'required'),
-			array('numcode, is_default, is_highlight, is_active, date_added, date_modified', 'numerical', 'integerOnly'=>true),
-			array('code', 'length', 'max'=>2),
-			array('name, printable_name', 'length', 'max'=>80),
-			array('iso3', 'length', 'max'=>3),
+			array('numcode, is_default, is_highlight, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('code', 'length', 'max' => 2),
+			array('name, printable_name', 'length', 'max' => 80),
+			array('iso3', 'length', 'max' => 3),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, name, printable_name, iso3, numcode, is_default, is_highlight, is_active, date_added, date_modified', 'safe', 'on'=>'search'),
+			array('id, code, name, printable_name, iso3, numcode, is_default, is_highlight, is_active, date_added, date_modified', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -117,32 +115,31 @@ class CountryBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('printable_name',$this->printable_name,true);
-		$criteria->compare('iso3',$this->iso3,true);
-		$criteria->compare('numcode',$this->numcode);
-		$criteria->compare('is_default',$this->is_default);
-		$criteria->compare('is_highlight',$this->is_highlight);
-		$criteria->compare('is_active',$this->is_active);
-		$criteria->compare('date_added',$this->date_added);
-		$criteria->compare('date_modified',$this->date_modified);
+		$criteria->compare('id', $this->id);
+		$criteria->compare('code', $this->code, true);
+		$criteria->compare('name', $this->name, true);
+		$criteria->compare('printable_name', $this->printable_name, true);
+		$criteria->compare('iso3', $this->iso3, true);
+		$criteria->compare('numcode', $this->numcode);
+		$criteria->compare('is_default', $this->is_default);
+		$criteria->compare('is_highlight', $this->is_highlight);
+		$criteria->compare('is_active', $this->is_active);
+		$criteria->compare('date_added', $this->date_added);
+		$criteria->compare('date_modified', $this->date_modified);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
+
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -150,39 +147,30 @@ class CountryBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Country the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * This is invoked before the record is saved.
 	 * @return boolean whether the record should be saved.
 	 */
 	protected function beforeSave()
 	{
-		if(parent::beforeSave())
-		{
-			
+		if (parent::beforeSave()) {
 			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
+			if ($this->isNewRecord) {
+				$this->date_added = $this->date_modified = time();
+			} else {
+				$this->date_modified = time();
 			}
-			else
-			{
-				$this->date_modified=time();
-			}
-			
+
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
-
-
 
 	/**
 	 * These are function for foregin refer usage

@@ -3,12 +3,12 @@
 /* @var $model Organization */
 
 $this->breadcrumbs = array(
-    Yii::t('backend', 'Journey') => array('index'),
-    Yii::t('backend', 'Advance Search'),
+	Yii::t('backend', 'Journey') => array('index'),
+	Yii::t('backend', 'Advance Search'),
 );
 
 $this->menu = array(
-    //array('label'=>Yii::t('app','Create Organization'), 'url'=>array('/organization/create')),
+	//array('label'=>Yii::t('app','Create Organization'), 'url'=>array('/organization/create')),
 );
 ?>
 
@@ -38,11 +38,11 @@ $this->menu = array(
         <?php foreach ($result as $key => $params): ?>
         <div id="<?php echo $key; ?>" role="tabpanel" class="tab-pane fade in active padding-sm">
             <?php $this->widget('application.components.widgets.ListView', array(
-                'dataProvider' => $params['result'],
-                'itemView' => $params['itemViewPath'],
-                'ajaxUpdate' => true,
-                'enablePagination' => true,
-            )); ?>
+				'dataProvider' => $params['result'],
+				'itemView' => $params['itemViewPath'],
+				'ajaxUpdate' => true,
+				'enablePagination' => true,
+			)); ?>
         </div>
         <?php endforeach; ?>
     </div>

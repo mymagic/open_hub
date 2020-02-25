@@ -15,7 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 /**
  * This is the model class for table "log".
  *
@@ -38,17 +37,16 @@
  * The followings are the available model relations:
  * @property User $user
  */
- 
+
 class LogBase extends ActiveRecordBase
 {
 	public $uploadPath;
-	
-	
+
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'log';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'log';
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -65,14 +63,14 @@ class LogBase extends ActiveRecordBase
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, is_admin, is_member, date_added, date_modified', 'numerical', 'integerOnly'=>true),
-			array('ip', 'length', 'max'=>24),
-			array('agent_string, url_referrer, url_current', 'length', 'max'=>255),
-			array('controller, action', 'length', 'max'=>32),
+			array('user_id, is_admin, is_member, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('ip', 'length', 'max' => 24),
+			array('agent_string, url_referrer, url_current', 'length', 'max' => 255),
+			array('controller, action', 'length', 'max' => 32),
 			array('json_params, text_note', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, ip, agent_string, url_referrer, url_current, user_id, is_admin, is_member, controller, action, json_params, text_note, date_added, date_modified', 'safe', 'on'=>'search'),
+			array('id, ip, agent_string, url_referrer, url_current, user_id, is_admin, is_member, controller, action, json_params, text_note, date_added, date_modified', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -127,35 +125,34 @@ class LogBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('ip',$this->ip,true);
-		$criteria->compare('agent_string',$this->agent_string,true);
-		$criteria->compare('url_referrer',$this->url_referrer,true);
-		$criteria->compare('url_current',$this->url_current,true);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('is_admin',$this->is_admin);
-		$criteria->compare('is_member',$this->is_member);
-		$criteria->compare('controller',$this->controller,true);
-		$criteria->compare('action',$this->action,true);
-		$criteria->compare('json_params',$this->json_params,true);
-		$criteria->compare('text_note',$this->text_note,true);
-		$criteria->compare('date_added',$this->date_added);
-		$criteria->compare('date_modified',$this->date_modified);
+		$criteria->compare('id', $this->id);
+		$criteria->compare('ip', $this->ip, true);
+		$criteria->compare('agent_string', $this->agent_string, true);
+		$criteria->compare('url_referrer', $this->url_referrer, true);
+		$criteria->compare('url_current', $this->url_current, true);
+		$criteria->compare('user_id', $this->user_id);
+		$criteria->compare('is_admin', $this->is_admin);
+		$criteria->compare('is_member', $this->is_member);
+		$criteria->compare('controller', $this->controller, true);
+		$criteria->compare('action', $this->action, true);
+		$criteria->compare('json_params', $this->json_params, true);
+		$criteria->compare('text_note', $this->text_note, true);
+		$criteria->compare('date_added', $this->date_added);
+		$criteria->compare('date_modified', $this->date_modified);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
+
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -163,39 +160,28 @@ class LogBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Log the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * This is invoked before the record is saved.
 	 * @return boolean whether the record should be saved.
 	 */
 	protected function beforeSave()
 	{
-		if(parent::beforeSave())
-		{
-
+		if (parent::beforeSave()) {
 			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
+			if ($this->isNewRecord) {
+				$this->date_added = $this->date_modified = time();
+			} else {
+				$this->date_modified = time();
 			}
-			else
-			{
-				$this->date_modified=time();
-			}
-			
+
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
-
-
-
-
 }

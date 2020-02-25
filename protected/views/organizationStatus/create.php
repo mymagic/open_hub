@@ -2,16 +2,16 @@
 /* @var $this OrganizationStatusController */
 /* @var $model OrganizationStatus */
 
-$this->breadcrumbs=array(
-	'Organization Statuses'=>array('index'),
+$this->breadcrumbs = array(
+	'Organization Statuses' => array('index'),
 	Yii::t('backend', 'Create'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage OrganizationStatus'), 'url'=>array('/organizationStatus/admin')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage OrganizationStatus'), 'url' => array('/organizationStatus/admin')),
 );
 ?>
 
 <h1><?php echo Yii::t('backend', 'Create Organization Status'); ?></h1>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php $this->renderPartial('_form', array('model' => $model)); ?>

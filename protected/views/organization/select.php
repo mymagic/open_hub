@@ -1,11 +1,11 @@
 <?php
 
-$this->breadcrumbs=array('Organization'=>array('select'),'Select');
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->breadcrumbs = array('Organization' => array('select'), 'Select');
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 ?>
 
-<?php $totalCompanies = count($model['organizations']['approve'])+count($model['organizations']['pending']) ?>
+<?php $totalCompanies = count($model['organizations']['approve']) + count($model['organizations']['pending']) ?>
 
 <!-- <li>Username: <?php echo !empty(Yii::app()->user->username) ? Yii::app()->user->username : 'NULL'; ?></li> -->
     <div class="sidebard-panel left-bar">
@@ -26,24 +26,24 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
             </a>
  -->
 
-    <?php $count=0; foreach($model['organizations']['approve'] as $organization): ?>
-    <a class="m-t-md pad-30 green-hov" href="<?php echo $this->createUrl('/organization/view', array('id'=>$organization->id, 'realm'=>'cpanel')) ?>">
+    <?php $count = 0; foreach ($model['organizations']['approve'] as $organization): ?>
+    <a class="m-t-md pad-30 green-hov" href="<?php echo $this->createUrl('/organization/view', array('id' => $organization->id, 'realm' => 'cpanel')) ?>">
        <?php echo $organization->title ?>
         <small><?php echo $organization->text_oneliner ?></small>
         <!--  <h6 class="no-margins">Website</h6> -->
    </a> 
     <?php $count++; endforeach; ?>
 
-    <?php $count=0; foreach($model['organizations']['pending'] as $organization): ?>
+    <?php $count = 0; foreach ($model['organizations']['pending'] as $organization): ?>
 
     <div class="m-t-md pad-30 green-hov cursor-default">   
-            <!-- <?php echo Html::image(ImageHelper::thumb(50, 50, $organization->image_logo), Yii::t('app', 'Logo Image'), array('class'=>"img-circle m-t-xs img-responsive")); ?>
+            <!-- <?php echo Html::image(ImageHelper::thumb(50, 50, $organization->image_logo), Yii::t('app', 'Logo Image'), array('class' => 'img-circle m-t-xs img-responsive')); ?>
 --> <?php echo $organization->title ?>
     <small><?php echo $organization->text_oneliner ?></small>
 
     <span class="label label-primary pull-right badge badge-warning noborder-status">Pending</span>
 
-    <a href="<?php echo $this->createUrl('organization/deleteUserOrganization2Email', array('organizationID'=>$organization->id,'userEmail'=>Yii::app()->user->username, 'realm'=>'cpanel'))?>" class="no-border pull-right badge badge-danger noborder-status close-badge" title="<?php echo Yii::t('app', 'Cancel Request') ?>">&times;</a>
+    <a href="<?php echo $this->createUrl('organization/deleteUserOrganization2Email', array('organizationID' => $organization->id, 'userEmail' => Yii::app()->user->username, 'realm' => 'cpanel'))?>" class="no-border pull-right badge badge-danger noborder-status close-badge" title="<?php echo Yii::t('app', 'Cancel Request') ?>">&times;</a>
 
     </div>
 
@@ -90,7 +90,7 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
      </div>
 
     <div class="createorgbtn center-block text-center margin-top-lg text-muted">
-        <a href="<?php echo $this->createUrl('organization/create', array('realm'=>'cpanel')) ?>">Create Company</a>
+        <a href="<?php echo $this->createUrl('organization/create', array('realm' => 'cpanel')) ?>">Create Company</a>
     </div>
 
     </div>
@@ -98,7 +98,9 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
 
 
 
-<?php Yii::app()->clientScript->registerScript('organization-select-0', "
+<?php Yii::app()->clientScript->registerScript(
+	'organization-select-0',
+	"
  $('#StartForm_keyword').on('input propertychange', function(e) {        
     //console.log('yo', $(this).val());
     
@@ -114,7 +116,7 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
         return;
     }
 
-    $.get('".Yii::app()->params['baseUrl']."/api/getUserOrganizationsCanJoin', { keyword:$(this).val()} )
+    $.get('" . Yii::app()->params['baseUrl'] . "/api/getUserOrganizationsCanJoin', { keyword:$(this).val()} )
     .done(function( json ) 
     {
         var dropdownMenu = self.parent('.dropdown').find('.dropdown-menu');
@@ -146,7 +148,7 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
         console.log(orgID);
         $('#StartForm_keyword').val(truncateString($(this).data('title'),40));
         $('#request-access').removeClass('hidden');
-        $('#request-access').attr('href', '".Yii::app()->params['baseUrl']."/organization/requestJoinEmail?organizationId='+orgID+'&'+'email='+'".Yii::app()->user->username."');
+        $('#request-access').attr('href', '" . Yii::app()->params['baseUrl'] . "/organization/requestJoinEmail?organizationId='+orgID+'&'+'email='+'" . Yii::app()->user->username . "');
 
 
 

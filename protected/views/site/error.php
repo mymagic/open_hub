@@ -1,6 +1,6 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - '. Yii::t('default', 'Error');
-$this->breadcrumbs=array(
+$this->pageTitle = Yii::app()->name . ' - ' . Yii::t('default', 'Error');
+$this->breadcrumbs = array(
 	Yii::t('default', 'Error'),
 );
 ?>
@@ -9,5 +9,5 @@ $this->breadcrumbs=array(
 
 <div class="error">
 <?php echo CHtml::encode($message); ?>
-<?php echo !empty($url) ? CHtml::encode($url):''; ?>
+<?php echo !empty($url) ? CHtml::encode($url) : ''; ?>
 </div>

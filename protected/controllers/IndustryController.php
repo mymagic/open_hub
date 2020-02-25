@@ -64,8 +64,8 @@ class IndustryController extends Controller
 
 	public function actionViewIndustryKeywordsMap()
 	{
-		$industries = Industry::model()->isActive()->findAll(array("order" => "title"));
-		$this->render('viewIndustryKeywordsMap', array('industries'=>$industries));
+		$industries = Industry::model()->isActive()->findAll(array('order' => 'title'));
+		$this->render('viewIndustryKeywordsMap', array('industries' => $industries));
 	}
 
 	/**
@@ -182,6 +182,7 @@ class IndustryController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 

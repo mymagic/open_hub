@@ -177,7 +177,6 @@ class OrganizationController extends Controller
 		}
 
 		if ($realm == 'cpanel') {
-
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->pageTitle = 'Create Company';
@@ -223,7 +222,7 @@ class OrganizationController extends Controller
 			$realm = 'backend';
 		}
 		$this->pageTitle = Yii::t('app', 'Update Organization');
-		
+
 		if ($realm == 'cpanel') {
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
@@ -312,22 +311,20 @@ class OrganizationController extends Controller
 
 			$this->render('index', array(
 				'dataProvider' => $dataProvider,
-				'realm' => 	$realm,
+				'realm' => $realm,
 			));
 		}
 		if ($realm === 'cpanel') {
-
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->pageTitle = 'Company List';
 			$this->cpanelMenuInterface = 'cpanelNavCompany';
 			$this->activeMenuCpanel = 'list';
 
-
 			$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'approve');
 			$this->render('index', array(
 				'model' => $model,
-				'realm' => 	$realm,
+				'realm' => $realm,
 			));
 		}
 	}
@@ -336,8 +333,9 @@ class OrganizationController extends Controller
 	{
 		$model = $this->loadModel($id);
 
-		if (!$model->canAccessByUserEmail(Yii::app()->user->username))
+		if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
 			$this->redirect(array('/company/list'));
+		}
 
 		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
@@ -425,7 +423,6 @@ class OrganizationController extends Controller
 		$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'pending');
 		$this->render('join', array('model' => $model));
 	}
-
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -594,14 +591,14 @@ class OrganizationController extends Controller
 		$model = HUB::getOrganization2Email($id);
 
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list'));
+			}
 		}
 
 		$model->status = 'reject';
 
 		if ($model->save()) {
-
 			$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($model);
 			HUB::sendEmail($model->user_email, $model->user_email, $notifMaker['title'], $notifMaker['content']);
 
@@ -903,7 +900,7 @@ class OrganizationController extends Controller
 			'application_id' => $application_id
 		));
 		// Get startup_id
-		// Get map_application id 
+		// Get map_application id
 		// $this->render('score', array());
 	}
 }

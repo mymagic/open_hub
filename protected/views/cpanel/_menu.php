@@ -1,4 +1,5 @@
 <?php
+
 $organizationItems = null;
 $manageItems = null;
 $supportItems = null;
@@ -21,7 +22,6 @@ $manageItems = array(
 	array('label' => sprintf('%s', Yii::t('app', 'Wizard')), 'url' => array('/wizard'), 'active' => ($this->activeSubMenuCpanel == 'wizard')),
 	array('label' => sprintf('%s', Yii::t('app', 'Services')), 'url' => array('/cpanel/services'), 'active' => ($this->activeSubMenuCpanel == 'services')),
 	array('label' => sprintf('%s', Yii::t('app', 'Activity Feed')), 'url' => array('/cpanel/activityfeed'), 'active' => ($this->activeSubMenuCpanel == 'activityfeed')),
-
 );
 
 $supportItems = array(
@@ -33,7 +33,6 @@ $manageOrgItems = array(
 		'label' => sprintf('%s', $organization->title ?: Yii::t('app', 'Manage')), 'url' => array('/organization/select'),
 		'submenuOptions' => array('class' => 'nav hidden nav-second-level new-dash-bg stay-open'),
 		'active' => ($this->activeMenuCpanel == 'organization') ? true : null, 'items' => $organizationItems
-
 	),
 );
 
@@ -71,12 +70,10 @@ $this->menu = array(
 		'items' => $accountItems
 	),
 
-
-
 	// array('label'=>sprintf('<i class="fa fa-money"></i> <span class="nav-label">%s</span>', Yii::t('app', 'My Charges')), 'url'=>array('/charge/list')),
 	// array('label'=>sprintf('<i class="fa fa-user"></i> <span class="nav-label">%s</span>', Yii::t('app', 'My Account')), 'url'=>Yii::app()->params['connectUrl'].'/profile', 'linkOptions' => array('target'=>'_blank')),
 	/*array('label'=>sprintf('<i class="fa fa-user"></i> <span class="nav-label">%s</span>', Yii::t('app', 'Account')), 'url'=>'',
-			'submenuOptions' => array('class'=>'nav nav-second-level'), 
+			'submenuOptions' => array('class'=>'nav nav-second-level'),
 			'active'=>($this->activeMenuCpanel=='account')?true:null,
 			'linkOptions' => array(), 'itemOptions' => array('class'=>''),
 			'items'=>array

@@ -23,7 +23,7 @@
 
 <?php
 foreach ($this->menuSub as $key => $menu) {
-    $this->menuSub[$key]['url'] = CHtml::normalizeUrl($menu['url']);
+	$this->menuSub[$key]['url'] = CHtml::normalizeUrl($menu['url']);
 }
 ?>
 <!-- nav-main -->
@@ -44,25 +44,24 @@ foreach ($this->menuSub as $key => $menu) {
         <?php $this->initFrontendMenu(); ?>
 
         <?php 
-		
-            if(!Yii::app()->user->isGuest)
-            {
-                $labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), YsUtil::truncate($this->user->profile->full_name, 8)); 
-                    
-                $this->menuSub['user'] = array(
-                    'label' => $labelMe . ' <b class="caret"></b>', 'url' => '#',
-                    'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
-                    'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
-                    'items' => $this->menuUser,
-                ); 
-            }
-        ?>
+
+			if (!Yii::app()->user->isGuest) {
+				$labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), YsUtil::truncate($this->user->profile->full_name, 8));
+
+				$this->menuSub['user'] = array(
+					'label' => $labelMe . ' <b class="caret"></b>', 'url' => '#',
+					'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
+					'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
+					'items' => $this->menuUser,
+				);
+			}
+		?>
         
         <?php $this->widget('zii.widgets.CMenu', array(
-            'htmlOptions' => array('class' => 'nav navbar-nav navbar-right'),
-            'encodeLabel' => false,
-            'items' => $this->menuSub,
-        )); ?>
+			'htmlOptions' => array('class' => 'nav navbar-nav navbar-right'),
+			'encodeLabel' => false,
+			'items' => $this->menuSub,
+		)); ?>
 
     </div>
 </nav>

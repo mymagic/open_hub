@@ -1,43 +1,42 @@
 <?php
+
 return array(
 	'layout' => '//layouts/backend',
 	'isDeleteDisabled' => true,
 	'moduleCode' => 'f7',
 	'isAllowMeta' => true,
-	'foreignRefer' => array('key'=>'id', 'title'=>'title'),
+	'foreignRefer' => array('key' => 'id', 'title' => 'title'),
 	'menuTemplate' => array(
-		'index'=>'admin, create',
-		'admin'=>'create',
-		'create'=>'admin',
-		'update'=>'admin, create, view',
-		'view'=>'admin, create, update',
+		'index' => 'admin, create',
+		'admin' => 'create',
+		'create' => 'admin',
+		'update' => 'admin, create, view',
+		'view' => 'admin, create, update',
 	),
 	'admin' => array(
 		'list' => array('id', 'slug', 'title', 'is_active', 'date_open', 'date_close'),
 		'sortDefaultOrder' => 't.id DESC',
 	),
 	'structure' => array(
-        'code' => array
-		(
-			'isUnique'=>true,
-			'isUUID'=>true,
+		'code' => array(
+			'isUnique' => true,
+			'isUUID' => true,
 		),
-        'slug' => array
-		(
-			'isUnique'=>true,
-			'isUUID'=>false,
+		'slug' => array(
+			'isUnique' => true,
+			'isUUID' => false,
 		),
-		'json_structure'=>array('isJson'=>true),
-		'json_stage'=>array('isJson'=>true),
+		'json_structure' => array('isJson' => true),
+		'json_stage' => array('isJson' => true),
 	),
-    // this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
-    'json'=>array(
-		'structure'=>array(
+	// this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
+	'json' => array(
+		'structure' => array(
 		),
-		'stage'=>array(
+		'stage' => array(
 		),
 	),
-    'foreignKey' => array(
+	'foreignKey' => array(
 	),
 	/*
 		eg: resource (this table), industry(target table), resource2industry(linked table)
@@ -50,15 +49,14 @@ return array(
 		notMasterData: optional boolean, default: false. If set true, means the target table can be huge so the input method will be different
 	*/
 	/*'many2many'=>array(
-		
+
 		'industry'=>array('className'=>'Industry', 'relationName'=>'industries', 'relationTable'=>'industry2intake'),
-		
+
 		'persona'=>array('className'=>'Persona', 'relationName'=>'personas', 'relationTable'=>'persona2intake'),
-		
+
 		'startup_stage'=>array('className'=>'StartupStage', 'relationName'=>'startupStages', 'relationTable'=>'startup_stage2intake'),
-		
+
 		'impact'=>array('className'=>'Impact', 'relationName'=>'impacts', 'relationTable'=>'impact2intake'),
-		
-    )*/
-	
-); 
+
+	)*/
+);

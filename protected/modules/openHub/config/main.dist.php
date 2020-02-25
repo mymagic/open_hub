@@ -10,7 +10,6 @@ return array(
 			'var1' => '',
 			'var2' => '',
 			'modelBehaviors' => array(
-				
 			)
 		),
 	),

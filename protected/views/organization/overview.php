@@ -23,7 +23,7 @@
         <h3>Persona</h3>
         <table class="table">
         <tbody>
-            <?php foreach($stat['persona'] as $personaTitle=>$personaCount): ?>
+            <?php foreach ($stat['persona'] as $personaTitle => $personaCount): ?>
             <tr>
                 <td>
                     <button type="button" class="btn btn-default btn-sm m-r-sm"><?php echo $personaCount ?></button>
@@ -42,7 +42,7 @@
         <h3>Country</h3> 
         <table class="table">
         <tbody>
-        <?php foreach($stat['country'] as $countryTitle=>$countryCount): ?>
+        <?php foreach ($stat['country'] as $countryTitle => $countryCount): ?>
             <tr>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm m-r-sm"><?php echo $countryCount ?></button>
@@ -61,7 +61,7 @@
         <h3>Industry</h3> 
         <table class="table">
         <tbody>
-        <?php foreach($stat['industry'] as $industryTitle=>$industryCount): ?>
+        <?php foreach ($stat['industry'] as $industryTitle => $industryCount): ?>
             <tr>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm m-r-sm"><?php echo $industryCount ?></button>
@@ -80,7 +80,7 @@
         <h3>Impact</h3>
         <table class="table">
         <tbody>
-        <?php foreach($stat['impact'] as $impactTitle=>$impactCount): ?>
+        <?php foreach ($stat['impact'] as $impactTitle => $impactCount): ?>
             <tr>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm m-r-sm"><?php echo $impactCount ?></button>
@@ -99,7 +99,7 @@
         <h3>SDG</h3>
         <table class="table">
         <tbody>
-        <?php foreach($stat['sdg'] as $sdgTitle=>$sdgCount): ?>
+        <?php foreach ($stat['sdg'] as $sdgTitle => $sdgCount): ?>
             <tr>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm m-r-sm"><?php echo $sdgCount ?></button>

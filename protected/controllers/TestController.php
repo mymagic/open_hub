@@ -49,6 +49,14 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionF7Model()
+	{
+		$startupStages = array_map(create_function('$t', 'return $t[title];'), StartupStage::model()->isActive()->findAll(array('order' => 'ordering ASC')));
+
+		print_r($startupStages);
+		exit;
+	}
+
 	public function actionResetUserPassword($username, $password)
 	{
 		$username = rawurldecode($username);
@@ -64,7 +72,6 @@ class TestController extends Controller
 		$username = rawurldecode($username);
 		$user = User::username2obj($username);
 		echo sprintf('Match: %s', $user->matchPassword($password));
-
 	}
 
 	public function actionCreateUserPassword($username, $password)
@@ -88,11 +95,10 @@ class TestController extends Controller
 
 		$sha1 = sha1($password);
 		echo sprintf('SHA1: %s<br>', $sha1);
-		$bcryptHashed = password_hash(hash_hmac("sha256", $password, $salt), PASSWORD_BCRYPT);
+		$bcryptHashed = password_hash(hash_hmac('sha256', $password, $salt), PASSWORD_BCRYPT);
 		echo sprintf('BCRYPT HASHED: %s<br>', $bcryptHashed);
 
 		echo sprintf('Match: %s', password_verify(hash_hmac('sha256', $password, $salt), $bcryptHashed));
-
 	}
 
 	// attach event to activeRecord model after saved
@@ -114,7 +120,7 @@ class TestController extends Controller
 		if (empty($id)) {
 			echo 'Please provide id in GET';
 		}
-		
+
 		$j = Junk::model()->findByPk($id);
 		$j->content = 'changed on' . time();
 		// use the default event in model
@@ -136,7 +142,7 @@ class TestController extends Controller
 		$maxTimestamp = strtotime('01 jan 2020');
 		$index = Yii::app()->params['esLogIndexCode'];
 		//$index = 'log-central';
-		
+
 		$params = [
 			'index' => $index,
 			'size' => 1000,
@@ -144,8 +150,8 @@ class TestController extends Controller
 				'query' => [
 					'bool' => [
 						'must' => [
-							['match' => ['model' 	=> 'Organization']],
-							['match' => ['action' 	=> 'create']],
+							['match' => ['model' => 'Organization']],
+							['match' => ['action' => 'create']],
 							/*['range' => [
 								'dateLog' => [
 									"gte" => $minTimestamp,
@@ -162,7 +168,6 @@ class TestController extends Controller
 		];
 		$response = Yii::app()->esLog->getClient()->search($params);
 		foreach ($response['hits']['hits'] as $r) {
-			
 			echo sprintf('%s %s on %s<br />', $r['_source']['username'], $r['_source']['msg'], date('Y-m-d', $r['_source']['dateLog']));
 		}
 	}
@@ -178,18 +183,18 @@ class TestController extends Controller
 		echo $codeTable;
 	}
 
-	public function actionPersona4Startup($page=1)
+	public function actionPersona4Startup($page = 1)
 	{
 		$filter['persona'] = 'startups';
 		// find all company with startup persona
 		$result = HubOrganization::getOrganizationAllActive($page, $filter, 30);
 		//echo '<pre>';print_r($result['items']);exit;
-		echo sprintf('<ol start="%s">', (($page-1)*30)+1);
-		foreach($result['items'] as $startup){
+		echo sprintf('<ol start="%s">', (($page - 1) * 30) + 1);
+		foreach ($result['items'] as $startup) {
 			echo sprintf('<li>%s</li>', $startup->title);
 		}
 		echo '</ol>';
-		echo sprintf('<a href="%s">Next Page</a>', $this->createUrl('test/persona4Startup', array('page'=>$page+1)));
+		echo sprintf('<a href="%s">Next Page</a>', $this->createUrl('test/persona4Startup', array('page' => $page + 1)));
 	}
 
 	public function actionSematicVersion()

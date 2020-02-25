@@ -1,8 +1,8 @@
 <?php
-$this->breadcrumbs=array(
-    'Dashboard'
+$this->breadcrumbs = array(
+	'Dashboard'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 ?>
 
@@ -64,11 +64,13 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
     <script type="text/javascript">
 
     $(window).on('load',function(){
-            <?php if(!$is_popup_process_completed) { ?>
+            <?php if (!$is_popup_process_completed) {
+	?>
               $("#sampleModal").fadeIn('fast', function() {
                      $(this).modal('show');
               });
-            <?php } ?>
+            <?php
+} ?>
            
 
         

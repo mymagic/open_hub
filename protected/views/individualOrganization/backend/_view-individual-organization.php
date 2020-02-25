@@ -17,7 +17,7 @@
         <?php if (!empty($model->individualOrganizations)): ?>
         <?php foreach ($model->individualOrganizations as $individualOrganization):?>
             <?php if (!$individualOrganization->individual->is_active) {
-    continue;
+	continue;
 } ?>
             <li><a href="<?php echo $this->createUrl('organization/view', array('id' => $individualOrganization->organization->id)); ?>" target="_blank"><strong><?php echo $individualOrganization->organization->title; ?></strong> (<?php echo $individualOrganization->as_role_code; ?>) <?php echo Html::renderBoolean($individualOrganization->organization->is_active); ?></a>
             </li>

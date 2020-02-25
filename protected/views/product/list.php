@@ -2,7 +2,7 @@
 /* @var $this ProductController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Products',
 );
 
@@ -29,26 +29,26 @@ $this->breadcrumbs=array(
         <div class="wrapper wrapper-content content-bg content-left-padding">
             <div class="manage-pad">
                 <?php $this->widget('application.components.widgets.GridView', array(
-                    'id' => 'product-grid',
-                    'dataProvider' => $model->search(),
-                    'filter' => $model,
-                    'columns' => array(
-                        //array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
-                        'title',
-                        // array('name'=>'typeof', 'cssClassExpression'=>'enum', 'value'=>'$data->formatEnumTypeof($data->typeof)', 'headerHtmlOptions'=>array('class'=>'enum'), 'filter'=>$model->getEnumTypeof(false, true)), 
-                        array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
-                        // array('name'=>'date_added', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+					'id' => 'product-grid',
+					'dataProvider' => $model->search(),
+					'filter' => $model,
+					'columns' => array(
+						//array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+						'title',
+						// array('name'=>'typeof', 'cssClassExpression'=>'enum', 'value'=>'$data->formatEnumTypeof($data->typeof)', 'headerHtmlOptions'=>array('class'=>'enum'), 'filter'=>$model->getEnumTypeof(false, true)),
+						array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+						// array('name'=>'date_added', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
 
-                        array(
-                            'class' => 'application.components.widgets.ButtonColumn',
-                            'buttons' => array(
-                                'view' => array('url' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\'=>$data->id, \'realm\'=>\'cpanel\'))'),
-                                'update' => array('url' => 'Yii::app()->controller->createUrl(\'update\', array(\'id\'=>$data->id, \'realm\'=>\'cpanel\'))'),
-                                'delete' => array('visible' => false)
-                            ),
-                        ),
-                    ),
-                )); ?>
+						array(
+							'class' => 'application.components.widgets.ButtonColumn',
+							'buttons' => array(
+								'view' => array('url' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\'=>$data->id, \'realm\'=>\'cpanel\'))'),
+								'update' => array('url' => 'Yii::app()->controller->createUrl(\'update\', array(\'id\'=>$data->id, \'realm\'=>\'cpanel\'))'),
+								'delete' => array('visible' => false)
+							),
+						),
+					),
+				)); ?>
             </div>
 
         </div>

@@ -29,8 +29,10 @@ class InterestBase extends ActiveRecordBase
 	public $inputClusters;
 	public $inputStartupStages;
 
-	public $sdate_added, $edate_added;
-	public $sdate_modified, $edate_modified;
+	public $sdate_added;
+	public $edate_added;
+	public $sdate_modified;
+	public $edate_modified;
 
 	// json
 	public $jsonArray_extra;
@@ -39,7 +41,7 @@ class InterestBase extends ActiveRecordBase
 	{
 		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . $this->tableName();
 
-		if ($this->scenario == "search") {
+		if ($this->scenario == 'search') {
 			$this->is_active = null;
 		} else {
 		}
@@ -105,7 +107,6 @@ class InterestBase extends ActiveRecordBase
 		$return['inputClusters'] = Yii::t('app', 'Clusters');
 		$return['inputStartupStages'] = Yii::t('app', 'Startup Stages');
 
-
 		return $return;
 	}
 
@@ -161,7 +162,6 @@ class InterestBase extends ActiveRecordBase
 			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
 			'fDateModified' => $this->renderDateModified(),
-
 		);
 
 		// many2many
@@ -215,7 +215,6 @@ class InterestBase extends ActiveRecordBase
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 
 			'isActive' => array('condition' => 't.is_active = 1'),
-
 		);
 	}
 
@@ -255,7 +254,6 @@ class InterestBase extends ActiveRecordBase
 		return parent::afterSave();
 	}
 
-
 	/**
 	 * This is invoked before the record is saved.
 	 * @return boolean whether the record should be saved.
@@ -263,7 +261,6 @@ class InterestBase extends ActiveRecordBase
 	protected function beforeSave()
 	{
 		if (parent::beforeSave()) {
-
 			// auto deal with date added and date modified
 			if ($this->isNewRecord) {
 				$this->date_added = $this->date_modified = time();
@@ -271,15 +268,22 @@ class InterestBase extends ActiveRecordBase
 				$this->date_modified = time();
 			}
 
-
 			// json
 			$this->json_extra = json_encode($this->jsonArray_extra);
-			if ($this->json_extra == 'null') $this->json_extra = null;
+			if ($this->json_extra == 'null') {
+				$this->json_extra = null;
+			}
 
 			// save as null if empty
-			if (empty($this->json_extra)) $this->json_extra = null;
-			if (empty($this->date_added) && $this->date_added !== 0) $this->date_added = null;
-			if (empty($this->date_modified) && $this->date_modified !== 0) $this->date_modified = null;
+			if (empty($this->json_extra)) {
+				$this->json_extra = null;
+			}
+			if (empty($this->date_added) && $this->date_added !== 0) {
+				$this->date_added = null;
+			}
+			if (empty($this->date_modified) && $this->date_modified !== 0) {
+				$this->date_modified = null;
+			}
 
 			return true;
 		} else {
@@ -293,19 +297,27 @@ class InterestBase extends ActiveRecordBase
 	protected function afterFind()
 	{
 		// boolean
-		if ($this->is_active != '' || $this->is_active != null) $this->is_active = intval($this->is_active);
+		if ($this->is_active != '' || $this->is_active != null) {
+			$this->is_active = intval($this->is_active);
+		}
 
 		$this->jsonArray_extra = json_decode($this->json_extra);
 
-
-		foreach ($this->industries as $industry) $this->inputIndustries[] = $industry->id;
-		foreach ($this->sdgs as $sdg) $this->inputSdgs[] = $sdg->id;
-		foreach ($this->clusters as $cluster) $this->inputClusters[] = $cluster->id;
-		foreach ($this->startupStages as $startupStage) $this->inputStartupStages[] = $startupStage->id;
+		foreach ($this->industries as $industry) {
+			$this->inputIndustries[] = $industry->id;
+		}
+		foreach ($this->sdgs as $sdg) {
+			$this->inputSdgs[] = $sdg->id;
+		}
+		foreach ($this->clusters as $cluster) {
+			$this->inputClusters[] = $cluster->id;
+		}
+		foreach ($this->startupStages as $startupStage) {
+			$this->inputStartupStages[] = $startupStage->id;
+		}
 
 		parent::afterFind();
 	}
-
 
 	/**
 	 * These are function for spatial usage
@@ -313,8 +325,6 @@ class InterestBase extends ActiveRecordBase
 	public function fixSpatial()
 	{
 	}
-
-
 
 	//
 	// industry
@@ -326,6 +336,7 @@ class InterestBase extends ActiveRecordBase
 				$return[] = $r->id;
 			}
 		}
+
 		return $return;
 	}
 
@@ -351,8 +362,11 @@ class InterestBase extends ActiveRecordBase
 	{
 		if ($this->hasIndustry($key)) {
 			$many2many = InterestUser2industry::model()->findByAttributes(array('interest_id' => $this->id, 'industry_id' => $key));
-			if (!empty($many2many)) return InterestUser2industry::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'industry_id' => $key));
+			if (!empty($many2many)) {
+				return InterestUser2industry::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'industry_id' => $key));
+			}
 		}
+
 		return false;
 	}
 
@@ -362,8 +376,10 @@ class InterestBase extends ActiveRecordBase
 			$many2many = new InterestUser2industry;
 			$many2many->interest_id = $this->id;
 			$many2many->industry_id = $key;
+
 			return $many2many->save();
 		}
+
 		return false;
 	}
 
@@ -386,7 +402,6 @@ class InterestBase extends ActiveRecordBase
 		}
 	}
 
-
 	//
 	// sdg
 	public function getAllSdgsKey()
@@ -397,6 +412,7 @@ class InterestBase extends ActiveRecordBase
 				$return[] = $r->id;
 			}
 		}
+
 		return $return;
 	}
 
@@ -422,8 +438,11 @@ class InterestBase extends ActiveRecordBase
 	{
 		if ($this->hasSdg($key)) {
 			$many2many = InterestUser2sdg::model()->findByAttributes(array('interest_id' => $this->id, 'sdg_id' => $key));
-			if (!empty($many2many)) return InterestUser2sdg::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'sdg_id' => $key));
+			if (!empty($many2many)) {
+				return InterestUser2sdg::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'sdg_id' => $key));
+			}
 		}
+
 		return false;
 	}
 
@@ -433,8 +452,10 @@ class InterestBase extends ActiveRecordBase
 			$many2many = new InterestUser2sdg;
 			$many2many->interest_id = $this->id;
 			$many2many->sdg_id = $key;
+
 			return $many2many->save();
 		}
+
 		return false;
 	}
 
@@ -457,7 +478,6 @@ class InterestBase extends ActiveRecordBase
 		}
 	}
 
-
 	//
 	// cluster
 	public function getAllClustersKey()
@@ -468,6 +488,7 @@ class InterestBase extends ActiveRecordBase
 				$return[] = $r->id;
 			}
 		}
+
 		return $return;
 	}
 
@@ -493,8 +514,11 @@ class InterestBase extends ActiveRecordBase
 	{
 		if ($this->hasCluster($key)) {
 			$many2many = InterestUser2cluster::model()->findByAttributes(array('interest_id' => $this->id, 'cluster_id' => $key));
-			if (!empty($many2many)) return InterestUser2cluster::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'cluster_id' => $key));
+			if (!empty($many2many)) {
+				return InterestUser2cluster::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'cluster_id' => $key));
+			}
 		}
+
 		return false;
 	}
 
@@ -504,8 +528,10 @@ class InterestBase extends ActiveRecordBase
 			$many2many = new InterestUser2cluster;
 			$many2many->interest_id = $this->id;
 			$many2many->cluster_id = $key;
+
 			return $many2many->save();
 		}
+
 		return false;
 	}
 
@@ -528,7 +554,6 @@ class InterestBase extends ActiveRecordBase
 		}
 	}
 
-
 	//
 	// startupStage
 	public function getAllStartupStagesKey()
@@ -539,6 +564,7 @@ class InterestBase extends ActiveRecordBase
 				$return[] = $r->id;
 			}
 		}
+
 		return $return;
 	}
 
@@ -564,8 +590,11 @@ class InterestBase extends ActiveRecordBase
 	{
 		if ($this->hasStartupStage($key)) {
 			$many2many = InterestUser2startupStage::model()->findByAttributes(array('interest_id' => $this->id, 'startup_stage_id' => $key));
-			if (!empty($many2many)) return InterestUser2startupStage::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'startup_stage_id' => $key));
+			if (!empty($many2many)) {
+				return InterestUser2startupStage::model()->deleteAllByAttributes(array('interest_id' => $this->id, 'startup_stage_id' => $key));
+			}
 		}
+
 		return false;
 	}
 
@@ -575,8 +604,10 @@ class InterestBase extends ActiveRecordBase
 			$many2many = new InterestUser2startupStage;
 			$many2many->interest_id = $this->id;
 			$many2many->startup_stage_id = $key;
+
 			return $many2many->save();
 		}
+
 		return false;
 	}
 

@@ -90,7 +90,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 </section>
 
 
-<?php Yii::app()->clientScript->registerScript("organization-search", "
+<?php Yii::app()->clientScript->registerScript('organization-search', "
 new Vue({
     el: '#company-search',
     data: () => ({

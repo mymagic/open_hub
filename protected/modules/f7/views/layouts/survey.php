@@ -1,26 +1,26 @@
 <?php $this->beginContent(sprintf('webroot.themes.%s.views.layouts._frontend', Yii::app()->theme->name)); ?>
-<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . "/javascript/app.js", CClientScript::POS_END); ?>
-<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/javascript/frontend.js", CClientScript::POS_END); ?>
-<?php //Yii::app()->clientScript->registerScriptFile("//www.mymagic.my/universal-assets/css/bootstrap-social.css", CClientScript::POS_END); ?>
+<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/app.js', CClientScript::POS_END); ?>
+<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/javascript/frontend.js', CClientScript::POS_END); ?>
+<?php //Yii::app()->clientScript->registerScriptFile("//www.mymagic.my/universal-assets/css/bootstrap-social.css", CClientScript::POS_END);?>
 
 <link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/images/favicon.ico" type="image/x-icon" />
 
 <?php
 /*Yii::app()->clientScript->registerScript("uniheader", sprintf('$(function() {
-	_muh.config.selectedMenu1="academy"; 
-	_muh.config.disableLanguage=true; 
+	_muh.config.selectedMenu1="academy";
+	_muh.config.disableLanguage=true;
 	_muh.config.disableAccount=false;
 	_muh.config.isLogin=%s;
 	_muh.config.currentUrl = "//hub.mymagic.my";
-    _muh.config.logoutUrl = "//hub.mymagic.my/site/logout";
+	_muh.config.logoutUrl = "//hub.mymagic.my/site/logout";
 	_muh.render();
 });', Yii::app()->user->isGuest?'false':'true'), CClientScript::POS_END); */
 ?>
 <?php $this->layoutParams['bodyClass'] .= ' body-stampede'; ?>
 <?php $this->layoutParams['hideFlashes'] = false; ?>
-<?php //$this->layoutParams['bodyClass'] .= ' push-body'; ?>
+<?php //$this->layoutParams['bodyClass'] .= ' push-body';?>
 
-<?php if(Notice::hasFlashes()) :?>
+<?php if (Notice::hasFlashes()) :?>
 <div id="layout-flashNotice">
 	<?php echo Notice::renderFlashes() ?>
 </div>
@@ -154,7 +154,7 @@
 
 
 <!-- container -->
-<div class="<?php echo $this->layoutParams['containerFluid']?'container-fluid':'container' ?>">
+<div class="<?php echo $this->layoutParams['containerFluid'] ? 'container-fluid' : 'container' ?>">
 
 <div class="stripe-survey"></div>
 
@@ -183,7 +183,7 @@
 
 
 
-<?php if(Yii::app()->params['environment'] == 'production'):?>
+<?php if (Yii::app()->params['environment'] == 'production'):?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -196,16 +196,16 @@
   ga('create', 'UA-62910124-5', 'auto', 'centralTracker');
   ga('centralTracker.send', 'pageview');
   // custom
-<?php foreach($this->layoutParams['gaAccounts'] as $gaAccount): ?>
+<?php foreach ($this->layoutParams['gaAccounts'] as $gaAccount): ?>
   ga('create', '<?php echo $gaAccount['id'] ?>', 'auto', '<?php echo $gaAccount['trackerName'] ?>');
   ga('<?php echo $gaAccount['trackerName'] ?>', 'pageview');
 <?php endforeach; ?>
   // user id
-<?php if(!empty(Yii::app()->user->username)):?>  ga('set', 'userId', '<?php echo Yii::app()->user->username ?>');<?php endif; ?>
+<?php if (!empty(Yii::app()->user->username)):?>  ga('set', 'userId', '<?php echo Yii::app()->user->username ?>');<?php endif; ?>
 </script>
 <?php endif; ?>
 
-<?php if(Yii::app()->params['environment'] == 'production'):?>
+<?php if (Yii::app()->params['environment'] == 'production'):?>
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = _paq || [];
@@ -227,19 +227,19 @@
 <!-- End Matomo Code -->
 <?php endif; ?>
 
-<?php if(Yii::app()->params['enableMixPanel']): ?>
+<?php if (Yii::app()->params['enableMixPanel']): ?>
 <!-- start Mixpanel --><script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
 0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
 for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
 mixpanel.init("<?php echo Yii::app()->params['mixpanelToken'] ?>");
-<?php if(!empty(Yii::app()->user) && !empty(Yii::app()->user->username)): ?>mixpanel.identify("<?php echo Yii::app()->user->username ?>");<?php endif; ?></script><!-- end Mixpanel -->
+<?php if (!empty(Yii::app()->user) && !empty(Yii::app()->user->username)): ?>mixpanel.identify("<?php echo Yii::app()->user->username ?>");<?php endif; ?></script><!-- end Mixpanel -->
 <?php endif; ?>
 
-<?php $utm_source = isset($_GET['utm_source']) ? $_GET['utm_source'] : ""; ?>
-<?php $utm_medium = isset($_GET['utm_medium']) ? $_GET['utm_medium'] : ""; ?>
-<?php $utm_campaign = isset($_GET['utm_campaign']) ? $_GET['utm_campaign'] : ""; ?>
-<?php $utm_term = isset($_GET['utm_term']) ? $_GET['utm_term'] : ""; ?>
-<?php $utm_content = isset($_GET['utm_content']) ? $_GET['utm_content'] : ""; ?>
+<?php $utm_source = isset($_GET['utm_source']) ? $_GET['utm_source'] : ''; ?>
+<?php $utm_medium = isset($_GET['utm_medium']) ? $_GET['utm_medium'] : ''; ?>
+<?php $utm_campaign = isset($_GET['utm_campaign']) ? $_GET['utm_campaign'] : ''; ?>
+<?php $utm_term = isset($_GET['utm_term']) ? $_GET['utm_term'] : ''; ?>
+<?php $utm_content = isset($_GET['utm_content']) ? $_GET['utm_content'] : ''; ?>
 
 <script type="text/javascript">
 jQuery(document).ready(function ($) {
@@ -272,8 +272,8 @@ jQuery(document).ready(function ($) {
 
 
 
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/assets/css/main.css'); ?>
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/assets/css/core.css'); ?>
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/assets/css/fix-theme-conflict.css'); ?>
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl.'/css/app.css'); ?>
-<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl.'/css/frontend.css'); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl . '/assets/css/main.css'); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl . '/assets/css/core.css'); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl . '/assets/css/fix-theme-conflict.css'); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/app.css'); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/frontend.css'); ?>

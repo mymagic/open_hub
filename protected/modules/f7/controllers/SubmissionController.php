@@ -10,11 +10,10 @@ class SubmissionController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -22,7 +21,7 @@ class SubmissionController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request		
+			//'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -35,21 +34,21 @@ class SubmissionController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('view', 'exportCsv', 'exportPdf', 'update', 'view'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('view', 'exportCsv', 'exportPdf', 'update', 'view'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','create','admin','delete', 'deleteConfirmed' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isDeveloper==true",
+				'actions' => array('list', 'create', 'admin', 'delete', 'deleteConfirmed'),
+				'users' => array('@'),
+				'expression' => '$user->isDeveloper==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -60,8 +59,8 @@ class SubmissionController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -72,11 +71,10 @@ class SubmissionController extends Controller
 		$filename = sprintf('%s-#%s.csv', $model->form->slug, $model->id);
 
 		header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $filename);
+		header('Content-Disposition: attachment; filename=' . $filename);
 
 		$out = fopen('php://output', 'w');
-		foreach ($list as $fields) 
-		{
+		foreach ($list as $fields) {
 			fputcsv($out, $fields);
 		}
 		fclose($out);
@@ -87,8 +85,8 @@ class SubmissionController extends Controller
 		$submission = $this->loadModel($id);
 		$filename = sprintf('%s-#%s.csv', $submission->form->slug, $submission->id);
 		$htmlBuffer = $submission->renderSimpleFormattedHtml();
-		
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'tempDir'=>Yii::getPathOfAlias('application.runtime')]);
+
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'tempDir' => Yii::getPathOfAlias('application.runtime')]);
 		$mpdf->SetTitle($filename);
 		$mpdf->WriteHTML("$htmlBuffer");
 		$mpdf->Output($filename, 'I');
@@ -100,28 +98,28 @@ class SubmissionController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new FormSubmission;
+		$model = new FormSubmission;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['FormSubmission']))
-		{
-			$model->attributes=$_POST['FormSubmission'];
+		if (isset($_POST['FormSubmission'])) {
+			$model->attributes = $_POST['FormSubmission'];
 
-			if(!empty($model->date_submitted)) $model->date_submitted = strtotime($model->date_submitted);
-	
+			if (!empty($model->date_submitted)) {
+				$model->date_submitted = strtotime($model->date_submitted);
+			}
+
 			$model->jsonArray_data = json_decode($model->json_data);
-	
-			if($model->save())
-			{
+
+			if ($model->save()) {
 				//UploadManager::storeImage($model, 'logo', $model->tableName());
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -132,34 +130,34 @@ class SubmissionController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['FormSubmission']))
-		{
-			$model->attributes=$_POST['FormSubmission'];
+		if (isset($_POST['FormSubmission'])) {
+			$model->attributes = $_POST['FormSubmission'];
 
-			if(!empty($model->date_submitted)) $model->date_submitted = strtotime($model->date_submitted);
+			if (!empty($model->date_submitted)) {
+				$model->date_submitted = strtotime($model->date_submitted);
+			}
 
 			//$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
 			$model->jsonArray_data = json_decode($model->json_data);
 
-			if($model->save())
-			{
+			if ($model->save()) {
 				//UploadManager::storeImage($model, 'logo', $model->tableName());
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -168,33 +166,31 @@ class SubmissionController extends Controller
 	{
 		$model = $this->loadModel($id);
 
-		Notice::page(Yii::t('backend', "Are you sure to delete submission '#{submission}'?", ['submission'=>$model->id]), Notice_WARNING, 
-		array('url'=>$this->createUrl('deleteConfirmed', array('id'=>$id)), 'cancelUrl'=>$this->createUrl('view', array('id'=>$id))));
-	
-		
+		Notice::page(
+			Yii::t('backend', "Are you sure to delete submission '#{submission}'?", ['submission' => $model->id]),
+			Notice_WARNING,
+		array('url' => $this->createUrl('deleteConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+		);
 	}
 
 	public function actionDeleteConfirmed($id)
 	{
 		$model = $this->loadModel($id);
-		if($model===null)	throw new CHttpException(404,'The requested record does not exist.');
-		
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested record does not exist.');
+		}
 		$id = $model->id;
 		$form = $model->form;
 
-		if($model->delete())
-		{
-			Notice::flash(Yii::t('backend', "Submission '#{submission}' is successfully deleted.", ['submission'=>$id]), Notice_SUCCESS);
+		if ($model->delete()) {
+			Notice::flash(Yii::t('backend', "Submission '#{submission}' is successfully deleted.", ['submission' => $id]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('backend', "Failed to delete submission '#{submission}' due to unknown reason.", ['submission' => $id]), Notice_ERROR);
 		}
-		else
-		{
-			Notice::flash(Yii::t('backend', "Failed to delete submission '#{submission}' due to unknown reason.", ['submission'=>$id]), Notice_ERROR);
-		}
-		
-		$this->redirect(array('/f7/form/view', 'id'=>$form->id));
-		
+
+		$this->redirect(array('/f7/form/view', 'id' => $form->id));
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -208,12 +204,12 @@ class SubmissionController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('FormSubmission');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('FormSubmission');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -222,13 +218,17 @@ class SubmissionController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new FormSubmission('search');
+		$model = new FormSubmission('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['FormSubmission'])) $model->attributes=$_GET['FormSubmission'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['FormSubmission'])) {
+			$model->attributes = $_GET['FormSubmission'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -241,9 +241,10 @@ class SubmissionController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=FormSubmission::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = FormSubmission::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -253,8 +254,7 @@ class SubmissionController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='submission-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'submission-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -1,8 +1,8 @@
 <?php
-$this->breadcrumbs=array(
-    'Q&amp;A Forum'
+$this->breadcrumbs = array(
+	'Q&amp;A Forum'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 ?>
 

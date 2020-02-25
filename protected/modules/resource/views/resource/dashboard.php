@@ -2,11 +2,11 @@
 /* @var $this ResourceController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Resources',
 );
 
-$this->menu=array(
+$this->menu = array(
 );
 ?>
 

@@ -1,8 +1,8 @@
 <?php
-$this->breadcrumbs=array(
-    'Activity Feed'
+$this->breadcrumbs = array(
+	'Activity Feed'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 // for($year=date('Y'); $year>2014; $year--) $year_array[] = $year;
 $year_array = [2019, 2018, 2017, 2016, 2015, 2014];
@@ -82,7 +82,7 @@ body.loading .modal-load {
 <!--                 <p class="heading-filter">Company <span class="fa fa-chevron-right rotate"></span></p>
                 <div class="content">    
                    <div class="set-group">
-                      <?php $count=0; foreach($userOrg['organizations']['approve'] as $organization): ?>
+                      <?php $count = 0; foreach ($userOrg['organizations']['approve'] as $organization): ?>
                       <label class="set set--checkbox"><?php echo $organization->title ?>
                         <input type="checkbox"/>
                         <div class="set__indicator"></div>
@@ -102,10 +102,10 @@ body.loading .modal-load {
         <!-- <div class="col-md-12 example-title">
             <h2>Timeline</h2>
         </div> -->
-        <?php if(!empty($model)): ?>
+        <?php if (!empty($model)): ?>
         <div class="col-xs-10 col-md-10 col-xs-offset-1 col-sm-8">
 
-            <?php foreach ($model as $day=>$timeline): ?>
+            <?php foreach ($model as $day => $timeline): ?>
             <ul class="timeline timeline-split">
                 <li class="timeline-item period">
                     <div class="timeline-info"></div>
@@ -114,7 +114,7 @@ body.loading .modal-load {
                         <h3 class="timeline-title"><?php echo $day ?></h3>
                     </div>
                 </li>
-                <?php foreach ($timeline as $time=>$timelineData): ?>
+                <?php foreach ($timeline as $time => $timelineData): ?>
                     <?php foreach ($timelineData as $data): ?>
                         <li class="timeline-item">
                             <div class="timeline-info">
@@ -124,7 +124,7 @@ body.loading .modal-load {
                             <div class="timeline-content">
                                 <h3 class="timeline-title"><span class="label label-default service-title-tag"><?php echo ucfirst($data['serviceTitle']) ?></span></h3>
                                 <p><?php echo $data['msg'] ?></p>
-                                <?php if(!empty($data['actionUrl'])): ?>
+                                <?php if (!empty($data['actionUrl'])): ?>
                                 <a class="btn btn-sd btn-sd btn-sd-green btn-view-af" target="_blank" href="<?php echo $data['actionUrl'] ?>"><?php echo $data['actionLabel'] ?></a>
                                 <?php endif; ?>
                             </div>

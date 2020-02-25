@@ -1,4 +1,5 @@
 <?php
+
 class SampleGroupController extends Controller
 {
 	/**
@@ -9,11 +10,10 @@ class SampleGroupController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -21,7 +21,6 @@ class SampleGroupController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -34,16 +33,16 @@ class SampleGroupController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -54,8 +53,8 @@ class SampleGroupController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -65,24 +64,21 @@ class SampleGroupController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new SampleGroup;
+		$model = new SampleGroup;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['SampleGroup']))
-		{
-			$model->attributes=$_POST['SampleGroup'];
+		if (isset($_POST['SampleGroup'])) {
+			$model->attributes = $_POST['SampleGroup'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -93,28 +89,24 @@ class SampleGroupController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['SampleGroup']))
-		{
-			$model->attributes=$_POST['SampleGroup'];
+		if (isset($_POST['SampleGroup'])) {
+			$model->attributes = $_POST['SampleGroup'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Index
 	 */
@@ -128,12 +120,12 @@ class SampleGroupController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('SampleGroup');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('SampleGroup');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -142,13 +134,17 @@ class SampleGroupController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new SampleGroup('search');
+		$model = new SampleGroup('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SampleGroup'])) $model->attributes=$_GET['SampleGroup'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['SampleGroup'])) {
+			$model->attributes = $_GET['SampleGroup'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -161,9 +157,10 @@ class SampleGroupController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=SampleGroup::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = SampleGroup::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -173,8 +170,7 @@ class SampleGroupController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='sample-group-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'sample-group-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -29,12 +29,12 @@ class MeController extends Controller
 		$this->redirect(array('list'));
 	}
 
-	public function actionList($id='')
+	public function actionList($id = '')
 	{
 		$this->pageTitle = 'My Collections';
 		$user = HUB::getUserByUsername(Yii::app()->user->username);
 		$collections = HubCollection::getActiveUserCollections($user, 999);
-		$this->render('list', array('collections' => $collections, 'id'=>$id));
+		$this->render('list', array('collections' => $collections, 'id' => $id));
 	}
 
 	public function actionView($id, $viewMode = 'standalone')
@@ -58,42 +58,41 @@ class MeController extends Controller
 		//$this->layoutParams['hideFlashes'] = true;
 		$status = 'fail';
 		$data = null;
-        
+
 		$item = new CollectionItem();
 		$item->table_name = $tableName;
 		$item->ref_id = $refId;
 
-        $model = new AddItem2CollectionForm();
-        $this->performAjaxValidationCollection($model); 
+		$model = new AddItem2CollectionForm();
+		$this->performAjaxValidationCollection($model);
 		if (isset($_POST['AddItem2CollectionForm'])) {
 			try {
 				$user = HUB::getUserByUsername(Yii::app()->user->username);
-                $item = HubCollection::addCollectionItem($user, $tableName, $refId, $_POST['AddItem2CollectionForm']['collection'], $_POST['AddItem2CollectionForm']['collectionSub']);
-                $msg = Yii::t('collection', "Successfully added '{itemTitle}' to collection '{collectionTitle}' \ '{collectionSubTitle}'", array('{itemTitle}'=>$item->getItemObjectTitle(), '{collectionTitle}'=>$item->collectionSub->collection->title, '{collectionSubTitle}'=>$item->collectionSub->title));
+				$item = HubCollection::addCollectionItem($user, $tableName, $refId, $_POST['AddItem2CollectionForm']['collection'], $_POST['AddItem2CollectionForm']['collectionSub']);
+				$msg = Yii::t('collection', "Successfully added '{itemTitle}' to collection '{collectionTitle}' \ '{collectionSubTitle}'", array('{itemTitle}' => $item->getItemObjectTitle(), '{collectionTitle}' => $item->collectionSub->collection->title, '{collectionSubTitle}' => $item->collectionSub->title));
 				$status = 'success';
 				$data = $item->toApi();
 			} catch (Exception $e) {
 				$msg = $e->getMessage();
-            }
-            
-            $this->renderJSON(array('status'=>$status, 'msg'=>$msg, 'data'=>$data));
+			}
+
+			$this->renderJSON(array('status' => $status, 'msg' => $msg, 'data' => $data));
 		}
 
 		$model->tableName = $tableName;
 		$model->itemId = $refId;
 
-        Yii::app()->clientScript->scriptMap = array('jquery.min.js' => false);
+		Yii::app()->clientScript->scriptMap = array('jquery.min.js' => false);
 		$this->renderPartial('_addItem2Collection', array('tableName' => $tableName, 'refId' => $refId, 'item' => $item, 'model' => $model), false, true);
-    }
-    
-    protected function performAjaxValidationCollection($model) 
-    { 
-        if(isset($_POST['ajax']) && $_POST['ajax']==='collection-form') 
-        { 
-            echo CActiveForm::validate($model); 
-            Yii::app()->end(); 
-        } 
-    }
+	}
+
+	protected function performAjaxValidationCollection($model)
+	{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'collection-form') {
+			echo CActiveForm::validate($model);
+			Yii::app()->end();
+		}
+	}
 
 	public function actionGetCollections()
 	{

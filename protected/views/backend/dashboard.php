@@ -1,13 +1,13 @@
 <?php
-    // peity
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/inspinia/js/plugins/peity/jquery.peity.min.js', CClientScript::POS_END);
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/inspinia/js/demo/peity-demo.js', CClientScript::POS_END);
+	// peity
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/inspinia/js/plugins/peity/jquery.peity.min.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/inspinia/js/demo/peity-demo.js', CClientScript::POS_END);
 ?>
 
 <?php
 $this->breadcrumbs = array(
-    Yii::t('app', 'Backend') => array('index'),
-    Yii::t('app', 'Dashboard'),
+	Yii::t('app', 'Backend') => array('index'),
+	Yii::t('app', 'Dashboard'),
 ); ?>
 
 <style type="text/css">

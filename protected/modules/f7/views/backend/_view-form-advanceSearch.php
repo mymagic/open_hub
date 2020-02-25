@@ -3,7 +3,7 @@
     
     <div class="media-left">
         <?php $intake = $data->getIntake(); ?>
-        <?php if($intake && !empty($intake->image_logo)): ?>
+        <?php if ($intake && !empty($intake->image_logo)): ?>
         <a href="<?php echo $this->createUrl('/f7/form/view', array('id' => $data->id)); ?>">
             <?php echo Html::activeThumb($intake, 'image_logo', array('class' => 'media-object', 'lightbox' => false)); ?>
         </a>

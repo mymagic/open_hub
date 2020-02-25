@@ -17,19 +17,22 @@
 
 class Registry extends RegistryBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Registry extends RegistryBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Registry extends RegistryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class Registry extends RegistryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -93,9 +96,8 @@ class Registry extends RegistryBase
 
 	public function code2obj($code)
 	{
-		$obj = self::model()->find("t.code=:code", array(':code'=>$code));
-		if(!empty($obj))
-		{
+		$obj = self::model()->find('t.code=:code', array(':code' => $code));
+		if (!empty($obj)) {
 			return $obj;
 		}
 	}

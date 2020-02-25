@@ -24,19 +24,16 @@ class SeolyticController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 
-			'order' => array
-			(
+		return array(
+			'order' => array(
 				'class' => 'application.yeebase.extensions.OrderColumn.OrderAction',
 				'modelClass' => 'Seolytic',
-				'pkName'  => 'id',
+				'pkName' => 'id',
 				'backToAction' => 'admin',
 			),
 		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -44,7 +41,7 @@ class SeolyticController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -57,16 +54,16 @@ class SeolyticController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin','delete' ,'order'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete', 'order'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -77,8 +74,8 @@ class SeolyticController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -88,24 +85,21 @@ class SeolyticController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Seolytic;
+		$model = new Seolytic;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Seolytic']))
-		{
-			$model->attributes=$_POST['Seolytic'];
+		if (isset($_POST['Seolytic'])) {
+			$model->attributes = $_POST['Seolytic'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -116,28 +110,25 @@ class SeolyticController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Seolytic']))
-		{
-			$model->attributes=$_POST['Seolytic'];
+		if (isset($_POST['Seolytic'])) {
+			$model->attributes = $_POST['Seolytic'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -147,10 +138,11 @@ class SeolyticController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -164,12 +156,13 @@ class SeolyticController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('Seolytic');
-		$dataProvider->criteria->order =  'ordering ASC';		$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('Seolytic');
+		$dataProvider->criteria->order = 'ordering ASC';
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -178,13 +171,17 @@ class SeolyticController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Seolytic('search');
+		$model = new Seolytic('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Seolytic'])) $model->attributes=$_GET['Seolytic'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Seolytic'])) {
+			$model->attributes = $_GET['Seolytic'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -197,9 +194,10 @@ class SeolyticController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Seolytic::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Seolytic::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -209,8 +207,7 @@ class SeolyticController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='seolytic-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'seolytic-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

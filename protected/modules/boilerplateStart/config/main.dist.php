@@ -4,7 +4,6 @@ return array(
 	'import' => array(
 		'application.modules.boilerplateStart.models.*',
 		'application.modules.boilerplateStart.models.neo4j.*',
-
 	),
 
 	'modules' => array(

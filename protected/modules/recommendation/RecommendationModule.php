@@ -92,7 +92,6 @@ class RecommendationModule extends WebModule
 			);
 		}
 
-
 		return $actions;
 	}
 

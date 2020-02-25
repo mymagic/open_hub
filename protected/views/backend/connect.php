@@ -1,9 +1,9 @@
 <?php
-$this->breadcrumbs=array(
-	Yii::t('app', 'Backend')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('app', 'Backend') => array('index'),
 	Yii::t('app', 'Connect'),
 );
-$this->menu=array(
+$this->menu = array(
 );
 ?>
 

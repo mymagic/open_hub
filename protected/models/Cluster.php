@@ -17,9 +17,12 @@
 
 class Cluster extends ClusterBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-	public function toApi($params='')
+	public function toApi($params = '')
 	{
 		$return = array(
 			'id' => $this->id,
@@ -31,7 +34,7 @@ class Cluster extends ClusterBase
 			'dateAdded' => $this->date_added,
 			'dateModified' => $this->date_modified,
 		);
-			
+
 		return $return;
 	}
 
@@ -40,7 +43,7 @@ class Cluster extends ClusterBase
 		// custom code here
 		// ...
 
-		if(Yii::app()->neo4j->getStatus()) {
+		if (Yii::app()->neo4j->getStatus()) {
 			Neo4jCluster::model($this)->sync();
 		}
 

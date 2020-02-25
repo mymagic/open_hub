@@ -1,7 +1,7 @@
 <?php
-$this->breadcrumbs=array(
-    'Resource Directory'=>array('//resource'),
-    'Add New Resource'
+$this->breadcrumbs = array(
+	'Resource Directory' => array('//resource'),
+	'Add New Resource'
 );
 
 ?>
@@ -10,7 +10,7 @@ $this->breadcrumbs=array(
 $subFilters = array_keys($_GET);
 unset($subFilters[0]);
 $subFilters = implode(',', $subFilters);
-$category_filter = $_GET && trim($subFilters)!="" ? explode(',', $subFilters) : array();
+$category_filter = $_GET && trim($subFilters) != '' ? explode(',', $subFilters) : array();
 $result = json_decode($data, true);
 
 ?>
@@ -62,10 +62,10 @@ $result = json_decode($data, true);
         
     <div id="select-myorg" class="row">
     
-    <?php $count=0; foreach($model['organizations']['approve'] as $organization): ?>
+    <?php $count = 0; foreach ($model['organizations']['approve'] as $organization): ?>
     <div class="col-lg-4 col-md-4 margin-left-25">
     <div class="ibox float-e-margins">
-        <a href="<?php echo $this->createUrl('frontend/createResource', array('id'=>$organization->id)) ?>">
+        <a href="<?php echo $this->createUrl('frontend/createResource', array('id' => $organization->id)) ?>">
             <div class="ibox-title box-resource">
                 <?php echo $organization->title ?>
             </div>
@@ -74,7 +74,7 @@ $result = json_decode($data, true);
     </div>
     <?php $count++; endforeach; ?>
 
-    <?php $count=0; foreach($model['organizations']['pending'] as $organization): ?>
+    <?php $count = 0; foreach ($model['organizations']['pending'] as $organization): ?>
     <div class="col-lg-4 col-md-4 margin-left-25">
         <div class="ibox float-e-margins">
             <div class="ibox-title box-resource">
@@ -100,7 +100,9 @@ $result = json_decode($data, true);
 </section>
 
 
-<?php Yii::app()->clientScript->registerScript('add-resource-0', "
+<?php Yii::app()->clientScript->registerScript(
+	'add-resource-0',
+	"
  $('#StartForm_keyword').on('input propertychange', function(e) {        
    console.log('yo', $(this).val());
     
@@ -116,7 +118,7 @@ $result = json_decode($data, true);
         return;
     }
 
-    $.get('".Yii::app()->params['baseUrl']."/api/getUserOrganizationsCanJoin', { keyword:$(this).val()} )
+    $.get('" . Yii::app()->params['baseUrl'] . "/api/getUserOrganizationsCanJoin', { keyword:$(this).val()} )
     .done(function( json ) 
     {
         var dropdownMenu = self.parent('.dropdown').find('.dropdown-menu');
@@ -146,7 +148,7 @@ $result = json_decode($data, true);
         console.log(orgID);
         $('#StartForm_keyword').val($(this).data('title'));
         $('#request-access').removeClass('hidden');
-        $('#request-access').attr('href', '".Yii::app()->params['baseUrl']."/resource/frontend/requestJoinEmail?organizationId='+orgID+'&'+'email='+'".Yii::app()->user->username."');
+        $('#request-access').attr('href', '" . Yii::app()->params['baseUrl'] . "/resource/frontend/requestJoinEmail?organizationId='+orgID+'&'+'email='+'" . Yii::app()->user->username . "');
 
 
 

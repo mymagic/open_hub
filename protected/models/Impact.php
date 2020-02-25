@@ -17,7 +17,10 @@
 
 class Impact extends ImpactBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
@@ -32,8 +35,8 @@ class Impact extends ImpactBase
 		// class name for the relations automatically generated below.
 		return array(
 			// meta
-			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on'=>sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
-			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on'=>'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through'=>'metaStructures'),
+			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
+			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
 		);
 	}
 
@@ -43,53 +46,65 @@ class Impact extends ImpactBase
 		$return = array_merge($return, array_keys($this->_dynamicFields));
 
 		// meta
-		foreach($this->_metaStructures as $metaStruct)
-		{
+		foreach ($this->_metaStructures as $metaStruct) {
 			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
 		}
+
 		return $return;
 	}
 
 	protected function afterFind()
 	{
 		//if(empty($this->image_cover)) $this->image_cover = 'uploads/product_category/cover.default.jpg';
-		if(empty($this->image_cover)) $this->image_cover = 'images/placeholder.default.jpg';
+		if (empty($this->image_cover)) {
+			$this->image_cover = 'images/placeholder.default.jpg';
+		}
 		parent::afterFind();
 	}
 
-	public function toApi($params='')
+	public function toApi($params = '')
 	{
 		$return = array(
 			'id' => $this->id,
 			'code' => $this->code,
 			'title' => $this->title,
 			'imageCover' => $this->image_cover,
-			'imageCoverThumbUrl'=>$this->getImageCoverThumbUrl(),
-			'imageCoverUrl'=>$this->getImageCoverUrl(),
+			'imageCoverThumbUrl' => $this->getImageCoverThumbUrl(),
+			'imageCoverUrl' => $this->getImageCoverUrl(),
 			'isActive' => $this->is_active,
 			'dateAdded' => $this->date_added,
 			'dateModified' => $this->date_modified,
 		);
-			
+
 		return $return;
 	}
 
-	public function getForeignReferList($isNullable=false, $is4Filter=false)
+	public function getForeignReferList($isNullable = false, $is4Filter = false)
 	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
-		$result = Yii::app()->db->createCommand()->select("id as key, title as title")->from(self::tableName())->where('is_active=1')->order(array('title ASC'))->queryAll();
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
+		$language = Yii::app()->language;
+
+		if ($is4Filter) {
+			$isNullable = false;
+		}
+		if ($isNullable) {
+			$result[] = array('key' => '', 'title' => '');
+		}
+		$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->where('is_active=1')->order(array('title ASC'))->queryAll();
+		if ($is4Filter) {
+			$newResult = array();
+			foreach ($result as $r) {
+				$newResult[$r['key']] = $r['title'];
+			}
+			return $newResult;
+		}
+
 		return $result;
 	}
 
 	public function code2id($code)
 	{
-		$record = Impact::model()->find('t.code=:code', array(':code'=>$code));
-		if(!empty($record))
-		{
+		$record = Impact::model()->find('t.code=:code', array(':code' => $code));
+		if (!empty($record)) {
 			return $record->id;
 		}
 	}
@@ -98,8 +113,8 @@ class Impact extends ImpactBase
 	{
 		return StorageHelper::getUrl($this->image_cover);
 	}
-	
-	public function getImageCoverThumbUrl($width=100, $height=100)
+
+	public function getImageCoverThumbUrl($width = 100, $height = 100)
 	{
 		return StorageHelper::getUrl(ImageHelper::thumb($width, $height, $this->image_cover));
 	}

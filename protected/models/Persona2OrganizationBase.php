@@ -15,7 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 /**
  * This is the model class for table "role2user".
  *
@@ -23,17 +22,16 @@
 		 * @property integer $role_id
 		 * @property integer $user_id
  */
- 
+
 class Persona2OrganizationBase extends ActiveRecordBase
 {
 	public $uploadPath;
-	
-	
+
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'persona2organization';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'persona2organization';
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -51,10 +49,10 @@ class Persona2OrganizationBase extends ActiveRecordBase
 		// will receive user inputs.
 		return array(
 			array('persona_id, organization_id', 'required'),
-			array('persona_id, organization_id', 'numerical', 'integerOnly'=>true),
+			array('persona_id, organization_id', 'numerical', 'integerOnly' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('persona_id, organization_id', 'safe', 'on'=>'search'),
+			array('persona_id, organization_id', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -96,23 +94,22 @@ class Persona2OrganizationBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('persona_id',$this->persona_id);
-		$criteria->compare('organization_id',$this->organization_id);
+		$criteria->compare('persona_id', $this->persona_id);
+		$criteria->compare('organization_id', $this->organization_id);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
+
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -120,10 +117,8 @@ class Persona2OrganizationBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Role2user the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
-	
-
 }

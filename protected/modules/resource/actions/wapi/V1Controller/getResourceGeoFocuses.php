@@ -2,18 +2,14 @@
 
 class getResourceGeoFocuses extends Action
 {
-    public function run()
-    {
-        $tmps = HUB::getResourceGeofocuses();
-		if(!empty($tmps))
-		{
-			foreach($tmps as $tmp)
-			{
+	public function run()
+	{
+		$tmps = HUB::getResourceGeofocuses();
+		if (!empty($tmps)) {
+			foreach ($tmps as $tmp) {
 				$childs = array();
-				if(!empty($tmp['childs']))
-				{
-					foreach($tmp['childs'] as $child)
-					{
+				if (!empty($tmp['childs'])) {
+					foreach ($tmp['childs'] as $child) {
 						$childs[] = $child->toApi();
 					}
 					$tmp['childs'] = $childs;
@@ -23,5 +19,5 @@ class getResourceGeoFocuses extends Action
 		}
 
 		$this->getController()->outputSuccess($result);
-    }
+	}
 }

@@ -17,89 +17,89 @@
 
 class OrganizationMergeHistory extends OrganizationMergeHistoryBase
 {
-    public static function model($class = __CLASS__)
-    {
-        return parent::model($class);
-    }
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-    public function init()
-    {
-        // custom code here
-        // ...
+	public function init()
+	{
+		// custom code here
+		// ...
 
-        parent::init();
+		parent::init();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function beforeValidate()
-    {
-        // custom code here
-        // ...
+	public function beforeValidate()
+	{
+		// custom code here
+		// ...
 
-        return parent::beforeValidate();
-    }
+		return parent::beforeValidate();
+	}
 
-    public function afterValidate()
-    {
-        // custom code here
-        // ...
+	public function afterValidate()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterValidate();
-    }
+		return parent::afterValidate();
+	}
 
-    protected function beforeSave()
-    {
-        // custom code here
-        // ...
+	protected function beforeSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::beforeSave();
-    }
+		return parent::beforeSave();
+	}
 
-    protected function afterSave()
-    {
-        // custom code here
-        // ...
+	protected function afterSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterSave();
-    }
+		return parent::afterSave();
+	}
 
-    protected function beforeFind()
-    {
-        // custom code here
-        // ...
+	protected function beforeFind()
+	{
+		// custom code here
+		// ...
 
-        parent::beforeFind();
+		parent::beforeFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    protected function afterFind()
-    {
-        // custom code here
-        // ...
+	protected function afterFind()
+	{
+		// custom code here
+		// ...
 
-        parent::afterFind();
+		parent::afterFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function attributeLabels()
-    {
-        $return = parent::attributeLabels();
+	public function attributeLabels()
+	{
+		$return = parent::attributeLabels();
 
-        // custom code here
-        return $return;
-    }
+		// custom code here
+		return $return;
+	}
 
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
 			'srcOrganization' => array(self::BELONGS_TO, 'Organization', 'src_organization_id'),
 			'destOrganization' => array(self::BELONGS_TO, 'Organization', 'dest_organization_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'admin_code'),
-        );
-    }
+			'user' => array(self::BELONGS_TO, 'User', 'admin_code'),
+		);
+	}
 }

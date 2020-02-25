@@ -66,17 +66,17 @@ class EventController extends Controller
 
 	public function actionExportRegistration($id)
 	{
-        $model = $this->loadModel($id);
+		$model = $this->loadModel($id);
 
-        $headers = array(
+		$headers = array(
 			'Registration Code',
 			'Full Name	',
 			'First Name',
 			'Last Name',
 			'Email',
 			'Phone',
-            'Company',
-            'Gender',
+			'Company',
+			'Gender',
 			'Age Group',
 			'Where Found',
 			'Persona',
@@ -85,11 +85,10 @@ class EventController extends Controller
 			'Is Bumi',
 			'Date Registered',
 			'Date Payment',
-        );
+		);
 
-        $buffer[] = $headers;
-        foreach($model->eventRegistrations as $registration)
-        {
+		$buffer[] = $headers;
+		foreach ($model->eventRegistrations as $registration) {
 			$record['registration_code'] = $registration->registration_code;
 			$record['full_name'] = $registration->full_name;
 			$record['first_name'] = $registration->first_name;
@@ -106,10 +105,10 @@ class EventController extends Controller
 			$record['is_bumi'] = $registration->is_bumi;
 			$record['date_registered'] = $registration->renderDateRegistered();
 			$record['date_payment'] = $registration->renderDatePayment();
-            $buffer[] = $record;
-        } 
+			$buffer[] = $record;
+		}
 
-        $filename = sprintf('%s.%s.csv', date('Ymd', $model->date_started), $model->title);
+		$filename = sprintf('%s.%s.csv', date('Ymd', $model->date_started), $model->title);
 
 		header('Content-Type: text/csv; charset=utf-8');
 		header('Content-Disposition: attachment; filename=' . $filename);

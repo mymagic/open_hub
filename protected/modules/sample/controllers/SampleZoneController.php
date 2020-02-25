@@ -1,4 +1,5 @@
 <?php
+
 class SampleZoneController extends Controller
 {
 	/**
@@ -9,11 +10,10 @@ class SampleZoneController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -21,7 +21,6 @@ class SampleZoneController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -34,15 +33,15 @@ class SampleZoneController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions' => array('index', 'view'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('create','update','admin', ),
-				'users'=>array('@'),
+				'actions' => array('create', 'update', 'admin', ),
+				'users' => array('@'),
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -53,8 +52,8 @@ class SampleZoneController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -64,24 +63,21 @@ class SampleZoneController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new SampleZone;
+		$model = new SampleZone;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['SampleZone']))
-		{
-			$model->attributes=$_POST['SampleZone'];
+		if (isset($_POST['SampleZone'])) {
+			$model->attributes = $_POST['SampleZone'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -92,39 +88,35 @@ class SampleZoneController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['SampleZone']))
-		{
-			$model->attributes=$_POST['SampleZone'];
+		if (isset($_POST['SampleZone'])) {
+			$model->attributes = $_POST['SampleZone'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('SampleZone');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('SampleZone');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -133,13 +125,17 @@ class SampleZoneController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new SampleZone('search');
+		$model = new SampleZone('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SampleZone'])) $model->attributes=$_GET['SampleZone'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['SampleZone'])) {
+			$model->attributes = $_GET['SampleZone'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -152,9 +148,10 @@ class SampleZoneController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=SampleZone::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = SampleZone::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -164,8 +161,7 @@ class SampleZoneController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='sample-zone-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'sample-zone-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -39,7 +39,7 @@
 			<div class="col-sm-10">
 				<?php if (!$model->isNewRecord) : ?>
 					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList()), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
-				<?php else : // only those active one for new record 
+				<?php else : // only those active one for new record
 				?>
 					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList(false, false, array('params' => array('mode' => 'isActiveId')))), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
 				<?php endif; ?>
@@ -48,7 +48,7 @@
 		</div>
 	<?php endif; ?>
 
-	<?php if (!$model->isNewRecord) : // user only change slug after resource created to make filling form easier 
+	<?php if (!$model->isNewRecord) : // user only change slug after resource created to make filling form easier
 	?>
 		<div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelEx2($model, 'slug'); ?>
@@ -73,7 +73,7 @@
 																		'success' => 'function(data){
 						$(\'#Resource_inputResourceCategories\').html(data).trigger("chosen:updated");
 					}',
-																		//..or 'update'=>'#Resource_inputResourceCategories', 
+																		//..or 'update'=>'#Resource_inputResourceCategories',
 																	)
 																)
 															); ?>

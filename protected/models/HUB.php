@@ -405,7 +405,6 @@ class HUB extends Component
 		return HubCpanel::cpanelNavItems($controller, $forInterface);
 	}
 
-
 	//
 	// organization
 	public static function getOrCreateOrganization($title, $params)
@@ -464,7 +463,6 @@ class HUB extends Component
 		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getOrganizationAllActive', sha1(json_encode(array('v1', $page, $filter, $limitPerPage))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-
 			if (!empty($filter) && is_array($filter)) {
 				// searchTitle
 				// filter out unwanted characters for security purpose
@@ -560,7 +558,6 @@ class HUB extends Component
 			}
 			// is it magic sea?
 			elseif ($filter['sea'] == 1 || $filter['sebasic'] == 1) {
-
 				if ($filter['sea'] == 1) {
 					$ideaMembershipType = "mi1.value='idea'"; // 'idea';
 					$extraJoin = '';
@@ -593,7 +590,6 @@ class HUB extends Component
 
 				GROUP BY o.id ORDER BY o.title ASC) tmp", $extraJoin, $bufferFilter, $ideaMembershipType);
 
-
 				$sql = sprintf("SELECT o.* FROM organization as `o` 
 				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
@@ -617,7 +613,6 @@ class HUB extends Component
 				
 				GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $extraJoin, $bufferFilter, $ideaMembershipType, $offset, $limitPerPage);
 			} elseif ($filter['ecosystem-builder'] == 1) {
-
 				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
 				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
@@ -1514,7 +1509,6 @@ class HUB extends Component
 		return HubResource::getOrganizations($returnOneAssocArray);
 	}
 
-
 	//
 	// service
 	public static function getAllActiveServices()
@@ -2330,7 +2324,8 @@ class HUB extends Component
 
 	protected function RemoveAccountMentorSession($email)
 	{
-		try { } catch (Exception $e) {
+		try {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}

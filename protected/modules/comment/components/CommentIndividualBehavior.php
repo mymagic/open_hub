@@ -1,19 +1,20 @@
 <?php
+
 Yii::import('modules.comment.models.*');
 
 class CommentIndividualBehavior extends Behavior
 {
-    public $model;
+	public $model;
 
-    //
-    // comments
-    function countAllComments()
-    {
-        return HubComment::countAllIndividualComments($this->model);
-    }
+	//
+	// comments
+	public function countAllComments()
+	{
+		return HubComment::countAllIndividualComments($this->model);
+	}
 
-    function getActiveComments($limit=100)
-    {
-        return HubComment::getActiveIndividualComments($this->model, $limit);
-    }
+	public function getActiveComments($limit = 100)
+	{
+		return HubComment::getActiveIndividualComments($this->model, $limit);
+	}
 }

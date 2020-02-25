@@ -17,99 +17,99 @@
 
 class OrganizationRevenue extends OrganizationRevenueBase
 {
-    public static function model($class = __CLASS__)
-    {
-        return parent::model($class);
-    }
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-    public function init()
-    {
-        // custom code here
-        // ...
+	public function init()
+	{
+		// custom code here
+		// ...
 
-        parent::init();
+		parent::init();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function beforeValidate()
-    {
-        // custom code here
-        // ...
-        if (isset($this->amount)) {
-            $this->amount = str_replace(',', '', $this->amount);
-        }
+	public function beforeValidate()
+	{
+		// custom code here
+		// ...
+		if (isset($this->amount)) {
+			$this->amount = str_replace(',', '', $this->amount);
+		}
 
-        return parent::beforeValidate();
-    }
+		return parent::beforeValidate();
+	}
 
-    public function afterValidate()
-    {
-        // custom code here
-        // ...
+	public function afterValidate()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterValidate();
-    }
+		return parent::afterValidate();
+	}
 
-    protected function beforeSave()
-    {
-        // custom code here
-        // ...
+	protected function beforeSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::beforeSave();
-    }
+		return parent::beforeSave();
+	}
 
-    protected function afterSave()
-    {
-        // custom code here
-        // ...
+	protected function afterSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterSave();
-    }
+		return parent::afterSave();
+	}
 
-    protected function beforeFind()
-    {
-        // custom code here
-        // ...
+	protected function beforeFind()
+	{
+		// custom code here
+		// ...
 
-        parent::beforeFind();
+		parent::beforeFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    protected function afterFind()
-    {
-        // custom code here
-        // ...
+	protected function afterFind()
+	{
+		// custom code here
+		// ...
 
-        parent::afterFind();
+		parent::afterFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function attributeLabels()
-    {
-        $return = parent::attributeLabels();
+	public function attributeLabels()
+	{
+		$return = parent::attributeLabels();
 
-        // custom code here
-        $return['amount'] = Yii::t('app', 'Revenue Amount (USD)');
-        $return['amount_profit'] = Yii::t('app', 'Profit Amount (USD)');
-        $return['amount_profit_before_tax'] = Yii::t('app', 'Profit Before Tax Amount (USD)');
+		// custom code here
+		$return['amount'] = Yii::t('app', 'Revenue Amount (USD)');
+		$return['amount_profit'] = Yii::t('app', 'Profit Amount (USD)');
+		$return['amount_profit_before_tax'] = Yii::t('app', 'Profit Before Tax Amount (USD)');
 
-        return $return;
-    }
+		return $return;
+	}
 
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'organization' => array(self::BELONGS_TO, 'Organization', 'organization_id'),
-            'proofs' => array(self::HAS_MANY, 'Proof', 'ref_id',
-                'condition' => 'proofs.ref_table=:refTable',
-                'params' => array(':refTable' => 'organization_revenue'),
-                'order' => 'proofs.date_modified DESC',
-            ),
-        );
-    }
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'organization' => array(self::BELONGS_TO, 'Organization', 'organization_id'),
+			'proofs' => array(self::HAS_MANY, 'Proof', 'ref_id',
+				'condition' => 'proofs.ref_table=:refTable',
+				'params' => array(':refTable' => 'organization_revenue'),
+				'order' => 'proofs.date_modified DESC',
+			),
+		);
+	}
 }

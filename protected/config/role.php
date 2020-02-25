@@ -1,16 +1,15 @@
 <?php
 
-return array
-(
-    'developer', 
-    'superAdmin', 
-    'sensitiveDataAdmin',
-    'admin',
-    'roleManager', 
-    'adminManager', 
-    'memberManager', 
-    'contentManager', 
-    'reportManager', 
-    'translator',
-    'ecosystem',
+return array(
+	'developer',
+	'superAdmin',
+	'sensitiveDataAdmin',
+	'admin',
+	'roleManager',
+	'adminManager',
+	'memberManager',
+	'contentManager',
+	'reportManager',
+	'translator',
+	'ecosystem',
 );

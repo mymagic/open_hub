@@ -7,18 +7,16 @@
  */
 
 return CMap::mergeArray(
-	require(Yii::getPathOfAlias('system.i18n.data').DIRECTORY_SEPARATOR.basename(__FILE__)),
+	require(Yii::getPathOfAlias('system.i18n.data') . DIRECTORY_SEPARATOR . basename(__FILE__)),
 	array(
 		// http://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
 		'dateFormats' => array(
-			'standard'=>'y LLL dd',
-			'rfc'=>'EEE, dd LLL y',
+			'standard' => 'y LLL dd',
+			'rfc' => 'EEE, dd LLL y',
 		),
 		'timeFormats' => array(
-			'standard'=>'kk:mm a',
-			'rfc'=>'kk:mm:ss',
+			'standard' => 'kk:mm a',
+			'rfc' => 'kk:mm:ss',
 		),
 	)
 );
-
-?>

@@ -6,13 +6,13 @@
 	
 	<?php Yii::app()->clientScript->registerCoreScript('jquery') ?>
 	
-	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/reset.css"); ?>
-	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/print.css", 'print'); ?>
+	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/reset.css'); ?>
+	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/print.css', 'print'); ?>
 	
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/javascript/core.js'); ?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/javascript/core.js'); ?>
 	
-	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/core.css"); ?>
-	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl."/css/printing.css"); ?>
+	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/core.css'); ?>
+	<?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/printing.css'); ?>
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>

@@ -82,7 +82,7 @@ $return = array(
 			'pdoClass' => 'NestedPDO',
 		),
 		'cache' => array(
-			'class'=> getenv('CACHE_DRIVER', 'CFileCache'),
+			'class' => getenv('CACHE_DRIVER', 'CFileCache'),
 		),
 		'errorHandler' => array(
 			// use 'site/error' action to display errors
@@ -91,7 +91,7 @@ $return = array(
 		'image' => array(
 		  'class' => 'application.yeebase.extensions.image.CImageComponent',
 			// GD or ImageMagick
-			'driver'=> getenv('IMAGE_DRIVER', 'GD'),
+			'driver' => getenv('IMAGE_DRIVER', 'GD'),
 		),
 		'log' => array(
 			'class' => 'CLogRouter',
@@ -114,7 +114,7 @@ $return = array(
 		),
 		'neo4j' => array(
 			'enable' => filter_var(getenv('NEO4J_ENABLE', false), FILTER_VALIDATE_BOOLEAN),
-			'class'=>'application.extensions.neo4j.NeoEntity',
+			'class' => 'application.extensions.neo4j.NeoEntity',
 			'neoConnectionString' => sprintf('%s://%s:%s@%s:%d', getenv('NEO4J_PROTOCOL', 'http'), getenv('NEO4J_USERNAME', 'neo4j'), getenv('NEO4J_PASSWORD', 'neo4j'), getenv('NEO4J_HOST', 'neo4j'), getenv('NEO4J_PORT', '7474'))
 		),
 		'file' => array(
@@ -122,8 +122,8 @@ $return = array(
 		),
 		's3' => array(
 			'class' => 'application.yeebase.extensions.s3.ES3',
-			'aKey'=> getenv('S3_ACCESS_KEY', 'key'),
-			'sKey'=> getenv('S3_SECRET_KEY', 'key'),
+			'aKey' => getenv('S3_ACCESS_KEY', 'key'),
+			'sKey' => getenv('S3_SECRET_KEY', 'key'),
 		),
 	),
 
@@ -145,8 +145,7 @@ closedir($handle);
 
 $return['components']['urlManager']['rules'] = CMap::mergeArray($return['components']['urlManager']['rules'], require(dirname(__FILE__) . '/route.php'));
 
-if($return['components']['cache']['class']=='CRedisCache')
-{
+if ($return['components']['cache']['class'] == 'CRedisCache') {
 	$return['components']['cache']['hostname'] = getenv('CACHE_HOSTNAME', 'redis');
 	$return['components']['cache']['port'] = getenv('CACHE_PORT', '6379');
 }
@@ -154,11 +153,9 @@ if($return['components']['cache']['class']=='CRedisCache')
 
 // override
 $overrideMainFilePath = sprintf('%s/config/console.php', Yii::getPathOfAlias('overrides'));
-if(file_exists($overrideMainFilePath))
-{
-	$overrideMain = include($overrideMainFilePath);
+if (file_exists($overrideMainFilePath)) {
+	$overrideMain = include $overrideMainFilePath;
 	$return = CMap::mergeArray($return, $overrideMain);
 }
-
 
 return $return;

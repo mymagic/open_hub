@@ -30,19 +30,16 @@ class Neo4jCluster extends Neo4j
 
 	public $repository;
 
-
 	public function __construct($model = '')
 	{
 		$this->init();
 		$this->setAttributes($model);
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param string $id
@@ -52,7 +49,6 @@ class Neo4jCluster extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -61,7 +57,6 @@ class Neo4jCluster extends Neo4j
 		return $this->id;
 	}
 
-
 	/**
 	 * @param string $title
 	 */
@@ -69,7 +64,6 @@ class Neo4jCluster extends Neo4j
 	{
 		$this->title = $value;
 	}
-
 
 	/**
 	 * @return string

@@ -2,7 +2,6 @@
 /* @var $this ResourceController */
 /* @var $model Resource */
 
-
 if ($realm == 'backend') {
 	$this->breadcrumbs = array(
 		'Resources' => array('index'),

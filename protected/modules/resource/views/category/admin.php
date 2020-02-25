@@ -2,13 +2,13 @@
 /* @var $this ResourceCategoryController */
 /* @var $model ResourceCategory */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Resource Categories')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Resource Categories') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create ResourceCategory'), 'url'=>array('//resource/category/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create ResourceCategory'), 'url' => array('//resource/category/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,27 +30,27 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-resourceCategorySearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'resource-category-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+	'id' => 'resource-category-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'slug',
 		'title',
 		'typefor',
-		array('name'=>'is_active', 'cssClassExpression'=>'boolean', 'type'=>'raw', 'value'=>'Html::renderBoolean($data->is_active)', 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'date_added', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'date_added', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 					),
 	),
 )); ?>

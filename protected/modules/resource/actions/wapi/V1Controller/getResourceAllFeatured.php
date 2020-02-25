@@ -2,16 +2,14 @@
 
 class getResourceAllFeatured extends Action
 {
-    public function run()
-    {
-        $meta = array();
+	public function run()
+	{
+		$meta = array();
 
 		$tmps = HUB::getResourceAllFeatured();
-		
-		if(!empty($tmps['items']))
-		{
-			foreach($tmps['items'] as $tmp)
-			{
+
+		if (!empty($tmps['items'])) {
+			foreach ($tmps['items'] as $tmp) {
 				$result[] = $tmp->toApi();
 			}
 		}
@@ -22,7 +20,7 @@ class getResourceAllFeatured extends Action
 		$meta['output']['totalItems'] = $tmps['totalItems'];
 		$meta['output']['totalPages'] = $tmps['totalPages'];
 		$meta['output']['filters'] = $tmps['filters'];
-		
+
 		$this->getController()->outputSuccess($result, $meta);
-    }
+	}
 }

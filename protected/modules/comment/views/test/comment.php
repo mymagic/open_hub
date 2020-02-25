@@ -1,8 +1,8 @@
 <?php
 
-Yii::app()->clientScript->registerCssFile($this->module->getAssetsUrl() . '/css/style.css'); 
+Yii::app()->clientScript->registerCssFile($this->module->getAssetsUrl() . '/css/style.css');
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/viima-comment/css/jquery-comments.css');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/viima-comment/js/jquery-comments.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/viima-comment/js/jquery-comments.js');
 Yii::app()->clientScript->registerScriptFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.textcomplete/1.8.0/jquery.textcomplete.js');
 
 ?>

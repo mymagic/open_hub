@@ -17,7 +17,10 @@
 
 class IndustryKeyword extends IndustryKeywordBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public $inputTitles;
 
@@ -25,13 +28,13 @@ class IndustryKeyword extends IndustryKeywordBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -39,7 +42,7 @@ class IndustryKeyword extends IndustryKeywordBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -67,7 +70,7 @@ class IndustryKeyword extends IndustryKeywordBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -77,9 +80,9 @@ class IndustryKeyword extends IndustryKeywordBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 

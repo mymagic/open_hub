@@ -17,19 +17,22 @@
 
 class Resource2Organization extends Resource2OrganizationBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Resource2Organization extends Resource2OrganizationBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Resource2Organization extends Resource2OrganizationBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,13 +78,13 @@ class Resource2Organization extends Resource2OrganizationBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
-	function behaviors() 
+	public function behaviors()
 	{
 		/*return array
 		(
@@ -89,7 +92,7 @@ class Resource2Organization extends Resource2OrganizationBase
 				'class'=>'application.yeebase.components.behaviors.SpatialDataBehavior',
 				'spatialFields'=>array(
 					// all spatial fields here
-				
+
 				),
 			),
 		);*/

@@ -7,53 +7,52 @@
 
 <div class="">
 
-<?php $form=$this->beginWidget('ActiveForm', array(
-	'id'=>'event-owner-form',
+<?php $form = $this->beginWidget('ActiveForm', array(
+	'id' => 'event-owner-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
 	// controller action is handling ajax validation correctly.
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
-	'htmlOptions'=>array
-	(
-		'class'=>'form-horizontal crud-form',
-		'role'=>'form',
-		'enctype'=>'multipart/form-data',
+	'enableAjaxValidation' => false,
+	'htmlOptions' => array(
+		'class' => 'form-horizontal crud-form',
+		'role' => 'form',
+		'enctype' => 'multipart/form-data',
 	)
 )); ?>
 
 <?php echo Notice::inline(Yii::t('core', 'Fields with <span class="required">*</span> are required.')); ?>
-<?php if($model->hasErrors()): ?>
+<?php if ($model->hasErrors()): ?>
 	<?php echo $form->bsErrorSummary($model); ?>
 <?php endif; ?>
 
 
-	<div class="form-group <?php echo $model->hasErrors('event_code') ? 'has-error':'' ?>">
-		<?php echo $form->bsLabelEx2($model,'event_code'); ?>
+	<div class="form-group <?php echo $model->hasErrors('event_code') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'event_code'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'event_code', array('nullable'=>false,'class'=>'chosen form-control', 'params'=>array('mode'=>'isActive'), 'disabled'=>!empty(Yii::app()->request->getParam('eventCode'))?'disabled':'')); ?>
-			<?php echo $form->bsError($model,'event_code'); ?>
+			<?php echo $form->bsForeignKeyDropDownList($model, 'event_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActive'), 'disabled' => !empty(Yii::app()->request->getParam('eventCode')) ? 'disabled' : '')); ?>
+			<?php echo $form->bsError($model, 'event_code'); ?>
 		</div>
 	</div>
 
-	<div class="form-group <?php echo $model->hasErrors('organization_code') ? 'has-error':'' ?>">
-		<?php echo $form->bsLabelEx2($model,'organization_code'); ?>
+	<div class="form-group <?php echo $model->hasErrors('organization_code') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'organization_code'); ?>
 		<div class="col-sm-10">
-			<?php if($model->isNewRecord): ?>
-				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable'=>false,'class'=>'chosen form-control', 'params'=>array('mode'=>'isActiveCode'))); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActiveCode'))); ?>
 			<?php else: ?>
-				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable'=>false,'class'=>'chosen form-control', 'params'=>array('mode'=>'code'))); ?>
+				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'code'))); ?>
 			<?php endif; ?>
-			<?php echo $form->bsError($model,'organization_code'); ?>
+			<?php echo $form->bsError($model, 'organization_code'); ?>
 		</div>
 	</div>
 
 
-	<div class="form-group <?php echo $model->hasErrors('department') ? 'has-error':'' ?>">
-		<?php echo $form->bsLabelEx2($model,'department'); ?>
+	<div class="form-group <?php echo $model->hasErrors('department') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'department'); ?>
 		<div class="col-sm-10">
 			<?php echo $form->bsTextField($model, 'department'); ?>
-			<?php echo $form->bsError($model,'department'); ?>
+			<?php echo $form->bsError($model, 'department'); ?>
 		</div>
 	</div>
 

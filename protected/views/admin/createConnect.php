@@ -2,14 +2,14 @@
 /* @var $this AdminController */
 /* @var $model Admin */
 
-$this->breadcrumbs=array(
-	'Admins'=>array('index'),
+$this->breadcrumbs = array(
+	'Admins' => array('index'),
 	'Create',
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('backend','Manage Admin'), 'url'=>array('/admin/admin')),
-	array('label'=>Yii::t('backend','Create Admin'), 'url'=>array('/admin/create')),	
+$this->menu = array(
+	array('label' => Yii::t('backend', 'Manage Admin'), 'url' => array('/admin/admin')),
+	array('label' => Yii::t('backend', 'Create Admin'), 'url' => array('/admin/create')),
 );
 ?>
 
@@ -18,48 +18,47 @@ $this->menu=array(
 
 <div class="">
 
-<?php $form=$this->beginWidget('ActiveForm', array(
-	'id'=>'admin-form',
+<?php $form = $this->beginWidget('ActiveForm', array(
+	'id' => 'admin-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
 	// controller action is handling ajax validation correctly.
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
-	'htmlOptions'=>array
-	(
-		'class'=>'form-horizontal crud-form',
-		'role'=>'form',
-		'enctype'=>'multipart/form-data',
+	'enableAjaxValidation' => false,
+	'htmlOptions' => array(
+		'class' => 'form-horizontal crud-form',
+		'role' => 'form',
+		'enctype' => 'multipart/form-data',
 	)
 )); ?>
 
 	<?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
-<?php if($model->hasErrors()): ?>
+<?php if ($model->hasErrors()): ?>
 	<?php echo $form->bsErrorSummary($model); ?>
 <?php endif; ?>	
 	
 		
-	<div class="form-group <?php echo $model->hasErrors("username") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model->hasErrors('username') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'username'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsEmailTextField($model, 'username', array('placeholder'=>Yii::t('backend', "User's primary email address"))); ?>
+			<?php echo $form->bsEmailTextField($model, 'username', array('placeholder' => Yii::t('backend', "User's primary email address"))); ?>
 			<?php echo $form->bsError($model, 'username'); ?>
 		</div>
 	</div>
 	
 	
-	<div class="form-group <?php echo $model->hasErrors("first_name") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model->hasErrors('first_name') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'first_name'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsTextField($model, 'first_name', array('placeholder'=>Yii::t('backend', "User's first name as per IC"))); ?>
+			<?php echo $form->bsTextField($model, 'first_name', array('placeholder' => Yii::t('backend', "User's first name as per IC"))); ?>
 			<?php echo $form->bsError($model, 'first_name'); ?>
 		</div>
 	</div>
 	
-	<div class="form-group <?php echo $model->hasErrors("last_name") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model->hasErrors('last_name') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'last_name'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsTextField($model, 'last_name', array('placeholder'=>Yii::t('backend', "User's last name as per IC"))); ?>
+			<?php echo $form->bsTextField($model, 'last_name', array('placeholder' => Yii::t('backend', "User's last name as per IC"))); ?>
 			<?php echo $form->bsError($model, 'last_name'); ?>
 		</div>
 	</div>

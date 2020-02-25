@@ -213,8 +213,8 @@ class DefaultController extends CController
 
 	// create admin account if not exists
 	public function actionDone()
-	{ 
-    $envs = array();
+	{
+		$envs = array();
 		// load existing .envs into array
 		if (file_exists($this->envFilePath)) {
 			$envs = (new josegonzalez\Dotenv\Loader($this->envFilePath))

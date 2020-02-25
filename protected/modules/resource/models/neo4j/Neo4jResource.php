@@ -70,7 +70,6 @@ class Neo4jResource extends Neo4j
 
 	public $relationshipData;
 
-
 	public function __construct($model = '')
 	{
 		$this->init();
@@ -83,12 +82,10 @@ class Neo4jResource extends Neo4j
 		$this->personas = new NeoCollection();
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param string $id
@@ -98,7 +95,6 @@ class Neo4jResource extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -106,7 +102,6 @@ class Neo4jResource extends Neo4j
 	{
 		return $this->id;
 	}
-
 
 	/**
 	 * @param string $title
@@ -116,7 +111,6 @@ class Neo4jResource extends Neo4j
 		$this->title = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -124,7 +118,6 @@ class Neo4jResource extends Neo4j
 	{
 		return $this->title;
 	}
-
 
 	/**
 	 * @param boolean $is_active
@@ -134,7 +127,6 @@ class Neo4jResource extends Neo4j
 		$this->is_active = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -142,7 +134,6 @@ class Neo4jResource extends Neo4j
 	{
 		return $this->is_active;
 	}
-
 
 	/**
 	 * @param boolean $is_featured
@@ -152,7 +143,6 @@ class Neo4jResource extends Neo4j
 		$this->is_featured = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -160,7 +150,6 @@ class Neo4jResource extends Neo4j
 	{
 		return $this->is_featured;
 	}
-
 
 	/**
 	 * @param boolean $is_blocked
@@ -170,7 +159,6 @@ class Neo4jResource extends Neo4j
 		$this->is_blocked = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -178,7 +166,6 @@ class Neo4jResource extends Neo4j
 	{
 		return $this->is_blocked;
 	}
-
 
 	/**
 	 * @return Neo4jIndustry[]|NeoCollection
@@ -188,18 +175,16 @@ class Neo4jResource extends Neo4j
 		return $this->industries;
 	}
 
-
 	/**
 	 * @param Neo4jIndustry $industry
 	 */
 	public function addIndustries(Neo4jIndustry $industry)
 	{
 		if (!$this->industries->contains($industry)) {
-		$this->industries->add($industry);
-		$this->entityManager->flush();
+			$this->industries->add($industry);
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jIndustry $industry
@@ -207,14 +192,13 @@ class Neo4jResource extends Neo4j
 	public function removeIndustries(Neo4jIndustry $industry)
 	{
 		if ($this->industries->contains($industry)) {
-		$keys = $this->industries->getKeys();
-		foreach($keys as $key) {
-		$this->industries->remove($key);
-		}
-		$this->entityManager->flush();
+			$keys = $this->industries->getKeys();
+			foreach ($keys as $key) {
+				$this->industries->remove($key);
+			}
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @return Neo4jStartupStage[]|NeoCollection
@@ -224,18 +208,16 @@ class Neo4jResource extends Neo4j
 		return $this->startupStages;
 	}
 
-
 	/**
 	 * @param Neo4jStartupStage $startupStage
 	 */
 	public function addStartupStages(Neo4jStartupStage $startupStage)
 	{
 		if (!$this->startupStages->contains($startupStage)) {
-		$this->startupStages->add($startupStage);
-		$this->entityManager->flush();
+			$this->startupStages->add($startupStage);
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jStartupStage $startupStage
@@ -243,14 +225,13 @@ class Neo4jResource extends Neo4j
 	public function removeStartupStages(Neo4jStartupStage $startupStage)
 	{
 		if ($this->startupStages->contains($startupStage)) {
-		$keys = $this->startupStages->getKeys();
-		foreach($keys as $key) {
-		$this->startupStages->remove($key);
-		}
-		$this->entityManager->flush();
+			$keys = $this->startupStages->getKeys();
+			foreach ($keys as $key) {
+				$this->startupStages->remove($key);
+			}
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @return Neo4jPersona[]|NeoCollection
@@ -260,18 +241,16 @@ class Neo4jResource extends Neo4j
 		return $this->personas;
 	}
 
-
 	/**
 	 * @param Neo4jPersona $persona
 	 */
 	public function addPersonas(Neo4jPersona $persona)
 	{
 		if (!$this->personas->contains($persona)) {
-		$this->personas->add($persona);
-		$this->entityManager->flush();
+			$this->personas->add($persona);
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jPersona $persona
@@ -279,31 +258,30 @@ class Neo4jResource extends Neo4j
 	public function removePersonas(Neo4jPersona $persona)
 	{
 		if ($this->personas->contains($persona)) {
-		$keys = $this->personas->getKeys();
-		foreach($keys as $key) {
-		$this->personas->remove($key);
-		}
-		$this->entityManager->flush();
+			$keys = $this->personas->getKeys();
+			foreach ($keys as $key) {
+				$this->personas->remove($key);
+			}
+			$this->entityManager->flush();
 		}
 	}
 
-	public function getRecommendation() {
-
+	public function getRecommendation()
+	{
 		$userId = Yii::app()->user->id;
 
-        $resources = $this->entityManager->createQuery("MATCH (interest:Neo4jInterest {user_id: '$userId'})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]-(resource:Neo4jResource)
+		$resources = $this->entityManager->createQuery("MATCH (interest:Neo4jInterest {user_id: '$userId'})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]-(resource:Neo4jResource)
         WHERE resource.is_active = 1 AND resource.is_blocked = 0
         RETURN resource.id, count(resource) as frequency
         ORDER BY frequency DESC
         LIMIT 3")->execute();
 
-        $resourceIds = array();
+		$resourceIds = array();
 
-        foreach($resources as $resource) {
-            array_push($resourceIds, $resource['resource.id']);
-        }
+		foreach ($resources as $resource) {
+			array_push($resourceIds, $resource['resource.id']);
+		}
 
 		return $resourceIds;
-
 	}
 }

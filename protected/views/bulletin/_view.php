@@ -6,7 +6,7 @@
 <div class="view panel panel-default">
 <div class="panel-heading">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-	#<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	#<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id' => $data->id)); ?>
 	<br />
 
 </div>
@@ -37,15 +37,15 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('html_content_en')); ?>:</b>
-	<?php echo ($data->html_content_en); ?>
+	<?php echo($data->html_content_en); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('html_content_ms')); ?>:</b>
-	<?php echo ($data->html_content_ms); ?>
+	<?php echo($data->html_content_ms); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('html_content_zh')); ?>:</b>
-	<?php echo ($data->html_content_zh); ?>
+	<?php echo($data->html_content_zh); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('image_main')); ?>:</b>

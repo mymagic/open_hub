@@ -1,9 +1,9 @@
 <?php
 
 $this->breadcrumbs = array(
-    'Organization' => array('index'),
-    $model->title,
-    'Team',
+	'Organization' => array('index'),
+	$model->title,
+	'Team',
 );
 
 ?>
@@ -16,11 +16,11 @@ $this->breadcrumbs = array(
         </div>
         <div class="col-md-12">
             <?php $organization2Email = new Organization2Email;
-            $form = $this->beginWidget('ActiveForm', array(
-                'action' => $this->createUrl('/organization/addOrganization2Email', array('organizationId' => $model->id, 'realm' => 'cpanel', 'scenario' => 'team')),
-                'method' => 'POST',
-                'htmlOptions' => array('class' => 'form-horizontal')
-            )); ?>
+			$form = $this->beginWidget('ActiveForm', array(
+				'action' => $this->createUrl('/organization/addOrganization2Email', array('organizationId' => $model->id, 'realm' => 'cpanel', 'scenario' => 'team')),
+				'method' => 'POST',
+				'htmlOptions' => array('class' => 'form-horizontal')
+			)); ?>
 
             <div class="input-group">
                 <?php echo $form->bsTextField($organization2Email, 'user_email', array('placeholder' => 'Email')) ?>

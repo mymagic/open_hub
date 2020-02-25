@@ -55,7 +55,7 @@
                 <?php foreach ($resources as $resource) : ?>
 
                     <div class="col-sm-4 my-4">
-                        <a href="<?php echo $this->createUrl("/resource/frontend/view", array('id' => $resource->id)) ?>" class="text-gray-700 hover:text-gray-600">
+                        <a href="<?php echo $this->createUrl('/resource/frontend/view', array('id' => $resource->id)) ?>" class="text-gray-700 hover:text-gray-600">
                             <div class="font-bold"><?php echo $resource->title; ?></div>
                             <div><?php echo ysUtil::truncate(strip_tags($resource->getAttrData('html_content'), 250)); ?></div>
                             <span class="badge"><?php echo $resource->resourceCategories[0]->title; ?></span>

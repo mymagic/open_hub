@@ -17,19 +17,22 @@
 
 class Individual2Email extends Individual2EmailBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Individual2Email extends Individual2EmailBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Individual2Email extends Individual2EmailBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class Individual2Email extends Individual2EmailBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -93,18 +96,19 @@ class Individual2Email extends Individual2EmailBase
 
 	public function getNextToggleStatusClass()
 	{
-		if($this->is_verify)
-		{
+		if ($this->is_verify) {
 			return 'primary';
 		}
+
 		return 'blank';
 	}
+
 	public function getNextToggleStatus()
 	{
-		if($this->is_verify)
-		{
+		if ($this->is_verify) {
 			return 'pending';
 		}
+
 		return 'Verified';
 	}
 }

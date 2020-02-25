@@ -2,8 +2,8 @@
 /* @var $this MapApplicationController */
 /* @var $model MapApplication */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Email')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Email') => array('index'),
 	Yii::t('backend', 'Admin'),
 );
 ?>

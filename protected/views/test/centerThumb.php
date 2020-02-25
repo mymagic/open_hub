@@ -66,8 +66,8 @@
 <hr />
 <p>Html::thumb($imageUrl, $htmlOptions=array(), $imageUrlFull='', $altTitle='', $galleryCode='')</p>
 
-<?php echo Html::thumb("https://mymagic-hub.s3.amazonaws.com/uploads/organization/thumbnail/57a1d1b8018530c5fa410ad8d7f6f14232d04991.resize.320x320.png") ?>
+<?php echo Html::thumb('https://mymagic-hub.s3.amazonaws.com/uploads/organization/thumbnail/57a1d1b8018530c5fa410ad8d7f6f14232d04991.resize.320x320.png') ?>
 
-<?php echo Html::thumb("https://mymagic-hub.s3.amazonaws.com/uploads/organization/thumbnail/0456d643b4dfd24a2e2fe08ffbbf4d9fe0f19961.resize.320x320.jpg") ?>
+<?php echo Html::thumb('https://mymagic-hub.s3.amazonaws.com/uploads/organization/thumbnail/0456d643b4dfd24a2e2fe08ffbbf4d9fe0f19961.resize.320x320.jpg') ?>
 
 </div>

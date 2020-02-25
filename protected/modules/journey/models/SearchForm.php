@@ -1,4 +1,5 @@
 <?php
+
 class SearchForm extends CFormModel
 {
 	public $email;
@@ -14,8 +15,8 @@ class SearchForm extends CFormModel
 	{
 		return array(
 			// email has to be a valid email address
-            array('email', 'email'),
-            array('email, fullName, mobileNo, organization, keyword', 'safe')
+			array('email', 'email'),
+			array('email, fullName, mobileNo, organization, keyword', 'safe')
 		);
 	}
 
@@ -27,11 +28,11 @@ class SearchForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'email'=>Yii::t('app', 'Email'),
-			'fullName'=>Yii::t('app', 'Full Name'),
-			'mobileNo'=>Yii::t('app', 'Mobile Number'),
-			'organization'=>Yii::t('app', 'Organization'),
-			'keyword'=>Yii::t('app', 'Keyword'),
+			'email' => Yii::t('app', 'Email'),
+			'fullName' => Yii::t('app', 'Full Name'),
+			'mobileNo' => Yii::t('app', 'Mobile Number'),
+			'organization' => Yii::t('app', 'Organization'),
+			'keyword' => Yii::t('app', 'Keyword'),
 		);
 	}
 }

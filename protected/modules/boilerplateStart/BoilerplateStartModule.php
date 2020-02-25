@@ -92,7 +92,6 @@ class BoilerplateStartModule extends WebModule
 			);
 		}
 
-
 		return $actions;
 	}
 

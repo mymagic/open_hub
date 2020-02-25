@@ -130,7 +130,9 @@ foreach ($modules as $moduleKey => $moduleParams) {
 <?php $this->endContent(); ?>
 
 
-<?php Yii::app()->clientScript->registerScript('settings-script', <<<EOD
+<?php Yii::app()->clientScript->registerScript(
+							'settings-script',
+							<<<EOD
 updateQuickInfo();
 setInterval(function() {updateQuickInfo();}, 10000);
 EOD

@@ -24,11 +24,10 @@ class Organization2EmailController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,6 @@ class Organization2EmailController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -49,16 +47,16 @@ class Organization2EmailController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -69,8 +67,8 @@ class Organization2EmailController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -80,24 +78,21 @@ class Organization2EmailController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Organization2Email;
+		$model = new Organization2Email;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Organization2Email']))
-		{
-			$model->attributes=$_POST['Organization2Email'];
+		if (isset($_POST['Organization2Email'])) {
+			$model->attributes = $_POST['Organization2Email'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -108,28 +103,24 @@ class Organization2EmailController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Organization2Email']))
-		{
-			$model->attributes=$_POST['Organization2Email'];
+		if (isset($_POST['Organization2Email'])) {
+			$model->attributes = $_POST['Organization2Email'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Index
 	 */
@@ -143,12 +134,12 @@ class Organization2EmailController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('Organization2Email');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('Organization2Email');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -157,13 +148,17 @@ class Organization2EmailController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Organization2Email('search');
+		$model = new Organization2Email('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Organization2Email'])) $model->attributes=$_GET['Organization2Email'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Organization2Email'])) {
+			$model->attributes = $_GET['Organization2Email'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -176,9 +171,10 @@ class Organization2EmailController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Organization2Email::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Organization2Email::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -188,8 +184,7 @@ class Organization2EmailController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='organization2-email-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'organization2-email-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

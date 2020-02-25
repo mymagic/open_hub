@@ -3,12 +3,12 @@
 /* @var $model Event */
 
 $this->breadcrumbs = array(
-    Yii::t('backend', 'Events') => array('index'),
-    Yii::t('backend', 'Manage'),
+	Yii::t('backend', 'Events') => array('index'),
+	Yii::t('backend', 'Manage'),
 );
 
 $this->menu = YeeModule::composeNavItems('eventAdminSideNav', Yii::app()->controller, array(
-    array('label' => Yii::t('app', 'Create Event'), 'url' => array('/event/create')),
+	array('label' => Yii::t('app', 'Create Event'), 'url' => array('/event/create')),
 ));
 
 Yii::app()->clientScript->registerScript('search', "
@@ -31,29 +31,29 @@ $('.search-form form').submit(function(){
 <div id="collapse-eventSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
 	<?php $this->renderPartial('_search', array(
-        'model' => $model,
-    )); ?>
+		'model' => $model,
+	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-    'id' => 'event-grid',
-    'dataProvider' => $model->search(),
-    'filter' => $model,
-    'columns' => array(
-        array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-        'code',
-        //array('name'=>'vendor_code', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->->', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>::model()->getForeignReferList(false, true)),
-        'title',
-        array('name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
-        array('name' => 'event_group_code', 'cssClassExpression' => 'date', 'value' => '$data->eventGroup->title', 'headerHtmlOptions' => array('class' => ''), 'filter' => false),
-        //'at',
-        array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+	'id' => 'event-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
+		'code',
+		//array('name'=>'vendor_code', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->->', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>::model()->getForeignReferList(false, true)),
+		'title',
+		array('name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
+		array('name' => 'event_group_code', 'cssClassExpression' => 'date', 'value' => '$data->eventGroup->title', 'headerHtmlOptions' => array('class' => ''), 'filter' => false),
+		//'at',
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
 
-        array(
-            'class' => 'application.components.widgets.ButtonColumn',
-            'buttons' => array('delete' => array('visible' => false)),
-        ),
-    ),
+		array(
+			'class' => 'application.components.widgets.ButtonColumn',
+			'buttons' => array('delete' => array('visible' => false)),
+		),
+	),
 )); ?>

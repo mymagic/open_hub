@@ -2,27 +2,30 @@
 /* @var $this OrganizationController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Organizations',
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage Organization'), 'url'=>array('/organization/admin')),
-	array('label'=>Yii::t('app','Create Organization'), 'url'=>array('/organization/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage Organization'), 'url' => array('/organization/admin')),
+	array('label' => Yii::t('app', 'Create Organization'), 'url' => array('/organization/create')),
 );
 ?>
 
 
-<?php if($realm === 'backend') { ?>
+<?php if ($realm === 'backend') {
+	?>
 
 <h1><?php echo Yii::t('backend', 'Organizations'); ?></h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
+	'dataProvider' => $dataProvider,
+	'itemView' => '_view',
 )); ?>
 
-<?php } else if ($realm === 'cpanel') { ?>
+<?php
+} elseif ($realm === 'cpanel') {
+	?>
 
 	<section>
     <h2>My Company List</h2>
@@ -42,7 +45,7 @@ $this->menu=array(
     <div class="list_content my-3">
         <?php foreach ($model as $data) : ?>
             <div class="row">
-                <a href="<?php echo $this->createUrl('/organization/view/', array('id' => $data['id'], 'realm' => $realm )); ?>">
+                <a href="<?php echo $this->createUrl('/organization/view/', array('id' => $data['id'], 'realm' => $realm)); ?>">
                     <div class="col-sm-2 col-md-1 col-lg-1">
                         <img src="<?php echo $data['imageLogoThumbUrl'] ?>" class="img-responsive" />
                     </div>
@@ -69,4 +72,5 @@ $this->menu=array(
 </section>
 
 
-<?php } ?>
+<?php
+} ?>

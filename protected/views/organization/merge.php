@@ -2,25 +2,23 @@
 /* @var $this OrganizationController */
 /* @var $model Organization */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Organizations')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Organizations') => array('index'),
 	Yii::t('backend', 'Merge'),
 );
 
-$this->menu=array(
-    array('label'=>Yii::t('app','Manage Organizations'), 'url'=>array('/organization/admin')),
-    array('label'=>Yii::t('app','Create Organization'), 'url'=>array('/organization/create')),	
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage Organizations'), 'url' => array('/organization/admin')),
+	array('label' => Yii::t('app', 'Create Organization'), 'url' => array('/organization/create')),
 );
 ?>
 
-<?php $form = $this->beginWidget('ActiveForm', array
-(
-    'action'=>$this->createUrl('organization/doMerge'),
-    'method'=>'GET',
-	'htmlOptions'=>array
-	(
-		'class'=>'form-horizontal',
-        'role'=>'form'
+<?php $form = $this->beginWidget('ActiveForm', array(
+	'action' => $this->createUrl('organization/doMerge'),
+	'method' => 'GET',
+	'htmlOptions' => array(
+		'class' => 'form-horizontal',
+		'role' => 'form'
 	)
 )); ?>
 
@@ -32,7 +30,7 @@ $this->menu=array(
         <div class="well">
         <h3>Merge This <span class="pull-right" id="switch" style="cursor:pointer"><?php echo Html::faIcon('fa fa-exchange') ?></span></h3>
         
-        <?php echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class'=>'form-control ', 'v-model'=>"sourceKeyword", 'nullable'=>true)); ?>
+        <?php echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class' => 'form-control ', 'v-model' => 'sourceKeyword', 'nullable' => true)); ?>
 
         <div class="margin-top-lg" v-html="previewSource"></div>
         </div>
@@ -41,7 +39,7 @@ $this->menu=array(
     <div class="col-sm-6">
         <div class="well">
         <h3>Into This</h3>
-        <?php echo Html::foreignKeyDropDownList('targetKeyword', 'Organization', $targetKeyword, array('class'=>'form-control ', 'v-model'=>"targetKeyword", 'nullable'=>true)); ?>
+        <?php echo Html::foreignKeyDropDownList('targetKeyword', 'Organization', $targetKeyword, array('class' => 'form-control ', 'v-model' => 'targetKeyword', 'nullable' => true)); ?>
         <div class="margin-top-lg" v-html="previewTarget"></div>
         </div>
     </div>
@@ -51,14 +49,14 @@ $this->menu=array(
 <div>
 <h2>Auto Detection</h2>
 <table class="table table-borderd">
-<?php $i=1; foreach($suggestions as $suggestion): ?>
+<?php $i = 1; foreach ($suggestions as $suggestion): ?>
     <tr>
         <td><?php echo $i ?></td>
         <td><?php echo $suggestion['title'] ?></td>
         <td>
-            <?php $sql = 'SELECT * FROM organization WHERE title LIKE :title'; 
-            $tmps = Yii::app()->db->createCommand($sql)->bindValues(array(':title'=>substr($suggestion['title'], 0, 10).'%%'))->queryAll(); ?>
-            <?php foreach($tmps as $tmp):?>
+            <?php $sql = 'SELECT * FROM organization WHERE title LIKE :title';
+			$tmps = Yii::app()->db->createCommand($sql)->bindValues(array(':title' => substr($suggestion['title'], 0, 10) . '%%'))->queryAll(); ?>
+            <?php foreach ($tmps as $tmp):?>
                 <div class="label label-default" style="margin:2px; display:inline-block">#<?php echo $tmp[id] ?>| <?php echo $tmp['title'] ?></div>
             <?php endforeach; ?>
         </td>
@@ -70,7 +68,8 @@ $this->menu=array(
 
 
 
-<?php Yii::app()->clientScript->registerScript('organization-merge', 
+<?php Yii::app()->clientScript->registerScript(
+				'organization-merge',
 "
 var vue = new Vue({
     el: '#vue-mergeOrganization',
@@ -109,4 +108,5 @@ $('#switch').click(function(){
     $('#sourceKeyword').val(target).trigger('chosen:updated').trigger('change');
     $('#targetKeyword').val(source).trigger('chosen:updated').trigger('change');
 });
-"); ?>
+"
+			); ?>

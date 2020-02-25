@@ -2,14 +2,14 @@
 /* @var $this JunkController */
 /* @var $model Junk */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Junks')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Junks') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create Junk'), 'url'=>array('/junk/create')),
-	array('label'=>Yii::t('app','Clear All'), 'url'=>array('/junk/clear')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create Junk'), 'url' => array('/junk/create')),
+	array('label' => Yii::t('app', 'Clear All'), 'url' => array('/junk/clear')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -31,25 +31,25 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-junkSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'junk-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+	'id' => 'junk-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'code',
-		array('name'=>'date_added', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
-		array('name'=>'date_modified', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'date_added', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_added, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
+		array('name' => 'date_modified', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 					),
 	),
 )); ?>

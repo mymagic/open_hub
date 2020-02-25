@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs = array(
-    'Deactivate Account'
+	'Deactivate Account'
 );
 ?>
 

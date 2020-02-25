@@ -2,14 +2,14 @@
 /* @var $this BulletinController */
 /* @var $model Bulletin */
 
-$this->breadcrumbs=array(
-	Yii::t('app', 'Bulletins')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('app', 'Bulletins') => array('index'),
 	Yii::t('app', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','List Bulletin'), 'url'=>array('index')),
-	array('label'=>Yii::t('app','Create Bulletin'), 'url'=>array('create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'List Bulletin'), 'url' => array('index')),
+	array('label' => Yii::t('app', 'Create Bulletin'), 'url' => array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -31,26 +31,26 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-bulletinSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'bulletin-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+	'id' => 'bulletin-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'title_en',
-		array('name'=>'image_main', 'cssClassExpression'=>'image', 'type'=>'raw', 'value'=>'Html::activeThumb($data, \'image_main\')', 'headerHtmlOptions'=>array('class'=>'image'), 'filter'=>false),
-		array('name'=>'is_active', 'cssClassExpression'=>'boolean', 'value'=>"Yii::t('core', Yii::app()->format->boolean(\$data->is_active))", 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'date_posted', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_posted, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'image_main', 'cssClassExpression' => 'image', 'type' => 'raw', 'value' => 'Html::activeThumb($data, \'image_main\')', 'headerHtmlOptions' => array('class' => 'image'), 'filter' => false),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'value' => "Yii::t('core', Yii::app()->format->boolean(\$data->is_active))", 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'date_posted', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_posted, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 		),
 	),
 )); ?>

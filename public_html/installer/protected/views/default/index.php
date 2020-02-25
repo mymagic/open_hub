@@ -6,30 +6,30 @@
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'appName'); ?>
-            <?php echo CHtml::activeTextField($model, 'appName', array('class'=>'form-control', 'placeholder'=>'My Hub', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'appName', array('class' => 'form-control', 'placeholder' => 'My Hub', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'environment'); ?>
             <?php echo CHtml::activeDropDownList($model, 'environment', array(
-                'production'=>Yii::t('installer', 'Production'),
-                'staging'=>Yii::t('installer', 'Staging'),
-                'testing'=>Yii::t('installer', 'Testing'),
-                'development'=>Yii::t('installer', 'Development'),
-            ), array('class'=>'form-control', 'required'=>'required')) ?>
+				'production' => Yii::t('installer', 'Production'),
+				'staging' => Yii::t('installer', 'Staging'),
+				'testing' => Yii::t('installer', 'Testing'),
+				'development' => Yii::t('installer', 'Development'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-12">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'domainName'); ?>
-            <?php echo CHtml::activeTextField($model, 'domainName', array('class'=>'form-control', 'placeholder'=>'myhub.io', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'domainName', array('class' => 'form-control', 'placeholder' => 'myhub.io', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-12">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'publicEmail'); ?>
-            <?php echo CHtml::activeTextField($model, 'publicEmail', array('class'=>'form-control', 'placeholder'=>'hello@myhub.io', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'publicEmail', array('class' => 'form-control', 'placeholder' => 'hello@myhub.io', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -59,13 +59,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'connectUrl'); ?>
-            <?php echo CHtml::activeTextField($model, 'connectUrl', array('class'=>'form-control', 'placeholder'=>'//account.mymagic.my', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'connectUrl', array('class' => 'form-control', 'placeholder' => '//account.mymagic.my', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-2">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'connectClientId'); ?>
-            <?php echo CHtml::activeTextField($model, 'connectClientId', array('class'=>'form-control', 'placeholder'=>'99', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'connectClientId', array('class' => 'form-control', 'placeholder' => '99', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -73,7 +73,7 @@
         <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'connectSecretKey'); ?>
-            <?php echo CHtml::activeTextField($model, 'connectSecretKey', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'connectSecretKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
     <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'adminUsername'); ?>
-            <?php echo CHtml::activeTextField($model, 'adminUsername', array('class'=>'form-control', 'placeholder'=>'admin@myhub.io', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'adminUsername', array('class' => 'form-control', 'placeholder' => 'admin@myhub.io', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -117,13 +117,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'dbHost'); ?>
-            <?php echo CHtml::activeTextField($model, 'dbHost', array('class'=>'form-control', 'placeholder'=>'localhost', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'dbHost', array('class' => 'form-control', 'placeholder' => 'localhost', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-2">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'dbPort'); ?>
-            <?php echo CHtml::activeTextField($model, 'dbPort', array('class'=>'form-control', 'placeholder'=>'3306', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'dbPort', array('class' => 'form-control', 'placeholder' => '3306', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -131,7 +131,7 @@
     <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'dbName'); ?>
-            <?php echo CHtml::activeTextField($model, 'dbName', array('class'=>'form-control', 'placeholder'=>'myhub', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'dbName', array('class' => 'form-control', 'placeholder' => 'myhub', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -139,13 +139,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'dbUsername'); ?>
-            <?php echo CHtml::activeTextField($model, 'dbUsername', array('class'=>'form-control', 'placeholder'=>'root', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'dbUsername', array('class' => 'form-control', 'placeholder' => 'root', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'dbPassword'); ?>
-            <?php echo CHtml::activeTextField($model, 'dbPassword', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'dbPassword', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -168,13 +168,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3AccessKey'); ?>
-            <?php echo CHtml::activeTextField($model, 's3AccessKey', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3AccessKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecretKey'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecretKey', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecretKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -182,7 +182,7 @@
         <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3Region'); ?>
-            <?php echo CHtml::activeTextField($model, 's3Region', array('class'=>'form-control', 'placeholder'=>'ap-southeast-1', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3Region', array('class' => 'form-control', 'placeholder' => 'ap-southeast-1', 'required' => 'required')) ?>
         </div>
         </div>
     </div>
@@ -190,13 +190,13 @@
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3PublicBucketName'); ?>
-            <?php echo CHtml::activeTextField($model, 's3PublicBucketName', array('class'=>'form-control', 'placeholder'=>'myhub-hub', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3PublicBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3PublicBucketUrl'); ?>
-            <?php echo CHtml::activeTextField($model, 's3PublicBucketUrl', array('class'=>'form-control', 'placeholder'=>'https://myhub-hub.s3.amazonaws.com', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3PublicBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub.s3.amazonaws.com', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -204,13 +204,13 @@
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecureBucketName'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecureBucketName', array('class'=>'form-control', 'placeholder'=>'myhub-hub-secure', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecureBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub-secure', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecureBucketUrl'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecureBucketUrl', array('class'=>'form-control', 'placeholder'=>'https://myhub-hub-secure.s3.amazonaws.com', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecureBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub-secure.s3.amazonaws.com', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -235,13 +235,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'smtpHost'); ?>
-            <?php echo CHtml::activeTextField($model, 'smtpHost', array('class'=>'form-control', 'placeholder'=>'smtp.mandrillapp.com', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'smtpHost', array('class' => 'form-control', 'placeholder' => 'smtp.mandrillapp.com', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-2">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'smtpPort'); ?>
-            <?php echo CHtml::activeTextField($model, 'smtpPort', array('class'=>'form-control', 'placeholder'=>'587', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'smtpPort', array('class' => 'form-control', 'placeholder' => '587', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -249,13 +249,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'smtpUsername'); ?>
-            <?php echo CHtml::activeTextField($model, 'smtpUsername', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'smtpUsername', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'smtpPassword'); ?>
-            <?php echo CHtml::activeTextField($model, 'smtpPassword', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'smtpPassword', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -263,7 +263,7 @@
         <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'smtpOutgoingEmail'); ?>
-            <?php echo CHtml::activeTextField($model, 'smtpOutgoingEmail', array('class'=>'form-control', 'placeholder'=>'noreply@myhub.io', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'smtpOutgoingEmail', array('class' => 'form-control', 'placeholder' => 'noreply@myhub.io', 'required' => 'required')) ?>
         </div>
         </div>
     </div>
@@ -286,18 +286,18 @@
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cacheEnabled'); ?>
             <?php echo CHtml::activeDropDownList($model, 'cacheEnabled', array(
-                'false'=>Yii::t('installer', 'No'),
-                'true'=>Yii::t('installer', 'Yes'),
-            ), array('class'=>'form-control', 'required'=>'required')) ?>
+				'false' => Yii::t('installer', 'No'),
+				'true' => Yii::t('installer', 'Yes'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cacheDriver'); ?>
             <?php echo CHtml::activeDropDownList($model, 'cacheDriver', array(
-                'CFileCache'=>Yii::t('installer', 'Local File Storage'),
-                'CRedisCache'=>Yii::t('installer', 'Redis Cache Server'),
-            ), array('class'=>'form-control', 'required'=>'required')) ?>
+				'CFileCache' => Yii::t('installer', 'Local File Storage'),
+				'CRedisCache' => Yii::t('installer', 'Redis Cache Server'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -305,13 +305,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cacheHostname'); ?>
-            <?php echo CHtml::activeTextField($model, 'cacheHostname', array('class'=>'form-control', 'placeholder'=>'localhost', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'cacheHostname', array('class' => 'form-control', 'placeholder' => 'localhost', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-2">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cachePort'); ?>
-            <?php echo CHtml::activeTextField($model, 'cachePort', array('class'=>'form-control', 'placeholder'=>'6379', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'cachePort', array('class' => 'form-control', 'placeholder' => '6379', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -335,9 +335,9 @@
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esEnabled'); ?>
             <?php echo CHtml::activeDropDownList($model, 'esEnabled', array(
-                'false'=>Yii::t('installer', 'No'),
-                'true'=>Yii::t('installer', 'Yes'),
-            ), array('class'=>'form-control', 'required'=>'required')) ?>
+				'false' => Yii::t('installer', 'No'),
+				'true' => Yii::t('installer', 'Yes'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-6">
@@ -348,13 +348,13 @@
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esEndpoint'); ?>
-            <?php echo CHtml::activeTextField($model, 'esEndpoint', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esEndpoint', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esRegion'); ?>
-            <?php echo CHtml::activeTextField($model, 'esRegion', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esRegion', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -363,13 +363,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esKey'); ?>
-            <?php echo CHtml::activeTextField($model, 'esKey', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esSecret'); ?>
-            <?php echo CHtml::activeTextField($model, 'esSecret', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esSecret', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -394,15 +394,15 @@
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jEnabled'); ?>
             <?php echo CHtml::activeDropDownList($model, 'neo4jEnabled', array(
-                'false'=>Yii::t('installer', 'No'),
-                'true'=>Yii::t('installer', 'Yes'),
-            ), array('class'=>'form-control', 'required'=>'required')) ?>
+				'false' => Yii::t('installer', 'No'),
+				'true' => Yii::t('installer', 'Yes'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jProtocol'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jProtocol', array('class'=>'form-control', 'placeholder'=>'bolt', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jProtocol', array('class' => 'form-control', 'placeholder' => 'bolt', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -410,13 +410,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jHost'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jHost', array('class'=>'form-control', 'placeholder'=>'localhost', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jHost', array('class' => 'form-control', 'placeholder' => 'localhost', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col-2">
     <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jPort'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jPort', array('class'=>'form-control', 'placeholder'=>'7687', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jPort', array('class' => 'form-control', 'placeholder' => '7687', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -425,13 +425,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jUsername'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jUsername', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jUsername', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jPassword'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jPassword', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jPassword', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -455,7 +455,7 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'googleMapApiKey'); ?>
-            <?php echo CHtml::activeTextField($model, 'googleMapApiKey', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'googleMapApiKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -463,7 +463,7 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'openExchangeRatesAppId'); ?>
-            <?php echo CHtml::activeTextField($model, 'openExchangeRatesAppId', array('class'=>'form-control', 'placeholder'=>'', 'required'=>'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'openExchangeRatesAppId', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
         </div>
     </div>
     </div>
@@ -482,4 +482,3 @@
 <?php echo CHtml::endForm(); ?>
 
 <?php
-

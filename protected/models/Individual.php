@@ -94,7 +94,6 @@ class Individual extends IndividualBase
 			// meta
 			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
 			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
-
 		);
 	}
 
@@ -119,6 +118,7 @@ class Individual extends IndividualBase
 
 		// meta
 		$return[] = array('_dynamicData', 'safe');
+
 		return $return;
 	}
 
@@ -158,6 +158,7 @@ class Individual extends IndividualBase
 				$interest->addPersona($this->inputPersonas);
 			}
 		}
+
 		return parent::afterSave();
 	}
 
@@ -208,18 +209,22 @@ class Individual extends IndividualBase
 		foreach ($emails as $email) {
 			array_push($users, User::model()->find('username=:username', array(':username' => $email)));
 		}
+
 		return $users;
 	}
 
 	public function fullname2obj($fullname)
 	{
-		return Individual::model()->find("t.full_name=:fullName", array(':fullName' => trim($fullname)));
+		return Individual::model()->find('t.full_name=:fullName', array(':fullName' => trim($fullname)));
 	}
 
 	public function isFullnameExists($fullname)
 	{
 		$exists = self::fullname2obj($fullname);
-		if ($exists === null) return false;
+		if ($exists === null) {
+			return false;
+		}
+
 		return $exists->id;
 	}
 
@@ -227,8 +232,11 @@ class Individual extends IndividualBase
 	public function hasUserEmail($email)
 	{
 		foreach ($this->individual2Emails as $item) {
-			if (strtolower($email) == strtolower($item->user_email)) return true;
+			if (strtolower($email) == strtolower($item->user_email)) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -242,21 +250,32 @@ class Individual extends IndividualBase
 
 	public function canJoinByUserEmail($email)
 	{
-		if ($this->hasUserEmail($email)) return false;
+		if ($this->hasUserEmail($email)) {
+			return false;
+		}
+
 		return true;
 	}
+
 	public function canAccessByUser($user)
 	{
 		foreach ($this->individual2Emails as $item) {
-			if ($user->username == $item->user_email && $item->status == 'approve') return true;
+			if ($user->username == $item->user_email && $item->status == 'approve') {
+				return true;
+			}
 		}
+
 		return false;
 	}
+
 	public function canAccessByUserEmail($userEmail)
 	{
 		foreach ($this->individual2Emails as $item) {
-			if ($userEmail == $item->user_email && $item->is_verify) return true;
+			if ($userEmail == $item->user_email && $item->is_verify) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -265,9 +284,13 @@ class Individual extends IndividualBase
 	{
 		return 'uploads/individual/photo.default.jpg';
 	}
+
 	public function isDefaultImagePhoto()
 	{
-		if ($this->image_photo == $this->getDefaultImagePhoto()) return true;
+		if ($this->image_photo == $this->getDefaultImagePhoto()) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -287,7 +310,9 @@ class Individual extends IndividualBase
 	public function search($params = null)
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
-		if (empty($params['compareOperator'])) $params['compareOperator'] = 'AND';
+		if (empty($params['compareOperator'])) {
+			$params['compareOperator'] = 'AND';
+		}
 
 		$criteria = new CDbCriteria;
 		$criteria->together = true;

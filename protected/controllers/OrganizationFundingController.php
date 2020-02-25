@@ -24,11 +24,10 @@ class OrganizationFundingController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class OrganizationFundingController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,16 +48,16 @@ class OrganizationFundingController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin','delete' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true && \$user->isSensitiveDataAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
+				'expression' => '$user->isAdmin==true && $user->isSensitiveDataAdmin==true',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -75,8 +74,8 @@ class OrganizationFundingController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -84,30 +83,30 @@ class OrganizationFundingController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate($organization_id='')
+	public function actionCreate($organization_id = '')
 	{
-		$model=new OrganizationFunding;
+		$model = new OrganizationFunding;
 		$model->organization_id = $organization_id;
-		
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['OrganizationFunding']))
-		{
-			$model->attributes=$_POST['OrganizationFunding'];
+		if (isset($_POST['OrganizationFunding'])) {
+			$model->attributes = $_POST['OrganizationFunding'];
 
-			if(!empty($model->date_raised)) $model->date_raised = strtotime($model->date_raised);
-	
-			if($model->save())
-			{
-				$log = Yii::app()->esLog->log(sprintf("created funding record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger'=>'OrgranizationFundingController::actionCreate', 'model'=>'OrganizationFunding', 'action'=>'create', 'id'=>$model->organization_id, 'organizationId'=>$model->organization_id));
+			if (!empty($model->date_raised)) {
+				$model->date_raised = strtotime($model->date_raised);
+			}
 
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$log = Yii::app()->esLog->log(sprintf("created funding record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger' => 'OrgranizationFundingController::actionCreate', 'model' => 'OrganizationFunding', 'action' => 'create', 'id' => $model->organization_id, 'organizationId' => $model->organization_id));
+
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -118,31 +117,31 @@ class OrganizationFundingController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['OrganizationFunding']))
-		{
-			$model->attributes=$_POST['OrganizationFunding'];
+		if (isset($_POST['OrganizationFunding'])) {
+			$model->attributes = $_POST['OrganizationFunding'];
 
-			if(!empty($model->date_raised)) $model->date_raised = strtotime($model->date_raised);
+			if (!empty($model->date_raised)) {
+				$model->date_raised = strtotime($model->date_raised);
+			}
 
-			if($model->save())
-			{
-				$log = Yii::app()->esLog->log(sprintf("updated funding record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger'=>'OrgranizationFundingController::actionUpdate', 'model'=>'OrganizationFunding', 'action'=>'update', 'id'=>$model->organization->id, 'organizationId'=>$model->organization->id));
+			if ($model->save()) {
+				$log = Yii::app()->esLog->log(sprintf("updated funding record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger' => 'OrgranizationFundingController::actionUpdate', 'model' => 'OrganizationFunding', 'action' => 'update', 'id' => $model->organization->id, 'organizationId' => $model->organization->id));
 
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -152,17 +151,16 @@ class OrganizationFundingController extends Controller
 		$model = $this->loadModel($id);
 		$copy = clone $model;
 
-		if($model->delete())
-		{
-			$log = Yii::app()->esLog->log(sprintf("deleted funding record #%s for organization '%s'", $copy->id, $copy->organization->title), 'organization', array('trigger'=>'OrgranizationFundingController::actionDelete', 'model'=>'OrganizationFunding', 'action'=>'delete', 'id'=>$copy->organization->id, 'organizationId'=>$copy->organization->id));
-
+		if ($model->delete()) {
+			$log = Yii::app()->esLog->log(sprintf("deleted funding record #%s for organization '%s'", $copy->id, $copy->organization->title), 'organization', array('trigger' => 'OrgranizationFundingController::actionDelete', 'model' => 'OrganizationFunding', 'action' => 'delete', 'id' => $copy->organization->id, 'organizationId' => $copy->organization->id));
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -176,12 +174,12 @@ class OrganizationFundingController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('OrganizationFunding');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('OrganizationFunding');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -190,13 +188,17 @@ class OrganizationFundingController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new OrganizationFunding('search');
+		$model = new OrganizationFunding('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['OrganizationFunding'])) $model->attributes=$_GET['OrganizationFunding'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['OrganizationFunding'])) {
+			$model->attributes = $_GET['OrganizationFunding'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -209,9 +211,10 @@ class OrganizationFundingController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=OrganizationFunding::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = OrganizationFunding::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -221,8 +224,7 @@ class OrganizationFundingController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='organization-funding-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'organization-funding-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

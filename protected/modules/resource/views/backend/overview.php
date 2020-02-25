@@ -42,7 +42,7 @@
     <div class="contact-box full-width">
         <h3>By Category</h3>
         <div class="panel-group" id="accordion-categories" role="tablist" aria-multiselectable="true">
-        <?php foreach($stat['categories'] as $lvl1CatKey=>$lvl1CatParams): ?>
+        <?php foreach ($stat['categories'] as $lvl1CatKey => $lvl1CatParams): ?>
             <div class="panel-heading" role="tab" id="heading-<?php echo $lvl1CatKey ?>" style="padding-left:0">
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion-categories" href="#collapse-<?php echo $lvl1CatKey ?>" aria-controls="collapse-<?php echo $lvl1CatKey ?>">
@@ -53,7 +53,7 @@
             <div id="collapse-<?php echo $lvl1CatKey ?>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="heading-<?php echo $lvl1CatKey ?>">
             
             <table class="table nopadding">
-                <?php foreach($lvl1CatParams['childs'] as $childCatKey=>$childCatParams): ?>
+                <?php foreach ($lvl1CatParams['childs'] as $childCatKey => $childCatParams): ?>
                     <tr>
                         <td>
                             <?php echo $childCatParams['title'] ?>

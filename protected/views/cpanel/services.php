@@ -1,8 +1,8 @@
 <?php
-$this->breadcrumbs=array(
-    'Services'
+$this->breadcrumbs = array(
+	'Services'
 );
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 ?>
 
     <div class="sidebard-panel left-bar">
@@ -17,46 +17,41 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
         </div>
         
         <div id="content-services">
-            <?php if(!empty($selected_service_list)) {
-                foreach($selected_service_list as $row)
-                {
+            <?php if (!empty($selected_service_list)) {
+	foreach ($selected_service_list as $row) {
+		$target_div = '';
 
-                    $target_div = '';
-                    
-                    switch($row['service']['slug'])
-                    {
-                        case 'activate';
-                            $target_div = 'activate-link';
-                            $description = 'A collaborative platform for startups and corporates to find innovative solutions for real life challenges!';
-                        break;
-                        case 'idea';
-                            $target_div = 'accre-link';
-                            $description ='Gain access and procurement from private and public sectors by accrediting your startup as an impact driven enterprise!';
-                        break;
-                        case 'mentor';
-                            $target_div = 'mentor-link';
-                            $description ='Seek support and advice from available mentors or give back by being a mentor yourself!';
-                        break;
-                        case 'resource';
-                            $target_div = 'dir-link';
-                            $description ='A comprehensive collection of products and services from public and private organisations available for entrepreneurs! You can even add your own service offerings!';
-                        break;
-                        case 'atas';
-                            $target_div = 'ats-link';
-                            $description ='Accelerator Tracking and Application System for GAP';
-                        break;
-                    }
-
-            ?>
+		switch ($row['service']['slug']) {
+						case 'activate':
+							$target_div = 'activate-link';
+							$description = 'A collaborative platform for startups and corporates to find innovative solutions for real life challenges!';
+						break;
+						case 'idea':
+							$target_div = 'accre-link';
+							$description = 'Gain access and procurement from private and public sectors by accrediting your startup as an impact driven enterprise!';
+						break;
+						case 'mentor':
+							$target_div = 'mentor-link';
+							$description = 'Seek support and advice from available mentors or give back by being a mentor yourself!';
+						break;
+						case 'resource':
+							$target_div = 'dir-link';
+							$description = 'A comprehensive collection of products and services from public and private organisations available for entrepreneurs! You can even add your own service offerings!';
+						break;
+						case 'atas':
+							$target_div = 'ats-link';
+							$description = 'Accelerator Tracking and Application System for GAP';
+						break;
+					} ?>
             <a id="<?php echo $target_div; ?>" class="service-link" href="#">
                 <div class="m-t-md pad-30 services-box">
                     <h4><?php echo $row['service']['title']; ?></h4>
                     <h5> <?php echo $description ?></h5> 
                 </div>
             </a>
-            <?php 
-                }
-            }?>
+            <?php
+	}
+}?>
             <div class="add-services hidden">
               <a id="addServiceBtn" class="add-sv-btn">Add Services</a>
             </div>
@@ -186,29 +181,33 @@ $this->renderPartial('/cpanel/_menu',array('model'=>$model,));
 
                 <div class="modal-body">
                     <?php
-                        $selected_service_slug_list = array();
-                        if(!empty($selected_service_list)):
-                            foreach($selected_service_list as $service):
-                                $selected_service_slug_list[] = $service->service->slug;
-                            endforeach;
-                        endif;
-                        
-                    ?>
+						$selected_service_slug_list = array();
+						if (!empty($selected_service_list)):
+							foreach ($selected_service_list as $service):
+								$selected_service_slug_list[] = $service->service->slug;
+							endforeach;
+						endif;
+
+					?>
 
                     <h2 class="modal-subtitle">Services Available on MaGIC</h2>
                     <br>
                     <p style="margin-bottom: 20px;">Here are the available services provided by MaGIC. You can add more services to your dashboard.</p>
                       <div class="section group-services">
                       <?php foreach ($service_list as $list): ?>
-                          <?php if(!empty($selected_service_list) && in_array($list['slug'], $selected_service_slug_list)){ ?>
+                          <?php if (!empty($selected_service_list) && in_array($list['slug'], $selected_service_slug_list)) {
+						?>
                             <a class="col-services span_1_of_3 button-desc disabled" href="javascript:void(0);" data-slug="<?php echo $list['slug']?>">
                             <span class="service-title"><?php echo $list['title']?></span>
                             </a>
-                          <?php } else { ?>
+                          <?php
+					} else {
+						?>
                             <a class="col-services span_1_of_3 button-desc enabled" href="javascript:void(0);" data-slug="<?php echo $list['slug']?>">
                             <span class="service-title"> <?php echo $list['title']?></span>
                             </a>
-                          <?php } ?>
+                          <?php
+					} ?>
                       
                     
                   <?php endforeach; ?>

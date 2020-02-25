@@ -2,16 +2,16 @@
 /* @var $this IndustryController */
 /* @var $model Industry */
 
-$this->breadcrumbs=array(
-	'Industries'=>array('index'),
+$this->breadcrumbs = array(
+	'Industries' => array('index'),
 	Yii::t('backend', 'Create'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage Industry'), 'url'=>array('/industry/admin')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage Industry'), 'url' => array('/industry/admin')),
 );
 ?>
 
 <h1><?php echo Yii::t('backend', 'Create Industry'); ?></h1>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php $this->renderPartial('_form', array('model' => $model)); ?>

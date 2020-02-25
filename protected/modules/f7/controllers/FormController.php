@@ -87,6 +87,7 @@ class FormController extends Controller
 	public function actionCreate($intakeId = '')
 	{
 		$model = new Form;
+		$model->json_structure = '{}';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);

@@ -17,19 +17,22 @@
 
 class ResourceGeofocus2Resource extends ResourceGeofocus2ResourceBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class ResourceGeofocus2Resource extends ResourceGeofocus2ResourceBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class ResourceGeofocus2Resource extends ResourceGeofocus2ResourceBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,13 +78,13 @@ class ResourceGeofocus2Resource extends ResourceGeofocus2ResourceBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
-	function behaviors() 
+	public function behaviors()
 	{
 		/*return array
 		(
@@ -89,7 +92,7 @@ class ResourceGeofocus2Resource extends ResourceGeofocus2ResourceBase
 				'class'=>'application.yeebase.components.behaviors.SpatialDataBehavior',
 				'spatialFields'=>array(
 					// all spatial fields here
-				
+
 				),
 			),
 		);*/

@@ -1,5 +1,5 @@
 <?php
-$this->renderPartial('/cpanel/_menu',array('model'=>$model,));
+$this->renderPartial('/cpanel/_menu', array('model' => $model, ));
 
 $csrfTokenName = Yii::app()->request->csrfTokenName;
 $csrfToken = Yii::app()->request->csrfToken;

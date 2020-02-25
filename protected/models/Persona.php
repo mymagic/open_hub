@@ -17,19 +17,22 @@
 
 class Persona extends PersonaBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -39,7 +42,7 @@ class Persona extends PersonaBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -70,7 +73,7 @@ class Persona extends PersonaBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -80,9 +83,9 @@ class Persona extends PersonaBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -98,6 +101,6 @@ class Persona extends PersonaBase
 
 	public function slug2obj($slug)
 	{
-		return Persona::model()->find('t.slug=:slug', array(':slug'=>$slug));
+		return Persona::model()->find('t.slug=:slug', array(':slug' => $slug));
 	}
 }

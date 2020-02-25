@@ -2,13 +2,13 @@
 /* @var $this EventOrganizationController */
 /* @var $model EventOrganization */
 
-$this->breadcrumbs=array(
-	'Event Companies'=>array('index'),
+$this->breadcrumbs = array(
+	'Event Companies' => array('index'),
 	'Bulk Insert',
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Manage EventOrganization'), 'url'=>array('/eventOrganization/admin')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Manage EventOrganization'), 'url' => array('/eventOrganization/admin')),
 );
 ?>
 
@@ -35,41 +35,40 @@ $this->menu=array(
         <h5>Upload</h5>
     </div>
     <div class="ibox-content">
-    <?php $form=$this->beginWidget('ActiveForm', array(
-        'id'=>'eventOrganization-bulkInsert-form',
-        // Please note: When you enable ajax validation, make sure the corresponding
-        // controller action is handling ajax validation correctly.
-        // There is a call to performAjaxValidation() commented in generated controller code.
-        // See class documentation of CActiveForm for details on this.
-        'enableAjaxValidation'=>false,
-        'htmlOptions'=>array
-        (
-            'class'=>'form-horizontal crud-form',
-            'role'=>'form',
-            'enctype'=>'multipart/form-data',
-        )
-    )); ?>
+    <?php $form = $this->beginWidget('ActiveForm', array(
+		'id' => 'eventOrganization-bulkInsert-form',
+		// Please note: When you enable ajax validation, make sure the corresponding
+		// controller action is handling ajax validation correctly.
+		// There is a call to performAjaxValidation() commented in generated controller code.
+		// See class documentation of CActiveForm for details on this.
+		'enableAjaxValidation' => false,
+		'htmlOptions' => array(
+			'class' => 'form-horizontal crud-form',
+			'role' => 'form',
+			'enctype' => 'multipart/form-data',
+		)
+	)); ?>
     
     
     <?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
-    <?php if($model->hasErrors()): ?>
+    <?php if ($model->hasErrors()): ?>
         <?php echo $form->bsErrorSummary($model); ?>
     <?php endif; ?>
 
-    <div class="form-group <?php echo $model->hasErrors('event_id') ? 'has-error':'' ?>">
-        <?php echo $form->bsLabelEx2($model,'event_id'); ?>
+    <div class="form-group <?php echo $model->hasErrors('event_id') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx2($model, 'event_id'); ?>
         <div class="col-sm-10">
-            <?php echo $form->bsDropDownList($model, 'event_id', Html::listData($events, 'id', 'title'), array('class'=>'chosen form-control')); ?>
+            <?php echo $form->bsDropDownList($model, 'event_id', Html::listData($events, 'id', 'title'), array('class' => 'chosen form-control')); ?>
             <p class="help-block">Only active, not cancelled event shows here</p>
-            <?php echo $form->bsError($model,'event_id'); ?>
+            <?php echo $form->bsError($model, 'event_id'); ?>
         </div>
     </div>
 
-    <div class="form-group <?php echo $model->hasErrors('uploadFile_excel') ? 'has-error':'' ?>">
-        <?php echo $form->bsLabelEx2($model,'uploadFile_excel'); ?>
+    <div class="form-group <?php echo $model->hasErrors('uploadFile_excel') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx2($model, 'uploadFile_excel'); ?>
         <div class="col-sm-10">
             <?php echo Html::activeFileField($model, 'uploadFile_excel'); ?>
-            <?php echo $form->bsError($model,'uploadFile_excel'); ?>
+            <?php echo $form->bsError($model, 'uploadFile_excel'); ?>
         </div>
     </div>
     

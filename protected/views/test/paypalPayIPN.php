@@ -1,11 +1,11 @@
  <p>NOTE: IPN required online connectivity to works. You need to be on Staging environment to test this!</p>
  
- <?php $code = 'test-'.rand(100000, 999999999); ?>
+ <?php $code = 'test-' . rand(100000, 999999999); ?>
  <form action="<?php echo Yii::app()->params['paypalSsl'] ?>" method="post">
     <input type="text" name="cmd" value="_xclick" />
     <input type="text" name="business" value="<?php echo Yii::app()->params['paypalBusiness'] ?>">
 
-    <input type="text" name="custom" value='<?php echo json_encode(array('refType'=>'charge', 'refId'=>$code)) ?>'>
+    <input type="text" name="custom" value='<?php echo json_encode(array('refType' => 'charge', 'refId' => $code)) ?>'>
     <input type="text" name="invoice" value="<?php echo $code ?>">
     <input type="text" name="currency_code" value="MYR" />
     <input type="text" name="amount" value="0.99">

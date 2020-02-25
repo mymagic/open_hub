@@ -235,7 +235,7 @@ class BackendController extends Controller
 		if (Yii::app()->user->isGuest) {
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
-		
+
 		// magic connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());

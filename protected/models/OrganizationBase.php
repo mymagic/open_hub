@@ -72,74 +72,71 @@
  * @property Vacancy[] $vacancies
  */
  class OrganizationBase extends ActiveRecordBase
-{
-	public $uploadPath;
+ {
+ 	public $uploadPath;
 
-	
-	public $imageFile_logo;
-	public $sdate_added, $edate_added;
-	public $sdate_modified, $edate_modified;
+ 	public $imageFile_logo;
+ 	public $sdate_added;
+ 	public $edate_added;
+ 	public $sdate_modified;
+ 	public $edate_modified;
 
-	// tag
-	public $tag_backend;
-	
-	public function init()
-	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.$this->tableName();
+ 	// tag
+ 	public $tag_backend;
 
-		if($this->scenario == "search")
-		{
-			$this->is_active = null;
-		}
-		else
-		{
-		}
-	}
-	
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'organization';
-	}
+ 	public function init()
+ 	{
+ 		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . $this->tableName();
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
+ 		if ($this->scenario == 'search') {
+ 			$this->is_active = null;
+ 		} else {
+ 		}
+ 	}
+
+ 	/**
+ 	 * @return string the associated database table name
+ 	 */
+ 	public function tableName()
+ 	{
+ 		return 'organization';
+ 	}
+
+ 	/**
+ 	 * @return array validation rules for model attributes.
+ 	 */
+ 	public function rules()
+ 	{
+ 		// NOTE: you should only define rules for those attributes that
+ 		// will receive user inputs.
+ 		return array(
 			array('code, title', 'required'),
-			array('legalform_id, year_founded, is_active, date_added, date_modified', 'numerical', 'integerOnly'=>true),
+			array('legalform_id, year_founded, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('score_completeness', 'numerical'),
-			array('code, slug, timezone', 'length', 'max'=>64),
-			array('title, legal_name', 'length', 'max'=>100),
-			array('text_oneliner', 'length', 'max'=>200),
-			array('company_number', 'length', 'max'=>32),
-			array('image_logo, url_website, email_contact, full_address', 'length', 'max'=>255),
-			array('address_line1, address_line2, address_city, address_state', 'length', 'max'=>128),
-			array('address_zip', 'length', 'max'=>16),
-			array('address_country_code', 'length', 'max'=>2),
+			array('code, slug, timezone', 'length', 'max' => 64),
+			array('title, legal_name', 'length', 'max' => 100),
+			array('text_oneliner', 'length', 'max' => 200),
+			array('company_number', 'length', 'max' => 32),
+			array('image_logo, url_website, email_contact, full_address', 'length', 'max' => 255),
+			array('address_line1, address_line2, address_city, address_state', 'length', 'max' => 128),
+			array('address_zip', 'length', 'max' => 16),
+			array('address_country_code', 'length', 'max' => 2),
 			array('html_content, text_short_description, latlong_address, tag_backend', 'safe'),
-			array('imageFile_logo', 'file', 'types'=>'jpg, jpeg, png, gif', 'allowEmpty'=>true),
+			array('imageFile_logo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, slug, title, text_oneliner, html_content, text_short_description, legalform_id, company_number, image_logo, url_website, email_contact, timezone, year_founded, is_active, date_added, date_modified, legal_name, full_address, address_line1, address_line2, address_zip, address_city, address_state, address_country_code, latlong_address, score_completeness, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on'=>'search'),
+			array('id, code, slug, title, text_oneliner, html_content, text_short_description, legalform_id, company_number, image_logo, url_website, email_contact, timezone, year_founded, is_active, date_added, date_modified, legal_name, full_address, address_line1, address_line2, address_zip, address_city, address_state, address_country_code, latlong_address, score_completeness, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on' => 'search'),
 		);
+ 	}
 
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
+ 	/**
+ 	 * @return array relational rules.
+ 	 */
+ 	public function relations()
+ 	{
+ 		// NOTE: you may need to adjust the relation name and the related
+ 		// class name for the relations automatically generated below.
+ 		return array(
 			'eventOrganizations' => array(self::HAS_MANY, 'EventOrganization', 'organization_id'),
 			'eventOwners' => array(self::HAS_MANY, 'EventOwner', 'organization_code'),
 			'ideaRfps' => array(self::HAS_MANY, 'IdeaRfp', 'partner_organization_code'),
@@ -162,16 +159,15 @@
 			'sdgs' => array(self::MANY_MANY, 'Sdg', 'sdg2organization(organization_id, sdg_id)'),
 			'tag2Organizations' => array(self::HAS_MANY, 'Tag2Organization', 'organization_id'),
 			'vacancies' => array(self::HAS_MANY, 'Vacancy', 'organization_id'),
-
 		);
-	}
+ 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		$return = array(
+ 	/**
+ 	 * @return array customized attribute labels (name=>label)
+ 	 */
+ 	public function attributeLabels()
+ 	{
+ 		$return = array(
 		'id' => Yii::t('app', 'ID'),
 		'code' => Yii::t('app', 'Code'),
 		'slug' => Yii::t('app', 'Slug'),
@@ -201,78 +197,73 @@
 		'score_completeness' => Yii::t('app', 'Score Completeness'),
 		);
 
+ 		return $return;
+ 	}
 
+ 	/**
+ 	 * Retrieves a list of models based on the current search/filter conditions.
+ 	 *
+ 	 * Typical usecase:
+ 	 * - Initialize the model fields with values from filter form.
+ 	 * - Execute this method to get CActiveDataProvider instance which will filter
+ 	 * models according to data in model fields.
+ 	 * - Pass data provider to CGridView, CListView or any similar widget.
+ 	 *
+ 	 * @return CActiveDataProvider the data provider that can return the models
+ 	 * based on the search/filter conditions.
+ 	 */
+ 	public function search()
+ 	{
+ 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		return $return;
-	}
+ 		$criteria = new CDbCriteria;
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+ 		$criteria->compare('id', $this->id);
+ 		$criteria->compare('code', $this->code, true);
+ 		$criteria->compare('slug', $this->slug, true);
+ 		$criteria->compare('title', $this->title, true);
+ 		$criteria->compare('text_oneliner', $this->text_oneliner, true);
+ 		$criteria->compare('html_content', $this->html_content, true);
+ 		$criteria->compare('text_short_description', $this->text_short_description, true);
+ 		$criteria->compare('legalform_id', $this->legalform_id);
+ 		$criteria->compare('company_number', $this->company_number, true);
+ 		$criteria->compare('image_logo', $this->image_logo, true);
+ 		$criteria->compare('url_website', $this->url_website, true);
+ 		$criteria->compare('email_contact', $this->email_contact, true);
+ 		$criteria->compare('timezone', $this->timezone, true);
+ 		$criteria->compare('year_founded', $this->year_founded);
+ 		$criteria->compare('is_active', $this->is_active);
+ 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
+ 			$sTimestamp = strtotime($this->sdate_added);
+ 			$eTimestamp = strtotime("{$this->edate_added} +1 day");
+ 			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
+ 		}
+ 		if (!empty($this->sdate_modified) && !empty($this->edate_modified)) {
+ 			$sTimestamp = strtotime($this->sdate_modified);
+ 			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
+ 			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
+ 		}
+ 		$criteria->compare('legal_name', $this->legal_name, true);
+ 		$criteria->compare('full_address', $this->full_address, true);
+ 		$criteria->compare('address_line1', $this->address_line1, true);
+ 		$criteria->compare('address_line2', $this->address_line2, true);
+ 		$criteria->compare('address_zip', $this->address_zip, true);
+ 		$criteria->compare('address_city', $this->address_city, true);
+ 		$criteria->compare('address_state', $this->address_state, true);
+ 		$criteria->compare('address_country_code', $this->address_country_code, true);
+ 		$criteria->compare('latlong_address', $this->latlong_address, true);
+ 		$criteria->compare('score_completeness', $this->score_completeness);
 
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('slug',$this->slug,true);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('text_oneliner',$this->text_oneliner,true);
-		$criteria->compare('html_content',$this->html_content,true);
-		$criteria->compare('text_short_description',$this->text_short_description,true);
-		$criteria->compare('legalform_id',$this->legalform_id);
-		$criteria->compare('company_number',$this->company_number,true);
-		$criteria->compare('image_logo',$this->image_logo,true);
-		$criteria->compare('url_website',$this->url_website,true);
-		$criteria->compare('email_contact',$this->email_contact,true);
-		$criteria->compare('timezone',$this->timezone,true);
-		$criteria->compare('year_founded',$this->year_founded);
-		$criteria->compare('is_active',$this->is_active);
-		if(!empty($this->sdate_added) && !empty($this->edate_added))
-		{
-			$sTimestamp = strtotime($this->sdate_added);
-			$eTimestamp = strtotime("{$this->edate_added} +1 day");
-			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
-		}
-		if(!empty($this->sdate_modified) && !empty($this->edate_modified))
-		{
-			$sTimestamp = strtotime($this->sdate_modified);
-			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
-			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
-		}
-		$criteria->compare('legal_name',$this->legal_name,true);
-		$criteria->compare('full_address',$this->full_address,true);
-		$criteria->compare('address_line1',$this->address_line1,true);
-		$criteria->compare('address_line2',$this->address_line2,true);
-		$criteria->compare('address_zip',$this->address_zip,true);
-		$criteria->compare('address_city',$this->address_city,true);
-		$criteria->compare('address_state',$this->address_state,true);
-		$criteria->compare('address_country_code',$this->address_country_code,true);
-		$criteria->compare('latlong_address',$this->latlong_address,true);
-		$criteria->compare('score_completeness',$this->score_completeness);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-
+ 		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
 		));
-	}
+ 	}
 
-	public function toApi($params='')
-	{
-		$this->fixSpatial();
-		
-		$return = array(
+ 	public function toApi($params = '')
+ 	{
+ 		$this->fixSpatial();
+
+ 		$return = array(
 			'id' => $this->id,
 			'code' => $this->code,
 			'slug' => $this->slug,
@@ -283,17 +274,17 @@
 			'legalformId' => $this->legalform_id,
 			'companyNumber' => $this->company_number,
 			'imageLogo' => $this->image_logo,
-			'imageLogoThumbUrl'=>$this->getImageLogoThumbUrl(),
-			'imageLogoUrl'=>$this->getImageLogoUrl(),
+			'imageLogoThumbUrl' => $this->getImageLogoThumbUrl(),
+			'imageLogoUrl' => $this->getImageLogoUrl(),
 			'urlWebsite' => $this->url_website,
 			'emailContact' => $this->email_contact,
 			'timezone' => $this->timezone,
 			'yearFounded' => $this->year_founded,
 			'isActive' => $this->is_active,
 			'dateAdded' => $this->date_added,
-			'fDateAdded'=>$this->renderDateAdded(),
+			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
-			'fDateModified'=>$this->renderDateModified(),
+			'fDateModified' => $this->renderDateModified(),
 			'legalName' => $this->legal_name,
 			'fullAddress' => $this->full_address,
 			'addressLine1' => $this->address_line1,
@@ -304,184 +295,212 @@
 			'addressCountryCode' => $this->address_country_code,
 			'latlong_address' => $this->latlong_address,
 			'scoreCompleteness' => $this->score_completeness,
-		
 		);
-			
-		// many2many
 
-		return $return;
-	}
-	
-	//
-	// image
-	public function getImageLogoUrl()
-	{
-		if(!empty($this->image_logo))
-			return StorageHelper::getUrl($this->image_logo);
-	}
-	public function getImageLogoThumbUrl($width=100, $height=100)
-	{
-		if(!empty($this->image_logo))
-			return StorageHelper::getUrl(ImageHelper::thumb($width, $height, $this->image_logo));
-	}
+ 		// many2many
 
+ 		return $return;
+ 	}
 
-	//
-	// date
-	public function getTimezone()
-	{
-		return date_default_timezone_get();
-	}
+ 	//
+ 	// image
+ 	public function getImageLogoUrl()
+ 	{
+ 		if (!empty($this->image_logo)) {
+ 			return StorageHelper::getUrl($this->image_logo);
+ 		}
+ 	}
 
-	public function renderDateAdded()
-	{
-		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
-	}
-	public function renderDateModified()
-	{
-		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
-	}
+ 	public function getImageLogoThumbUrl($width = 100, $height = 100)
+ 	{
+ 		if (!empty($this->image_logo)) {
+ 			return StorageHelper::getUrl(ImageHelper::thumb($width, $height, $this->image_logo));
+ 		}
+ 	}
 
-	public function scopes()
-    {
-		return array
-		(
+ 	//
+ 	// date
+ 	public function getTimezone()
+ 	{
+ 		return date_default_timezone_get();
+ 	}
+
+ 	public function renderDateAdded()
+ 	{
+ 		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function renderDateModified()
+ 	{
+ 		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function scopes()
+ 	{
+ 		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 
-			'isActive' => array('condition'=>'t.is_active = 1'),
-
+			'isActive' => array('condition' => 't.is_active = 1'),
 		);
-    }
+ 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return Organization the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+ 	/**
+ 	 * Returns the static model of the specified AR class.
+ 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+ 	 * @param string $className active record class name.
+ 	 * @return Organization the static model class
+ 	 */
+ 	public static function model($className = __CLASS__)
+ 	{
+ 		return parent::model($className);
+ 	}
 
-	/**
-	 * This is invoked before the record is validated.
-	 * @return boolean whether the record should be saved.
-	 */
-	public function beforeValidate() 
-	{
-		if($this->isNewRecord)
-		{
- 
-			// UUID
-			$this->code = ysUtil::generateUUID();	
-		}
-		else
-		{
- 
-			// UUID
-			if(empty($this->code)) $this->code = ysUtil::generateUUID();	
-		}
+ 	/**
+ 	 * This is invoked before the record is validated.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	public function beforeValidate()
+ 	{
+ 		if ($this->isNewRecord) {
+ 			// UUID
+ 			$this->code = ysUtil::generateUUID();
+ 		} else {
+ 			// UUID
+ 			if (empty($this->code)) {
+ 				$this->code = ysUtil::generateUUID();
+ 			}
+ 		}
 
-		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
+ 		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
 
-		return parent::beforeValidate();
-	}
+ 		return parent::beforeValidate();
+ 	}
 
-	protected function afterSave()
-	{
-		$this->saveInputImpact();
-		$this->saveInputSdg();
-		$this->saveInputIndustry();
-		$this->saveInputPersona();
-		
-		$this->setTags($this->tag_backend);
-		return parent::afterSave();
-	}
+ 	protected function afterSave()
+ 	{
+ 		$this->saveInputImpact();
+ 		$this->saveInputSdg();
+ 		$this->saveInputIndustry();
+ 		$this->saveInputPersona();
 
-	
-	/**
-	 * This is invoked before the record is saved.
-	 * @return boolean whether the record should be saved.
-	 */
-	protected function beforeSave()
-	{
-		if(parent::beforeSave())
-		{
-			if($this->address_country_code == '') $this->address_country_code = NULL;
+ 		$this->setTags($this->tag_backend);
 
-			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
-			}
-			else
-			{
-				$this->date_modified=time();
-			}
-	
+ 		return parent::afterSave();
+ 	}
 
+ 	/**
+ 	 * This is invoked before the record is saved.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	protected function beforeSave()
+ 	{
+ 		if (parent::beforeSave()) {
+ 			if ($this->address_country_code == '') {
+ 				$this->address_country_code = null;
+ 			}
 
-// save as null if empty
-					if(empty($this->slug)) $this->slug = null;
-						if(empty($this->text_oneliner)) $this->text_oneliner = null;
-						if(empty($this->html_content)) $this->html_content = null;
-						if(empty($this->text_short_description)) $this->text_short_description = null;
-						if(empty($this->legalform_id) && $this->legalform_id !==0) $this->legalform_id = null;
-						if(empty($this->company_number)) $this->company_number = null;
-						if(empty($this->image_logo)) $this->image_logo = null;
-						if(empty($this->url_website)) $this->url_website = null;
-						if(empty($this->email_contact)) $this->email_contact = null;
-						if(empty($this->timezone)) $this->timezone = null;
-						if(empty($this->year_founded) && $this->year_founded !==0) $this->year_founded = null;
-						if(empty($this->legal_name)) $this->legal_name = null;
-						if(empty($this->full_address)) $this->full_address = null;
-						if(empty($this->address_line1)) $this->address_line1 = null;
-						if(empty($this->address_line2)) $this->address_line2 = null;
-						if(empty($this->address_zip)) $this->address_zip = null;
-						if(empty($this->address_city)) $this->address_city = null;
-						if(empty($this->address_state)) $this->address_state = null;
-						if(empty($this->address_country_code)) $this->address_country_code = null;
-						if(empty($this->latlong_address) && $this->latlong_address !==0) $this->latlong_address = null;
-	
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * This is invoked after the record is found.
-	 */
-	protected function afterFind()
-	{
-		// boolean
-		if($this->is_active != '' || $this->is_active != null) $this->is_active = intval($this->is_active);
+ 			// auto deal with date added and date modified
+ 			if ($this->isNewRecord) {
+ 				$this->date_added = $this->date_modified = time();
+ 			} else {
+ 				$this->date_modified = time();
+ 			}
 
+ 			// save as null if empty
+ 			if (empty($this->slug)) {
+ 				$this->slug = null;
+ 			}
+ 			if (empty($this->text_oneliner)) {
+ 				$this->text_oneliner = null;
+ 			}
+ 			if (empty($this->html_content)) {
+ 				$this->html_content = null;
+ 			}
+ 			if (empty($this->text_short_description)) {
+ 				$this->text_short_description = null;
+ 			}
+ 			if (empty($this->legalform_id) && $this->legalform_id !== 0) {
+ 				$this->legalform_id = null;
+ 			}
+ 			if (empty($this->company_number)) {
+ 				$this->company_number = null;
+ 			}
+ 			if (empty($this->image_logo)) {
+ 				$this->image_logo = null;
+ 			}
+ 			if (empty($this->url_website)) {
+ 				$this->url_website = null;
+ 			}
+ 			if (empty($this->email_contact)) {
+ 				$this->email_contact = null;
+ 			}
+ 			if (empty($this->timezone)) {
+ 				$this->timezone = null;
+ 			}
+ 			if (empty($this->year_founded) && $this->year_founded !== 0) {
+ 				$this->year_founded = null;
+ 			}
+ 			if (empty($this->legal_name)) {
+ 				$this->legal_name = null;
+ 			}
+ 			if (empty($this->full_address)) {
+ 				$this->full_address = null;
+ 			}
+ 			if (empty($this->address_line1)) {
+ 				$this->address_line1 = null;
+ 			}
+ 			if (empty($this->address_line2)) {
+ 				$this->address_line2 = null;
+ 			}
+ 			if (empty($this->address_zip)) {
+ 				$this->address_zip = null;
+ 			}
+ 			if (empty($this->address_city)) {
+ 				$this->address_city = null;
+ 			}
+ 			if (empty($this->address_state)) {
+ 				$this->address_state = null;
+ 			}
+ 			if (empty($this->address_country_code)) {
+ 				$this->address_country_code = null;
+ 			}
+ 			if (empty($this->latlong_address) && $this->latlong_address !== 0) {
+ 				$this->latlong_address = null;
+ 			}
 
-		$this->tag_backend = $this->backend->toString();
+ 			return true;
+ 		} else {
+ 			return false;
+ 		}
+ 	}
 
+ 	/**
+ 	 * This is invoked after the record is found.
+ 	 */
+ 	protected function afterFind()
+ 	{
+ 		// boolean
+ 		if ($this->is_active != '' || $this->is_active != null) {
+ 			$this->is_active = intval($this->is_active);
+ 		}
 
-		parent::afterFind();
-	}
-	
-	function behaviors() 
-	{
-		return array
-		(
-			'spatial'=>array(
-				'class'=>'application.yeebase.components.behaviors.SpatialDataBehavior',
-				'spatialFields'=>array(
+ 		$this->tag_backend = $this->backend->toString();
+
+ 		parent::afterFind();
+ 	}
+
+ 	public function behaviors()
+ 	{
+ 		return array(
+			'spatial' => array(
+				'class' => 'application.yeebase.components.behaviors.SpatialDataBehavior',
+				'spatialFields' => array(
 					// all spatial fields here
-					'latlong_address'				
+					'latlong_address'
 				),
 			),
-			
 
-			'backend' => array
-			(
+			'backend' => array(
 				'class' => 'application.yeebase.extensions.taggable-behavior.ETaggableBehavior',
 				'tagTable' => 'tag',
 				'tagBindingTable' => 'tag2organization',
@@ -492,76 +511,79 @@
 				'cacheID' => 'cacheTag2Organization',
 				'createTagsAutomatically' => true,
 			)
-
 		);
-	}
-	
+ 	}
 
+ 	/**
+ 	 * These are function for foregin refer usage
+ 	 */
+ 	public function getForeignReferList($isNullable = false, $is4Filter = false)
+ 	{
+ 		$language = Yii::app()->language;
 
-	/**
-	 * These are function for foregin refer usage
-	 */
-	public function getForeignReferList($isNullable=false, $is4Filter=false)
-	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
-		$result = Yii::app()->db->createCommand()->select("id as key, title as title")->from(self::tableName())->queryAll();
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
-		return $result;
-	}
+ 		if ($is4Filter) {
+ 			$isNullable = false;
+ 		}
+ 		if ($isNullable) {
+ 			$result[] = array('key' => '', 'title' => '');
+ 		}
+ 		$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->queryAll();
+ 		if ($is4Filter) {
+ 			$newResult = array();
+ 			foreach ($result as $r) {
+ 				$newResult[$r['key']] = $r['title'];
+ 			}
+ 			return $newResult;
+ 		}
 
-	public function isCodeExists($code)
-	{
-		$exists = Organization::model()->find('code=:code', array(':code'=>$code));
-		if($exists===null) return false;
-		return true;
-	}
+ 		return $result;
+ 	}
 
-	/**
-	* These are function for spatial usage
-	*/
-	public function fixSpatial()
-	{
-		$record = $this;
-		$criteria = new CDbCriteria();
-		$lineString = '';
-		
-		$alias = $record->getTableAlias();
+ 	public function isCodeExists($code)
+ 	{
+ 		$exists = Organization::model()->find('code=:code', array(':code' => $code));
+ 		if ($exists === null) {
+ 			return false;
+ 		}
 
-		foreach ($this->spatialFields as $field) 
-		{
-			$asField = (($alias  && $alias  != 't') ? $alias.'_'.$field : $field);
-			$field = ($alias  ? ("`" . $alias  . "`.") : "") . "`" . $field . "`";
-			$lineString.='AsText(' . $field . ') AS ' . $asField . ',';
-		}
-		$lineString = substr($lineString, 0, -1);
-		$criteria->select = (($record->DBCriteria->select == '*') ? '*, ' : '') . $lineString;
-		$criteria->addSearchCondition('id', $record->id);
-		$record->dbCriteria->mergeWith($criteria);
+ 		return true;
+ 	}
 
-		$obj = $record->find($criteria);
-		foreach ($this->spatialFields as $field) 
-		{
-			$this->$field = $obj->$field;
-		}
-			}
+ 	/**
+ 	* These are function for spatial usage
+ 	*/
+ 	public function fixSpatial()
+ 	{
+ 		$record = $this;
+ 		$criteria = new CDbCriteria();
+ 		$lineString = '';
 
-	public function setLatLongAddress($pos)
-	{
-		if(!empty($pos))
-		{
-			if(is_array($pos))
-			{
-				$this->latlong_address = $pos;
-			}
-			else
-			{
-				$this->latlong_address = self::latLngString2Flat($pos);
-			}
-		}
-	}
+ 		$alias = $record->getTableAlias();
 
+ 		foreach ($this->spatialFields as $field) {
+ 			$asField = (($alias && $alias != 't') ? $alias . '_' . $field : $field);
+ 			$field = ($alias ? ('`' . $alias . '`.') : '') . '`' . $field . '`';
+ 			$lineString .= 'AsText(' . $field . ') AS ' . $asField . ',';
+ 		}
+ 		$lineString = substr($lineString, 0, -1);
+ 		$criteria->select = (($record->DBCriteria->select == '*') ? '*, ' : '') . $lineString;
+ 		$criteria->addSearchCondition('id', $record->id);
+ 		$record->dbCriteria->mergeWith($criteria);
 
-}
+ 		$obj = $record->find($criteria);
+ 		foreach ($this->spatialFields as $field) {
+ 			$this->$field = $obj->$field;
+ 		}
+ 	}
+
+ 	public function setLatLongAddress($pos)
+ 	{
+ 		if (!empty($pos)) {
+ 			if (is_array($pos)) {
+ 				$this->latlong_address = $pos;
+ 			} else {
+ 				$this->latlong_address = self::latLngString2Flat($pos);
+ 			}
+ 		}
+ 	}
+ }

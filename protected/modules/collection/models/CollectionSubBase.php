@@ -18,82 +18,81 @@
  * @property Collection $collection
  */
  class CollectionSubBase extends ActiveRecordBase
-{
-	public $uploadPath;
+ {
+ 	public $uploadPath;
 
-	
-	public $sdate_added, $edate_added;
-	public $sdate_modified, $edate_modified;
+ 	public $sdate_added;
 
-	// json
-	public $jsonArray_extra;
-	
-	public function init()
-	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.$this->tableName();
-		// meta
-		$this->initMetaStructure($this->tableName());
+ 	public $edate_added;
+ 	public $sdate_modified;
+ 	public $edate_modified;
 
-		if($this->scenario == "search")
-		{
-		}
-		else
-		{
-		$this->ordering = $this->count()+1;		}
-	}
-	
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'collection_sub';
-	}
+ 	// json
+ 	public $jsonArray_extra;
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
+ 	public function init()
+ 	{
+ 		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . $this->tableName();
+ 		// meta
+ 		$this->initMetaStructure($this->tableName());
+
+ 		if ($this->scenario == 'search') {
+ 		} else {
+ 			$this->ordering = $this->count() + 1;
+ 		}
+ 	}
+
+ 	/**
+ 	 * @return string the associated database table name
+ 	 */
+ 	public function tableName()
+ 	{
+ 		return 'collection_sub';
+ 	}
+
+ 	/**
+ 	 * @return array validation rules for model attributes.
+ 	 */
+ 	public function rules()
+ 	{
+ 		// NOTE: you should only define rules for those attributes that
+ 		// will receive user inputs.
+ 		return array(
 			array('collection_id', 'required'),
-			array('collection_id, date_added, date_modified', 'numerical', 'integerOnly'=>true),
+			array('collection_id, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('ordering', 'numerical'),
-			array('title', 'length', 'max'=>100),
+			array('title', 'length', 'max' => 100),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, collection_id, title, json_extra, ordering, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on'=>'search'),
+			array('id, collection_id, title, json_extra, ordering, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
+ 	}
 
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
+ 	/**
+ 	 * @return array relational rules.
+ 	 */
+ 	public function relations()
+ 	{
+ 		// NOTE: you may need to adjust the relation name and the related
+ 		// class name for the relations automatically generated below.
+ 		return array(
 			'collectionItems' => array(self::HAS_MANY, 'CollectionItem', 'collection_sub_id'),
 			'collection' => array(self::BELONGS_TO, 'Collection', 'collection_id'),
 
 			// meta
-			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on'=>sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
-			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on'=>'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through'=>'metaStructures'),
+			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
+			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
 		);
-	}
+ 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		$return = array(
+ 	/**
+ 	 * @return array customized attribute labels (name=>label)
+ 	 */
+ 	public function attributeLabels()
+ 	{
+ 		$return = array(
 		'id' => Yii::t('app', 'ID'),
 		'collection_id' => Yii::t('app', 'Collection'),
 		'title' => Yii::t('app', 'Title'),
@@ -103,230 +102,224 @@
 		'date_modified' => Yii::t('app', 'Date Modified'),
 		);
 
+ 		// meta
+ 		$return = array_merge((array)$return, array_keys($this->_dynamicFields));
+ 		foreach ($this->_metaStructures as $metaStruct) {
+ 			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
+ 		}
 
-		// meta
-		$return = array_merge((array)$return, array_keys($this->_dynamicFields));
-		foreach($this->_metaStructures as $metaStruct)
-		{
-			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
-		}
+ 		return $return;
+ 	}
 
-		return $return;
-	}
+ 	/**
+ 	 * Retrieves a list of models based on the current search/filter conditions.
+ 	 *
+ 	 * Typical usecase:
+ 	 * - Initialize the model fields with values from filter form.
+ 	 * - Execute this method to get CActiveDataProvider instance which will filter
+ 	 * models according to data in model fields.
+ 	 * - Pass data provider to CGridView, CListView or any similar widget.
+ 	 *
+ 	 * @return CActiveDataProvider the data provider that can return the models
+ 	 * based on the search/filter conditions.
+ 	 */
+ 	public function search()
+ 	{
+ 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+ 		$criteria = new CDbCriteria;
 
-		$criteria=new CDbCriteria;
+ 		$criteria->compare('id', $this->id);
+ 		$criteria->compare('collection_id', $this->collection_id);
+ 		$criteria->compare('title', $this->title, true);
+ 		$criteria->compare('json_extra', $this->json_extra, true);
+ 		$criteria->compare('ordering', $this->ordering);
+ 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
+ 			$sTimestamp = strtotime($this->sdate_added);
+ 			$eTimestamp = strtotime("{$this->edate_added} +1 day");
+ 			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
+ 		}
+ 		if (!empty($this->sdate_modified) && !empty($this->edate_modified)) {
+ 			$sTimestamp = strtotime($this->sdate_modified);
+ 			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
+ 			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
+ 		}
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('collection_id',$this->collection_id);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('json_extra',$this->json_extra,true);
-		$criteria->compare('ordering',$this->ordering);
-		if(!empty($this->sdate_added) && !empty($this->edate_added))
-		{
-			$sTimestamp = strtotime($this->sdate_added);
-			$eTimestamp = strtotime("{$this->edate_added} +1 day");
-			$criteria->addCondition(sprintf('date_added >= %s AND date_added < %s', $sTimestamp, $eTimestamp));
-		}
-		if(!empty($this->sdate_modified) && !empty($this->edate_modified))
-		{
-			$sTimestamp = strtotime($this->sdate_modified);
-			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
-			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
-		}
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+ 		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
 			'sort' => array('defaultOrder' => 't.ordering ASC'),
 		));
-	}
+ 	}
 
-	public function toApi($params='')
-	{
-		$this->fixSpatial();
-		
-		$return = array(
+ 	public function toApi($params = '')
+ 	{
+ 		$this->fixSpatial();
+
+ 		$return = array(
 			'id' => $this->id,
 			'collectionId' => $this->collection_id,
 			'title' => $this->title,
 			'jsonExtra' => $this->json_extra,
 			'ordering' => $this->ordering,
 			'dateAdded' => $this->date_added,
-			'fDateAdded'=>$this->renderDateAdded(),
+			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
-			'fDateModified'=>$this->renderDateModified(),
-		
+			'fDateModified' => $this->renderDateModified(),
 		);
-			
-		// many2many
 
-		return $return;
-	}
-	
-	//
-	// image
+ 		// many2many
 
-	//
-	// date
-	public function getTimezone()
-	{
-		return date_default_timezone_get();
-	}
+ 		return $return;
+ 	}
 
-	public function renderDateAdded()
-	{
-		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
-	}
-	public function renderDateModified()
-	{
-		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
-	}
+ 	//
+ 	// image
 
-	public function scopes()
-    {
-		return array
-		(
+ 	//
+ 	// date
+ 	public function getTimezone()
+ 	{
+ 		return date_default_timezone_get();
+ 	}
+
+ 	public function renderDateAdded()
+ 	{
+ 		return Html::formatDateTimezone($this->date_added, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function renderDateModified()
+ 	{
+ 		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function scopes()
+ 	{
+ 		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
-
-
 		);
-    }
+ 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return CollectionSub the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+ 	/**
+ 	 * Returns the static model of the specified AR class.
+ 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+ 	 * @param string $className active record class name.
+ 	 * @return CollectionSub the static model class
+ 	 */
+ 	public static function model($className = __CLASS__)
+ 	{
+ 		return parent::model($className);
+ 	}
 
-	/**
-	 * This is invoked before the record is validated.
-	 * @return boolean whether the record should be saved.
-	 */
-	public function beforeValidate() 
-	{
-		if($this->isNewRecord)
-		{
-		}
-		else
-		{
-		}
+ 	/**
+ 	 * This is invoked before the record is validated.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	public function beforeValidate()
+ 	{
+ 		if ($this->isNewRecord) {
+ 		} else {
+ 		}
 
-		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
+ 		// todo: for all language filed that is required but data is empty, copy the value from default language so when params.backendLanguages do not include those params.languages, validation error wont throw out
 
-		return parent::beforeValidate();
-	}
+ 		return parent::beforeValidate();
+ 	}
 
-	protected function afterSave()
-	{
+ 	protected function afterSave()
+ 	{
+ 		return parent::afterSave();
+ 	}
 
-		return parent::afterSave();
-	}
+ 	/**
+ 	 * This is invoked before the record is saved.
+ 	 * @return boolean whether the record should be saved.
+ 	 */
+ 	protected function beforeSave()
+ 	{
+ 		if (parent::beforeSave()) {
+ 			// auto deal with date added and date modified
+ 			if ($this->isNewRecord) {
+ 				$this->date_added = $this->date_modified = time();
+ 			} else {
+ 				$this->date_modified = time();
+ 			}
 
-	
-	/**
-	 * This is invoked before the record is saved.
-	 * @return boolean whether the record should be saved.
-	 */
-	protected function beforeSave()
-	{
-		if(parent::beforeSave())
-		{
+ 			// json
+ 			$this->json_extra = json_encode($this->jsonArray_extra);
+ 			if ($this->json_extra == 'null') {
+ 				$this->json_extra = null;
+ 			}
 
-			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
-			}
-			else
-			{
-				$this->date_modified=time();
-			}
-	
+ 			// save as null if empty
+ 			if (empty($this->title)) {
+ 				$this->title = null;
+ 			}
+ 			if (empty($this->json_extra)) {
+ 				$this->json_extra = null;
+ 			}
+ 			if (empty($this->ordering) && $this->ordering !== 0) {
+ 				$this->ordering = null;
+ 			}
+ 			if (empty($this->date_added) && $this->date_added !== 0) {
+ 				$this->date_added = null;
+ 			}
+ 			if (empty($this->date_modified) && $this->date_modified !== 0) {
+ 				$this->date_modified = null;
+ 			}
 
-			// json
-			$this->json_extra = json_encode($this->jsonArray_extra);
-			if($this->json_extra == 'null') $this->json_extra = null;
+ 			return true;
+ 		} else {
+ 			return false;
+ 		}
+ 	}
 
-// save as null if empty
-					if(empty($this->title)) $this->title = null;
-						if(empty($this->json_extra)) $this->json_extra = null;
-						if(empty($this->ordering) && $this->ordering !==0) $this->ordering = null;
-						if(empty($this->date_added) && $this->date_added !==0) $this->date_added = null;
-						if(empty($this->date_modified) && $this->date_modified !==0) $this->date_modified = null;
-	
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * This is invoked after the record is found.
-	 */
-	protected function afterFind()
-	{
-		// boolean
+ 	/**
+ 	 * This is invoked after the record is found.
+ 	 */
+ 	protected function afterFind()
+ 	{
+ 		// boolean
 
-		$this->jsonArray_extra = json_decode($this->json_extra);
+ 		$this->jsonArray_extra = json_decode($this->json_extra);
 
+ 		parent::afterFind();
+ 	}
 
-
-		parent::afterFind();
-	}
-	
-	function behaviors() 
-	{
-		return array
-		(
-			
+ 	public function behaviors()
+ 	{
+ 		return array(
 		);
-	}
-	
+ 	}
 
+ 	/**
+ 	 * These are function for foregin refer usage
+ 	 */
+ 	public function getForeignReferList($isNullable = false, $is4Filter = false)
+ 	{
+ 		$language = Yii::app()->language;
 
-	/**
-	 * These are function for foregin refer usage
-	 */
-	public function getForeignReferList($isNullable=false, $is4Filter=false)
-	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
-		$result = Yii::app()->db->createCommand()->select("id as key, title as title")->from(self::tableName())->queryAll();
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
-		return $result;
-	}
+ 		if ($is4Filter) {
+ 			$isNullable = false;
+ 		}
+ 		if ($isNullable) {
+ 			$result[] = array('key' => '', 'title' => '');
+ 		}
+ 		$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->queryAll();
+ 		if ($is4Filter) {
+ 			$newResult = array();
+ 			foreach ($result as $r) {
+ 				$newResult[$r['key']] = $r['title'];
+ 			}
+ 			return $newResult;
+ 		}
 
+ 		return $result;
+ 	}
 
-	/**
-	* These are function for spatial usage
-	*/
-	public function fixSpatial()
-	{
-	}
-
-
-}
+ 	/**
+ 	* These are function for spatial usage
+ 	*/
+ 	public function fixSpatial()
+ 	{
+ 	}
+ }

@@ -2,10 +2,9 @@
  
 <?php
 
-foreach($apis as $apiKey=>$apiParams)
-{
-    $active = ($apiParams['code'] == $code && $apiParams['format'] == $format)?true:false;
-	$this->menu[] = array('label'=>Yii::t('swagger', ucwords($apiParams['code'])), 'url'=>array('/wapi/swagger', 'code'=>$apiParams['code'], 'format'=>$apiParams['format'], 'module'=>$apiParams['module']), 'active'=>$active);
+foreach ($apis as $apiKey => $apiParams) {
+	$active = ($apiParams['code'] == $code && $apiParams['format'] == $format) ? true : false;
+	$this->menu[] = array('label' => Yii::t('swagger', ucwords($apiParams['code'])), 'url' => array('/wapi/swagger', 'code' => $apiParams['code'], 'format' => $apiParams['format'], 'module' => $apiParams['module']), 'active' => $active);
 }
 ?>
 
@@ -21,4 +20,4 @@ foreach($apis as $apiKey=>$apiParams)
     })
     window.ui = ui
     }
-", Yii::app()->createUrl('/wapi/swagger/getApiDef', array('code'=>$code, 'module'=>$module, 'format'=>$format)))); ?>
+", Yii::app()->createUrl('/wapi/swagger/getApiDef', array('code' => $code, 'module' => $module, 'format' => $format)))); ?>

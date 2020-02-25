@@ -2,13 +2,13 @@
 /* @var $this CityController */
 /* @var $model City */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Cities')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Cities') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create City'), 'url'=>array('/city/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create City'), 'url' => array('/city/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,24 +30,24 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-citySearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'city-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
-		array('name'=>'state_code', 'cssClassExpression'=>'foreignKey', 'value'=>'$data->state->title', 'headerHtmlOptions'=>array('class'=>'foreignKey'), 'filter'=>State::model()->getForeignReferList(false, true)),
+	'id' => 'city-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
+		array('name' => 'state_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->state->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => State::model()->getForeignReferList(false, true)),
 		'title',
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
+			'class' => 'application.components.widgets.ButtonColumn',
 					),
 	),
 )); ?>
