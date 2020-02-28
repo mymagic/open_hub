@@ -226,7 +226,7 @@ class DefaultController extends CController
 		$adminUsername = $envs['ADMIN_EMAIL'];
 		$adminFirstname = 'Admin';
 		$adminLastname = preg_replace('/@.*?$/', '', $adminUsername);
-		$newPassword = ysUtil::generateRandomPassword();
+		$newPassword = YsUtil::generateRandomPassword();
 
 		$transaction = Yii::app()->db->beginTransaction();
 
