@@ -27,8 +27,8 @@ class DefaultController extends CController
 		// load existing .envs into array
 		if (file_exists($this->envFilePath)) {
 			$envs = (new josegonzalez\Dotenv\Loader($this->envFilePath))
-	  ->parse()
-	  ->toArray();
+			->parse()
+			->toArray();
 		}
 
 		// base on yaml, preload .env to $model->envs as array
@@ -226,51 +226,76 @@ class DefaultController extends CController
 		$adminUsername = $envs['ADMIN_EMAIL'];
 		$adminFirstname = 'Admin';
 		$adminLastname = preg_replace('/@.*?$/', '', $adminUsername);
-		$newPassword = YsUtil::generateRandomPassword();
+		$newPassword = rand(100000, 999999);
+		$salt = sprintf('%s.%s', $adminUsername, $envs['SALT_SECRET']);
+		$encryptedPassword = password_hash(hash_hmac('sha256', $newPassword, $salt), PASSWORD_BCRYPT);
+		$now = time();
 
-		$transaction = Yii::app()->db->beginTransaction();
+		$dbConnection = new CDbConnection(sprintf('mysql:host=%s;dbname=%s', $envs['DB_HOST'], $envs['DB_DATABASE']), $envs['DB_USERNAME'], $envs['DB_PASSWORD']);
+		$dbConnection->active = true;
 
-		try {
-			// username already exists
-			if (!User::isUniqueUsername($adminUsername)) {
-				$user = User::username2obj($adminUsername);
-			}
-			else
+		// check is admin exists?
+		$sql = sprintf("SELECT user_id FROM admin WHERE username LIKE '%s'", addslashes($adminUsername));
+		$command = $dbConnection->createCommand($sql);			
+		$adminUserId = $command->queryScalar();
+		
+		if(empty($adminUserId))
+		{
+			$transaction = $dbConnection->beginTransaction();
+			
+			// admin not exists
+			try 
 			{
-				$user = new User('create');
-				$user->profile = new Profile('create');
-
 				// create user
-				$user->username = $adminUsername;
-				$user->password = $newPassword;
-				$user->signup_type = 'admin';
-				$user->signup_ip = Yii::app()->request->userHostAddress;
-				$user->is_active = 1;
-
-				$result = $user->save();
+				$dbConnection->createCommand()->insert('user', array(
+					'username'=>$adminUsername,
+					'password'=>$encryptedPassword,
+					'signup_type'=>'admin',
+					'is_active'=>1,
+					'date_activated'=>$now,
+					'date_added'=>$now,
+					'date_modified'=>$now,
+				));
+				$userId = $dbConnection->getLastInsertID();
 
 				// create profile
-				if ($result == true) {
-					$user->profile->user_id = $user->id;
-					$user->profile->full_name = sprintf('%s %s', $adminFirstname, $adminLastname);
-					$user->profile->image_avatar = 'uploads/profile/avatar.default.jpg';
+				$dbConnection->createCommand()->insert('profile', array(
+					'user_id'=>$userId,
+					'full_name'=>'Super Admin',
+					'date_added'=>$now,
+					'date_modified'=>$now,
+				));
 
-					$result = $user->profile->save();
+				// create member
+				$dbConnection->createCommand()->insert('member', array(
+					'user_id'=>$userId,
+					'username'=>$adminUsername,
+					'date_joined'=>$now,
+					'date_added'=>$now,
+					'date_modified'=>$now,
+				));
 
-					// create connect account
-					if ($result == true) {
-						// connect have no such user
-						if (!$this->magicConnect->isUserExists($user->username)) {
-							$result = $this->magicConnect->createUser($adminUsername, $adminFirstname, $adminLastname, $newPassword);
-						}
-					} 
-				}
+				// create admin
+				$dbConnection->createCommand()->insert('admin', array(
+					'user_id'=>$userId,
+					'username'=>$adminUsername,
+					'date_added'=>$now,
+					'date_modified'=>$now,
+				));
+
+				// create role2user
+				$dbConnection->createCommand()->insert('role2user', array(
+					'role_id'=>'1',
+					'user_id'=>$userId,
+				));
+
+				$transaction->commit();
+					
 			}
-		}
-		catch (Exception $e) {
-			$exceptionMessage = $e->getMessage();
-			$result = false;
-			$transaction->rollBack();
+			catch (Exception $e) {
+				$exceptionMessage = $e->getMessage();
+				$transaction->rollBack();
+			}
 		}
 
 		$this->render('done', array(
