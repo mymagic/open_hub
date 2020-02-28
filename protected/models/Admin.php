@@ -118,4 +118,12 @@ class Admin extends AdminBase
 
 		return $result;
 	}
+
+	public function username2obj($username)
+	{
+		$admin = Admin::model()->find('t.username=:username', array(':username' => $username));
+		if (!empty($admin)) {
+			return $admin;
+		}
+	}
 }

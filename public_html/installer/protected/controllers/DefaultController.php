@@ -218,17 +218,68 @@ class DefaultController extends CController
 		// load existing .envs into array
 		if (file_exists($this->envFilePath)) {
 			$envs = (new josegonzalez\Dotenv\Loader($this->envFilePath))
-	  ->parse()
-	  ->toArray();
+			->parse()
+			->toArray();
+		}
+
+		// create admin if not found
+		$adminUsername = $envs['ADMIN_EMAIL'];
+		$adminFirstname = 'Admin';
+		$adminLastname = preg_replace('/@.*?$/', '', $adminUsername);
+		$newPassword = ysUtil::generateRandomPassword();
+
+		$transaction = Yii::app()->db->beginTransaction();
+
+		try {
+			// username already exists
+			if (!User::isUniqueUsername($adminUsername)) {
+				$user = User::username2obj($adminUsername);
+			}
+			else
+			{
+				$user = new User('create');
+				$user->profile = new Profile('create');
+
+				// create user
+				$user->username = $adminUsername;
+				$user->password = $newPassword;
+				$user->signup_type = 'admin';
+				$user->signup_ip = Yii::app()->request->userHostAddress;
+				$user->is_active = 1;
+
+				$result = $user->save();
+
+				// create profile
+				if ($result == true) {
+					$user->profile->user_id = $user->id;
+					$user->profile->full_name = sprintf('%s %s', $adminFirstname, $adminLastname);
+					$user->profile->image_avatar = 'uploads/profile/avatar.default.jpg';
+
+					$result = $user->profile->save();
+
+					// create connect account
+					if ($result == true) {
+						// connect have no such user
+						if (!$this->magicConnect->isUserExists($user->username)) {
+							$result = $this->magicConnect->createUser($adminUsername, $adminFirstname, $adminLastname, $newPassword);
+						}
+					} 
+				}
+			}
+		}
+		catch (Exception $e) {
+			$exceptionMessage = $e->getMessage();
+			$result = false;
+			$transaction->rollBack();
 		}
 
 		$this->render('done', array(
-	  'appName' => $envs['HUB_NAME'],
-	  'adminUsername' => $envs['ADMIN_EMAIL'],
-	  'eggPassword' => $envs['MODULE_EGG_PASSWORD'],
-	  'giiPassword' => $envs['MODULE_GII_PASSWORD'],
-	  'yeePassword' => $envs['MODULE_YEE_PASSWORD'],
-	));
+			'appName' => $envs['HUB_NAME'],
+			'adminUsername' => $envs['ADMIN_EMAIL'],
+			'eggPassword' => $envs['MODULE_EGG_PASSWORD'],
+			'giiPassword' => $envs['MODULE_GII_PASSWORD'],
+			'yeePassword' => $envs['MODULE_YEE_PASSWORD'],
+		));
 	}
 
 	public function sqlImport($file, $mysqli)
