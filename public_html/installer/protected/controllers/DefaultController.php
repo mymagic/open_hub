@@ -288,6 +288,10 @@ class DefaultController extends CController
 					'role_id'=>'1',
 					'user_id'=>$userId,
 				));
+				$dbConnection->createCommand()->insert('role2user', array(
+					'role_id'=>'3',
+					'user_id'=>$userId,
+				));
 
 				$transaction->commit();
 					
