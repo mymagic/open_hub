@@ -154,7 +154,6 @@ class EventRegistration extends EventRegistrationBase
 		$criteria->compare('paid_fee', $this->paid_fee, true, $params['compareOperator']);
 		$criteria->compare('is_attended', $this->is_attended);
 		$criteria->compare('nationality', $this->nationality, true, $params['compareOperator']);
-		$criteria->compare('is_bumi', $this->is_bumi, false, $params['compareOperator']);
 		if (!empty($this->sdate_registered) && !empty($this->edate_registered)) {
 			$sTimestamp = strtotime($this->sdate_registered);
 			$eTimestamp = strtotime("{$this->edate_registered} +1 day");
@@ -215,7 +214,6 @@ class EventRegistration extends EventRegistrationBase
 			'paidFee' => $this->paid_fee,
 			'isAttended' => $this->is_attended,
 			'nationality' => $this->nationality,
-			'isBumi' => $this->is_bumi,
 			'dateRegistered' => $this->date_registered,
 			'fDateRegistered' => $this->renderDateRegistered(),
 			'datePayment' => $this->date_payment,

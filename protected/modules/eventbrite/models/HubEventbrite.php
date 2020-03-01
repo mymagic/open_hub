@@ -152,14 +152,12 @@ class HubEventbrite
 		$msg = 'Unknown error';
 		$sql = '';
 
-		/* use for update bumi/indian status when this function is being called */
 		$event_vendor_code = 'eventbrite';
 		$registration_code = [];
 
 		foreach ($attendees as $attendee) {
 			$sql .= self::buildEventRegistrationInsertUpdateSql($attendee);
 
-			/* use for update bumi/indian status when this function is being called */
 			if (isset($attendee['id'])) {
 				$registration_code[] = $attendee['id'];
 			}

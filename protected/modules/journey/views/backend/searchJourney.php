@@ -93,5 +93,5 @@ $this->menu = array(
 <?php endforeach; ?>
 </div>
 <?php else: ?>
-<p>Here, you can search for one's journey with MaGIC. As long as his registration/attendance to an event is captured, it will appear in his startup journey timeline.</p>
+<p>Here, you can search for one's journey in the ecosystem. As long as his registration/attendance to an event is captured, it will appear in his startup journey timeline.</p>
 <?php endif; ?>

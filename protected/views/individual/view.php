@@ -36,8 +36,6 @@ $this->menu = array(
 				array('name' => 'mobile_number', 'visible' => Yii::app()->user->isSuperAdmin ||  Yii::app()->user->isSensitiveDataAdmin),
 				array('name' => 'text_address_residential', 'type' => 'raw', 'value' => nl2br($model->text_address_residential)),
 				array('name' => 'can_code',  'type' => 'raw', 'value' => Html::renderBoolean($model->can_code)),
-				array('name' => 'is_bumi', 'type' => 'raw', 'value' => Html::renderBoolean(HUB::checkIndividualIsBumiStatus($model)), 'visible' => Yii::app()->user->isAdmin),
-				// array('name'=>'is_bumi', 'type'=>'raw', 'value'=>Html::renderBoolean($model->is_bumi), 'visible'=>Yii::app()->user->isAdmin),
 			),
 		)); ?></div>
 	</div>

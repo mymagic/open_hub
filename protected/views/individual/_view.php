@@ -43,10 +43,6 @@
 	<?php echo Html::encode($data->->); ?>
 	<br />
 
-	<b><?php echo Html::encode($data->getAttributeLabel('is_bumi')); ?>:</b>
-	<?php echo Html::encode(Yii::t('core', Yii::app()->format->boolean($data->is_bumi))); ?>
-	<br />
-
 	<b><?php echo Html::encode($data->getAttributeLabel('is_active')); ?>:</b>
 	<?php echo Html::encode(Yii::t('core', Yii::app()->format->boolean($data->is_active))); ?>
 	<br />

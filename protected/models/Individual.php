@@ -103,7 +103,7 @@ class Individual extends IndividualBase
 		// will receive user inputs.
 		$return = array(
 			array('full_name', 'required'),
-			array('can_code, is_bumi, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('can_code, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('full_name, mobile_number', 'length', 'max' => 128),
 			array('gender, state_code', 'length', 'max' => 6),
 			array('image_photo', 'length', 'max' => 255),
@@ -113,7 +113,7 @@ class Individual extends IndividualBase
 			array('imageFile_photo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, full_name, gender, image_photo, country_code, state_code, ic_number, text_address_residential, mobile_number, can_code, is_bumi, is_active, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags, searchOrganization', 'safe', 'on' => 'search'),
+			array('id, full_name, gender, image_photo, country_code, state_code, ic_number, text_address_residential, mobile_number, can_code, is_active, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags, searchOrganization', 'safe', 'on' => 'search'),
 		);
 
 		// meta
@@ -327,7 +327,6 @@ class Individual extends IndividualBase
 		$criteria->compare('text_address_residential', $this->text_address_residential, true, $params['compareOperator']);
 		$criteria->compare('mobile_number', $this->mobile_number, true, $params['compareOperator']);
 		$criteria->compare('can_code', $this->can_code, false, $params['compareOperator']);
-		$criteria->compare('is_bumi', $this->is_bumi, false, $params['compareOperator']);
 		$criteria->compare('is_active', $this->is_active, false, $params['compareOperator']);
 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
 			$sTimestamp = strtotime($this->sdate_added);
@@ -401,7 +400,6 @@ class Individual extends IndividualBase
 				'mobileNumber' => $this->mobile_number,
 				'icNumber' => $this->ic_number,
 				'canCode' => $this->can_code,
-				'isBumi' => $this->is_bumi,
 			);
 			$return = array_merge($return, $set);
 		}

@@ -48,7 +48,7 @@ class ResourceController extends Controller
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('delete', 'admin', 'getTagsBackend'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions

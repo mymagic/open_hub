@@ -38,7 +38,6 @@ $this->menu = array(
 		'nationality',
 		array('label' => $model->attributeLabel('paid_fee'), 'value' => $model->paid_fee),
 		array('name' => 'is_attended', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_attended)),
-		array('name' => 'is_bumi', 'type' => 'raw', 'value' => Html::renderBoolean(HUB::checkEventRegistrationIsBumiStatus($model))),
 		array('label' => $model->attributeLabel('date_registered'), 'value' => Html::formatDateTime($model->date_registered, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_payment'), 'value' => Html::formatDateTime($model->date_payment, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),

@@ -113,15 +113,6 @@
 		</div>
 	</div>
 
-	<?php /* ?>
-	<div class="form-group <?php echo $model->hasErrors('is_bumi') ? 'has-error':'' ?>">
-		<?php echo $form->bsLabelEx2($model,'is_bumi'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_bumi', array('nullable'=>true)); ?>
-			<?php echo $form->bsError($model,'is_bumi'); ?>
-		</div>
-	</div>
-	<?php */ ?>
 
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>

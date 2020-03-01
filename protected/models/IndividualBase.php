@@ -29,7 +29,6 @@
 			 * @property string $text_address_residential
 			 * @property string $mobile_number
 			 * @property integer $can_code
-			 * @property integer $is_bumi
 			 * @property integer $is_active
 			 * @property integer $date_added
 			 * @property integer $date_modified
@@ -63,7 +62,6 @@
  		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . $this->tableName();
 
  		if ($this->scenario == 'search') {
- 			$this->is_bumi = null;
  			$this->is_active = null;
  		} else {
  		}
@@ -86,7 +84,7 @@
  		// will receive user inputs.
  		return array(
 			array('full_name', 'required'),
-			array('can_code, is_bumi, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('can_code, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('full_name, mobile_number', 'length', 'max' => 128),
 			array('gender, state_code', 'length', 'max' => 6),
 			array('image_photo', 'length', 'max' => 255),
@@ -96,7 +94,7 @@
 			array('imageFile_photo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, full_name, gender, image_photo, country_code, state_code, ic_number, text_address_residential, mobile_number, can_code, is_bumi, is_active, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on' => 'search'),
+			array('id, full_name, gender, image_photo, country_code, state_code, ic_number, text_address_residential, mobile_number, can_code, is_active, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on' => 'search'),
 		);
  	}
 
@@ -133,7 +131,6 @@
 		'text_address_residential' => Yii::t('app', 'Text Address Residential'),
 		'mobile_number' => Yii::t('app', 'Mobile Number'),
 		'can_code' => Yii::t('app', 'Can Code'),
-		'is_bumi' => Yii::t('app', 'Is Bumi'),
 		'is_active' => Yii::t('app', 'Is Active'),
 		'date_added' => Yii::t('app', 'Date Added'),
 		'date_modified' => Yii::t('app', 'Date Modified'),
@@ -172,7 +169,6 @@
  		$criteria->compare('text_address_residential', $this->text_address_residential, true);
  		$criteria->compare('mobile_number', $this->mobile_number, true);
  		$criteria->compare('can_code', $this->can_code);
- 		$criteria->compare('is_bumi', $this->is_bumi);
  		$criteria->compare('is_active', $this->is_active);
  		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
  			$sTimestamp = strtotime($this->sdate_added);
@@ -207,7 +203,6 @@
 			'textAddressResidential' => $this->text_address_residential,
 			'mobileNumber' => $this->mobile_number,
 			'canCode' => $this->can_code,
-			'isBumi' => $this->is_bumi,
 			'isActive' => $this->is_active,
 			'dateAdded' => $this->date_added,
 			'fDateAdded' => $this->renderDateAdded(),
@@ -263,7 +258,6 @@
  		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 
-			'isBumi' => array('condition' => 't.is_bumi = 1'),
 			'isActive' => array('condition' => 't.is_active = 1'),
 		);
  	}
@@ -318,11 +312,8 @@
  			}
  			if ($this->can_code == '') {
  				$this->can_code = null;
- 			}
- 			if ($this->is_bumi == '') {
- 				$this->is_bumi = null;
- 			}
-
+			 }
+			 
  			// auto deal with date added and date modified
  			if ($this->isNewRecord) {
  				$this->date_added = $this->date_modified = time();
@@ -355,9 +346,6 @@
  			if (empty($this->can_code) && $this->can_code !== 0) {
  				$this->can_code = null;
  			}
- 			if (empty($this->is_bumi) && $this->is_bumi !== 0) {
- 				$this->is_bumi = null;
- 			}
 
  			return true;
  		} else {
@@ -371,9 +359,6 @@
  	protected function afterFind()
  	{
  		// boolean
- 		if ($this->is_bumi != '' || $this->is_bumi != null) {
- 			$this->is_bumi = intval($this->is_bumi);
- 		}
  		if ($this->is_active != '' || $this->is_active != null) {
  			$this->is_active = intval($this->is_active);
  		}

@@ -122,14 +122,6 @@ class HubIndividual
 			if (empty($target->country_code)) {
 				$target->country_code = $source->country_code;
 			}
-
-			if (is_null($target->is_bumi)) {
-				$target->is_bumi = $source->is_bumi;
-			}
-			if (is_null($target->can_code)) {
-				$target->is_bumi = $source->can_code;
-			}
-
 			// process dynamic data
 			foreach ($source->_dynamicData as $dt => $dd) {
 				if (empty($target->_dynamicData[$dt])) {

@@ -40,7 +40,7 @@ class SubmissionController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('view', 'exportCsv', 'exportPdf', 'update', 'view'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'create', 'admin', 'delete', 'deleteConfirmed'),

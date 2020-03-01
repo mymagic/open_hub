@@ -37,7 +37,6 @@
 			 * @property string $paid_fee
 			 * @property integer $is_attended
 			 * @property string $nationality
-			 * @property integer $is_bumi
 			 * @property integer $date_registered
 			 * @property integer $date_payment
 			 * @property string $json_original
@@ -72,7 +71,6 @@
 
  		if ($this->scenario == 'search') {
  			$this->is_attended = null;
- 			$this->is_bumi = null;
  		} else {
  		}
  	}
@@ -94,7 +92,7 @@
  		// will receive user inputs.
  		return array(
 			array('date_registered', 'required'),
-			array('event_id, is_attended, is_bumi, date_registered, date_payment, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('event_id, is_attended, date_registered, date_payment, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('event_code, event_vendor_code, registration_code', 'length', 'max' => 64),
 			array('full_name, first_name, last_name, email, organization, persona, nationality', 'length', 'max' => 255),
 			array('phone, age_group, where_found', 'length', 'max' => 128),
@@ -102,7 +100,7 @@
 			array('paid_fee', 'length', 'max' => 8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, event_code, event_id, event_vendor_code, registration_code, full_name, first_name, last_name, email, phone, organization, gender, age_group, where_found, persona, paid_fee, is_attended, nationality, is_bumi, date_registered, date_payment, json_original, date_added, date_modified, sdate_registered, edate_registered, sdate_payment, edate_payment, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
+			array('id, event_code, event_id, event_vendor_code, registration_code, full_name, first_name, last_name, email, phone, organization, gender, age_group, where_found, persona, paid_fee, is_attended, nationality, date_registered, date_payment, json_original, date_added, date_modified, sdate_registered, edate_registered, sdate_payment, edate_payment, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -148,7 +146,6 @@
 		'paid_fee' => Yii::t('app', 'Paid Fee'),
 		'is_attended' => Yii::t('app', 'Is Attended'),
 		'nationality' => Yii::t('app', 'Nationality'),
-		'is_bumi' => Yii::t('app', 'Is Bumi'),
 		'date_registered' => Yii::t('app', 'Date Registered'),
 		'date_payment' => Yii::t('app', 'Date Payment'),
 		'json_original' => Yii::t('app', 'Json Original'),
@@ -201,7 +198,6 @@
  		$criteria->compare('paid_fee', $this->paid_fee, true);
  		$criteria->compare('is_attended', $this->is_attended);
  		$criteria->compare('nationality', $this->nationality, true);
- 		$criteria->compare('is_bumi', $this->is_bumi);
  		if (!empty($this->sdate_registered) && !empty($this->edate_registered)) {
  			$sTimestamp = strtotime($this->sdate_registered);
  			$eTimestamp = strtotime("{$this->edate_registered} +1 day");
@@ -253,7 +249,6 @@
 			'paidFee' => $this->paid_fee,
 			'isAttended' => $this->is_attended,
 			'nationality' => $this->nationality,
-			'isBumi' => $this->is_bumi,
 			'dateRegistered' => $this->date_registered,
 			'fDateRegistered' => $this->renderDateRegistered(),
 			'datePayment' => $this->date_payment,
@@ -306,7 +301,6 @@
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 
 			'isAttended' => array('condition' => 't.is_attended = 1'),
-			'isBumi' => array('condition' => 't.is_bumi = 1'),
 		);
  	}
 
@@ -356,9 +350,6 @@
  			}
  			if ($this->registration_code == '') {
  				$this->registration_code = null;
- 			}
- 			if ($this->is_bumi == '') {
- 				$this->is_bumi = null;
  			}
  			if (!empty($this->date_registered)) {
  				if (!is_numeric($this->date_registered)) {
@@ -430,9 +421,6 @@
  			if (empty($this->nationality) && $this->nationality != 0) {
  				$this->nationality = null;
  			}
- 			if (empty($this->is_bumi) && $this->is_bumi != 0) {
- 				$this->is_bumi = null;
- 			}
  			if (empty($this->date_payment) && $this->date_payment != 0) {
  				$this->date_payment = null;
  			}
@@ -454,9 +442,6 @@
  		// boolean
  		if ($this->is_attended != '' || $this->is_attended != null) {
  			$this->is_attended = intval($this->is_attended);
- 		}
- 		if ($this->is_bumi != '' || $this->is_bumi != null) {
- 			$this->is_bumi = intval($this->is_bumi);
  		}
 
  		$this->jsonArray_original = json_decode($this->json_original);

@@ -41,7 +41,7 @@ class FormController extends Controller
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin', 'export', 'import', 'importConfirmed', 'builder'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions

@@ -82,7 +82,6 @@ class EventController extends Controller
 			'Persona',
 			'Nationality',
 			'Is Attended',
-			'Is Bumi',
 			'Date Registered',
 			'Date Payment',
 		);
@@ -102,7 +101,6 @@ class EventController extends Controller
 			$record['persona'] = $registration->persona;
 			$record['nationality'] = $registration->nationality;
 			$record['is_attended'] = $registration->is_attended;
-			$record['is_bumi'] = $registration->is_bumi;
 			$record['date_registered'] = $registration->renderDateRegistered();
 			$record['date_payment'] = $registration->renderDatePayment();
 			$buffer[] = $record;

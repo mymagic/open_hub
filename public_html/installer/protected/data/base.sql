@@ -787,7 +787,7 @@ CREATE TABLE IF NOT EXISTS `embed` (
 --
 
 INSERT INTO `embed` (`id`, `code`, `title_en`, `title_ms`, `title_zh`, `text_description_en`, `text_description_ms`, `text_description_zh`, `html_content_en`, `html_content_ms`, `html_content_zh`, `image_main_en`, `image_main_ms`, `image_main_zh`, `text_note`, `is_title_enabled`, `is_text_description_enabled`, `is_html_content_enabled`, `is_image_main_enabled`, `is_default`, `date_added`, `date_modified`) VALUES
-(1, 'resource-directory-index', 'Resource Directory', 'Resource Directory', 'Resource Directory', '', '', '', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! Search for existing service offerings of over 700 resources from 180 organisations!</p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the Malaysian startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! Search for existing service offerings of over 700 resources from 180 organisations!</p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the Malaysian startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! Search for existing service offerings of over 700 resources from 180 organisations!</p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the Malaysian startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', NULL, NULL, NULL, '', 1, 1, 1, 0, 1, 1548910013, 1548910063),
+(1, 'resource-directory-index', 'Resource Directory', 'Resource Directory', 'Resource Directory', '', '', '', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! </p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the  startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! </p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the  startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', '<p>A comprehensive collection of products and services from public and private organisations, available for entrepreneurs! </p>\r\n\r\n<p>This directory acts as a virtual reference platform to all available information, referrals, and resources within the  startup ecosystem and beyond. Get started now! Search the resources or add yours, for free!</p>\r\n', NULL, NULL, NULL, '', 1, 1, 1, 0, 1, 1548910013, 1548910063),
 (3, 'resource-directory-popup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'uploads/embed/main_en.3.png', 'uploads/embed/main_ms.3.png', 'uploads/embed/main_zh.3.png', '', 0, 0, 0, 1, 1, 1550387094, 1550387228);
 
 -- --------------------------------------------------------
@@ -1584,9 +1584,6 @@ CREATE TABLE IF NOT EXISTS `member` (
 -- Dumping data for table `member`
 --
 
-INSERT INTO `member` (`user_id`, `username`, `log_admin_remark`, `date_joined`, `date_added`, `date_modified`) VALUES
-(1, 'yee.siang@mymagic.my', NULL, 1582186196, 1582186196, 1582186196);
-
 -- --------------------------------------------------------
 
 --
@@ -2049,9 +2046,6 @@ CREATE TABLE IF NOT EXISTS `profile` (
 -- Dumping data for table `profile`
 --
 
-INSERT INTO `profile` (`user_id`, `full_name`, `gender`, `address_line1`, `address_line2`, `town`, `state`, `postcode`, `country_code`, `mobile_no`, `fax_no`, `language`, `currency`, `timezone`, `image_avatar`, `date_added`, `date_modified`) VALUES
-(1, 'Tan Allen', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'en', 'MYR', NULL, 'https://account-staging.mymagic.my/img/avatar/1500542651_di2ogY.png', 1582186196, 1582193186);
-
 -- --------------------------------------------------------
 
 --
@@ -2499,9 +2493,6 @@ CREATE TABLE IF NOT EXISTS `seolytic` (
 -- Dumping data for table `seolytic`
 --
 
-INSERT INTO `seolytic` (`id`, `path_pattern`, `title_en`, `title_ms`, `title_zh`, `description_en`, `description_ms`, `description_zh`, `js_header`, `js_footer`, `css_header`, `json_meta`, `json_extra`, `is_active`, `ordering`, `date_added`, `date_modified`) VALUES
-(1, '/test\\/seolytic/', 'Hello', NULL, NULL, 'Hello World', NULL, NULL, 'console.log(''output from js header'')', 'console.log(''output from js footer'')', 'body{background:yellow !important;}', NULL, NULL, 1, 1, 1568744049, 1568744978);
-
 -- --------------------------------------------------------
 
 --
@@ -2559,9 +2550,9 @@ CREATE TABLE IF NOT EXISTS `setting` (
 --
 
 INSERT INTO `setting` (`id`, `code`, `value`, `datatype`, `datatype_value`, `note`, `date_added`, `date_modified`) VALUES
-(4, 'seo-meta-title', 'MaGIC Hub 7 ', 'string', '', '', 1426142971, 1545272142),
-(5, 'seo-meta-keywords', 'MaGIC Hub 7 ', 'text', '', '', 1426142980, 1545272142),
-(6, 'seo-meta-description', 'MaGIC Hub 7 ', 'text', '', '', 1426142994, 1545272142),
+(4, 'seo-meta-title', 'OpenHub', 'string', '', '', 1426142971, 1545272142),
+(5, 'seo-meta-keywords', 'OpenHub', 'text', '', '', 1426142980, 1545272142),
+(6, 'seo-meta-description', 'OpenHub', 'text', '', '', 1426142994, 1545272142),
 (9, 'eventRegistration-bulkInsertTemplateFile', 'uploads/setting/value.9.xlsx', 'file', NULL, '', 1526367317, 1526972319),
 (11, 'eventOrganization-bulkInsertTemplateFile', 'uploads/setting/value.11.xlsx', 'file', '', '', 1536124534, 1536124594),
 (12, 'mentor-hideNoLinkedin', '0', 'boolean', '', '', 1537326098, 1537326108),
@@ -7783,9 +7774,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `social_provider`, `social_identifier`, `json_social_params`, `password`, `reset_password_key`, `stat_reset_password_count`, `stat_login_count`, `stat_login_success_count`, `last_login_ip`, `date_last_login`, `signup_type`, `signup_ip`, `is_active`, `date_activated`, `date_added`, `date_modified`) VALUES
-(1, 'yee.siang@mymagic.my', NULL, NULL, NULL, '$2y$10$CwNpwTwG1KyuPAcci1ycMe3LGUqjvRlfwXQnGTeepvbbCJ0F4CiEC', NULL, 0, 2, 2, '172.19.0.1', 1582193184, 'connect', '172.19.0.1', 1, 1582186196, 1582186196, 1582193184);
-
 -- --------------------------------------------------------
 
 --
@@ -7803,9 +7791,6 @@ CREATE TABLE IF NOT EXISTS `user_blacklist` (
 --
 -- Dumping data for table `user_blacklist`
 --
-
-INSERT INTO `user_blacklist` (`id`, `email`, `date_added`, `date_modified`) VALUES
-(1, 'swatijena2008@gmail.com', 1523330399, 1523330399);
 
 -- --------------------------------------------------------
 
@@ -7829,10 +7814,6 @@ CREATE TABLE IF NOT EXISTS `user_session` (
 --
 -- Dumping data for table `user_session`
 --
-
-INSERT INTO `user_session` (`id`, `session_code`, `user_id`, `date_login`, `date_last_heartbeat`, `date_added`, `date_modified`) VALUES
-(1, '2arjpk94i967isn2f4dl3cid3r', 1, 1582186197, 1582186197, 1582186197, 1582186197),
-(2, '2nrvbu1s63j9kchp8c6hel5bv6', 1, 1582193186, 1582193186, 1582193186, 1582193186);
 
 --
 -- Constraints for dumped tables

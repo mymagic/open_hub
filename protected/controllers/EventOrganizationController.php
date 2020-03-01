@@ -241,7 +241,6 @@ class EventOrganizationController extends Controller
 				[K] Fundraised (Before) (skip)
 				[L] Revenue (Before) (skip)
 				[M] Team Size (Before) (skip)
-				[N] is_bumi
 
 				[O] Founder Name #1
 				[P] Founder Email #1
@@ -292,9 +291,6 @@ class EventOrganizationController extends Controller
 					$params['organization']['year_founded'] = $row['I'];
 					$params['organization']['url_website'] = $row['C'];
 					$organization = HUB::createOrganization($organizationTitle, $params);
-					if ($row['N'] == 'Yes') {
-						$organization->tag_backend = 'bumi';
-					}
 					$organization->save();
 				}
 
