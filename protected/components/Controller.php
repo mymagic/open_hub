@@ -104,7 +104,7 @@ class Controller extends BaseController
 				'items' => array(
 					array('label' => Yii::t('app', 'Member'), 'url' => array('/member/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isMemberManager')),
 					array('label' => Yii::t('app', 'Admin'), 'url' => array('/admin/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isAdminManager')),
-					array('label' => Yii::t('app', 'Connect') . ' <span class="label label-warning">dev</span>', 'url' => array('/backend/connect'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isDeveloper')),
+					array('label' => Yii::t('app', 'Connect'), 'url' => array('/backend/connect'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isDeveloper')),
 				),
 			),
 			array(
@@ -171,10 +171,11 @@ class Controller extends BaseController
 					array('label' => Yii::t('app', 'Startup Stages'), 'url' => array('/startupStage/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
 					array('label' => Yii::t('app', 'Legal Form'), 'url' => array('/legalform/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
 
+					array('label' => Yii::t('app', 'Country'), 'url' => array('/country/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
+					array('label' => Yii::t('app', 'State'), 'url' => array('/state/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
+					array('label' => Yii::t('app', 'City'), 'url' => array('/city/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
+
 					// developer only
-					array('label' => Yii::t('app', 'Country') . ' <span class="label label-warning">dev</span>', 'url' => array('/country/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
-					array('label' => Yii::t('app', 'State') . ' <span class="label label-warning">dev</span>', 'url' => array('/state/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
-					array('label' => Yii::t('app', 'City') . ' <span class="label label-warning">dev</span>', 'url' => array('/city/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
 					array('label' => Yii::t('app', 'Service') . ' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
 				),
 			),
