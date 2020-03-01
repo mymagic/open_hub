@@ -4,7 +4,7 @@ class getResourceIndustries extends Action
 {
 	public function run()
 	{
-		$tmps = HUB::getResourceIndustries();
+		$tmps = HubResource::getIndustries();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();

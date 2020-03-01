@@ -64,7 +64,7 @@ $this->breadcrumbs = array(
         <a href="<?php echo $this->createUrl('/resource/frontend/organization', array('id' => $resource['organizations'][0]['id'], 'brand' => $this->layoutParams['brand']))?>" class="thumbnail">
         <?php if (!empty($resource['imageLogoUrl'])): ?>
           <img width="125" height="71" src="<?php echo $resource->getImageLogoUrl() ?>" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-        <?php else: ?>
+        <?php elseif(!empty($resource['organizations'][0]['imageLogoUrl'])): ?>
           <img width="125" height="71" src="<?php echo $resource['organizations'][0]->getImageLogoUrl() ?>" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
         <?php endif; ?>
         </a>
@@ -93,13 +93,17 @@ $this->breadcrumbs = array(
 <h1 class="hidden"><u><?php echo Yii::t('resource', 'Featured Resources') ?></u></h1>
 <br />
 
+<?php if(!empty($highlightedOrganizations)): ?>
 <div class="row" style="display: flex; display: -webkit-flex; flex-wrap: wrap; height: 100%;">
 <?php foreach ($highlightedOrganizations as $organization): ?>
+<?php if(!empty($organization)): ?>
   <div class="col-xs-6 col-sm-4 col-md-2">
     <a class="thumbnail" href="<?php echo $this->createUrl('/resource/frontend/organization', array('id' => $organization->id, 'brand' => $this->layoutParams['brand']))?>" style="border:0"><div class="full-width" style=""><img src="<?php echo $organization->getImageLogoUrl() ?>" alt="<?php echo $organization->title ?>" style="" /></div></a>
   </div>
+<?php endif; ?>
 <?php endforeach; ?>
 </div>
+<?php endif; ?>
 
 <div class="pull-right">
   <a class="btn btn-white" href="<?php echo $this->createUrl('add')?>" target="_blank"><?php echo Yii::t('resource', 'Add New Resource') ?></a>

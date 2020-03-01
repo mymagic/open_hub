@@ -4,7 +4,7 @@ class getResourceCategories extends Action
 {
 	public function run()
 	{
-		$tmps = HUB::getResourceCategories();
+		$tmps = HubResource::getCategories();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$childs = array();

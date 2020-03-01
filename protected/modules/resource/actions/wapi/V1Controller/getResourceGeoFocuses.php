@@ -4,7 +4,7 @@ class getResourceGeoFocuses extends Action
 {
 	public function run()
 	{
-		$tmps = HUB::getResourceGeofocuses();
+		$tmps = HubResource::getGeofocuses();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$childs = array();

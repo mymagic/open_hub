@@ -1479,35 +1479,6 @@ class HUB extends Component
 		return HubResource::getBySlug($slug);
 	}
 
-	public static function getResourceIndustries()
-	{
-		return HubResource::getIndustries();
-	}
-
-	public static function getResourceStartupStages()
-	{
-		return HubResource::getStartupStages();
-	}
-
-	public static function getResourcePersonas($returnOneAssocArray = false)
-	{
-		return HubResource::getPersonas($returnOneAssocArray);
-	}
-
-	public static function getResourceCategories($returnOneAssocArray = false)
-	{
-		return HubResource::getCategories($returnOneAssocArray);
-	}
-
-	public static function getResourceGeofocuses($returnOneAssocArray = false)
-	{
-		return HubResource::getGeofocuses($returnOneAssocArray);
-	}
-
-	public static function getResourceOrganizations($returnOneAssocArray = false)
-	{
-		return HubResource::getOrganizations($returnOneAssocArray);
-	}
 
 	//
 	// service

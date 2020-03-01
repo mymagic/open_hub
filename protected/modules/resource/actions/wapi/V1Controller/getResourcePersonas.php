@@ -4,7 +4,7 @@ class getResourcePersonas extends Action
 {
 	public function run()
 	{
-		$tmps = HUB::getResourcePersonas();
+		$tmps = HubResource::getPersonas();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();

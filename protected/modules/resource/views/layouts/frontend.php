@@ -34,6 +34,7 @@
       <!-- /keyword -->
 
       <!-- persona -->
+      <?php if(!empty($this->layoutParams['resourceFilters']['personas'])): ?>
       <div class="box-filter checkbox checkbox-info">
         <h6 class="lead"><?php echo Yii::t('resource', 'I am'); ?></h6>
         <?php $filteredPersona = Yii::app()->request->getParam('persona');
@@ -46,6 +47,7 @@
           </div>
         <?php endforeach; ?>
       </div>
+      <?php endif; ?>
       <!-- /persona -->
 
       <!-- category -->
@@ -87,6 +89,7 @@
 
 
       <!-- startupStages -->
+      <?php if(!empty($this->layoutParams['resourceFilters']['startupStage'])): ?>
       <div class="box-filter checkbox checkbox-info">
         <h6 class="lead"><?php echo Yii::t('resource', 'Company stage'); ?></h6>
         <?php $filteredStage = Yii::app()->request->getParam('stage');
@@ -100,9 +103,11 @@
           </div>
         <?php endforeach; ?>
       </div>
+    <?php endif; ?>
       <!-- /startupStages -->
 
       <!-- geolocation -->
+      <?php if(!empty($this->layoutParams['resourceFilters']['locations'])): ?>
       <div id="box-fiter-location" class="box-filter checkbox checkbox-info">
         <a class="toggle-updown pull-right"><?php echo Html::faIcon('fa fa-sort'); ?></a>
         <p class="lead"><?php echo Yii::t('resource', 'For Location'); ?></p>
@@ -133,9 +138,11 @@
           <?php endforeach; ?>
         </div>
       </div>
+      <?php endif;?>
       <!-- /geolocation -->
 
       <!-- industry -->
+      <?php if(!empty($this->layoutParams['resourceFilters']['industries'])): ?>
       <div id="box-fiter-inds" class="box-filter checkbox checkbox-info">
         <a class="toggle-updown pull-right"><?php echo Html::faIcon('fa fa-sort'); ?></a>
         <h6 class="lead"><?php echo Yii::t('resource', 'For Industries'); ?></h6>
@@ -156,6 +163,7 @@
           <?php endforeach; ?>
         </div>
       </div>
+      <?php endif; ?>
       <!-- /industry -->
 
 

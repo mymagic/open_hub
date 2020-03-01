@@ -53,11 +53,11 @@ class FrontendController extends Controller
 	public function getCommonData()
 	{
 		return array(
-			'personas' => HUB::getResourcePersonas(),
-			'startupStage' => HUB::getResourceStartupStages(),
-			'industries' => HUB::getResourceIndustries(),
-			'categories' => HUB::getResourceCategories(),
-			'locations' => HUB::getResourceGeofocuses()
+			'personas' => HubResource::getPersonas(),
+			'startupStage' => HubResource::getStartupStages(),
+			'industries' => HubResource::getIndustries(),
+			'categories' => HubResource::getCategories(),
+			'locations' => HubResource::getGeofocuses()
 		);
 	}
 
@@ -224,7 +224,7 @@ class FrontendController extends Controller
 
 	public function actionCategories()
 	{
-		$categories = HUB::getResourceCategories();
+		$categories = HubResource::getCategories();
 
 		$this->render('student', array('categories' => $categories));
 		$this->render('startup', array('categories' => $categories));

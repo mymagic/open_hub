@@ -232,7 +232,7 @@ class TestController extends Controller
 
 	public function actionGetResourceCategories()
 	{
-		$tmps = HUB::getResourceGeofocuses();
+		$tmps = HubResource::getGeofocuses();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$childs = array();

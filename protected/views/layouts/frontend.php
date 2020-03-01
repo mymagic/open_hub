@@ -81,11 +81,6 @@ foreach ($this->menuSub as $key => $menu) {
 </div>
 <!-- /container -->
 
-<!-- universal footer -->
-<footer id="universal-footer">
-    
-</footer>
-<!-- /universal footer -->
 
 <iframe style="border:0; width:1px; height:1px" src="https://<?php echo Yii::app()->params['connectUrl']; ?>/profile"></iframe>
 

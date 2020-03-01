@@ -4,7 +4,7 @@ class getResourceStartupStages extends Action
 {
 	public function run()
 	{
-		$tmps = HUB::getResourceStartupStages();
+		$tmps = HubResource::getStartupStages();
 		if (!empty($tmps)) {
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();
