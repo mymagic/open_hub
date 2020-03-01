@@ -9,8 +9,7 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array('label' => Yii::t('app', 'Manage Event'), 'url' => array('/event/admin')),
-	array('label' => Yii::t('app', 'Create Event'), 'url' => array('/event/create')),
-	array('label' => Yii::t('app', 'Sync from Bizzabo'), 'url' => array('/event/syncFromBizzabo')),
+	array('label' => Yii::t('app', 'Create Event'), 'url' => array('/event/create')),),
 );
 ?>
 

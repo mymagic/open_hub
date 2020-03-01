@@ -53,7 +53,7 @@ class EventRegistrationController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'syncFromBizzabo', 'syncFromBizzaboConfirmed', 'housekeeping', 'housekeepingConfirmed', 'bulkInsert', 'bulkInsertConfirmed'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'housekeeping', 'housekeepingConfirmed', 'bulkInsert', 'bulkInsertConfirmed'),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
@@ -198,31 +198,6 @@ class EventRegistrationController extends Controller
 		}
 
 		return $model;
-	}
-
-	// sync event data from bizzabo thru intermediate database at misc
-	// please not that this only sync event entires, but not the registration data
-	// todo: modularize
-	public function actionSyncFromBizzabo($dateStart = '', $dateEnd = '')
-	{
-		Notice::page(Yii::t('backend', 'You are about to sync event registration record from Bizzbo, thru an intermediate Database that periodically in sync with Bizzabo API. Please take note that this function only sync the latest 5k records and the stability depends on your server setting. Click OK to continue.'), Notice_WARNING, array(
-			'url' => $this->createUrl('eventRegistration/syncFromBizzaboConfirmed', array('dateStart' => $dateStart, 'dateEnd' => $dateEnd)),
-			'cancelUrl' => $this->createUrl('eventRegistration/admin'),
-		));
-	}
-
-	// todo: modularize
-	public function actionSyncFromBizzaboConfirmed($dateStart = '', $dateEnd = '')
-	{
-		// limit to latest 5k records
-		$result = HubBizzabo::syncEventRegistrationFromBizzabo($dateStart, $dateEnd, 5000);
-		if ($result['status'] == 'success') {
-			Notice::page($result['msg'], Notice_SUCCESS, array('url' => $this->createUrl('admin')));
-		} else {
-			Notice::page($result['msg'], Notice_ERROR);
-		}
-
-		Yii::app()->end();
 	}
 
 	public function actionHousekeeping()
