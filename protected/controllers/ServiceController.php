@@ -53,7 +53,7 @@ class ServiceController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isDeveloper==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

@@ -47,12 +47,12 @@ class AdminController extends Controller
 					'resetPassword', 'resetPasswordConfirmed'
 				),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdminManager==true',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array('removeRole', 'removeRoleConfirmed', 'addRole', 'addRoleConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true && $user->isRoleManager==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isRoleManager==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

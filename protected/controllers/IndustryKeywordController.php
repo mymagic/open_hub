@@ -54,7 +54,7 @@ class IndustryKeywordController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'createBulk', 'update', 'admin', 'delete', 'loadBulkFromIndustry'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

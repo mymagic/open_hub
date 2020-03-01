@@ -43,7 +43,7 @@ class BackendController extends Controller
 				'users' => array('@'),
 				'expression' => '$user->accessBackend==true',
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+			array('allow', // allow admin user to sync local account to connect 
 				'actions' => array('connect', 'connectConfirmed'),
 				'users' => array('@'),
 				'expression' => '$user->accessBackend==true && $user->isSuperAdmin==true ',

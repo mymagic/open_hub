@@ -56,7 +56,7 @@ class EventGroupController extends Controller
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => ['list', 'view', 'admin'],
 				'users' => ['@'],
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => ['create', 'update', 'delete'],

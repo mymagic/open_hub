@@ -59,7 +59,7 @@ class OrganizationController extends Controller
 					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
 				),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions

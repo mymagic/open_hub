@@ -54,7 +54,7 @@ class IndividualController extends Controller
 				'actions' => array('overview', 'list', 'view', 'create', 'update', 'admin', 'getTagsBackend', 'merge', 'getIndividualNodes', 'doMerge', 'doMergeConfirmed',
 				'getIndividual2Emails', 'deleteIndividual2Email', 'addIndividual2Email', 'toggleIndividual2EmailStatus', 'requestJoinEmail', ),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('overview', 'list', 'view', 'admin', 'getTagsBackend', 'getIndividual2Emails'),

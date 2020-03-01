@@ -284,12 +284,29 @@ class DefaultController extends CController
 				));
 
 				// create role2user
+				// super admin
 				$dbConnection->createCommand()->insert('role2user', array(
 					'role_id'=>'1',
 					'user_id'=>$userId,
 				));
+				// admin
 				$dbConnection->createCommand()->insert('role2user', array(
 					'role_id'=>'3',
+					'user_id'=>$userId,
+				));
+				// roleManager
+				$dbConnection->createCommand()->insert('role2user', array(
+					'role_id'=>'4',
+					'user_id'=>$userId,
+				));
+				// adminManager
+				$dbConnection->createCommand()->insert('role2user', array(
+					'role_id'=>'5',
+					'user_id'=>$userId,
+				));
+				// sensitiveDataAdmin
+				$dbConnection->createCommand()->insert('role2user', array(
+					'role_id'=>'11',
 					'user_id'=>$userId,
 				));
 

@@ -123,10 +123,10 @@ class Controller extends BaseController
 						'items' => array(
 							array('label' => Yii::t('app', 'Overview'), 'url' => array('/organization/overview'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
 							array('label' => Yii::t('app', 'Manage All'), 'url' => array('/organization/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Manage Funding'), 'url' => array('/organizationFunding/admin'), 'visible' => Yii::app()->user->getState('isAdmin') == true && Yii::app()->user->getState('isSensitiveDataAdmin') == true),
+							array('label' => Yii::t('app', 'Manage Funding'), 'url' => array('/organizationFunding/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
 							//array('label' => Yii::t('app', 'Manage Revenue'), 'url' => array('/milestone/adminRevenue'), 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem')),
-							array('label' => Yii::t('app', 'Manage Revenue'), 'url' => array('/organizationRevenue/admin'), 'visible' => Yii::app()->user->getState('isAdmin') == true && Yii::app()->user->getState('isSensitiveDataAdmin') == true),
-							array('label' => Yii::t('app', 'Manage Status'), 'url' => array('/organizationStatus/admin'), 'visible' => Yii::app()->user->getState('isAdmin') == true && Yii::app()->user->getState('isSensitiveDataAdmin') == true),
+							array('label' => Yii::t('app', 'Manage Revenue'), 'url' => array('/organizationRevenue/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
+							array('label' => Yii::t('app', 'Manage Status'), 'url' => array('/organizationStatus/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
 						),
 					),
 					// array('label'=>Yii::t('app', 'Charge'), 'url'=>array('/charge/admin'), 'visible'=>Yii::app()->user->getState('accessBackend')==true),

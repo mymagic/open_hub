@@ -56,7 +56,7 @@ class EventController extends Controller
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
 				'users' => ['@'],
-				'expression' => '$user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			],
 			['deny',  // deny all users
 				'users' => ['*'],

@@ -47,7 +47,7 @@ class MemberController extends Controller
 					'resetPassword', 'resetPasswordConfirmed',
 				),
 				'users' => array('@'),
-				'expression' => '$user->isMemberManager==true && $user->accessBackend==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isMemberManager==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

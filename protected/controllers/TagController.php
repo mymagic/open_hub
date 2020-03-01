@@ -40,7 +40,7 @@ class TagController extends Controller
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions' => array('index', 'view', 'getProgramSkillsets'),
 				'users' => array('@'),
-				'expression' => '$user->accessBackend==true && $user->isAdmin==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

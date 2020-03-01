@@ -40,7 +40,7 @@ class CpanelController extends Controller
 			array(
 				'allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array(
-					'index', 'services', 'qa', 'guidelines', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount', 'cancelBooking',
+					'index', 'services', 'qa', 'guidelines', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
 					'test', 'activity', 'getTimeline', 'profile'
@@ -197,97 +197,6 @@ class CpanelController extends Controller
 		$this->render('profile', array(
 			'model' => $model,
 		));
-	}
-
-	protected function getAndRegisterRandomMentoringSessionForTheHack()
-	{
-		$result = array();
-		$availableMentorSlots = null;
-		$selectedMentor = null;
-		$slotDate = null;
-		$timeZone = null;
-		$currentDateStr = date('Y-m-d', time());
-		$email = Yii::app()->user->username;
-
-		// Record that this user has already seen this
-
-		$programId = Yii::app()->getModule('mentor')->defaultPrivateProgramId;
-
-		if (empty($programId)) {
-			return $result;
-		}
-
-		$mentors = HubFuturelab::getActiveMentorsWithAppearInByProgramId($programId);
-
-		if (empty($mentors)) {
-			return $result;
-		}
-
-		for ($i = 0; $i < 3; $i++) {
-			$randomDay = rand(2, 8);
-			$slotDate = date('Y-m-d', strtotime($currentDateStr . ' +' . $randomDay . ' Weekday'));
-
-			if (HubFuturelab::canMenteeAttend($email, $programId, date('Y-m-d', strtotime($slotDate)))) {
-				break;
-			}
-			$i++;
-			$slotDate = null;
-		}
-		if (empty($slotDate)) {
-			return $result;
-		}
-
-		for ($i = 0; $i < 3; $i++) {
-			$selectedMentor = $mentors[array_rand($mentors)];
-
-			$timeZone = HubFuturelab::figureTimezoneOffset($selectedMentor->timezone);
-
-			$availableMentorSlots = self::pickRandomSlot($programId, $selectedMentor, $slotDate, $timeZone);
-
-			if (count($availableMentorSlots['slots']) > 0) {
-				break;
-			}
-
-			$i++;
-		}
-
-		//We could not find any random free slot so return
-		if (empty($availableMentorSlots)) {
-			return $result;
-		}
-
-		$slots = $availableMentorSlots['slots'];
-
-		$randomSlot = $slots[array_rand($slots)];
-
-		//Do actual booking here
-		$params = array();
-		$params['mentorId'] = $selectedMentor->id;
-		$params['programId'] = $programId;
-		$params['date'] = $slotDate;
-		$params['time'] = $randomSlot;
-		$params['timezone'] = $timeZone;
-		$params['sessionMethod'] = 'appear_in';
-		$params['menteeFirstname'] = $this->user->profile->figureFirstName();
-		$params['menteeLastname'] = $this->user->profile->figureLastName();
-		$params['menteeEmail'] = $email;
-		$booking = HubFuturelab::createBooking($params);
-
-		$result['MENTORING_SLOT_DATE'] = $slotDate;
-		$result['MENTORING_SLOT_TIME'] = $randomSlot;
-		$result['MENTORING_SLOT_TIMEZONE'] = $timeZone;
-		$result['MENTORING_MENTOR'] = $selectedMentor;
-		$result['MENTORING_PROGRAM_ID'] = $programId;
-		$result['MENTORING_BOOKING_ID'] = $booking->id;
-
-		return $result;
-	}
-
-	public function pickRandomSlot($programId, $selectedMentor, $slotDate, $timeZone)
-	{
-		$availableMentorSlots = HubFuturelab::getAvailableSlotsByDate($selectedMentor->id, $programId, $slotDate, $timeZone);
-
-		return $availableMentorSlots;
 	}
 
 	public function actionQa()
@@ -630,17 +539,6 @@ class CpanelController extends Controller
 		} else {
 			$this->renderJson(array('status' => 'fail', 'msg' => 'Invalid Email Address'));
 		}
-	}
-
-	public function actionCancelBooking($id = '', $programId = '')
-	{
-		try {
-			if (!empty($id) && !empty($programId)) {
-				HubFuturelab::cancelBooking($id, $programId);
-			}
-		} catch (Exception $e) {
-		}
-		$this->redirect('services');
 	}
 
 	// Uncomment the following methods and override them if needed

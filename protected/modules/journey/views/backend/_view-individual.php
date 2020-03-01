@@ -16,7 +16,7 @@
             <?php echo Html::renderBoolean($data->is_active); ?>
             </small>
         </h4></a>
-        <?php if (Yii::app()->user->isSensitiveDataAdmin): ?>
+        <?php if (YYii::app()->user->isSuperAdmin || ii::app()->user->isSensitiveDataAdmin): ?>
             <?php if (!empty($data->ic_number)): ?><?php echo Html::faIcon('fa fa-id-card'); ?> <?php echo $data->ic_number; ?><?php endif; ?>
             <?php if (!empty($data->mobile_number)): ?>&nbsp;<?php echo Html::faIcon('fa fa-phone'); ?> <?php echo $data->mobile_number; ?><?php endif; ?>
         <?php endif; ?>

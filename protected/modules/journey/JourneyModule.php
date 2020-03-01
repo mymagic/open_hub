@@ -47,7 +47,7 @@ class JourneyModule extends WebModule
 					'viewPath' => 'modules.journey.views.backend._view-organization-journey',
 				);
 			}
-			if (Yii::app()->user->isAdmin && Yii::app()->user->isSensitiveDataAdmin) {
+			if (Yii::app()->user->isSuperAdmin || (Yii::app()->user->isAdmin && Yii::app()->user->isSensitiveDataAdmin)) {
 				$tabs['journey'][] = array(
 					'key' => 'funding',
 					'title' => 'Funding',

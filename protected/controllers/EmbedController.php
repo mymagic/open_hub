@@ -49,7 +49,7 @@ class EmbedController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('index', 'view', 'update', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isContentManager==true || $user->isDeveloper==true',
+				'expression' => '$user->isSuperAdmin==true || $user->isContentManager==true || $user->isDeveloper==true',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('create', 'delete', 'deleteConfirmed'),
