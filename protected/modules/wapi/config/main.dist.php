@@ -1,6 +1,6 @@
 <?php
 
-return array(
+$return = array(
 	'import' => array(
 		'application.modules.wapi.models.*',
 	),
@@ -22,17 +22,13 @@ return array(
 				//
 				// wapi
 				'swagger/getApiDef/<code:\w+>.<format\w+>' => 'wapi/swagger/getApiDef',
-				'http://api-hubd.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'https://api-hubd.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'http://api-hub.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'https://api-hub.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'http://api-hub7.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'https://api-hub7.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'http://api-central7.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'https://api-central7.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'http://api-central.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
-				'https://api-central.mymagic.my/<controller:\w+>/<action:\w+>/*' => 'wapi/<controller>/<action>',
 			),
 		),
 	),
 );
+
+$parsed = parse_url(getenv('BASE_API_URL'));
+$key = sprintf('%s://%s/<controller:\w+>/<action:\w+>/*',$parsed['scheme'], $parsed['host']);
+$return['components']['urlManager']['rules'][$key] = 'wapi/<controller>/<action>';
+
+return $return;

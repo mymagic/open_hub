@@ -49,6 +49,38 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionCurlWapi()
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$response = $client->post(
+				'getEsLogs',
+			[
+				'form_params' => [
+					'page' => $page,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		header('Content-type: application/json');
+		echo $response->getBody();
+	}
+
+	public function actionGetMainUrl()
+	{
+		$url = getenv(BASE_API_URL);
+		echo $url;
+		$parsed = parse_url($url);
+		print_r($parsed);
+		$result = sprintf('%s://%s',$parsed['scheme'], $parsed['host']);
+		echo $result;
+	}
+
 	public function actionF7Model()
 	{
 		$startupStages = array_map(create_function('$t', 'return $t[title];'), StartupStage::model()->isActive()->findAll(array('order' => 'ordering ASC')));
