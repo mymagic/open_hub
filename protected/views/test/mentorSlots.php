@@ -14,7 +14,7 @@ foreach ($result as $weekday => $r): foreach ($r as $time => $mentors): foreach 
 <?php endforeach; endforeach; endforeach; ?>
 <?php //echo $bufferJs;exit;?>
 <div class="wrapper wrapper-content">
-    <div class="row animated fadeInDown">
+    <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">

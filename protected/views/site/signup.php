@@ -6,7 +6,7 @@ $this->breadcrumbs = array(
 ?>
 
 <div id="box-signup">
-<div class="center-block  animated fadeInDown">
+<div class="center-block">
 <div class="row">
 	<div class="col-sm-8 col-sm-offset-2">
 		

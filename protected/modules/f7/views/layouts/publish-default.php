@@ -4,7 +4,7 @@
 <div id="f7-publish">
 <div class="row">
 	<div class="col-lg-<?php echo $model->hasIntake() ? '8' : '12' ?>">
-		<div class="wrapper wrapper-content animated fadeInUp">
+		<div class="wrapper wrapper-content">
 			<div class="">
 
 				<?php $this->renderPartial('layouts._translate') ?>
