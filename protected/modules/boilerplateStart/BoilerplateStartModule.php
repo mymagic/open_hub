@@ -77,18 +77,18 @@ class BoilerplateStartModule extends WebModule
 				return;
 			}
 
-			$actions['boilerplatStart'][] = array(
+			$actions['boilerplateStart'][] = array(
 				'visual' => 'primary',
 				'label' => 'Backend Action 1',
 				'title' => 'Backend Action 1 short description',
-				'url' => Yii::app()->controller->createUrl('/boilerplatStart/backend/action1', array('id' => $model->id)),
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->id)),
 			);
 		} elseif ($realm == 'cpanel') {
-			$actions['boilerplatStart'][] = array(
+			$actions['boilerplateStart'][] = array(
 				'visual' => 'primary',
 				'label' => 'Frontend Action 1',
 				'title' => 'Frontend Action 1 short description',
-				'url' => Yii::app()->controller->createUrl('/boilerplatStart/frontend/action1', array('id' => $model->id)),
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->id)),
 			);
 		}
 
@@ -210,8 +210,10 @@ class BoilerplateStartModule extends WebModule
 	public function installDb($forceReset = false)
 	{
 		$migration = Yii::app()->db->createCommand();
-		//$migration = new Migration();
-		if ($forceReset) {
+		$migration = new Migration();
+
+		// comment off code block below to initialize database structure for this module
+		/*if ($forceReset) {
 			if (Yii::app()->db->schema->getTable('boilerplate_start', true)) {
 				$migration->dropTable('boilerplate_start');
 			}
@@ -228,7 +230,7 @@ class BoilerplateStartModule extends WebModule
 
 		$migration->alterColumn('boilerplate_start', 'organization_title', 'varchar(255) NULL');
 
-		$migration->createIndex('boilerplate_start', 'boilerplate_start', array('organization_title', 'var1'), true);
+		$migration->createIndex('boilerplate_start', 'boilerplate_start', array('organization_title', 'var1'), true);*/
 
 		return true;
 	}
