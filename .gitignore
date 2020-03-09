@@ -16,3 +16,4 @@ php_errors.log
 .DS_Store
 laradock
 
+docs/.jekyll-cache
