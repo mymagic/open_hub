@@ -14,11 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: |
-        cd protected
-        composer validate
-
     - name: Install dependencies
       run: |
         cd protected
