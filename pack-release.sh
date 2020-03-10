@@ -3,7 +3,7 @@ rm -r _release/tmp/
 mkdir _release
 mkdir _release/tmp
 
-git submodule update --init --recursive --force
+# git submodule update --init --recursive --force
 
 mkdir -p _release/tmp/public_html/ && cp -r public_html/ _release/tmp/public_html/
 mkdir -p _release/tmp/protected/ && cp -r protected/ _release/tmp/protected/
@@ -14,6 +14,7 @@ rm _release/tmp/protected/.env
 rm -r _release/tmp/protected/runtime
 rm -r _release/tmp/protected/overrides
 rm -r _release/tmp/public_html/assets
+rm -rf _release/tmp/.git*
 
 mkdir _release/tmp/protected/runtime
 mkdir _release/tmp/protected/overrides
@@ -27,4 +28,6 @@ chmod -R 777 _release/tmp/public_html/assets
 chmod -R 777 _release/tmp/protected/data
 chmod -R 777 _release/tmp/protected/modules
 
-zip _release/release.zip -r _release/tmp
+cd _release/tmp/ && zip ../openhub.zip -r -m .
+cd ../..
+rm -r _release/tmp
