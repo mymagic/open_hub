@@ -2,3 +2,4 @@ url: "https://mymagic.github.io/open_hub/" # the base hostname & protocol for yo
 baseurl: "" # the subpath of your site, e.g. /blog
 title: "" # the name of your site, e.g. ACME Corp.
 name: "Open Hub"
+site_url: "https://mymagic.github.io/open_hub/"
