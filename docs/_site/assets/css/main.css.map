@@ -3,7 +3,7 @@
 	"file": "main.css",
 	"sources": [
 		"main.scss",
-		"_sass/main.scss"
+		"docs/_sass/main.scss"
 	],
 	"sourcesContent": [
 		"@import \"main\";\n#section-resources{text-align:center;}\n#section-resources img{max-height:50px; margin-left:1em; margin-right:1em; margin-top:0.5em; margin-bottom:0.5em;}",
