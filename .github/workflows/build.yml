@@ -27,6 +27,23 @@ jobs:
 
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
+    
+    - name: Pack Release
+      run: |
+        ./pack-release.sh
+        mv _release/openhub.zip _release/openhub-master.zip
+      
+    - name: Deploy S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'ap-southeast-1'   # optional: defaults to us-east-1
+        SOURCE_DIR: '_release'      # optional: defaults to entire repositor
+        DEST_DIR: 'github/release' 
       
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
