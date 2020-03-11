@@ -1,8 +1,9 @@
-name: Build Master
+name: Build Release
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -31,7 +32,8 @@ jobs:
     - name: Pack Release
       run: |
         ./pack-release.sh
-        mv _release/openhub.zip _release/openhub-master.zip
+        cp _release/openhub.zip _release/openhub-latest.zip
+        mv _release/openhub.zip _release/openhub-${GITHUB_REF##*/}.zip
       
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
