@@ -29,7 +29,9 @@ jobs:
       uses: textbook/git-checkout-submodule-action@master
     
     - name: Pack Release
-      run: ./pack-release.sh
+      run: |
+        ./pack-release.sh
+        mv _release/openhub.zip _release/openhub-master.zip
       
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
