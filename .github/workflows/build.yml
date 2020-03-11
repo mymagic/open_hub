@@ -38,6 +38,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'ap-southeast-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs'      # optional: defaults to entire repositor
+        DEST_DIR: 'github/docs' 
       
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
