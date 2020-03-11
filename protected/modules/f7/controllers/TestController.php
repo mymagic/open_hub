@@ -40,6 +40,15 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionF7OrganizationBehavior($id)
+	{
+		$organization = Organization::model()->findByPk($id);
+		foreach($organization->getFormSubmissions() as $submission)
+		{
+			echo sprintf('<li>#%d - %s</li>', $submission->id, $submission->status);
+		}
+	}
+
 	public function actionGetF7UserActFeed()
 	{
 		$year = date('Y');

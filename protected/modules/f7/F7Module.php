@@ -43,7 +43,15 @@ class F7Module extends WebModule
 	public function getOrganizationViewTabs($model, $realm = 'backend')
 	{
 		$tabs = array();
-
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['todo'][] = array(
+					'key' => 'f7',
+					'title' => 'F7',
+					'viewPath' => 'modules.f7.views.backend._view-organization-formSubmissions',
+				);
+			}
+		}
 		return $tabs;
 	}
 

@@ -1447,6 +1447,13 @@ class HubForm
 		return FormSubmission::model()->findAll($condition, $params);
 	}
 
+	public static function getFormSubmissionsByOrganization($organization, $limit=100)
+	{
+		$sql = sprintf('SELECT *, JSON_EXTRACT(json_data, "$.startup_id") AS startupId, JSON_EXTRACT(json_data, "$.organization_id") AS organizationId FROM `form_submission` WHERE (JSON_EXTRACT(json_data, "$.startup_id")=%s OR JSON_EXTRACT(json_data, "$.organization_id")=%s) GROUP BY id ORDER BY date_modified DESC', $organization->id, $organization->id);
+
+		return FormSubmission::model()->findAllBySql($sql);
+	}
+
 	public static function CanUserChooseThisOrgization($userEmail, $orgTitleSubmittedByUser)
 	{
 		if (empty($orgTitleSubmittedByUser)) {
