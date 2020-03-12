@@ -127,6 +127,47 @@ class BoilerplateStartModule extends WebModule
 	}
 
 	//
+	// member
+	public function getMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core member feature
+	public function getMemberActions($model, $realm = 'backend')
+	{
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->id)),
+			);
+		} elseif ($realm == 'cpanel') {
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Frontend Action 1',
+				'title' => 'Frontend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->id)),
+			);
+		}
+
+		return $actions;
+	}
+
+	//
 	// user
 	// these are the functions called by core user feature
 	public function getUserActFeed($user, $year)

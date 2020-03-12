@@ -235,7 +235,7 @@ class MemberController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
 		$member = $this->loadModel($id)->with('products:deposits');
 		$frauds = null;
@@ -263,8 +263,35 @@ class MemberController extends Controller
 			}
 		}
 
+		$actions = array();
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getMemberActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getMemberActions($model, 'cpanel'));
+				}
+			}
+		}
+
+		$tabs = self::composeMemberViewTabs($model, $realm);
+
 		$this->render('view', array(
 			'model' => $member,
+			'member' => $model,
+			'actions' => $actions,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 			'frauds' => $frauds
 		));
 	}
@@ -497,5 +524,37 @@ class MemberController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	public function composeMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
+
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
+
+		ksort($tabs);
+
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['member'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta'
+			);
+		}
+
+		return $tabs;
 	}
 }

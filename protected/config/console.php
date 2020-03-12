@@ -138,6 +138,8 @@ $modules_dir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DI
 $handle = opendir($modules_dir);
 while (false !== ($file = readdir($handle))) {
 	if ($file != '.' && $file != '..' && is_dir($modules_dir . $file)) {
+		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'base.php'));
+		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.base.php'));
 		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.php'));
 	}
 }

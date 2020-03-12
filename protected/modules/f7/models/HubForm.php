@@ -1439,7 +1439,7 @@ class HubForm
 		}
 	}
 
-	public static function getFormSubmissions($user)
+	public static function getFormSubmissions($user, $limit=100)
 	{
 		$condition = 'user_id=:userId';
 		$params = array(':userId' => $user->id);

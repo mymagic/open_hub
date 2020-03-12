@@ -45,7 +45,7 @@ class F7Module extends WebModule
 		$tabs = array();
 		if ($realm == 'backend') {
 			if (Yii::app()->user->accessBackend) {
-				$tabs['todo'][] = array(
+				$tabs['f7'][] = array(
 					'key' => 'f7',
 					'title' => 'F7',
 					'viewPath' => 'modules.f7.views.backend._view-organization-formSubmissions',
@@ -62,6 +62,21 @@ class F7Module extends WebModule
 		}
 
 		return $actions;
+	}
+
+	public function getMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['f7'][] = array(
+					'key' => 'f7',
+					'title' => 'F7',
+					'viewPath' => 'modules.f7.views.backend._view-member-formSubmissions',
+				);
+			}
+		}
+		return $tabs;
 	}
 
 	public function getUserActFeed($user, $year)
