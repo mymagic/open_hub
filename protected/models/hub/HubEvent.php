@@ -292,4 +292,29 @@ class HubEvent
 
 		return $result;
 	}
+
+	public function getSystemActFeed($dateStart, $dateEnd, $page=1, $forceRefresh = 0)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
+
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
+
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
+		} else {
+			$data = null;
+			$sql = sprintf('SELECT * FROM event WHERE is_active=1 AND is_cancelled!=1 AND date_started>=%s AND date_started<%s ORDER BY date_started DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page-1)*$limit, $limit);
+
+			$data = Event::model()->findAllBySql($sql);
+
+			$status = 'success';
+			$msg = '';
+		}
+
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
+	}
 }

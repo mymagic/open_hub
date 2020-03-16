@@ -209,7 +209,7 @@ class Member extends MemberBase
 		$return = array(
 			'userId' => $this->user_id,
 			'username' => $this->username,
-			'fGetPubNubChannelId' => $this->getPubNubChannelId(),
+			//'fGetPubNubChannelId' => $this->getPubNubChannelId(),
 		);
 
 		if (!in_array('-user', $params)) {

@@ -1,0 +1,1 @@
+<p class="margin-top-lg margin-bottom-3x">Welcome to <?php echo Yii::app()->name ?> Backend</p>

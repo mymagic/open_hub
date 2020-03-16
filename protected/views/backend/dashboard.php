@@ -1,32 +1,13 @@
 <?php
-	// peity
-	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/inspinia/js/plugins/peity/jquery.peity.min.js', CClientScript::POS_END);
-	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/inspinia/js/demo/peity-demo.js', CClientScript::POS_END);
-?>
-
-<?php
 $this->breadcrumbs = array(
 	Yii::t('app', 'Backend') => array('index'),
 	Yii::t('app', 'Dashboard'),
 ); ?>
 
-<style type="text/css">
-	.is-collapsed{
-  display: none;
-}
-.timeline-item .date {
-	width: auto;
-}
-@media(max-width: 768px) {
-	.timeline-item .date {
-		width: 110px;
-	}
-}
-</style>
 <div class="row">
 
-<div class="col-lg-3">
-	<div class="panel panel-default">
+<div class="col col-lg-3">
+    <div class="panel panel-default">
 		<div class="panel-heading"><?php echo Yii::t('app', 'Welcome'); ?> </div>
 		 <div class="panel-body">
 		 	<p><?php echo $this->user->profile->full_name; ?> (<?php echo $this->user->username; ?>)</p>
@@ -64,19 +45,42 @@ $this->breadcrumbs = array(
 </div>
 
 <div class="col col-lg-9">
-	<!-- Nav tabs -->
-	<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#activity" aria-controls="home" role="tab" data-toggle="tab">Overview</a></li>
-		<li role="presentation"><a href="#log" aria-controls="log" role="tab" data-toggle="tab">Log</a></li>
-	</ul><!-- /Nav tabs -->
-	 <!-- Tab panes -->
-	 <div class="tab-content">
-		<div role="tabpanel" class="tab-pane active" id="activity"><?php echo $this->renderPartial('_dashboard-systemActivity'); ?></div>
-		<div role="tabpanel" class="tab-pane" id="log"><?php echo $this->renderPartial('_dashboard-systemLog'); ?></div>
-	</div><!--/Tab panes -->
-	
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist" id="navTab-backendBashboardViewTabs">
+<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
+    <li role="presentation" class=""><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
+<?php endforeach; ?><?php endforeach; ?>
+</ul><!-- /Nav tabs -->
+<!-- Tab panes -->
+<div class="tab-content">
+<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
+    <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath'=>$tabModule['viewPath'])) ?>">
+        <div class="text-center margin-top-lg margin-bottom-2x"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+    </div>
+    <?php endforeach; ?><?php endforeach; ?>
+</div><!--/Tab panes -->
 </div>
 
 
 </div>
 
+
+<?php Yii::app()->clientScript->registerScript('backend-dashboard2', "
+var loadedTabs = [];
+
+$(document).on('shown.bs.tab', '#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]', function (e) {
+    var anchor = $(e.target).attr('href');
+    if(loadedTabs.indexOf(anchor) == -1)
+    {
+        $(anchor).load($(anchor).data('urlView'), function(){
+            loadedTabs.push(anchor); 
+        });
+    }
+});
+
+$('#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]:last').tab('show');
+$('#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]:first').tab('show');
+
+
+");
+?>

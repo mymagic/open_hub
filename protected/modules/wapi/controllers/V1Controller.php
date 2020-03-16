@@ -306,7 +306,7 @@ class V1Controller extends Controller
 		$token = $this->validateJwt($jwt, $meta);
 
 		if (strlen($keyword) < 2) {
-			$this->outputFail('Please insert longer keywords', $meta);
+			$this->outputFail('Please insert longer keywoHUB', $meta);
 		}
 
 		try {
@@ -819,7 +819,7 @@ class V1Controller extends Controller
 		$meta['input']['userType'] = $userType;
 		$meta['input']['username'] = $username;
 
-		$data = strval(RDS::getNotifyReadNow($userType, $username));
+		$data = strval(HUB::getNotifyReadNow($userType, $username));
 
 		$this->outputSuccess($data, $meta);
 	}
@@ -832,7 +832,7 @@ class V1Controller extends Controller
 		$meta['input']['userType'] = $userType;
 		$meta['input']['username'] = $username;
 
-		$data = strval(RDS::setNotifyReadNow($userType, $username));
+		$data = strval(HUB::setNotifyReadNow($userType, $username));
 
 		$this->outputSuccess($data, $meta);
 	}*/
@@ -1128,7 +1128,7 @@ class V1Controller extends Controller
 
 		$deviceToken = $primaryDevice->device_key;
 		$devicePlatform = $primaryDevice->device_platform;
-		$tmp = RDS::sendPush($devicePlatform, $deviceToken, $message);
+		$tmp = HUB::sendPush($devicePlatform, $deviceToken, $message);
 		if($tmp['result'] == 1)
 		{
 			$this->outputSuccess(array('devicePlatform'=>$devicePlatform, 'deviceToken'=>$deviceToken), $meta);
@@ -1157,28 +1157,28 @@ class V1Controller extends Controller
 			{
 				$member = Member::username2obj($username);
 				if(empty($member)) $this->outputFail(Yii::t('app', 'Member not found'), $meta);
-				$channelId = RDS::getPubNubChannelId($userType, $member->user_id, $member);
+				$channelId = HUB::getPubNubChannelId($userType, $member->user_id, $member);
 				break;
 			}
 			case 'admin':
 			{
 				$admin = Admin::username2obj($username);
 				if(empty($admin)) $this->outputFail(Yii::t('app', 'Admin not found'), $meta);
-				$channelId = RDS::getPubNubChannelId($userType, $admin->user_id, $admin);
+				$channelId = HUB::getPubNubChannelId($userType, $admin->user_id, $admin);
 				break;
 			}
 			case 'rider':
 			{
 				$rider = Rider::username2obj($username);
 				if(empty($rider)) $this->outputFail(Yii::t('app', 'Rider not found'), $meta);
-				$channelId = RDS::getPubNubChannelId($userType, $rider->user_id, $rider);
+				$channelId = HUB::getPubNubChannelId($userType, $rider->user_id, $rider);
 				break;
 			}
 			case 'owner':
 			{
 				$owner = Owner::username2obj($username);
 				if(empty($owner)) $this->outputFail(Yii::t('app', 'Owner not found'), $meta);
-				$channelId = RDS::getPubNubChannelId($userType, $owner->id, $owner);
+				$channelId = HUB::getPubNubChannelId($userType, $owner->id, $owner);
 				break;
 			}
 			default:
@@ -1188,7 +1188,7 @@ class V1Controller extends Controller
 		}
 
 
-		$tmp = RDS::sendPubNub($channelId, $message);
+		$tmp = HUB::sendPubNub($channelId, $message);
 		if($tmp)
 		{
 			$this->outputSuccess(array(), $meta);

@@ -32,6 +32,22 @@ class EsLogModule extends WebModule
 		return $this->_assetsUrl;
 	}
 
+	public function getDashboardViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['esLog'][] = array(
+					'key' => 'esLog',
+					'title' => 'Log',
+					'viewPath' => 'modules.esLog.views.backend._view-dashboard-esLog'
+				);
+			}
+		}
+
+		return $tabs;
+	}
+
 	public function getOrganizationViewTabs($model, $realm = 'backend')
 	{
 		$tabs = array();

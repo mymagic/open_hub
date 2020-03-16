@@ -49,6 +49,12 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionMemberSystemActFeed()
+	{
+		$tmps = HubMember::getSystemActFeed('2018-05-01', '2018-05-07');
+		echo '<pre>';print_r($tmps);
+	}
+
 	public function actionCurlWapi()
 	{
 		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);

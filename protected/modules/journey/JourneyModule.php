@@ -33,6 +33,37 @@ class JourneyModule extends WebModule
 		return $this->_assetsUrl;
 	}
 
+	public function getDashboardViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['00'][] = array(
+					'key' => 'welcome',
+					'title' => 'Welcome',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-welcome'
+				);
+				$tabs['journey'][] = array(
+					'key' => 'organization',
+					'title' => 'Organization',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-organization'
+				);
+				$tabs['journey'][] = array(
+					'key' => 'member',
+					'title' => 'Member',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-member'
+				);
+				$tabs['journey'][] = array(
+					'key' => 'event',
+					'title' => 'Event',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-event'
+				);
+			}
+		}
+
+		return $tabs;
+	}
+
 	//
 	// organization
 	public function getOrganizationViewTabs($model, $realm = 'backend')
