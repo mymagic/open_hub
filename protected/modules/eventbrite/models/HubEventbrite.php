@@ -177,7 +177,7 @@ class HubEventbrite
 				$mEventRegistration = EventRegistration::model()->findAllByAttributes(['event_vendor_code' => $event_vendor_code, 'registration_code' => $registration_code]);
 				if (!empty($mEventRegistration)) {
 					foreach ($mEventRegistration as $eventRegistration) {
-						$update = HUB::updateBumiIndianStatusForEventRegistration($eventRegistration);
+						$update = HubBumi::updateIsBumiIndianForEventRegistration($eventRegistration);
 					}
 				}
 			}

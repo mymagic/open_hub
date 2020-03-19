@@ -20,7 +20,7 @@ class getResourceAllActive extends Action
 		$meta['input']['cat'] = $cat;
 		$meta['input']['page'] = $page;
 
-		$tmps = HUB::getResourceAllActive(
+		$tmps = HubResource::getAllActive(
 			$page,
 			array(
 				'keyword' => $keyword,

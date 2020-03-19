@@ -27,9 +27,9 @@ class HashForRemovalCommand extends ConsoleCommand
 	{
 		$connection = Yii::app()->db;
 
-		self::HashEmailColumnInEventRegistrationTable($conncetion);
+		self::HashEmailColumnInEventRegistrationTable($connection);
 
-		self::HashEmailColumnInEnvoyVisitorTable($conncetion);
+		self::HashEmailColumnInEnvoyVisitorTable($connection);
 	}
 
 	protected function HashEmailColumnInEventRegistrationTable($conncetion)

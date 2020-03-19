@@ -68,10 +68,38 @@ class EventRegistrationController extends Controller
 	 *
 	 * @param int $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
+		$model = $this->loadModel($id);
+
+		$actions = array();
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        
+        $modules = YeeModule::getParsableModules();
+        foreach ($modules as $moduleKey => $moduleParams) {
+            // for backend only
+            if (Yii::app()->user->accessBackend && $realm == 'backend') {
+                if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+                    $actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'backend'));
+                }
+            }
+            // for frontend only
+            if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+                if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+                    $actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'cpanel'));
+                }
+            }
+        }
+
+		$tabs = self::composeEventRegistrationViewTabs($model, $realm);
+		
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
+            'actions' => $actions,
+            'realm' => $realm,
+            'tab' => $tab,
+            'tabs' => $tabs,
+            'user' => $user,
 		));
 	}
 
@@ -251,8 +279,8 @@ class EventRegistrationController extends Controller
 				$evenRegistration = EventRegistration::model()->findByPk($row['id']);
 				// skip if record already have meta record
 				if (!isset($evenRegistration->_dynamicData['EventRegistration-status-isBumi']) || !isset($evenRegistration->_dynamicData['EventRegistration-status-isIndian'])) {
-					$update = HUB::updateBumiIndianStatusForEventRegistration($evenRegistration);
-					$updateMsg[] = sprintf('ID: #%d - Full Name: %s; isBumi %s; isIndian %s', $evenRegistration->id, $evenRegistration->full_name, Html::renderBoolean(HUB::checkEventRegistrationIsBumiStatus($evenRegistration)), Html::renderBoolean(HUB::checkEventRegistrationIsIndianStatus($evenRegistration)));
+					$update = HubBumi::updateIsBumiIndianForEventRegistration($evenRegistration);
+					$updateMsg[] = sprintf('ID: #%d - Full Name: %s; isBumi %s; isIndian %s', $evenRegistration->id, $evenRegistration->full_name, Html::renderBoolean(HubBumi::checkEventRegistrationIsBumi($evenRegistration)), Html::renderBoolean(HubBumi::checkEventRegistrationIsIndian($evenRegistration)));
 					// $i++;
 				}
 				// if($i==20) break;
@@ -374,4 +402,36 @@ class EventRegistrationController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+	public function composeEventRegistrationViewTabs($model, $realm = 'backend')
+    {
+        $tabs = array();
+
+        $modules = YeeModule::getParsableModules();
+        foreach ($modules as $moduleKey => $moduleParams) {
+            if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationViewTabs')) {
+                $tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+            }
+        }
+
+        if ($realm == 'backend') {
+            /*$tabs['member'][] = array(
+                'key' => 'individual',
+                'title' => 'Individual',
+                'viewPath' => 'views.individualMember.backend._view-member-individual'
+            );*/
+        }
+
+        ksort($tabs);
+
+        if (Yii::app()->user->isDeveloper) {
+            $tabs['eventRegistration'][] = array(
+                'key' => 'meta',
+                'title' => 'Meta <span class="label label-warning">dev</span>',
+                'viewPath' => '_view-meta',
+            );
+        }
+
+        return $tabs;
+    }
 }

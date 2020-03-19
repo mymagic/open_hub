@@ -506,7 +506,7 @@ class V1Controller extends Controller
 			$partner = HUB::getOrganizationByCode($partnerCode);
 			$enterprise = HUB::getOrganizationByCode($enterpriseCode);
 
-			$result = HUB::addIdeaEnterprise2Wishlist($partner, $enterprise);
+			$result = HubIdea::addEnterprise2Wishlist($partner, $enterprise);
 			$this->outputSuccess($result->toApi(), $meta);
 		} catch (Exception $e) {
 			$this->outputFail($e->getMessage(), $meta);
@@ -520,7 +520,7 @@ class V1Controller extends Controller
 		$meta['input']['id'] = $id;
 
 		try {
-			$result = HUB::getIdeaWishlist($id);
+			$result = HubIdea::getWishlist($id);
 			$this->outputSuccess($result->toApi(), $meta);
 		} catch (Exception $e) {
 			$this->outputFail($e->getMessage(), $meta);
@@ -539,7 +539,7 @@ class V1Controller extends Controller
 			$partner = HUB::getOrganizationByCode($partnerCode);
 			$enterprise = HUB::getOrganizationByCode($enterpriseCode);
 
-			$result = HUB::removeIdeaEnterpriseFromWishlist($partner, $enterprise);
+			$result = HubIdea::removeEnterpriseFromWishlist($partner, $enterprise);
 			if ($result) {
 				$this->outputSuccess('', $meta);
 			} else {
@@ -559,7 +559,7 @@ class V1Controller extends Controller
 		try {
 			$partner = HUB::getOrganizationByCode($partnerCode);
 
-			$tmps = HUB::getIdeaEnterprisesFromWishlist($partner);
+			$tmps = HubIdea::getEnterprisesFromWishlist($partner);
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();
 			}

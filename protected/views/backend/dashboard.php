@@ -47,12 +47,16 @@ $this->breadcrumbs = array(
 <div class="col col-lg-9">
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist" id="navTab-backendBashboardViewTabs">
+	<li role="presentation" class=""><a href="#welcome" aria-controls="welcome" role="tab" data-toggle="tab">Welcome</a></li>
 <?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
     <li role="presentation" class=""><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
 <?php endforeach; ?><?php endforeach; ?>
 </ul><!-- /Nav tabs -->
 <!-- Tab panes -->
 <div class="tab-content">
+	<div role="tabpanel" class="tab-pane white-bg padding-md" id="welcome" data-url-view="">
+		<p class="margin-top-lg margin-bottom-3x">Welcome to <?php echo Yii::app()->name ?> Backend</p>
+	</div>
 <?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
     <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath'=>$tabModule['viewPath'])) ?>">
         <div class="text-center margin-top-lg margin-bottom-2x"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
@@ -70,17 +74,13 @@ var loadedTabs = [];
 
 $(document).on('shown.bs.tab', '#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]', function (e) {
     var anchor = $(e.target).attr('href');
-    if(loadedTabs.indexOf(anchor) == -1)
+    if(loadedTabs.indexOf(anchor) == -1 && $(anchor).data('urlView').length>0)
     {
         $(anchor).load($(anchor).data('urlView'), function(){
             loadedTabs.push(anchor); 
         });
     }
 });
-
-$('#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]:last').tab('show');
-$('#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]:first').tab('show');
-
 
 ");
 ?>

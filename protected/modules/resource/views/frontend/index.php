@@ -53,7 +53,11 @@ $this->breadcrumbs = array(
   <?php if (!empty($model['data'])): foreach ($model['data'] as $resource): ?>
   <div class="item row">
     <div class="col-xs-9">
+    <?php if(!empty($resource['slug'])): ?>
+      <h3><a href="<?php echo $this->createUrl('/resource/frontend/viewBySlug', array('slug' => $resource['slug'], 'brand' => $this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> </a></h3>
+    <?php else: ?>
       <h3><a href="<?php echo $this->createUrl('/resource/frontend/view', array('id' => $resource['id'], 'brand' => $this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> </a></h3>
+    <?php endif; ?>
       <?php echo ysUtil::truncate(strip_tags($resource->getAttrData('html_content'), 250)) ?>
       <div class="text-muted margin-top-lg">
           <?php echo $resource['resourceCategories'][0]['title'] ?>

@@ -12,8 +12,8 @@ return array(
 			'rules' => array(
 				//
 				// resource
-				'resource/<slug>' => 'resource/frontend/viewBySlug',
 				'resource/<id:\d+>' => 'resource/frontend/view',
+				'resource/slug/<slug>' => 'resource/frontend/viewBySlug',
 				'resource/by/<id:\d+>' => 'resource/frontend/organization',
 				'<language:(ms|en|zh)>/resource/<slug>' => 'resource/frontend/viewBySlug',
 				'<language:(ms|en|zh)>/resource/<id:\d+>' => 'resource/frontend/view',

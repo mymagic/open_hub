@@ -90,7 +90,7 @@ class IdeaRfp extends IdeaRfpBase
 		return $return;
 	}
 
-	public function toApi($params = '')
+	public function toApi($params = array())
 	{
 		$return = array(
 			'id' => $this->id,

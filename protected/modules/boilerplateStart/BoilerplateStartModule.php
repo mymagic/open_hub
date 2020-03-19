@@ -153,14 +153,14 @@ class BoilerplateStartModule extends WebModule
 				'visual' => 'primary',
 				'label' => 'Backend Action 1',
 				'title' => 'Backend Action 1 short description',
-				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->id)),
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
 			);
 		} elseif ($realm == 'cpanel') {
 			$actions['boilerplateStart'][] = array(
 				'visual' => 'primary',
 				'label' => 'Frontend Action 1',
 				'title' => 'Frontend Action 1 short description',
-				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->id)),
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->user_id)),
 			);
 		}
 

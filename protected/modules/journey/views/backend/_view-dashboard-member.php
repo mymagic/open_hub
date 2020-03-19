@@ -1,55 +1,10 @@
-
-<?php
-$bootstrapVersion = Yii::app()->controller->layoutParams['bootstrapVersion'];
-$jqueryVersion = Yii::app()->controller->layoutParams['jqueryVersion'];
-
-$cs = Yii::app()->clientScript;
-$cs->scriptMap["jquery.js"] = Yii::app()->theme->baseUrl . "/vendors/jquery/jquery-{$jqueryVersion}.min.js";
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . "/vendors/bootstrap-{$bootstrapVersion}/js/bootstrap.min.js" , CClientScript::POS_HEAD);
-?>
 <div id="vue-member-backendDashboard">
    	
 	<div class="well text-center">
 		Start: 
-			<?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker', array(
-				'name' => 'dateStart',
-				'value' => date('Y-m-d', strtotime('this week monday')),
-				// additional javascript options for the date picker plugin
-				'options' => array(
-					'showAnim' => 'fold',
-					'dateFormat' => 'yy-mm-dd',
-					'changeMonth' => true,
-					'changeYear' => true,
-					'timeInput' => false,
-					'showTime' => false,
-					'showHour' => false,
-					'showMinute' => false,
-					'showTimepicker' => false,
-				),
-				'htmlOptions' => array(
-					'v-model' => 'dateStart'
-				),
-			)); ?>
-			End: 
-			<?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker', array(
-				'name' => 'dateEnd',
-				'value' => date('Y-m-d', strtotime('this week sunday')),
-				// additional javascript options for the date picker plugin
-				'options' => array(
-					'showAnim' => 'fold',
-					'dateFormat' => 'yy-mm-dd',
-					'changeMonth' => true,
-					'changeYear' => true,
-					'timeInput' => false,
-					'showTime' => false,
-					'showHour' => false,
-					'showMinute' => false,
-					'showTimepicker' => false,
-				),
-				'htmlOptions' => array(
-					'v-model' => 'dateEnd'
-				),
-			)); ?>
+		<input type="text" name="dateStart" v-model="dateStart" value="<?php echo date('Y-m-d', strtotime('this week monday')) ?>" placeholder="YYYY-MM-DD" />
+		End: 
+		<input type="text" name="dateEnd" v-model="dateEnd" value="<?php echo date('Y-m-d', strtotime('this week sunday')) ?>" placeholder="YYYY-MM-DD" />
 		<button class="btn btn-xs btn-primary" v-on:click="fetchData(0)">Go</button>
 		<a class="btn btn-xs btn-white" v-on:click="fetchData(1)"><?php echo Html::faIcon('fa-refresh') ?></a>
 	</div>
@@ -89,6 +44,9 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . "/vendors/bootstrap-{$boots
 				</div>
             </div>
             </div>
+			<div v-else>
+				<?php echo Notice::inline(Yii::t('backend', 'No data found for above date range')) ?>
+			</div>
             
         </template>
 
@@ -105,7 +63,7 @@ var vue = new Vue({
     data: {loading:false, collapsed: false, dateStart:'', dateEnd:'', status:'fail', msg:'', meta:'', data:''},
     ready: function () 
 	{
-		//this.fetchData(0);
+		this.fetchData(0);
 	},
 	methods: 
 	{

@@ -38,11 +38,6 @@ class JourneyModule extends WebModule
 		$tabs = array();
 		if ($realm == 'backend') {
 			if (Yii::app()->user->accessBackend) {
-				$tabs['00'][] = array(
-					'key' => 'welcome',
-					'title' => 'Welcome',
-					'viewPath' => 'modules.journey.views.backend._view-dashboard-welcome'
-				);
 				$tabs['journey'][] = array(
 					'key' => 'organization',
 					'title' => 'Organization',

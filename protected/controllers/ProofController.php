@@ -158,9 +158,9 @@ class ProofController extends Controller
 			$forRecord['obj'] = Proof::getForRecord($model->ref_table, $model->ref_id);
 
 			if ($model->ref_table == 'idea_rfp') {
-				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->title);
+				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($model->ref_table), $forRecord['obj']->title);
 			} else {
-				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->organization->title);
+				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($model->ref_table), $forRecord['obj']->organization->title);
 			}
 		}
 

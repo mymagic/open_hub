@@ -235,7 +235,7 @@ $return['components']['urlManager']['rules'] = CMap::mergeArray($return['compone
 
 // domain specific override
 $domainSettings = sprintf('%s/config/domain.php', Yii::getPathOfAlias('overrides'));
-if (!empty($domainSettings)) {
+if (!empty($domainSettings) && is_array($domainSettings)) {
 	if (array_key_exists($_SERVER['SERVER_NAME'], $domainSettings)) {
 		$return = CMap::mergeArray($return, $domainSettings[$_SERVER['SERVER_NAME']]);
 	}

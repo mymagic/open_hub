@@ -3,6 +3,7 @@
 return array(
 	'import' => array(
 		'application.modules.eventbrite.models.*',
+		'application.modules.bumi.models.*',
 	),
 
 	'modules' => array(

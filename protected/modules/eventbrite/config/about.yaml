@@ -7,3 +7,6 @@ developer:
   author: "Tan Yee Siang"
   organization: "MaGIC"
   email: "yee.siang@mymagic.my"
+  dependency:
+    - module: 'bumi'
+      version: '1.0'

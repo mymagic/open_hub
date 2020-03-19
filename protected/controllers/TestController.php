@@ -34,7 +34,7 @@ class TestController extends Controller
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {
@@ -64,7 +64,7 @@ class TestController extends Controller
 				'getEsLogs',
 			[
 				'form_params' => [
-					'page' => $page,
+					'page' => 1,
 				],
 				'verify' => false,
 			]
@@ -79,7 +79,7 @@ class TestController extends Controller
 
 	public function actionGetMainUrl()
 	{
-		$url = getenv(BASE_API_URL);
+		$url = getenv('BASE_API_URL');
 		echo $url;
 		$parsed = parse_url($url);
 		print_r($parsed);
@@ -362,7 +362,7 @@ class TestController extends Controller
 	public function actionListPartnersLogo()
 	{
 		echo '<pre>';
-		$tmp = HUB::listIdeaPartnersLogo();
+		$tmp = HubIdea::listPartnersLogo();
 		//print_r($tmp);
 		foreach ($tmp as $t) {
 			echo sprintf('<li>%s <img src="%s" width="100px" /></li>', $t->title, $t->getImageLogoUrl());
@@ -934,7 +934,7 @@ class TestController extends Controller
 
 	public function actionIdeaEnterpriseMembershipUpgraded()
 	{
-		$enterprises = HUB::getIdeaUserEnterprises('exiang83@gmail.com');
+		$enterprises = HubIdea::getUserEnterprises('exiang83@gmail.com');
 		$enterprise = $enterprises[0];
 		$return = NotifyMaker::organization_idea_enterpriseMembershipUpgraded($enterprise);
 		print_r($return);
@@ -981,7 +981,7 @@ class TestController extends Controller
 			$criteria->mergeWith($criteriaIndustry, 'AND');
 		}
 
-		$result = new CActiveDataProvider(Organization, array(
+		$result = new CActiveDataProvider('Organization', array(
 			'criteria' => $criteria,
 			'pagination' => array('pageSize' => 30),
 			'sort' => array(
@@ -998,6 +998,7 @@ class TestController extends Controller
 	public function actionFuturelabBookingStatusException()
 	{
 		Yii::import('application.modules.mentor.models.*');
+		$meta = null;
 		try {
 			$booking = new Booking;
 			$b = HubFuturelab::getBooking(1500);
@@ -1115,21 +1116,21 @@ class TestController extends Controller
 		$sql = sprintf('SELECT * FROM organization_funding WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s raised $%s from %s</li>', $tmp[id], $tmp[amount], $tmp['vc_name']);
+			echo sprintf('<li>#%s raised $%s from %s</li>', $tmp['id'], $tmp['amount'], $tmp['vc_name']);
 		}
 
 		echo '<h4>organizationRevenues</h4>';
 		$sql = sprintf('SELECT * FROM organization_revenue WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s reported $%s on year %s</li>', $tmp[id], $tmp[amount], $tmp['year_reported']);
+			echo sprintf('<li>#%s reported $%s on year %s</li>', $tmp['id'], $tmp['amount'], $tmp['year_reported']);
 		}
 
 		echo '<h4>organizationStatus</h4>';
 		$sql = sprintf('SELECT * FROM organization_status WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s is %s according to %s</li>', $tmp[id], $tmp[status], $tmp['source']);
+			echo sprintf('<li>#%s is %s according to %s</li>', $tmp['id'], $tmp['status'], $tmp['source']);
 		}
 
 		echo '<h4>persona2Organization</h4>';
@@ -1577,7 +1578,7 @@ class TestController extends Controller
 		}
 	}
 
-	public function actionFuturelabCreateBookingEmail($id)
+	public function actionFuturelabCreateBookingEmail($id, $programId)
 	{
 		Yii::import('application.modules.mentor.models.*');
 		$booking = new Booking;
@@ -1799,15 +1800,7 @@ class TestController extends Controller
 			echo $res->getStatusCode();
 			print_r(json_decode($res->getBody()));
 		} catch (Exception $e) {
-			$errors = json_decode($e->getResponse()->getBody());
-			if (!empty($errors)) {
-				//print_r($errors);
-				foreach ($errors as $errorKey => $error) {
-					$buffer[$errorKey] = $error[0];
-				}
-				print_r($buffer);
-			}
-			//print_r($e->getMessage());
+			print_r($e->getMessage());
 		}
 	}
 
@@ -2295,7 +2288,7 @@ class TestController extends Controller
 
 	public function actionLazyLoadIdeaEnterprise()
 	{
-		$tmps = (HUB::getIdeaAllActiveEnterprises(6, 3));
+		$tmps = (HubIdea::getAllActiveEnterprises(6, 3));
 		foreach ($tmps as $tmp) {
 			echo sprintf('%s<br />', $tmp->title);
 		}
@@ -2329,7 +2322,7 @@ class TestController extends Controller
 		echo Yii::app()->getModule('idea')->emailTeam;
 
 		$rfp = IdeaRfp::model()->findByPk(36);
-		HUB::sendIdeaRfp($rfp, true);
+		HubIdea::sendRfp($rfp, true);
 		echo '<pre>';
 		print_r($rfp);
 	}
@@ -2573,11 +2566,6 @@ class TestController extends Controller
 		));
 	}
 
-	public function actionGetResourceByOrganigzationId($id)
-	{
-		return Hub::getResourceByOrganigzationId($id);
-	}
-
 	public function actionExploreProd($keyword = 'plants')
 	{
 		$products = HubIdea::searchProducts($keyword);
@@ -2602,11 +2590,6 @@ class TestController extends Controller
 		foreach ($org as $o) {
 			echo 'org title : ' . $o->title . '<br>';
 		}
-	}
-
-	public function actionGetSurvey()
-	{
-		HubEvent::getEventsForSurvey();
 	}
 
 	public function actionSeolytic()
