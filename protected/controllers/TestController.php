@@ -1,19 +1,6 @@
 <?php
-/**
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the BSD 3-Clause License
-* that is bundled with this package in the file LICENSE.
-* It is also available through the world-wide-web at this URL:
-* https://opensource.org/licenses/BSD-3-Clause
-*
-*
-* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
-* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
-* @license https://opensource.org/licenses/BSD-3-Clause
-*/
+
+// this file should not be open source
 
 use Aws\Credentials\CredentialProvider;
 use Aws\Credentials\Credentials;
@@ -2093,7 +2080,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2153,7 +2140,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2188,7 +2175,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2209,7 +2196,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2242,7 +2229,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);

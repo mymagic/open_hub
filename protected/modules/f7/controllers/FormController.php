@@ -104,6 +104,7 @@ class FormController extends Controller
 
 			$model->jsonArray_structure = json_decode($model->json_structure);
 			$model->jsonArray_stage = json_decode($model->json_stage);
+			$model->jsonArray_event_mapping = json_decode($model->json_event_mapping);
 
 			$transaction = Yii::app()->db->beginTransaction();
 			try {
@@ -162,6 +163,7 @@ class FormController extends Controller
 
 			$model->jsonArray_structure = json_decode($model->json_structure);
 			$model->jsonArray_stage = json_decode($model->json_stage);
+			$model->jsonArray_event_mapping = json_decode($model->json_event_mapping);
 
 			if ($model->save()) {
 				Notice::flash(Yii::t('f7', 'Form Updated'), Notice_SUCCESS);

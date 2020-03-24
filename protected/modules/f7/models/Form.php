@@ -33,7 +33,7 @@ class Form extends FormBase
 			array('title', 'length', 'max' => 255),
 			array('timezone', 'length', 'max' => 128),
 			// ys: override to add json_structure and json_stage as they are not standard way the framework handle json (do not have a fixed structure)
-			array('text_short_description, text_note, json_structure, json_stage', 'safe'),
+			array('text_short_description, text_note, json_structure, json_stage, json_event_mapping', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, code, slug, date_open, date_close, json_structure, json_stage, is_multiple, is_login_required, title, text_short_description, is_active, timezone, date_modified, date_added, sdate_open, edate_open, sdate_close, edate_close, sdate_modified, edate_modified, sdate_added, edate_added', 'safe', 'on' => 'search'),
@@ -103,6 +103,7 @@ class Form extends FormBase
 		$return['is_multiple'] = Yii::t('app', 'Allow multiple submission');
 		$return['json_structure'] = Yii::t('app', 'Form Structure');
 		$return['json_stage'] = Yii::t('app', 'Stage Pipeline');
+		$return['json_event_mapping'] = Yii::t('app', 'Event Mapping Instruction');
 
 		return $return;
 	}
@@ -303,8 +304,8 @@ class Form extends FormBase
 			$eTimestamp = strtotime("{$this->edate_close} +1 day");
 			$criteria->addCondition(sprintf('date_close >= %s AND date_close < %s', $sTimestamp, $eTimestamp), $params['compareOperator']);
 		}
-		$criteria->compare('json_structure', $this->json_structure, true, $params['compareOperator']);
-		$criteria->compare('json_stage', $this->json_stage, true, $params['compareOperator']);
+		// $criteria->compare('json_structure', $this->json_structure, true, $params['compareOperator']);
+		// $criteria->compare('json_stage', $this->json_stage, true, $params['compareOperator']);
 		$criteria->compare('is_multiple', $this->is_multiple, false, $params['compareOperator']);
 		$criteria->compare('is_login_required', $this->is_login_required, false, $params['compareOperator']);
 		$criteria->compare('title', $this->title, true, $params['compareOperator']);

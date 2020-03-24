@@ -304,10 +304,10 @@ class EventController extends Controller
 
 	public function actionAdminNoRegistration()
 	{
-		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 		$count = Yii::app()->db->createCommand($sqlCount)->queryScalar();
 
-		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 
 		$dataProvider = new CSqlDataProvider($sql, [
 			'totalItemCount' => $count,

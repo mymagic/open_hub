@@ -20,31 +20,21 @@ $this->menu = array(
 
 
 <div class="row">
-<div class="col col-sm-8">
-	<div class="crud-view">
+<div class="crud-view">
+<div class="col col-sm-7">
 	<?php $this->widget('application.components.widgets.DetailView', array(
 		'data' => $model,
 		'attributes' => array(
-			'id',
-			'code',
-			'slug',
 			array('name' => 'intake', 'type' => 'raw', 'value' => sprintf('<a href="%s">%s</a>', Yii::app()->createUrl('/f7/intake/view', array('id' => $model->getIntake()->id)), $model->getIntake()->title), 'visible' => $model->hasIntake()),
 			'title',
 			array('name' => 'text_short_description', 'type' => 'raw', 'value' => nl2br($model->text_short_description)),
-			array('name' => 'text_note', 'type' => 'raw', 'value' => nl2br($model->text_note)),
-
 			'timezone',
 			array('label' => $model->attributeLabel('date_open'), 'value' => Html::formatDateTimezone($model->date_open, 'long', 'medium', '-', $model->timezone)),
 			array('label' => $model->attributeLabel('date_close'), 'value' => Html::formatDateTimezone($model->date_close, 'long', 'medium', '-', $model->timezone)),
 
-			array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
 			array('name' => 'Survey', 'type' => 'raw', 'value' => Html::renderBoolean($model->type)),
 			array('name' => 'is_multiple', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_multiple)),
 			array('name' => 'is_login_required', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_login_required)),
-			//array('name'=>'json_structure', 'type'=>'raw', 'value'=>nl2br($model->json_structure)),
-
-			array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
-			array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 			array('name' => 'Public URL', 'type' => 'raw', 'value' => Html::link($model->getPublicUrl(), $model->getPublicUrl())),
 			array('name' => 'json_stage', 'type' => 'raw', 'value' => $model->renderStages('html')),
 
@@ -54,18 +44,30 @@ $this->menu = array(
 			//array('name'=>'inputImpacts', 'type'=>'raw', 'value'=>$inputImpacts),
 		),
 	)); ?>
-	</div>
+</div>
+<div class="col col-sm-5">
+	<?php $this->widget('application.components.widgets.DetailView', array(
+		'data' => $model,
+		'attributes' => array(
+			'id',
+			'code',
+			'slug',
+			array('name' => 'text_note', 'type' => 'raw', 'value' => nl2br($model->text_note)),
+			array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
+			
+			array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
+			array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
+		),
+	)); ?>
+</div>
+</div>
 </div>
 
+
+<div class="btn-group btn-group-xs pull-right">
+	<a class="btn btn-primary" href="<?php echo $this->createUrl('/f7/backend/syncForm2Event', array('id' => $model->id)) ?>"><?php echo Yii::t('f7', 'Sync to Event') ?></a>
+	<a class="btn  btn-success" href="<?php echo $this->createUrl('export', array('id' => $model->id)) ?>"><?php echo Yii::t('f7', 'Export All') ?>&nbsp;<span class="badge badge-primary"><?php echo count($model->formSubmissions) ?></span></a>
 </div>
-
-<form class="pull-right" action="<?php echo $this->createUrl('export', array('id' => $model->id)) ?>" method="GET">
-	<button class="btn btn-xs btn-success" type="submit" value="">Export All <span class="badge badge-primary"><?php echo count($model->formSubmissions) ?></span></button>
-</form>
-
-<form style="margin-right:5px" class="pull-right" action="<?php echo $this->createUrl('import', array('id' => $model->id)) ?>" method="GET">
-	<button class="btn btn-xs btn-primary" type="submit" value="">Import all to Central <span class="badge badge-primary"><?php echo count($model->formSubmissions) ?></span></button>
-</form>
 
 <h3><?php echo Html::faIcon('fa fa-file-alt') ?> Submissions</h3>
 

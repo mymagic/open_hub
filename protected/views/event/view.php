@@ -55,6 +55,7 @@ $this->menu = [
 				['label' => $model->attributeLabel('date_ended'), 'value' => $model->renderDateEnded()],
 				['name' => 'is_paid_event', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_paid_event)],
 				['name' => 'is_cancelled', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_cancelled)],
+				['name' => 'is_survey_enabled', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_survey_enabled)],
 				'genre',
 				'funnel',
 
@@ -360,7 +361,7 @@ $this->menu = [
 <div class="tab-content padding-lg white-bg">
 <?php foreach ($tabs as $tabModuleKey => $tabModules): ?><?php foreach ($tabModules as $tabModule): ?>
 	<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : ''; ?>" id="<?php echo $tabModule['key']; ?>">
-		<?php echo $this->renderPartial($tabModule['viewPath'], ['model' => $model, 'event' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries]); ?>
+		<?php echo $this->renderPartial($tabModule['viewPath'], ['model' => $model, 'event' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab]); ?>
 	</div>
 <?php endforeach; ?><?php endforeach; ?>
 </div>

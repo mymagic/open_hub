@@ -56,3 +56,18 @@ $this->menu = array(
 
 
 </div>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs nav-new" role="tablist">
+<?php foreach ($tabs as $tabModuleKey => $tabModules): ?><?php foreach ($tabModules as $tabModule): ?>
+	<li role="presentation" class="tab-noborder <?php echo ($tab == $tabModule['key']) ? 'active' : ''; ?>"><a href="#<?php echo $tabModule['key']; ?>" aria-controls="<?php echo $tabModule['key']; ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title']; ?></a></li>
+<?php endforeach; ?><?php endforeach; ?>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content padding-lg white-bg">
+<?php foreach ($tabs as $tabModuleKey => $tabModules): ?><?php foreach ($tabModules as $tabModule): ?>
+	<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : ''; ?>" id="<?php echo $tabModule['key']; ?>">
+		<?php echo $this->renderPartial($tabModule['viewPath'], ['model' => $model, 'event' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab]); ?>
+	</div>
+<?php endforeach; ?><?php endforeach; ?>
+</div>

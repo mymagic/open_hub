@@ -15,6 +15,7 @@ protected/modules/*/config/main.php
 php_errors.log
 .DS_Store
 laradock
+/protected/controllers/TestController.php
 
 docs/.jekyll-cache
 _release

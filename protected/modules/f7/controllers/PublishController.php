@@ -271,7 +271,7 @@ class PublishController extends Controller
 		//Server side checking if organization is available before and does
 		//not belong to this user.
 		if ($formContainStarupModel) {
-			if (!HubForm::CanUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
+			if (!HubForm::canUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
 				$error = Yii::t('f7', 'The company/startup name you entered has been taken.');
 				$model->addError($error, $error);
 

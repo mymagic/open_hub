@@ -97,7 +97,7 @@ class Event extends EventBase
 		// will receive user inputs.
 		return [
 			['code, title, date_started, vendor', 'required'],
-			['date_started, date_ended, is_paid_event, is_cancelled, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true],
+			['date_started, date_ended, is_paid_event, is_cancelled, is_active, is_survey_enabled, date_added, date_modified', 'numerical', 'integerOnly' => true],
 			['code, event_group_code, vendor_code', 'length', 'max' => 64],
 			['title, genre, funnel', 'length', 'max' => 128],
 			['url_website, at, full_address, email_contact', 'length', 'max' => 255],
@@ -107,7 +107,7 @@ class Event extends EventBase
 			['text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
+			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
 			// meta
 			['_dynamicData', 'safe'],
 		];
@@ -187,6 +187,7 @@ class Event extends EventBase
 			'isCancelled' => ['condition' => 't.is_cancelled = 1'],
 			'isNotCancelled' => ['condition' => 't.is_cancelled != 1'],
 			'isActive' => ['condition' => 't.is_active = 1'],
+			'isSurveyEnabled' => ['condition' => 't.is_survey_enabled = 1'],
 		];
 	}
 
@@ -277,6 +278,7 @@ class Event extends EventBase
 		$criteria->compare('email_contact', $this->email_contact, true, $params['compareOperator']);
 		$criteria->compare('is_cancelled', $this->is_cancelled, false, $params['compareOperator']);
 		$criteria->compare('is_active', $this->is_active, false, $params['compareOperator']);
+		$criteria->compare('is_survey_enabled', $this->is_survey_enabled, false, $params['compareOperator']);
 		//$criteria->compare('json_original',$this->json_original,true, $params['compareOperator']);
 		//$criteria->compare('json_extra',$this->json_extra,true);
 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
@@ -411,6 +413,7 @@ class Event extends EventBase
 			'emailContact' => $this->email_contact,
 			'isCancelled' => $this->is_cancelled,
 			'isActive' => $this->is_active,
+			'isSurveyEnabled' => $this->is_survey_enabled,
 			'dateAdded' => $this->date_added,
 			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,

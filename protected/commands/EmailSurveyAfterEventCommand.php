@@ -40,6 +40,6 @@ class EmailSurveyAfterEventCommand extends ConsoleCommand
 		// temporary disabled
 		//HubEvent::sendSurveyEmailAfterEvent('6Months');
 
-		Yii::app()->esLog->log(sprintf("called emailSurveyAfterEvent\sixMonthsAfter"), 'command', array('trigger' => 'EmailSurveyAfterEventCommand::actionSixMonthsAfter', 'model' => '', 'action' => '', 'id' => ''), '', array());
+		// Yii::app()->esLog->log(sprintf("called emailSurveyAfterEvent\sixMonthsAfter"), 'command', array('trigger' => 'EmailSurveyAfterEventCommand::actionSixMonthsAfter', 'model' => '', 'action' => '', 'id' => ''), '', array());
 	}
 }

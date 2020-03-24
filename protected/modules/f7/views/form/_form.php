@@ -169,6 +169,14 @@
 		</div>
 	</div>
 
+	<div class="form-group <?php echo $model->hasErrors('json_event_mapping') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'json_event_mapping'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextArea($model, 'json_event_mapping', array('rows' => 4)); ?>
+			<?php echo $form->bsError($model, 'json_event_mapping'); ?>
+		</div>
+	</div>
+
 
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
@@ -204,6 +212,8 @@
 document.getElementById('Form_json_structure').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_structure').value), undefined, 4);
 
 document.getElementById('Form_json_stage').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_stage').value), undefined, 4);
+
+document.getElementById('Form_json_event_mapping').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_event_mapping').value), undefined, 4);
 
 /*var editor = CodeMirror.fromTextArea(document.getElementById("Form_json_stage"), {
     htmlMode: true,

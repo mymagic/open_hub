@@ -238,7 +238,7 @@ class HubEvent
 
 		foreach ($events as $event) {
 			// event must be active and not cancel
-			if ($event->is_active == 1 && $event->is_cancelled != 1) {
+			if ($event->is_active == 1 && $event->is_cancelled != 1 && $event->is_survey_enabled) {
 				$participantDetails = array();
 				foreach ($event->eventRegistrationsAttended as $eventRegistration) {
 					$participantDetail['email'] = $eventRegistration->email;
