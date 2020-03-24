@@ -6,7 +6,6 @@ return array(
 			'noValidationRegex' => array(
 				'f7/form/import*',
 			),
-        ),
-        
+		),
 	),
 );

@@ -39,43 +39,33 @@ class BackendController extends Controller
 	public function actionSyncForm2Event($id)
 	{
 		$form = Form::model()->findByPk($id);
-		if($form)
-		{
-			if(!empty($form->jsonArray_event_mapping))
-			{
+		if ($form) {
+			if (!empty($form->jsonArray_event_mapping)) {
 				Notice::page(Yii::t('f7', 'You are about to sync F7 form submissions to event. Existing paricipated organizations and registrations in the event may be override.'), Notice_WARNING, array(
 					'url' => $this->createUrl('//f7/backend/syncForm2EventConfirmed', array('id' => $id)),
 					'urlLabel' => Yii::t('f7', 'Ok, proceed'),
-					'cancelUrl' => $this->createUrl("//event/view", array('id'=>$id)),
+					'cancelUrl' => $this->createUrl('//event/view', array('id' => $id)),
 				));
-			}
-			else
-			{
+			} else {
 				Notice::page(Yii::t('f7', 'Unable to proceed: Event Mapping instruction not found'));
 			}
-		}
-		else
-		{
+		} else {
 			Notice::page(Yii::t('f7', 'Form not found'));
 		}
-		
 	}
 
 	public function actionSyncForm2EventConfirmed($id)
 	{
 		$form = Form::model()->findByPk($id);
-		if($form)
-		{
+		if ($form) {
 			$result = HubForm::syncSubmissions2Event($form);
-			if($result['status'] == 'success'){
+			if ($result['status'] == 'success') {
 				Notice::page(Yii::t('f7', "F7 successfully synced your form to event '{eventTitle}'", array('{eventTitle}' => $result['data']['event']->title)), Notice_SUCCESS, array(
 					'url' => $this->createUrl('//event/view', array('id' => $result['data']['event']->id)),
 					'urlLabel' => Yii::t('f7', 'View Event'),
 				));
 			}
-		}
-		else
-		{
+		} else {
 			Notice::page(Yii::t('f7', 'Form not found'));
 		}
 	}

@@ -236,84 +236,80 @@ class DefaultController extends CController
 
 		// check is admin exists?
 		$sql = sprintf("SELECT user_id FROM admin WHERE username LIKE '%s'", addslashes($adminUsername));
-		$command = $dbConnection->createCommand($sql);			
+		$command = $dbConnection->createCommand($sql);
 		$adminUserId = $command->queryScalar();
-		
-		if(empty($adminUserId))
-		{
+
+		if (empty($adminUserId)) {
 			$transaction = $dbConnection->beginTransaction();
-			
+
 			// admin not exists
-			try 
-			{
+			try {
 				// create user
 				$dbConnection->createCommand()->insert('user', array(
-					'username'=>$adminUsername,
-					'password'=>$encryptedPassword,
-					'signup_type'=>'admin',
-					'is_active'=>1,
-					'date_activated'=>$now,
-					'date_added'=>$now,
-					'date_modified'=>$now,
+					'username' => $adminUsername,
+					'password' => $encryptedPassword,
+					'signup_type' => 'admin',
+					'is_active' => 1,
+					'date_activated' => $now,
+					'date_added' => $now,
+					'date_modified' => $now,
 				));
 				$userId = $dbConnection->getLastInsertID();
 
 				// create profile
 				$dbConnection->createCommand()->insert('profile', array(
-					'user_id'=>$userId,
-					'full_name'=>'Super Admin',
-					'date_added'=>$now,
-					'date_modified'=>$now,
+					'user_id' => $userId,
+					'full_name' => 'Super Admin',
+					'date_added' => $now,
+					'date_modified' => $now,
 				));
 
 				// create member
 				$dbConnection->createCommand()->insert('member', array(
-					'user_id'=>$userId,
-					'username'=>$adminUsername,
-					'date_joined'=>$now,
-					'date_added'=>$now,
-					'date_modified'=>$now,
+					'user_id' => $userId,
+					'username' => $adminUsername,
+					'date_joined' => $now,
+					'date_added' => $now,
+					'date_modified' => $now,
 				));
 
 				// create admin
 				$dbConnection->createCommand()->insert('admin', array(
-					'user_id'=>$userId,
-					'username'=>$adminUsername,
-					'date_added'=>$now,
-					'date_modified'=>$now,
+					'user_id' => $userId,
+					'username' => $adminUsername,
+					'date_added' => $now,
+					'date_modified' => $now,
 				));
 
 				// create role2user
 				// super admin
 				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id'=>'1',
-					'user_id'=>$userId,
+					'role_id' => '1',
+					'user_id' => $userId,
 				));
 				// admin
 				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id'=>'3',
-					'user_id'=>$userId,
+					'role_id' => '3',
+					'user_id' => $userId,
 				));
 				// roleManager
 				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id'=>'4',
-					'user_id'=>$userId,
+					'role_id' => '4',
+					'user_id' => $userId,
 				));
 				// adminManager
 				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id'=>'5',
-					'user_id'=>$userId,
+					'role_id' => '5',
+					'user_id' => $userId,
 				));
 				// sensitiveDataAdmin
 				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id'=>'11',
-					'user_id'=>$userId,
+					'role_id' => '11',
+					'user_id' => $userId,
 				));
 
 				$transaction->commit();
-					
-			}
-			catch (Exception $e) {
+			} catch (Exception $e) {
 				$exceptionMessage = $e->getMessage();
 				$transaction->rollBack();
 			}

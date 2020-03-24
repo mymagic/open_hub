@@ -44,6 +44,7 @@ class ProfileController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested user does not exist.');
 		}
+
 		return $model;
 	}
 

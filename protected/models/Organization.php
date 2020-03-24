@@ -1169,6 +1169,7 @@ class Organization extends OrganizationBase
 			foreach ($result as $r) {
 				$newResult[$r['key']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

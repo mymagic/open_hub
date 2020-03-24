@@ -18,10 +18,10 @@
         <?php $intake = ''; $intake = $submission->form->getIntake(); ?>
         <tr>
             <td>
-                <?php if($intake): ?>
-                    <a href="<?php echo $this->createUrl('/f7/intake/view', array('id'=>$intake->id)) ?>" target="_blank"><?php echo $intake->title ?></a> \ 
+                <?php if ($intake): ?>
+                    <a href="<?php echo $this->createUrl('/f7/intake/view', array('id' => $intake->id)) ?>" target="_blank"><?php echo $intake->title ?></a> \ 
                 <?php endif;?>
-                <a href="<?php echo $this->createUrl('/f7/form/view', array('id'=>$submission->form->id)) ?>" target="_blank"><?php echo $submission->form->title ?></a>
+                <a href="<?php echo $this->createUrl('/f7/form/view', array('id' => $submission->form->id)) ?>" target="_blank"><?php echo $submission->form->title ?></a>
             </td>
             <td class="text-right">#<?php echo $submission->id ?></td>
             <td class="text-center"><span class="label"><?php echo $submission->formatEnumStage($submission->stage) ?></span></td>

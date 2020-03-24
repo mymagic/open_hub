@@ -4,7 +4,7 @@ return array(
 	'import' => array(
 		'application.modules.interest.models.*',
 		'application.modules.interest.models.neo4j.*',
-    ),
+	),
 
 	'modules' => array(
 		'interest' => array(

@@ -11,21 +11,19 @@ class getEventSystemActFeed extends Action
 		$page = Yii::app()->request->getPost('page');
 		$forceRefresh = Yii::app()->request->getPost('forceRefresh');
 
-		if(!isset($page)) $page=1;
+		if (!isset($page)) {
+			$page = 1;
+		}
 
 		$meta['input']['dateStart'] = $dateStart;
 		$meta['input']['dateEnd'] = $dateEnd;
 		$meta['input']['page'] = $page;
 		$meta['input']['forceRefresh'] = $forceRefresh;
 
-		if(!isset($dateStart) || !isset($dateEnd))
-		{
+		if (!isset($dateStart) || !isset($dateEnd)) {
 			$result['status'] = 'fail';
 			$result['msg'] = 'Date start and end required';
-		}
-		else
-		{
-
+		} else {
 			$useCache = Yii::app()->params['cache'];
 			$cacheId = sprintf('%s::%s-%s', 'journey', 'getEventSystemActFeed', sha1(json_encode(array('v2', $dateStart, $dateEnd))));
 
@@ -51,7 +49,7 @@ class getEventSystemActFeed extends Action
 		}
 
 		$result['meta'] = $meta;
-		
+
 		$this->getController()->outputPipe($result);
 	}
 }

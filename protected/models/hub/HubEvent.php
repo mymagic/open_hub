@@ -33,12 +33,34 @@ class HubEvent
 
 	public static function createEvent($title, $params = array())
 	{
-		$event = new Event();
-		$event->title = $title;
-		$event->date_started = $params['date_started'];
-		$event->date_ended = $params['date_ended'];
-		$event->vendor = $params['vendor'];
-		$event->save();
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$event = new Event();
+			$event->title = $title;
+			$event->attributes = $params['event'];
+
+			if (!empty($event->full_address)) {
+				$event->resetAddressParts();
+			}
+
+			if (!empty($event->date_started)) {
+				$event->date_started = strtotime($event->date_started);
+			}
+			if (!empty($event->date_ended)) {
+				$event->date_ended = strtotime($event->date_ended);
+			}
+
+			if ($event->save()) {
+				$log = Yii::app()->esLog->log(sprintf("created '%s'", $event->title), 'event', array('trigger' => 'HubEvent::createEvent', 'model' => 'Event', 'action' => 'create', 'id' => $event->id, 'eventId' => $event->id), '', array());
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($event->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
 
 		return $event;
 	}
@@ -293,7 +315,7 @@ class HubEvent
 		return $result;
 	}
 
-	public function getSystemActFeed($dateStart, $dateEnd, $page=1, $forceRefresh = 0)
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
 	{
 		$limit = 30;
 		$status = 'fail';
@@ -307,7 +329,7 @@ class HubEvent
 			$msg = 'Max date range cannot more than 60 days';
 		} else {
 			$data = null;
-			$sql = sprintf('SELECT * FROM event WHERE is_active=1 AND is_cancelled!=1 AND date_started>=%s AND date_started<%s ORDER BY date_started DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page-1)*$limit, $limit);
+			$sql = sprintf('SELECT * FROM event WHERE is_active=1 AND is_cancelled!=1 AND date_started>=%s AND date_started<%s ORDER BY date_started DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page - 1) * $limit, $limit);
 
 			$data = Event::model()->findAllBySql($sql);
 

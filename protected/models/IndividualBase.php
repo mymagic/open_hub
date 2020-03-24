@@ -312,8 +312,8 @@
  			}
  			if ($this->can_code == '') {
  				$this->can_code = null;
-			 }
-			 
+ 			}
+
  			// auto deal with date added and date modified
  			if ($this->isNewRecord) {
  				$this->date_added = $this->date_modified = time();
@@ -409,6 +409,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['code']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -444,6 +445,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 

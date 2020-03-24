@@ -52,6 +52,7 @@ class F7Module extends WebModule
 				);
 			}
 		}
+
 		return $tabs;
 	}
 
@@ -76,6 +77,7 @@ class F7Module extends WebModule
 				);
 			}
 		}
+
 		return $tabs;
 	}
 

@@ -96,7 +96,7 @@ class OrganizationFundingController extends Controller
 		}
 
 		$tabs = self::composeOrganizationFundingViewTabs($model, $realm);
-		
+
 		$this->render('view', array(
 			'model' => $model,
 			'realm' => $realm,
@@ -242,6 +242,7 @@ class OrganizationFundingController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
@@ -258,34 +259,34 @@ class OrganizationFundingController extends Controller
 	}
 
 	public function composeOrganizationFundingViewTabs($model, $realm = 'backend')
-    {
-        $tabs = array();
+	{
+		$tabs = array();
 
-        $modules = YeeModule::getParsableModules();
-        foreach ($modules as $moduleKey => $moduleParams) {
-            if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationFundingViewTabs')) {
-                $tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
-            }
-        }
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationFundingViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
 
-        if ($realm == 'backend') {
-            /*$tabs['member'][] = array(
-                'key' => 'individual',
-                'title' => 'Individual',
-                'viewPath' => 'views.individualMember.backend._view-member-individual'
-            );*/
-        }
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
 
-        ksort($tabs);
+		ksort($tabs);
 
-        if (Yii::app()->user->isDeveloper) {
-            $tabs['organizationFunding'][] = array(
-                'key' => 'meta',
-                'title' => 'Meta <span class="label label-warning">dev</span>',
-                'viewPath' => '_view-meta',
-            );
-        }
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['organizationFunding'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
 
-        return $tabs;
-    }
+		return $tabs;
+	}
 }

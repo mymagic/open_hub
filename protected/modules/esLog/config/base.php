@@ -9,5 +9,4 @@ return array(
 		'esLog' => array(
 		),
 	),
-
 );

@@ -73,33 +73,33 @@ class EventRegistrationController extends Controller
 		$model = $this->loadModel($id);
 
 		$actions = array();
-        $user = User::model()->findByPk(Yii::app()->user->id);
-        
-        $modules = YeeModule::getParsableModules();
-        foreach ($modules as $moduleKey => $moduleParams) {
-            // for backend only
-            if (Yii::app()->user->accessBackend && $realm == 'backend') {
-                if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
-                    $actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'backend'));
-                }
-            }
-            // for frontend only
-            if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-                if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
-                    $actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'cpanel'));
-                }
-            }
-        }
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'cpanel'));
+				}
+			}
+		}
 
 		$tabs = self::composeEventRegistrationViewTabs($model, $realm);
-		
+
 		$this->render('view', array(
 			'model' => $model,
-            'actions' => $actions,
-            'realm' => $realm,
-            'tab' => $tab,
-            'tabs' => $tabs,
-            'user' => $user,
+			'actions' => $actions,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 		));
 	}
 
@@ -404,34 +404,34 @@ class EventRegistrationController extends Controller
 	}
 
 	public function composeEventRegistrationViewTabs($model, $realm = 'backend')
-    {
-        $tabs = array();
+	{
+		$tabs = array();
 
-        $modules = YeeModule::getParsableModules();
-        foreach ($modules as $moduleKey => $moduleParams) {
-            if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationViewTabs')) {
-                $tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
-            }
-        }
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
 
-        if ($realm == 'backend') {
-            /*$tabs['member'][] = array(
-                'key' => 'individual',
-                'title' => 'Individual',
-                'viewPath' => 'views.individualMember.backend._view-member-individual'
-            );*/
-        }
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
 
-        ksort($tabs);
+		ksort($tabs);
 
-        if (Yii::app()->user->isDeveloper) {
-            $tabs['eventRegistration'][] = array(
-                'key' => 'meta',
-                'title' => 'Meta <span class="label label-warning">dev</span>',
-                'viewPath' => '_view-meta',
-            );
-        }
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['eventRegistration'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
 
-        return $tabs;
-    }
+		return $tabs;
+	}
 }

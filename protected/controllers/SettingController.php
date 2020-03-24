@@ -237,6 +237,7 @@ class SettingController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
@@ -246,6 +247,7 @@ class SettingController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested setting does not exist.');
 		}
+
 		return $model;
 	}
 

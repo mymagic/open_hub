@@ -191,6 +191,7 @@ class Proof extends ProofBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

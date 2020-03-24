@@ -247,6 +247,7 @@ class OrganizationController extends Controller
 		if (isset($_POST['Organization'])) {
 			$oriModel = clone $model;
 			$model->attributes = $_POST['Organization'];
+			$model->setLatLongAddress($_POST['Organization']['latlong_address']);
 
 			// convert full address to parts and store
 			if (($oriModel->full_address != $model->full_address) && !empty($model->full_address)) {

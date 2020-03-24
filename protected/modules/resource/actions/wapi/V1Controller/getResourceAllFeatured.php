@@ -2,25 +2,25 @@
 
 class getResourceAllFeatured extends Action
 {
-    public function run()
-    {
-        $meta = array();
+	public function run()
+	{
+		$meta = array();
 
-        $tmps = HubResource::getAllFeatured();
+		$tmps = HubResource::getAllFeatured();
 
-        if (!empty($tmps['items'])) {
-            foreach ($tmps['items'] as $tmp) {
-                $result[] = $tmp->toApi();
-            }
-        }
+		if (!empty($tmps['items'])) {
+			foreach ($tmps['items'] as $tmp) {
+				$result[] = $tmp->toApi();
+			}
+		}
 
-        $meta['output']['sql'] = $tmps['sql'];
-        $meta['output']['limit'] = $tmps['limit'];
-        $meta['output']['countPageItems'] = $tmps['countPageItems'];
-        $meta['output']['totalItems'] = $tmps['totalItems'];
-        $meta['output']['totalPages'] = $tmps['totalPages'];
-        $meta['output']['filters'] = $tmps['filters'];
+		$meta['output']['sql'] = $tmps['sql'];
+		$meta['output']['limit'] = $tmps['limit'];
+		$meta['output']['countPageItems'] = $tmps['countPageItems'];
+		$meta['output']['totalItems'] = $tmps['totalItems'];
+		$meta['output']['totalPages'] = $tmps['totalPages'];
+		$meta['output']['filters'] = $tmps['filters'];
 
-        $this->getController()->outputSuccess($result, $meta);
-    }
+		$this->getController()->outputSuccess($result, $meta);
+	}
 }

@@ -26,7 +26,7 @@ class HubMember
 		// create member
 	}
 
-	public function getSystemActFeed($dateStart, $dateEnd, $page=1, $forceRefresh = 0)
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
 	{
 		$limit = 30;
 		$status = 'fail';
@@ -40,7 +40,7 @@ class HubMember
 			$msg = 'Max date range cannot more than 60 days';
 		} else {
 			$data = null;
-			$sql = sprintf('SELECT * FROM member WHERE date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page-1)*$limit, $limit);
+			$sql = sprintf('SELECT * FROM member WHERE date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page - 1) * $limit, $limit);
 			$data = Member::model()->findAllBySql($sql);
 
 			$status = 'success';

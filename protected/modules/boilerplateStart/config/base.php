@@ -14,8 +14,8 @@ return array(
 				'Organization' => array(
 					'class' => 'application.modules.boilerplateStart.components.BoilerplateStartOrganizationBehavior',
 				),
-				'Member'=>array(
-					'class'=>'application.modules.boilerplateStart.components.BoilerplateStartMemberBehavior',
+				'Member' => array(
+					'class' => 'application.modules.boilerplateStart.components.BoilerplateStartMemberBehavior',
 				),
 				/*'Individual'=>array(
 					'class'=>'application.modules.boilerplateStart.components.BoilerplateStartIndividualBehavior',

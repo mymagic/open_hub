@@ -42,9 +42,9 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		array('name' => 'form', 'value' => '$data->form->title', 'filter'=>false),
-		array('name' => 'username', 'value' => '$data->user->username', 'filter'=>false),
-		array('name' => 'details', 'type' => 'raw', 'value' => '$data->renderBackendDetails()', 'filter'=>false),
+		array('name' => 'form', 'value' => '$data->form->title', 'filter' => false),
+		array('name' => 'username', 'value' => '$data->user->username', 'filter' => false),
+		array('name' => 'details', 'type' => 'raw', 'value' => '$data->renderBackendDetails()', 'filter' => false),
 		//array('name' => 'date_submitted', 'value' => 'Html::formatDateTimezone($data->date_submitted,  "long", "medium", "-", $data->form->timezone)', 'filter' => false),
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',

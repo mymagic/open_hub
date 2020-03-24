@@ -23,7 +23,7 @@ class BackendController extends Controller
 				'users' => array('*'),
 			),
 		);
-    }
+	}
 
 	public function actionGetSystemActFeed($page)
 	{
@@ -46,5 +46,4 @@ class BackendController extends Controller
 		header('Content-type: application/json');
 		echo $response->getBody();
 	}
-    
 }

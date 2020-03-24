@@ -190,6 +190,7 @@ class Milestone extends MilestoneBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
@@ -230,6 +231,7 @@ class Milestone extends MilestoneBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

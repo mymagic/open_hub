@@ -102,12 +102,14 @@ class Event extends EventBase
 			['title, genre, funnel', 'length', 'max' => 128],
 			['url_website, at, full_address, email_contact', 'length', 'max' => 255],
 			['vendor', 'length', 'max' => 32],
+			array('address_zip', 'length', 'max' => 16),
+			array('address_line1, address_line2, address_city, address_state', 'length', 'max' => 128),
 			['address_country_code', 'length', 'max' => 2],
 			['address_state_code', 'length', 'max' => 6],
 			['text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
+			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, address_line1, address_line2, address_zip, address_city, address_state, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
 			// meta
 			['_dynamicData', 'safe'],
 		];
@@ -142,6 +144,7 @@ class Event extends EventBase
 		// class name for the relations automatically generated below.
 		return [
 			'eventGroup' => [self::BELONGS_TO, 'EventGroup', 'event_group_code'],
+			'country' => [self::BELONGS_TO, 'Country', ['address_country_code' => 'code']],
 			'addressCountry' => [self::BELONGS_TO, 'Country', 'address_country_code'],
 			'addressState' => [self::BELONGS_TO, 'State', 'address_state_code'],
 			'industries' => [self::MANY_MANY, 'Industry', 'event2industry(event_id, industry_id)'],
@@ -499,5 +502,19 @@ class Event extends EventBase
 			'criteria' => $criteria,
 			'sort' => ['defaultOrder' => 't.date_started DESC'],
 		]);
+	}
+
+	public function resetAddressParts()
+	{
+		if (!empty($this->full_address)) {
+			$addressParts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($this->full_address));
+			$this->address_line1 = $addressParts['line1'];
+			$this->address_line2 = $addressParts['line2'];
+			$this->address_zip = $addressParts['zipcode'];
+			$this->address_city = $addressParts['city'];
+			$this->address_state = $addressParts['state'];
+			$this->address_country_code = $addressParts['countryCode'];
+			$this->setLatLongAddress(array($addressParts['lat'], $addressParts['lng']));
+		}
 	}
 }

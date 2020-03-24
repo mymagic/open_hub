@@ -58,7 +58,7 @@ $this->breadcrumbs = array(
 		<p class="margin-top-lg margin-bottom-3x">Welcome to <?php echo Yii::app()->name ?> Backend</p>
 	</div>
 <?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-    <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath'=>$tabModule['viewPath'])) ?>">
+    <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath' => $tabModule['viewPath'])) ?>">
         <div class="text-center margin-top-lg margin-bottom-2x"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
     </div>
     <?php endforeach; ?><?php endforeach; ?>

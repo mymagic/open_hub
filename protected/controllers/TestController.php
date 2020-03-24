@@ -36,10 +36,19 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionAddressBreakdown()
+	{
+		$address = 'No 642-B, Jalan Yong Pak Khian, Taman Nam Yang, Ujong Pasir, 75050, Melaka, Malaysia';
+		$parts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($address));
+		echo '<pre>';
+		print_r($parts);
+	}
+
 	public function actionMemberSystemActFeed()
 	{
 		$tmps = HubMember::getSystemActFeed('2018-05-01', '2018-05-07');
-		echo '<pre>';print_r($tmps);
+		echo '<pre>';
+		print_r($tmps);
 	}
 
 	public function actionCurlWapi()
@@ -70,7 +79,7 @@ class TestController extends Controller
 		echo $url;
 		$parsed = parse_url($url);
 		print_r($parsed);
-		$result = sprintf('%s://%s',$parsed['scheme'], $parsed['host']);
+		$result = sprintf('%s://%s', $parsed['scheme'], $parsed['host']);
 		echo $result;
 	}
 

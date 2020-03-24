@@ -283,34 +283,34 @@ class EventGroupController extends Controller
 	}
 
 	public function composeEventGroupViewTabs($model, $realm = 'backend')
-    {
-        $tabs = array();
+	{
+		$tabs = array();
 
-        $modules = YeeModule::getParsableModules();
-        foreach ($modules as $moduleKey => $moduleParams) {
-            if (method_exists(Yii::app()->getModule($moduleKey), 'getEventGroupViewTabs')) {
-                $tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
-            }
-        }
+		$modules = YeeModule::getParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getEventGroupViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
 
-        if ($realm == 'backend') {
-            /*$tabs['member'][] = array(
-                'key' => 'individual',
-                'title' => 'Individual',
-                'viewPath' => 'views.individualMember.backend._view-member-individual'
-            );*/
-        }
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
 
-        ksort($tabs);
+		ksort($tabs);
 
-        if (Yii::app()->user->isDeveloper) {
-            $tabs['eventGroup'][] = array(
-                'key' => 'meta',
-                'title' => 'Meta <span class="label label-warning">dev</span>',
-                'viewPath' => '_view-meta',
-            );
-        }
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['eventGroup'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
 
-        return $tabs;
-    }
+		return $tabs;
+	}
 }

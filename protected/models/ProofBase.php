@@ -313,6 +313,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['code']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -351,6 +352,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['code']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -388,6 +390,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 

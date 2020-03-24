@@ -43,8 +43,7 @@ class TestController extends Controller
 	public function actionF7OrganizationBehavior($id)
 	{
 		$organization = Organization::model()->findByPk($id);
-		foreach($organization->getFormSubmissions() as $submission)
-		{
+		foreach ($organization->getFormSubmissions() as $submission) {
 			echo sprintf('<li>#%d - %s</li>', $submission->id, $submission->status);
 		}
 	}

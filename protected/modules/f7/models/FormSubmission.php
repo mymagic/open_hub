@@ -112,6 +112,7 @@ class FormSubmission extends FormSubmissionBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
@@ -249,5 +250,4 @@ class FormSubmission extends FormSubmissionBase
 
 		return $return;
 	}
-
 }

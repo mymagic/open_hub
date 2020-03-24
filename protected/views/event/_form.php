@@ -143,25 +143,6 @@
 		</div>
 	</div>
 
-
-	<div class="form-group <?php echo $model->hasErrors('address_country_code') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'address_country_code'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'address_country_code', array('nullable' => true)); ?>
-			<?php echo $form->bsError($model, 'address_country_code'); ?>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('address_state_code') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'address_state_code'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'address_state_code', array('nullable' => true)); ?>
-			<?php echo $form->bsError($model, 'address_state_code'); ?>
-		</div>
-	</div>
-
-
 	<div class="form-group <?php echo $model->hasErrors('full_address') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'full_address'); ?>
 		<div class="col-sm-10">
@@ -170,16 +151,16 @@
 		</div>
 	</div>
 
-
+	<?php if (!$model->isNewRecord): ?>
 	<div class="form-group <?php echo $model->hasErrors('latlong_address') ? 'has-error' : '' ?>">
 	<?php echo $form->bsLabelEx2($model, 'latlong_address'); ?>
-	<div class="col-sm-10">
-		<?php echo $form->bsGeoPointField($model, 'latlong_address', array('readonly' => 'readonly', 'isGeoCodingEnabled' => true, 'geoCodingAddress' => $model->full_address, 'mapZoom' => 10)); ?>
-		<p class="help-block">Please double click on map to set the marker</p>
-		<?php echo $form->bsError($model, 'latlong_address'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsGeoPointField($model, 'latlong_address', array('readonly' => 'readonly', 'isGeoCodingEnabled' => true, 'geoCodingAddress' => $model->full_address, 'mapZoom' => 10)); ?>
+			<p class="help-block">Please double click on map to set the marker</p>
+			<?php echo $form->bsError($model, 'latlong_address'); ?>
+		</div>
 	</div>
-</div>
-
+	<?php endif; ?>
 
 	<div class="form-group <?php echo $model->hasErrors('email_contact') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'email_contact'); ?>

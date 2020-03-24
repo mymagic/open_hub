@@ -613,7 +613,7 @@ class HubOrganization
 		return $model;
 	}
 
-	public function getSystemActFeed($dateStart, $dateEnd, $page=1, $forceRefresh = 0)
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
 	{
 		$limit = 30;
 		$status = 'fail';
@@ -627,7 +627,7 @@ class HubOrganization
 			$msg = 'Max date range cannot more than 60 days';
 		} else {
 			$data = null;
-			$sql = sprintf('SELECT * FROM organization WHERE is_active=1 AND date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page-1)*$limit, $limit);
+			$sql = sprintf('SELECT * FROM organization WHERE is_active=1 AND date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page - 1) * $limit, $limit);
 			$data = Organization::model()->findAllBySql($sql);
 
 			$status = 'success';

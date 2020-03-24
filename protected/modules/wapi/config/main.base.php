@@ -19,7 +19,7 @@ $return = array(
 );
 
 $parsed = parse_url(getenv('BASE_API_URL'));
-$key = sprintf('%s://%s/<controller:\w+>/<action:\w+>/*',$parsed['scheme'], $parsed['host']);
+$key = sprintf('%s://%s/<controller:\w+>/<action:\w+>/*', $parsed['scheme'], $parsed['host']);
 $return['components']['urlManager']['rules'][$key] = 'wapi/<controller>/<action>';
 
 return $return;

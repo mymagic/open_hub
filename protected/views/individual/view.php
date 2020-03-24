@@ -33,7 +33,7 @@ $this->menu = array(
 				array('name' => 'country_code', 'value' => $model->country->printable_name),
 				array('name' => 'state_code', 'value' => $model->state->title),
 				array('name' => 'ic_number', 'visible' => Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin),
-				array('name' => 'mobile_number', 'visible' => Yii::app()->user->isSuperAdmin ||  Yii::app()->user->isSensitiveDataAdmin),
+				array('name' => 'mobile_number', 'visible' => Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin),
 				array('name' => 'text_address_residential', 'type' => 'raw', 'value' => nl2br($model->text_address_residential)),
 				array('name' => 'can_code',  'type' => 'raw', 'value' => Html::renderBoolean($model->can_code)),
 			),

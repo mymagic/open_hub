@@ -54,7 +54,7 @@ $this->menu = array(
 			'slug',
 			array('name' => 'text_note', 'type' => 'raw', 'value' => nl2br($model->text_note)),
 			array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
-			
+
 			array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
 			array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 		),

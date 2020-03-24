@@ -124,6 +124,7 @@ class Industry extends IndustryBase
 			foreach ($result as $r) {
 				$newResult[$r['key']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

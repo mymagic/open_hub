@@ -9,6 +9,4 @@ return array(
 		'wapi' => array(
 		),
 	),
-
 );
-

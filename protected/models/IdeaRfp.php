@@ -200,6 +200,7 @@ class IdeaRfp extends IdeaRfpBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
