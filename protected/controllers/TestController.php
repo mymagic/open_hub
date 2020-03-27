@@ -36,6 +36,22 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+    public function actionOrganizationMeta($id)
+    {
+		echo '<pre>';
+        $org = Organization::model()->findByPk($id);
+		echo 'When Loaded'; print_r($org->_dynamicData);
+        $org->_dynamicData['Organization-status-isBumi'] = 1;
+		$org->save();
+        echo 'After Saved'; print_r($org->_dynamicData);
+    }
+
+	public function actionActiveParsableModule()
+	{
+		$tmps = YeeModule::getActiveParsableModules();
+		echo '<pre>'; print_r($tmps);
+	}
+
 	public function actionAddressBreakdown()
 	{
 		$address = 'No 642-B, Jalan Yong Pak Khian, Taman Nam Yang, Ujong Pasir, 75050, Melaka, Malaysia';

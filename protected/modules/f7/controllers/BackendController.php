@@ -19,7 +19,7 @@ class BackendController extends Controller
 				'users' => array('*'),
 			),
 			array('allow',
-				'actions' => array('syncForm2Event', 'syncForm2EventConfirmed'),
+				'actions' => array('syncForm2Event', 'syncForm2EventConfirmed', 'getOpeningForms'),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
@@ -68,5 +68,27 @@ class BackendController extends Controller
 		} else {
 			Notice::page(Yii::t('f7', 'Form not found'));
 		}
+	}
+
+	public function actionGetOpeningForms($dateStart, $dateEnd, $forceRefresh = 0)
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$response = $client->post(
+				'getF7OpeningForms',
+			[
+				'form_params' => [
+					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'forceRefresh' => $forceRefresh,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		header('Content-type: application/json');
+		echo $response->getBody();
 	}
 }

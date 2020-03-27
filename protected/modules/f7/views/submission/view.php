@@ -57,7 +57,7 @@ $this->menu = array(
 		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 
-		array('name' => 'Submitted Data', 'type' => 'raw', 'value' => sprintf('<div class="white-bg padding-xlg margin-bottom-2x border">%s</div>', $model->renderJsonData('html'))),
+		array('name' => 'Submitted Data', 'type' => 'raw', 'value' => sprintf('<div class="white-bg padding-xlg margin-bottom-2x border">%s</div>', $model->renderJsonData('html', 'backend'))),
 
 		// developer only
 		array('name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_data)), 'visible' => Yii::app()->user->isDeveloper),

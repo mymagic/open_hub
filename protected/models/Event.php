@@ -252,12 +252,12 @@ class Event extends EventBase
 		$criteria = new CDbCriteria();
 		$criteria->together = true;
 
-		$criteria->compare('id', $this->id, false, $params['compareOperator']);
-		$criteria->compare('code', $this->code, true, $params['compareOperator']);
+		$criteria->compare('t.id', $this->id, false, $params['compareOperator']);
+		$criteria->compare('t.code', $this->code, true, $params['compareOperator']);
 		$criteria->compare('event_group_code', $this->event_group_code, true, $params['compareOperator']);
-		$criteria->compare('title', $this->title, true, $params['compareOperator']);
+		$criteria->compare('t.title', $this->title, true, $params['compareOperator']);
 		$criteria->compare('text_short_desc', $this->text_short_desc, true, $params['compareOperator']);
-		$criteria->compare('url_website', $this->url_website, true, $params['compareOperator']);
+		$criteria->compare('t.url_website', $this->url_website, true, $params['compareOperator']);
 		if (!empty($this->sdate_started) && !empty($this->edate_started)) {
 			$sTimestamp = strtotime($this->sdate_started);
 			$eTimestamp = strtotime("{$this->edate_started} +1 day");
@@ -280,7 +280,7 @@ class Event extends EventBase
 		$criteria->compare('latlong_address', $this->latlong_address, true, $params['compareOperator']);
 		$criteria->compare('email_contact', $this->email_contact, true, $params['compareOperator']);
 		$criteria->compare('is_cancelled', $this->is_cancelled, false, $params['compareOperator']);
-		$criteria->compare('is_active', $this->is_active, false, $params['compareOperator']);
+		$criteria->compare('t.is_active', $this->is_active, false, $params['compareOperator']);
 		$criteria->compare('is_survey_enabled', $this->is_survey_enabled, false, $params['compareOperator']);
 		//$criteria->compare('json_original',$this->json_original,true, $params['compareOperator']);
 		//$criteria->compare('json_extra',$this->json_extra,true);
@@ -314,6 +314,13 @@ class Event extends EventBase
 			}
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
+
+		// either event or event group title
+		$criteria2 = new CDbCriteria();
+		$criteria2->together = true;
+		$criteria2->with = ['eventGroup'];
+		$criteria2->compare('eventGroup.title', $this->title, true, 'OR');
+		$criteria->mergeWith($criteria2, 'OR');
 
 		return new CActiveDataProvider($this, [
 			'criteria' => $criteria,
@@ -401,8 +408,12 @@ class Event extends EventBase
 			'urlWebsite' => $this->url_website,
 			'dateStarted' => $this->date_started,
 			'fDateStarted' => $this->renderDateStarted(),
+			'fDateStartedDateOnly' => $this->renderDateStarted('date'),
+			'fDateStartedTimeOnly' => $this->renderDateStarted('time'),
 			'dateEnded' => $this->date_ended,
 			'fDateEnded' => $this->renderDateEnded(),
+			'fDateEndedDateOnly' => $this->renderDateEnded('date'),
+			'fDateEndedTimeOnly' => $this->renderDateEnded('time'),
 			'isPaidEvent' => $this->is_paid_event,
 			'genre' => $this->genre,
 			'funnel' => $this->funnel,
@@ -431,6 +442,9 @@ class Event extends EventBase
 			];
 			$return = array_merge($return, $set);
 		}
+		if (!in_array('-eventGroup', $params) && !empty($this->eventGroup)) {
+			$return['eventGroup'][] = $this->eventGroup->toApi(['-event', $params['config']]);
+		}
 
 		// many2many
 		if (!in_array('-industries', $params) && !empty($this->industries)) {
@@ -450,6 +464,28 @@ class Event extends EventBase
 		}
 
 		return $return;
+	}
+
+	public function renderDateStarted($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_started, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_started, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_started, 'standard', 'standard', '-', $this->getTimezone());
+		}
+	}
+
+	public function renderDateEnded($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_ended, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_ended, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_ended, 'standard', 'standard', '-', $this->getTimezone());
+		}
 	}
 
 	public function hasSurveyForm()

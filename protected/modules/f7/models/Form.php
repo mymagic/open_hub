@@ -22,6 +22,21 @@ class Form extends FormBase
 		// return void
 	}
 
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'form2intakes' => array(self::HAS_MANY, 'Form2Intake', 'form_id'),
+			'intakes' => array(self::HAS_MANY, 'Intake', 'intake_id', 'through' => 'form2intakes'),
+			'formSubmissions' => array(self::HAS_MANY, 'FormSubmission', 'form_code'),
+
+			// meta
+			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
+			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
+		);
+	}
+
 	public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
@@ -274,9 +289,9 @@ class Form extends FormBase
 		$this->title = $keyword;
 		$this->text_short_description = $keyword;
 		$this->slug = $keyword;
-		// $this->searchIntake = $keyword;
 
 		$tmp = $this->search(array('compareOperator' => 'OR'));
+		$tmp->sort->defaultOrder = 't.is_active DESC, t.date_open DESC';
 
 		return $tmp;
 	}
@@ -288,12 +303,13 @@ class Form extends FormBase
 			$params['compareOperator'] = 'AND';
 		}
 
-		$criteria = new CDbCriteria;
+		$criteria = new CDbCriteria();
 		$criteria->together = true;
 
-		$criteria->compare('id', $this->id, false, $params['compareOperator']);
-		$criteria->compare('code', $this->code, true, $params['compareOperator']);
-		$criteria->compare('slug', $this->slug, true, $params['compareOperator']);
+		$criteria->compare('t.id', $this->id, false, $params['compareOperator']);
+		$criteria->compare('t.code', $this->code, true, $params['compareOperator']);
+		$criteria->compare('t.slug', $this->slug, true, $params['compareOperator']);
+		$criteria->compare('t.title', $this->title, true, $params['compareOperator']);
 		if (!empty($this->sdate_open) && !empty($this->edate_open)) {
 			$sTimestamp = strtotime($this->sdate_open);
 			$eTimestamp = strtotime("{$this->edate_open} +1 day");
@@ -308,9 +324,9 @@ class Form extends FormBase
 		// $criteria->compare('json_stage', $this->json_stage, true, $params['compareOperator']);
 		$criteria->compare('is_multiple', $this->is_multiple, false, $params['compareOperator']);
 		$criteria->compare('is_login_required', $this->is_login_required, false, $params['compareOperator']);
-		$criteria->compare('title', $this->title, true, $params['compareOperator']);
-		$criteria->compare('text_short_description', $this->text_short_description, true, $params['compareOperator']);
-		$criteria->compare('is_active', $this->is_active, false, $params['compareOperator']);
+
+		$criteria->compare('t.text_short_description', $this->text_short_description, true, $params['compareOperator']);
+		$criteria->compare('t.is_active', $this->is_active, false, $params['compareOperator']);
 		$criteria->compare('timezone', $this->timezone, true, $params['compareOperator']);
 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
 			$sTimestamp = strtotime($this->sdate_added);
@@ -325,6 +341,14 @@ class Form extends FormBase
 		$criteria->compare('type', $this->type, false, $params['compareOperator']);
 		$criteria->compare('text_note', $this->text_note, true, $params['compareOperator']);
 
+		// either form or intake title
+		$criteria2 = new CDbCriteria();
+		$criteria2->together = true;
+		$criteria2->with = ['intakes'];
+		$criteria2->compare('intakes.title', $this->title, true, 'OR');
+		$criteria->mergeWith($criteria2, 'OR');
+
+
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
 			'sort' => array('defaultOrder' => 't.id DESC'),
@@ -336,5 +360,114 @@ class Form extends FormBase
 		foreach ($this->formSubmissions as $submission) {
 			$submission->delete();
 		}
+	}
+
+	public function toApi($params = null)
+	{
+		$this->fixSpatial();
+
+		$return = array(
+			'id' => $this->id,
+			'code' => $this->code,
+			'slug' => $this->slug,
+			'dateOpen' => $this->date_open,
+			'fDateOpen' => $this->renderDateOpen(),
+			'fDateOpenDateOnly' => $this->renderDateOpen('date'),
+			'fDateOpenTimeOnly' => $this->renderDateOpen('time'),
+			'dateClose' => $this->date_close,
+			'fDateClose' => $this->renderDateClose(),
+			'fDateCloseDateOnly' => $this->renderDateClose('date'),
+			'fDateCloseTimeOnly' => $this->renderDateClose('time'),
+			//'jsonStructure' => $this->json_structure,
+			'jsonStage' => $this->json_stage,
+			'isMultiple' => $this->is_multiple,
+			'isLoginRequired' => $this->is_login_required,
+			'title' => $this->title,
+			'textShortDescription' => $this->text_short_description,
+			'isActive' => $this->is_active,
+			'timezone' => $this->timezone,
+			'dateAdded' => $this->date_added,
+			'fDateAdded' => $this->renderDateAdded(),
+			'dateModified' => $this->date_modified,
+			'fDateModified' => $this->renderDateModified(),
+			'type' => $this->type,
+			'textNote' => $this->text_note,
+			'jsonEventMapping' => $this->json_event_mapping,
+			'fCountDraftSubmissions' => $this->countDraftFormSubmissions(),
+			'fCountSubmittedSubmissions' => $this->countSubmittedFormSubmissions(),
+			'fCountWorkflowSubmissions' => $this->countWorkflowFormSubmissions(),
+		);
+		// json structure is too heavey to be part of api
+		if (!in_array('-jsonStructure', $params)) {
+			$return['jsonStructure'] = $this->json_structure;
+		}
+		if (!in_array('-jsonEventMapping', $params)) {
+			$return['jsonEventMapping'] = $this->json_event_mapping;
+		}
+
+		// many2many
+		if (!in_array('-intakes', $params) && !empty($this->intakes)) {
+			foreach ($this->intakes as $intake) {
+				$return['intakes'][] = $intake->toApi(['-form', $params['config']]);
+			}
+		}
+
+		return $return;
+	}
+
+	public function renderDateOpen($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_open, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_open, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_open, 'standard', 'standard', '-', $this->getTimezone());
+		}
+	}
+
+	public function renderDateClose($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_close, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_close, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_close, 'standard', 'standard', '-', $this->getTimezone());
+		}
+	}
+
+	public function countDraftFormSubmissions()
+	{
+		// stat without primary key linkage is not working
+		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode'=>$this->code, ':status'=>'draft'));
+		return $command->queryScalar();
+	}
+
+	public function countSubmittedFormSubmissions()
+	{
+		// stat without primary key linkage is not working
+		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode'=>$this->code, ':status'=>'submit'));
+		return $command->queryScalar();
+	}
+
+	public function countWorkflowFormSubmissions()
+	{
+		$return = null;
+		
+		$stages = Yii::app()->db->createCommand()->select('DISTINCT(stage)')->from('form_submission')->where('form_code=:formCode', array(':formCode' => $this->code))->queryAll();
+		
+		foreach($stages as $stage)
+		{
+			$key = $stage['stage'];
+			if ($stage['stage'] == '') {
+				$key = 'EMPTY';
+			}
+			// stat without primary key linkage is not working
+			$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND stage=:stage', array(':formCode'=>$this->code, ':stage'=>$stage['stage']));
+			$return[$key] = $command->queryScalar();
+		}
+
+		return $return;
 	}
 }

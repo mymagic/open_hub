@@ -129,7 +129,7 @@ foreach ($tmps as $tmp) {
 </ol>
 
 
-<?php $modules = YeeModule::getParsableModules(); ?>
+<?php $modules = YeeModule::getActiveParsableModules(); ?>
 <?php foreach ($modules as $moduleKey => $moduleParams): ?>
 <?php $view = sprintf('application.modules.%s.views._organization._getOrganizationNodes', $moduleKey); ?>
     <?php if (HUB::isViewExists($view)): ?>

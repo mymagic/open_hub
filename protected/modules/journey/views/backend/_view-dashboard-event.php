@@ -29,13 +29,19 @@
 						<div class="row">
 							<div class="col-xs-3 date">
 								<i class="fa fa-calendar"></i>
-								{{event.fDateStarted}}
+								<small class="text-muted">From</small> <span class="text-navy">{{event.fDateStartedDateOnly}}</span><br />
+								<small>{{event.fDateStartedTimeOnly}}</small><br />
+								<small class="text-muted">to</small> <span class="text-navy">{{event.fDateEndedDateOnly}}</span><br />
+								<small>{{event.fDateEndedTimeOnly}}</small>
 							</div>
 							<div class="col-xs-9 content">
 								<a href="{{event.urlBackendView}}">
-								<p class="m-b-xs"><strong>{{event.title}} </strong></p>
+								<p class="m-b-xs">
+									<span v-if="event.eventGroupCode"><a href="<?php echo $this->createUrl('eventGroup/view') ?>?id={{event.eventGroup[0].id}}">{{event.eventGroup[0].title}}</a> \ </span>
+									<strong><a href="<?php echo $this->createUrl('event/view') ?>?id={{event.id}}">{{event.title}}</a> </strong>
+								</p>
 
-								<p>at '{{event.at}}'</p>
+								<p v-if="event.at">at '{{event.at}}'</p>
 								</a>
 								</a>
 							</div>

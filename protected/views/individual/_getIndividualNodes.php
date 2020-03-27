@@ -41,7 +41,7 @@
 </ol>
 
 
-<?php $modules = YeeModule::getParsableModules(); ?>
+<?php $modules = YeeModule::getActiveParsableModules(); ?>
 <?php foreach ($modules as $moduleKey => $moduleParams): ?>
 <?php $view = sprintf('application.modules.%s.views._individual._getIndividualNodes', $moduleKey); ?>
     <?php if (HUB::isViewExists($view)): ?>

@@ -25,7 +25,7 @@ class V1Controller extends Controller
 		$return = array();
 
 		// loop thru modules to find actions
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			$modulePath = Yii::getPathOfAlias('modules');
 			$actionsPath = sprintf('%s/%s/actions/wapi/V1Controller', $modulePath, $moduleKey);

@@ -12,6 +12,7 @@
 	],
 	"settings": {
 		"editor.formatOnSave": false,
+		"php-cs-fixer.executablePath": "php-cs-fixer",
 		"php-cs-fixer.config": ".vscode/.php_cs",
 		"php-cs-fixer.onsave": true,
 		"php-cs-fixer.autoFixBySemicolon": true,

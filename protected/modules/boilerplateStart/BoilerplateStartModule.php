@@ -502,6 +502,16 @@ class BoilerplateStartModule extends WebModule
 		return $return;
 	}
 
+	public function enable()
+	{
+		return array('status' => 'success', 'msg' => 'Not Implemented', 'data' => array());
+	}
+
+	public function disable()
+	{
+		return array('status' => 'success', 'msg' => 'Not Implemented', 'data' => array());
+	}
+
 	public function install($forceReset = false)
 	{
 		return self::installDb($forceReset);

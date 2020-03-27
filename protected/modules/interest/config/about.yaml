@@ -1,8 +1,8 @@
 code: "interest"
-version: "1.1"
+version: "1.2"
 title: "Interest"
 oneliner: "Manage members interest to provide recommendation"
-lastUpdate: "2020-18-12"
+lastUpdate: "2020-03-25"
 developer:
   author: "Rosaan Ramasamy"
   organization: "MaGIC"

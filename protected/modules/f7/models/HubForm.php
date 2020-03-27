@@ -70,7 +70,7 @@ class HubForm
 		return $intake;
 	}
 
-	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '')
+	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm='frontend')
 	{
 		$htmlBody = '';
 		$decoded = json_decode($json, true);
@@ -98,7 +98,7 @@ class HubForm
 				$innerElements = $item['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$csrfTokenName = Yii::app()->request->csrfTokenName;
@@ -189,27 +189,27 @@ class HubForm
 		return $htmlForm;
 	}
 
-	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData)
+	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		$htmlTag = null;
 		switch ($key) {
 			case 'section':
-				$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData);
+				$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
 				break;
 			case 'group':
-				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData);
+				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
 				break;
 			case 'label':
-				$htmlTag = self::getLabelTag($formType, $value);
+				$htmlTag = self::getLabelTag($formType, $value, $realm);
 				break;
 			case 'headline':
-				$htmlTag = self::getHeadlineTag($value);
+				$htmlTag = self::getHeadlineTag($value, $realm);
 				break;
 			case 'break':
-				$htmlTag = self::getBreakTag($value);
+				$htmlTag = self::getBreakTag($value, $realm);
 				break;
 			case 'divider':
-				$htmlTag = self::getDividerTag($value);
+				$htmlTag = self::getDividerTag($value, $realm);
 				break;
 			case 'button':
 				$htmlTag = self::getButtonTag($isEnabled, $value);
@@ -236,7 +236,7 @@ class HubForm
 				$htmlTag = self::getTextareaTag($isEnabled, $value, $decodedData);
 				break;
 			case 'list':
-				$htmlTag = self::getListTag($isEnabled, $value, $decodedData);
+				$htmlTag = self::getListTag($isEnabled, $value, $decodedData, $realm);
 				break;
 			case 'checkbox':
 				$htmlTag = self::getCheckboxTag($isEnabled, $value, $decodedData);
@@ -415,7 +415,7 @@ class HubForm
 		return $tag;
 	}
 
-	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData)
+	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		$innerHtml = '';
 		foreach ($innerElements as $element) {
@@ -425,7 +425,7 @@ class HubForm
 				throw new Exception('We dont support multiple level of groupping!');
 			}
 
-			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', $params['css'], $innerHtml);
@@ -452,7 +452,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getLabelTag($formType, $params)
+	protected function getLabelTag($formType, $params, $realm = 'frontend')
 	{
 		if ($formType === 'horizontal') {
 			if ($params['required'] === 1) {
@@ -477,7 +477,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getHeadlineTag($params)
+	protected function getHeadlineTag($params, $realm = 'frontend')
 	{
 		if ($params['required'] === 1) {
 			$html = sprintf('<h%s style="%s" class="form-header %s">%s <font color="red">*</font></h%s>', $params['size'], $params['style'], $params['css'], $params['text'], $params['size']);
@@ -549,14 +549,14 @@ class HubForm
 		return $html;
 	}
 
-	protected function getBreakTag($params, $decodedData = '')
+	protected function getBreakTag($params, $decodedData = '', $realm = 'frontend')
 	{
 		$html = sprintf('<br />');
 
 		return $html;
 	}
 
-	protected function getDividerTag($params, $decodedData = '')
+	protected function getDividerTag($params, $decodedData = '', $realm = 'frontend')
 	{
 		$html = sprintf('<hr style="%s" class="%s" />', $params['css'], $params['class']);
 
@@ -744,7 +744,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getListTag($isEnabled, $params, $decodedData)
+	protected function getListTag($isEnabled, $params, $decodedData, $realm = 'frontend')
 	{
 		$dataClass = $params['model_mapping'][$params['name']];
 
@@ -753,37 +753,46 @@ class HubForm
 		$disable = $isEnabled ? '' : 'disabled';
 
 		if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
+
 			return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
 		}
 
-		$selectedItem = empty($decodedData[$params['name']]) ? $params['selected'] : $decodedData[$params['name']];
-
-		$defaultItem = sprintf('<option value="">%s</option>', $params['text']);
-
-		$options .= $defaultItem;
-
-		if (empty($orgs) || count($orgs) === 0) {
-			foreach ($params['items'] as $item) {
-				if ($selectedItem === $item['text']) {
-					$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
-				} else {
-					$options .= sprintf('<option value="%s">%s</option>', $item['text'], $item['text']);
-				}
-			}
-		} else {
-			foreach ($orgs as $item) {
-				$item = ucwords(strtolower($item));
-				if ($selectedItem === $item) {
-					$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
-				} else {
-					$options .= sprintf('<option value="%s">%s</option>', $item, $item);
-				}
-			}
+		if($realm == 'backend' && !$isEnabled && strtolower($dataClass) === 'organization')
+		{
+			$value = $decodedData[$params['name']];
+			$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
 		}
-		$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
+		else
+		{
+			$selectedItem = empty($decodedData[$params['name']]) ? $params['selected'] : $decodedData[$params['name']];
 
-		if (strtolower($dataClass) === 'organization') {
-			$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
+			$defaultItem = sprintf('<option value="">%s</option>', $params['text']);
+	
+			$options .= $defaultItem;
+	
+			if (empty($orgs) || count($orgs) === 0) {
+				foreach ($params['items'] as $item) {
+					if ($selectedItem === $item['text']) {
+						$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
+					} else {
+						$options .= sprintf('<option value="%s">%s</option>', $item['text'], $item['text']);
+					}
+				}
+			} else {
+				foreach ($orgs as $item) {
+					$item = ucwords(strtolower($item));
+					if ($selectedItem === $item) {
+						$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
+					} else {
+						$options .= sprintf('<option value="%s">%s</option>', $item, $item);
+					}
+				}
+			}
+			$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
+	
+			if (strtolower($dataClass) === 'organization') {
+				$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
+			}
 		}
 
 		if (!empty($params['hint'])) {
@@ -962,7 +971,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData)
+	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		if ($params['mode'] == 'accordion') {
 			$html = sprintf('<div class="panel-group margin-bottom-lg %s" id="%s" role="tablist" aria-multiselectable="true" style="%s">', $params['class'], $params['name'], $params['style']);
@@ -990,7 +999,7 @@ class HubForm
 				$members = $element['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$html .= $htmlBody;
@@ -1628,5 +1637,46 @@ class HubForm
 	public static function validateEventMappingInstruction($json)
 	{
 		return true;
+	}
+
+	public static function getOpeningForms($dateStart, $dateEnd, $page = 1)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
+
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
+
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
+		} else {
+			$data = null;
+			$forms = Form::model()->findAll(array(
+				'condition' => 'is_active=1 AND (
+					(:timestampStart >= date_open AND :timestampEnd <= date_close) 
+					OR 
+					(:timestampStart <= date_open AND :timestampEnd >= date_open) 
+					OR 
+					(:timestampStart <= date_close AND :timestampEnd >= date_close) 
+					OR 
+					(:timestampStart <= date_open AND :timestampEnd >= date_close) 
+					)', 
+				'params' => array(':timestampStart' => $timestampStart, ':timestampEnd' => $timestampEnd),
+				'offset' => ($page - 1) * $limit,
+				'limit' => $limit,
+				'order' => 'date_open DESC'
+			));
+
+			foreach ($forms as $form) {
+				$data[] = $form->toApi(array('-jsonStructure'));
+			}
+
+			$status = 'success';
+			$msg = '';
+		}
+
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
 	}
 }

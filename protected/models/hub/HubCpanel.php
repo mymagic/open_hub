@@ -146,7 +146,7 @@ class HubCpanel
 	public function cpanelNavItems($controller, $forInterface)
 	{
 		$nav = self::cpanelDefaultNavItems($controller, $controller->cpanelMenuInterface);
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getNavItems')) {
 				$nav = array_merge($nav, (array) Yii::app()->getModule($moduleKey)->getNavItems($controller, $controller->cpanelMenuInterface));

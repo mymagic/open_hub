@@ -262,7 +262,7 @@ class OrganizationFundingController extends Controller
 	{
 		$tabs = array();
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationFundingViewTabs')) {
 				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));

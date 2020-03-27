@@ -207,7 +207,7 @@
 // ");
 ?>
 
-<?php Yii::app()->clientScript->registerScript('js-f7-update', <<<JS
+<?php Yii::app()->clientScript->registerScript('js-f7-form-_form', <<<JS
 
 document.getElementById('Form_json_structure').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_structure').value), undefined, 4);
 

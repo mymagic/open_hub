@@ -54,7 +54,7 @@ class BackendController extends Controller
 
 		$result = array();
 		if (!empty($model['form']->keyword) && $model['form']->validate()) {
-			$modules = YeeModule::getParsableModules();
+			$modules = YeeModule::getActiveParsableModules();
 			foreach ($modules as $moduleKey => $moduleParams) {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'getBackendAdvanceSearch')) {
 					$result = CMap::mergeArray($result, Yii::app()->getModule($moduleKey)->getBackendAdvanceSearch($this, $model['form']));

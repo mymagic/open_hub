@@ -105,7 +105,8 @@ $return = array(
 			'charset' => 'utf8',
 			'initSQLs' => array("set time_zone='+00:00';"),
 			'emulatePrepare' => true,
-			'enableParamLogging' => true,
+			'enableParamLogging' => false,
+			'enableProfiling' => false,
 			'pdoClass' => 'NestedPDO',
 		),
 		'cache' => array(
@@ -132,23 +133,19 @@ $return = array(
 				array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'trace, info, warning',
+					'logFile' => 'all.log',
 				),
 				array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'error',
-					'logFile' => 'error',
+					'logFile' => 'error.log',
 				),
 				 array(
 					'class' => 'application.yeebase.extensions.ys.ProfileFileLogRoute',
 					'levels' => 'profile',
-					'report' => 'callstack'
-				),
-				// uncomment the following to show log messages on web pages
-				/*
-				array(
-					'class'=>'CWebLogRoute',
-				),
-				*/
+					'report' => 'callstack',
+					'logFile' => 'db.log',
+				),		
 			),
 		),
 		'esLog' => array(

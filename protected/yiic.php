@@ -48,7 +48,7 @@ if (!empty($env)) {
 }
 
 // add modules commands
-$modules = YeeModule::getParsableModules();
+$modules = YeeModule::getActiveParsableModules();
 foreach ($modules as $moduleKey => $moduleParams) {
 	$modulePath = Yii::getPathOfAlias('modules');
 	$filePath = sprintf('%s/%s/commands', $modulePath, $moduleKey);

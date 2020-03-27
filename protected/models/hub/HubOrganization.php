@@ -565,6 +565,7 @@ class HubOrganization
 			// todo: f7 form, organization can be use in json so is hard to process
 
 			// modularize:
+			// instead of getActiveParsableModules, should get all working modules as data in db still need to relink
 			$modules = YeeModule::getParsableModules();
 			foreach ($modules as $moduleKey => $moduleParams) {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'doOrganizationsMerge')) {
