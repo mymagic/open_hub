@@ -30,7 +30,7 @@ jobs:
     
     - name: Pack Release
       run: |
-        call ./pack-release.sh
+        bash ./pack-release.sh -xe
         mv _release/openhub.zip _release/openhub-master.zip
       
     - name: Deploy S3
