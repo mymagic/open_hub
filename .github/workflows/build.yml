@@ -37,12 +37,7 @@ jobs:
     - name: Pack Release
       working-directory: ./_release/tmp/
       run: |
-        zip ../openhub.zip -r -m .
-    
-    - name: rename zip
-      working-directory: ./_release/tmp/
-      run: |
-        mv openhub.zip openhub-master.zip
+        zip ../openhub-master.zip -r -m .
         
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
