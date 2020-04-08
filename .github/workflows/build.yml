@@ -37,7 +37,7 @@ jobs:
     - name: Pack Release
       working-directory: ./_release/tmp/
       run: |
-        zip ../openhub.zip -r -m .
+        zip ../openhub.zip -r -m . && 
         mv openhub.zip openhub-master.zip
         
     - name: Deploy S3
