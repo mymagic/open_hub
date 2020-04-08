@@ -54,9 +54,7 @@ jobs:
         chmod -R 777 ./_release/tmp/protected/data
         chmod -R 777 ./_release/tmp/protected/modules
         cd ./_release/tmp/ && zip ../openhub.zip -r -m .
-        cd ../..
-        rm -r ./_release/tmp
-        mv _release/openhub.zip _release/openhub-master.zip
+        mv ./_release/openhub.zip ./_release/openhub-master.zip
       
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
