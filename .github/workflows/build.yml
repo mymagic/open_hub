@@ -35,9 +35,10 @@ jobs:
         cp LICENSE ./_release/tmp/LICENSE
       
     - name: Pack Release
+      working-directory: ./_release/tmp/
       run: |
-        cd ./_release/tmp/ && zip ../openhub.zip -r -m .
-        mv ./_release/openhub.zip ./_release/openhub-master.zip
+        zip ../openhub.zip -r -m .
+        mv openhub.zip openhub-master.zip
         
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
