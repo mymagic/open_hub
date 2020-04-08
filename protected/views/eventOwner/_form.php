@@ -56,6 +56,14 @@
 		</div>
 	</div>
 
+	<div class="form-group <?php echo $model->hasErrors('as_role_code') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'as_role_code'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextField($model, 'as_role_code'); ?>
+			<?php echo $form->bsError($model, 'as_role_code'); ?>
+		</div>
+	</div>
+
 		
 	<!-- many2many -->
 	<!-- /many2many -->

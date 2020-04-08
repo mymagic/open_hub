@@ -328,16 +328,16 @@ class HubEvent
 		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
 			$msg = 'Max date range cannot more than 60 days';
 		} else {
-			
 			$data = Event::model()->findAll(array(
-				'condition' => 'is_active=1 AND is_cancelled!=1 AND ((:timestampStart >= date_started AND :timestampEnd <= date_ended) 
-				OR 
-				(:timestampStart <= date_started AND :timestampEnd >= date_started)
-				OR 
-				(:timestampStart <= date_ended AND :timestampEnd >= date_ended)
-				OR 
-				(:timestampStart <= date_started AND :timestampEnd >= date_ended) 
-				)', 
+				'condition' => 'is_active=1 AND is_cancelled!=1 AND (
+					(:timestampStart >= date_started AND :timestampEnd <= date_ended) 
+					OR 
+					(:timestampStart <= date_started AND :timestampEnd >= date_started)
+					OR 
+					(:timestampStart <= date_ended AND :timestampEnd >= date_ended)
+					OR 
+					(:timestampStart <= date_started AND :timestampEnd >= date_ended) 
+				)',
 				'params' => array(':timestampStart' => $timestampStart, ':timestampEnd' => $timestampEnd),
 				'offset' => ($page - 1) * $limit,
 				'limit' => $limit,

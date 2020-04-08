@@ -50,10 +50,6 @@
  * The followings are the available model relations:
  * @property EventOrganization[] $eventOrganizations
  * @property EventOwner[] $eventOwners
- * @property IdeaRfp[] $ideaRfps
- * @property IdeaRfp[] $ideaRfps1
- * @property IdeaWishlist[] $ideaWishlists
- * @property IdeaWishlist[] $ideaWishlists1
  * @property Impact[] $impacts
  * @property IndividualOrganization[] $individualOrganizations
  * @property Industry[] $industries
@@ -139,10 +135,10 @@
  		return array(
 			'eventOrganizations' => array(self::HAS_MANY, 'EventOrganization', 'organization_id'),
 			'eventOwners' => array(self::HAS_MANY, 'EventOwner', 'organization_code'),
-			'ideaRfps' => array(self::HAS_MANY, 'IdeaRfp', 'partner_organization_code'),
+			/*'ideaRfps' => array(self::HAS_MANY, 'IdeaRfp', 'partner_organization_code'),
 			'ideaRfps1' => array(self::MANY_MANY, 'IdeaRfp', 'idea_rfp2enterprise(enterprise_organization_code, idea_rfp_id)'),
 			'ideaWishlists' => array(self::HAS_MANY, 'IdeaWishlist', 'partner_organization_code'),
-			'ideaWishlists1' => array(self::HAS_MANY, 'IdeaWishlist', 'enterprise_organization_code'),
+			'ideaWishlists1' => array(self::HAS_MANY, 'IdeaWishlist', 'enterprise_organization_code'),*/
 			'impacts' => array(self::MANY_MANY, 'Impact', 'impact2organization(organization_id, impact_id)'),
 			'individualOrganizations' => array(self::HAS_MANY, 'IndividualOrganization', 'organization_code'),
 			'industries' => array(self::MANY_MANY, 'Industry', 'industry2organization(organization_id, industry_id)'),

@@ -5,8 +5,6 @@ return array(
 		'eventbrite' => array(
 			'var1' => '',
 			'var2' => '',
-			'oauthSecret' => '',
-			'organizationId' => '',
 		),
 	),
 

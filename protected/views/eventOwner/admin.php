@@ -45,7 +45,7 @@ $('.search-form form').submit(function(){
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->event->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true)),
 		'department',
-
+		'as_role_code',
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
 					),

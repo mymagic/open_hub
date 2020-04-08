@@ -49,6 +49,7 @@ class BoilerplateCommand extends ConsoleCommand
 		// rename files
 		rename($destPath . '/BoilerplateStartModule.php', $destPath . '/' . $className . 'Module.php');
 		rename($destPath . '/components/BoilerplateStartOrganizationBehavior.php', $destPath . '/components/' . $className . 'OrganizationBehavior.php');
+		rename($destPath . '/components/BoilerplateStartMemberBehavior.php', $destPath . '/components/' . $className . 'MemberBehavior.php');
 		rename($destPath . '/controllers/BoilerplateStartController.php', $destPath . '/controllers/' . $className . 'Controller.php');
 		rename($destPath . '/models/HubBoilerplateStart.php', $destPath . '/models/Hub' . $className . '.php');
 		rename($destPath . '/views/backend/_view-boilerplateStart-advanceSearch.php', $destPath . '/views/backend/_view-' . $dirName . '-advanceSearch.php');

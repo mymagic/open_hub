@@ -93,16 +93,26 @@ $this->menu = [
 	</div>
 	<!-- /address -->
 
+
 	<!-- owner -->
 	<div class="ibox m2mBox">
 		<div class="ibox-title">
 			<h5><?php echo $model->getAttributeLabel('owners'); ?></h5>
 			<a class="btn btn-xs btn-success pull-right" href="<?php echo $this->createUrl('eventOwner/create', ['eventCode' => $model->code]); ?>">Add</a>
 		</div>
-		<div class="ibox-content">
-		<?php if (!empty($model->eventOwners)): ?><ul><?php foreach ($model->eventOwners as $eventOwner):?>
-			<li class="margin-bottom-md"><a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a> \ <?php echo $eventOwner->department; ?> <span class="btn-group btn-group-xs pull-right"><a class="btn btn-white" href="<?php echo $this->createUrl('/eventOwner/update', ['id' => $eventOwner->id]); ?>">Edit</a> <a class="btn btn-danger" href="<?php echo $this->createUrl('/eventOwner/delete', ['id' => $eventOwner->id]); ?>">Delete</a></span></li>
-		<?php endforeach; ?></ul><?php endif; ?>
+		<div class="ibox-content nopadding">
+		<?php if (!empty($model->eventOwners)): ?><table class="table table-striped">
+			<?php foreach ($model->eventOwners as $eventOwner):?>
+			<tr>
+				<td>
+					<a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a><?php if(!empty($eventOwner->department)): ?> \ <?php echo $eventOwner->department; ?><?php endif; ?>
+					<span class="label label-default label-sm">&nbsp;<?php echo $eventOwner->as_role_code ?></span>
+				</td> 
+				<td class="width-lg text-center">
+					<span class="btn-group btn-group-xs"><a class="btn btn-white" href="<?php echo $this->createUrl('/eventOwner/update', ['id' => $eventOwner->id]); ?>">Edit</a> <a class="btn btn-danger" href="<?php echo $this->createUrl('/eventOwner/delete', ['id' => $eventOwner->id]); ?>">Delete</a></span>
+				</td>
+			</tr>
+		<?php endforeach; ?></table><?php endif; ?>
 		</div>
 	</div>
 	<!-- /owner -->

@@ -221,6 +221,14 @@ class JourneyModule extends WebModule
 				);
 
 				break;
+				
+			case 'backendNavDev':
+
+				return array(
+					array('label' => Yii::t('app', 'Junk'), 'url' => array('/junk/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true)
+				);
+
+				break;
 		}
 	}
 

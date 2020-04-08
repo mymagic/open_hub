@@ -20,7 +20,7 @@ class BoilerplateStartMemberBehavior extends Behavior
 		return HubBoilerplateStart::getActiveMemberBoilerplateStarts($this->model, $limit);
 	}
 
-	public function shout()
+	public function shoutBoilerplateStart()
 	{
 		return 'I am from BoilerplateStart module!';
 	}

@@ -306,7 +306,7 @@
  		$result[] = array('code' => 'organization_funding', 'title' => $this->formatEnumRefTable('organization_funding'));
  		$result[] = array('code' => 'organization_revenue', 'title' => $this->formatEnumRefTable('organization_revenue'));
  		$result[] = array('code' => 'organization_status', 'title' => $this->formatEnumRefTable('organization_status'));
- 		$result[] = array('code' => 'idea_rfp', 'title' => $this->formatEnumRefTable('idea_rfp'));
+ 		//$result[] = array('code' => 'idea_rfp', 'title' => $this->formatEnumRefTable('idea_rfp'));
 
  		if ($is4Filter) {
  			$newResult = array();

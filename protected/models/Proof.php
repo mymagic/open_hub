@@ -139,7 +139,7 @@ class Proof extends ProofBase
 		if ($mode == 'backendEdit') {
 		} elseif ($mode == 'return2Record') {
 			switch ($this->ref_table) {
-				case 'idea_rfp': { return Yii::app()->createUrl('/idea/ideaRfp/view', array('id' => $this->ref_id));}
+				//case 'idea_rfp': { return Yii::app()->createUrl('/idea/ideaRfp/view', array('id' => $this->ref_id));}
 				case 'organization_funding': { return Yii::app()->createUrl('/organizationFunding/view', array('id' => $this->ref_id));}
 				case 'organization_revenue': { return Yii::app()->createUrl('/organizationRevenue/view', array('id' => $this->ref_id));}
 				case 'organization_status': { return Yii::app()->createUrl('/organizationStatus/view', array('id' => $this->ref_id));}

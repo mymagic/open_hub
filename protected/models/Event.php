@@ -514,11 +514,18 @@ class Event extends EventBase
 		return Event::model()->find('t.title=:title', [':title' => trim($title)]);
 	}
 
-	public function hasEventOwner($organizationCode)
+	public function hasEventOwner($organizationCode, $asRoleCode='')
 	{
 		foreach ($this->eventOwners as $eventOwner) {
 			if ($eventOwner->organization_code == $organizationCode) {
-				return $eventOwner;
+				if(!empty($asRoleCode) && $eventOwner->as_role_code == $asRoleCode)
+				{
+					return $eventOwner;
+				}
+				else
+				{
+					return $eventOwner;
+				}
 			}
 		}
 

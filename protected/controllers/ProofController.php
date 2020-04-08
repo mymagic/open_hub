@@ -94,9 +94,9 @@ class ProofController extends Controller
 		if (!empty($model->ref_table) && !empty($model->ref_id)) {
 			$forRecord['obj'] = Proof::getForRecord($model->ref_table, $model->ref_id);
 
-			if ($model->ref_table == 'idea_rfp') {
+			/*if ($model->ref_table == 'idea_rfp') {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->title);
-			} else {
+			} else */{
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($refTable), $forRecord['obj']->organization->title);
 			}
 		}
@@ -157,9 +157,9 @@ class ProofController extends Controller
 		if (!empty($model->ref_table) && !empty($model->ref_id)) {
 			$forRecord['obj'] = Proof::getForRecord($model->ref_table, $model->ref_id);
 
-			if ($model->ref_table == 'idea_rfp') {
+			/*if ($model->ref_table == 'idea_rfp') {
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($model->ref_table), $forRecord['obj']->title);
-			} else {
+			} else */{
 				$forRecord['title'] = sprintf('%s of %s', Proof::formatEnumRefTable($model->ref_table), $forRecord['obj']->organization->title);
 			}
 		}

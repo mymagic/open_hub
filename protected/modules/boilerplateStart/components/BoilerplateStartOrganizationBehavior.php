@@ -20,7 +20,7 @@ class BoilerplateStartOrganizationBehavior extends Behavior
 		return HubBoilerplateStart::getActiveOrganizationBoilerplateStarts($this->model, $limit);
 	}
 
-	public function shout()
+	public function shoutBoilerplateStart()
 	{
 		return 'I am from BoilerplateStart module!';
 	}

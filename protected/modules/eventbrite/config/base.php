@@ -10,8 +10,6 @@ return array(
 		'eventbrite' => array(
 			'var1' => '',
 			'var2' => '',
-			'oauthSecret' => '',
-			'organizationId' => '',
 			'modelBehaviors' => array(
 				/*'Organization'=>array(
 					'class'=>'application.modules.eventbrite.components.EventbriteOrganizationBehavior',

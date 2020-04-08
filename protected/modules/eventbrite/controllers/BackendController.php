@@ -19,7 +19,7 @@ class BackendController extends Controller
 				'users' => array('*'),
 			),
 			array('allow',
-				'actions' => array('sync2Event', 'sync2EventConfirmed', 'sync2EventRegistrationConfirmed'),
+				'actions' => array('selectOrganizations', 'sync2Event', 'sync2EventConfirmed', 'sync2EventRegistrationConfirmed'),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
@@ -46,23 +46,32 @@ class BackendController extends Controller
 	{
 	}
 
-	public function actionSync2Event($page = 1, $code = '')
+	public function actionSelectOrganizations()
+	{
+		$webhooks = HubEventbrite::getSyncableWebhooks();
+		$this->render('selectOrganizations', array('model' => $webhooks));
+	}
+
+	public function actionSync2Event($webhookId, $page = 1, $code = '')
 	{
 		$realm = 'backend';
 		$this->layout = 'backend';
 
+		// get the webhook
+		$webhook = HubEventbrite::getWebhookById($webhookId);
+
 		// get all events and list for user to select which to sync
-		$result = HubEventbrite::getEvents(1);
+		$result = HubEventbrite::getEvents($webhook, $page);
 
 		if (!empty($code)) {
-			$event = HubEventbrite::getEvent($code);
+			$event = HubEventbrite::getEvent($webhook, $code);
 			Notice::page(
 				Yii::t('eventbrite', "Are you sure to sync event '{eventTitle}' and all its registrations from Eventbrite to this system?", array('{eventTitle}' => $event['name']['text'])),
 				Notice_WARNING,
 				array(
-					'url' => $this->createUrl('/eventbrite/backend/sync2EventConfirmed', array('code' => $code)),
+					'url' => $this->createUrl('/eventbrite/backend/sync2EventConfirmed', array('code' => $code, 'webhookId' => $webhook->id)),
 					'urlLabel' => Yii::t('core', 'Yes'),
-					'cancelUrl' => $this->createUrl('/eventbrite/backend/sync2Event', array('page' => $page)),
+					'cancelUrl' => $this->createUrl('/eventbrite/backend/sync2Event', array('page' => $page, 'webhookId' => $webhook->id)),
 					'cancelUrlLabel' => Yii::t('core', 'No'),
 				)
 			);
@@ -72,26 +81,32 @@ class BackendController extends Controller
 		print_r($result);
 		exit;*/
 
-		$this->render('sync2Event', array('result' => $result, 'page' => $page));
+		$this->render('sync2Event', array('result' => $result, 'page' => $page, 'webhook' => $webhook));
 	}
 
-	public function actionSync2EventConfirmed($code)
+	public function actionSync2EventConfirmed($webhookId, $code)
 	{
 		if (!empty($code)) {
-			// get event and update/insert to db
-			$event = HubEventbrite::getEvent($code);
-			HubEventbrite::syncEventFromEventbrite($event);
+			// get the webhook
+			$webhook = HubEventbrite::getWebhookById($webhookId);
+
+			// get event from eventbrite and update/insert to db
+			$event = HubEventbrite::getEvent($webhook, $code);
+			HubEventbrite::syncEventFromEventbrite($webhook, $event);
 
 			// redirect to sync2EventRegistrationConfirmed
-			$this->redirect(array('/eventbrite/backend/sync2EventRegistrationConfirmed', 'code' => $code));
+			$this->redirect(array('/eventbrite/backend/sync2EventRegistrationConfirmed', 'code' => $code, 'webhookId' => $webhook->id));
 		}
 	}
 
-	public function actionSync2EventRegistrationConfirmed($code)
+	public function actionSync2EventRegistrationConfirmed($webhookId, $code)
 	{
 		if (!empty($code)) {
+			// get the webhook
+			$webhook = HubEventbrite::getWebhookById($webhookId);
+
 			$event = HubEventbrite::getEventByCode($code);
-			$attendees = HubEventbrite::getAttendeesAllPages($code);
+			$attendees = HubEventbrite::getAttendeesAllPages($webhook, $code);
 			if (count($attendees) > 0) {
 				$result = HubEventbrite::syncEventRegistrationFromEventbrite($attendees);
 			} else {

@@ -1,8 +1,8 @@
 code: "eventbrite"
-version: "1.1"
+version: "1.2"
 title: "Eventbrite"
 oneliner: "Integration with Eventbrite services"
-lastUpdate: "2020-03-12"
+lastUpdate: "2020-04-07"
 developer:
   author: "Tan Yee Siang"
   organization: "MaGIC"
