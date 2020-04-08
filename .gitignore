@@ -5,6 +5,7 @@
 /protected/controllers/TestController.php
 /protected/modules/**/config/console.php
 /protected/modules/**/config/main.php
+/protected/modules/**/vendor/
 /protected/composer.lock
 /public_html/phpinfo.php
 /protected/composer.lock
@@ -16,6 +17,9 @@
 /protected/messages/
 /protected/overrides/
 laradock
+protected/modules/telegram/vendor
+protected/modules/twitter/vendor
+
 
 docs/.jekyll-cache
 _release
