@@ -29,9 +29,12 @@ jobs:
       uses: textbook/git-checkout-submodule-action@master
     
     - name: Prepare Release
+      working-directory: ./_release/tmp/
       run: |
         mkdir ./_release/ && mkdir ./_release/tmp/
         mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html ./_release/tmp/ &&
+        mkdir -p ./_release/tmp/protected/ && cp -r ./protected ./_release/tmp/ &&
+        mkdir -p ./_release/tmp/framework/ && cp -r ./framework ./_release/tmp/ &&
         cp LICENSE ./_release/tmp/LICENSE
       
     - name: Pack Release
