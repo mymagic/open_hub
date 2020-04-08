@@ -31,18 +31,8 @@ jobs:
     - name: Prepare Release
       run: |
         mkdir ./_release/ && mkdir ./_release/tmp/
-        mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html/ ./_release/tmp/public_html/ &&
-        mkdir -p ./_release/tmp/protected/ && cp -r ./protected/ ./_release/tmp/protected/ &&
-        mkdir -p ./_release/tmp/framework/ && cp -r ./framework/ ./_release/tmp/framework/ &&
-        cp LICENSE ./_release/tmp/LICENSE &&
-        [ -e ./_release/tmp/protected/.env ] && rm ./_release/tmp/protected/.env &&
-        rm -rf ./_release/tmp/protected/runtime
-        rm -rf ./_release/tmp/protected/overrides
-        rm -rf ./_release/tmp/public_html/assets
-        rm -rf ./_release/tmp/.git*
-        mkdir ./_release/tmp/protected/runtime/
-        mkdir ./_release/tmp/protected/overrides/
-        mkdir ./_release/tmp/public_html/assets/
+        mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html ./_release/tmp/public_html &&
+        cp LICENSE ./_release/tmp/LICENSE
       
     - name: Pack Release
       run: |
