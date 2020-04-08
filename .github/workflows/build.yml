@@ -28,15 +28,14 @@ jobs:
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
     
-    - name: Pack Release
+    - name: Prepare Release
       run: |
-        mkdir ./_release/
-        mkdir ./_release/tmp/
-        mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html/ ./_release/tmp/public_html/
-        mkdir -p ./_release/tmp/protected/ && cp -r ./protected/ ./_release/tmp/protected/
-        mkdir -p ./_release/tmp/framework/ && cp -r ./framework/ ./_release/tmp/framework/
-        cp LICENSE ./_release/tmp/LICENSE
-        [ -e ./_release/tmp/protected/.env ] && rm ./_release/tmp/protected/.env
+        mkdir ./_release/ && mkdir ./_release/tmp/
+        mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html/ ./_release/tmp/public_html/ &&
+        mkdir -p ./_release/tmp/protected/ && cp -r ./protected/ ./_release/tmp/protected/ &&
+        mkdir -p ./_release/tmp/framework/ && cp -r ./framework/ ./_release/tmp/framework/ &&
+        cp LICENSE ./_release/tmp/LICENSE &&
+        [ -e ./_release/tmp/protected/.env ] && rm ./_release/tmp/protected/.env &&
         rm -rf ./_release/tmp/protected/runtime
         rm -rf ./_release/tmp/protected/overrides
         rm -rf ./_release/tmp/public_html/assets
@@ -44,9 +43,12 @@ jobs:
         mkdir ./_release/tmp/protected/runtime/
         mkdir ./_release/tmp/protected/overrides/
         mkdir ./_release/tmp/public_html/assets/
+      
+    - name: Pack Release
+      run: |
         cd ./_release/tmp/ && zip ../openhub.zip -r -m .
         mv ./_release/openhub.zip ./_release/openhub-master.zip
-      
+        
     - name: Deploy S3
       uses: jakejarvis/s3-sync-action@master
       with:
