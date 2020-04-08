@@ -17,7 +17,7 @@ return array(
 	'structure' => array(
 		'ref_table' => array(
 			// define enum here, so generator can support database system that dont even supprot this data type such as sqlite
-			'isEnum' => true, 'enumSelections' => array('organization_funding' => 'Company Funding', 'organization_revenue' => 'Company Revenue', 'organization_status' => 'Company Status', 'idea_rfp' => 'Idea RFP'),
+			'isEnum' => true, 'enumSelections' => array('organization_funding' => 'Company Funding', 'organization_revenue' => 'Company Revenue', 'organization_status' => 'Company Status', /*'idea_rfp' => 'Idea RFP'*/),
 		),
 		'datatype' => array(
 			// define enum here, so generator can support database system that dont even supprot this data type such as sqlite

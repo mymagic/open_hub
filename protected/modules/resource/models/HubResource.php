@@ -286,6 +286,7 @@ class HubResource
 		if ($resource === null) {
 			throw new CHttpException(404, 'The requested resource does not exist.');
 		}
+
 		return $resource;
 	}
 
@@ -295,6 +296,7 @@ class HubResource
 		if ($resource === null) {
 			throw new CHttpException(404, 'The requested resource does not exist.');
 		}
+
 		return $resource;
 	}
 

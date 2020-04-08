@@ -19,13 +19,13 @@ class BackendController extends Controller
 				'users' => array('*'),
 			),
 			array('allow',
-				'actions' => array('sync2Event', 'sync2EventConfirmed'),
+				'actions' => array('syncForm2Event', 'syncForm2EventConfirmed', 'getOpeningForms'),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
-			), g,
+			),
 		);
 	}
 
@@ -36,35 +36,59 @@ class BackendController extends Controller
 		$this->activeMenuMain = 'f7';
 	}
 
-	public function actions()
+	public function actionSyncForm2Event($id)
 	{
-		return array(
-		);
+		$form = Form::model()->findByPk($id);
+		if ($form) {
+			if (!empty($form->jsonArray_event_mapping)) {
+				Notice::page(Yii::t('f7', 'You are about to sync F7 form submissions to event. Existing paricipated organizations and registrations in the event may be override.'), Notice_WARNING, array(
+					'url' => $this->createUrl('//f7/backend/syncForm2EventConfirmed', array('id' => $id)),
+					'urlLabel' => Yii::t('f7', 'Ok, proceed'),
+					'cancelUrl' => $this->createUrl('//event/view', array('id' => $id)),
+				));
+			} else {
+				Notice::page(Yii::t('f7', 'Unable to proceed: Event Mapping instruction not found'));
+			}
+		} else {
+			Notice::page(Yii::t('f7', 'Form not found'));
+		}
 	}
 
-	public function actionIndex()
+	public function actionSyncForm2EventConfirmed($id)
 	{
+		$form = Form::model()->findByPk($id);
+		if ($form) {
+			$result = HubForm::syncSubmissions2Event($form);
+			if ($result['status'] == 'success') {
+				Notice::page(Yii::t('f7', "F7 successfully synced your form to event '{eventTitle}'", array('{eventTitle}' => $result['data']['event']->title)), Notice_SUCCESS, array(
+					'url' => $this->createUrl('//event/view', array('id' => $result['data']['event']->id)),
+					'urlLabel' => Yii::t('f7', 'View Event'),
+				));
+			}
+		} else {
+			Notice::page(Yii::t('f7', 'Form not found'));
+		}
 	}
 
-	public function actionSync2Event($pipeline = '', $id = '', $title = '')
+	public function actionGetOpeningForms($dateStart, $dateEnd, $forceRefresh = 0)
 	{
-		$pipeline = $_POST['pipeline'];
-		$selectedForm = $_POST['form'];
-		$importAs = $_POST['importAs'];
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
 
-		$id = $_POST['id_hidden'];
-		$title = $_POST['title_hidden'];
+		try {
+			$response = $client->post(
+				'getF7OpeningForms',
+			[
+				'form_params' => [
+					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'forceRefresh' => $forceRefresh,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
 
-		Notice::page(Yii::t('backend', 'You are about to sync F7 form submissions to event. Click OK to continue.'), Notice_WARNING, array(
-			'url' => $this->createUrl('//f7/backend/sync2EventConfirmed', array('id' => $id, 'title' => $title, 'pipeline' => $pipeline, 'form' => $selectedForm, 'importas' => $importAs)),
-			'cancelUrl' => $this->createUrl("//event/view?id=$id"),
-		));
-	}
-
-	public function actionSync2EventConfirmed($id = '', $title, $pipeline = '', $form = '', $importas = '')
-	{
-		HubForm::SyncSubmissionsToEvent($title, $pipeline, $form, $importas);
-
-		$this->redirect(array('//event/view', 'id' => $id));
+		header('Content-type: application/json');
+		echo $response->getBody();
 	}
 }

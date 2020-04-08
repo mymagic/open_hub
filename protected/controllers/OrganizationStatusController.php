@@ -72,10 +72,37 @@ class OrganizationStatusController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
+		$model = $this->loadModel($id);
+
+		$actions = [];
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$activeServices = HUB::getAllActiveServices();
+		foreach ($activeServices as $service) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($service->slug), 'getOrganizationStatusActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getOrganizationStatusActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($service->slug), 'getOrganizationStatusActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getOrganizationStatusActions($model, 'cpanel'));
+				}
+			}
+		}
+
+		$tabs = self::composeOrganizationStatusViewTabs($model, $realm);
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 		));
 	}
 
@@ -214,6 +241,7 @@ class OrganizationStatusController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
@@ -227,5 +255,37 @@ class OrganizationStatusController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	public function composeOrganizationStatusViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationStatusViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
+
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
+
+		ksort($tabs);
+
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['organizationStatus'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
+
+		return $tabs;
 	}
 }

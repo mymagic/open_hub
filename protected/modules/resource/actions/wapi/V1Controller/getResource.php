@@ -9,7 +9,7 @@ class getResource extends Action
 		$meta['input']['id'] = $id;
 
 		try {
-			$resource = HUB::getResource($id);
+			$resource = HubResource::getResource($id);
 			$this->getController()->outputSuccess($resource->toApi(), $meta);
 		} catch (Exception $e) {
 			$this->getController()->outputFail($e->getMessage(), $meta);

@@ -57,7 +57,7 @@ class FrontendController extends Controller
 			'startupStage' => HubResource::getStartupStages(),
 			'industries' => HubResource::getIndustries(),
 			'categories' => HubResource::getCategories(),
-			'locations' => HubResource::getGeofocuses()
+			'locations' => HubResource::getGeofocuses(),
 		);
 	}
 
@@ -74,7 +74,7 @@ class FrontendController extends Controller
 
 		$persona = '';
 		$stage = '';
-		$industry = '' ;
+		$industry = '';
 		$location = '';
 		$cat = '';
 
@@ -100,7 +100,7 @@ class FrontendController extends Controller
 		if (!empty($keyword) || !empty($persona) || !empty($stage) || !empty($industry) || !empty($cat) || !empty($location)) {
 			$page = isset($_GET['page']) ? Yii::app()->request->getParam('page') : 1;
 
-			$tmps = HUB::getResourceAllActive(
+			$tmps = HubResource::getAllActive(
 				$page,
 				array(
 					'keyword' => $keyword,
@@ -130,7 +130,7 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$hero = Embed::getByCode('resource-directory-index');
@@ -158,13 +158,13 @@ class FrontendController extends Controller
 			'page' => $page,
 			'hero' => $hero,
 			'popup' => $popup,
-			'highlightedOrganizations' => $highlightedOrganizations
+			'highlightedOrganizations' => $highlightedOrganizations,
 		));
 	}
 
 	public function actionViewBySlug($slug)
 	{
-		$resource = HUB::getResourceBySlug($slug);
+		$resource = HubResource::getBySlug($slug);
 		if ($resource == null || !$resource->is_active || $resource->is_blocked) {
 			Notice::page(Yii::t('notice', 'Resource not found'));
 		}
@@ -176,7 +176,7 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$this->render('view', array('model' => $resource, 'data' => json_encode($result)));
@@ -184,7 +184,7 @@ class FrontendController extends Controller
 
 	public function actionView($id)
 	{
-		$resource = HUB::getResource($id);
+		$resource = HubResource::getResource($id);
 		if ($resource == null || !$resource->is_active || $resource->is_blocked) {
 			Notice::page(Yii::t('notice', 'Resource not found'));
 		}
@@ -196,7 +196,7 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$this->render('view', array('model' => $resource, 'data' => json_encode($result)));
@@ -216,7 +216,7 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$this->render('organization', array('model' => $organization, 'resources' => $organization->activeResources));
@@ -250,7 +250,7 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		if (!empty($_GET)) {
@@ -275,7 +275,7 @@ class FrontendController extends Controller
 
 			$page = isset($_GET['page']) ? $_GET['page'] : 1;
 
-			$tmps = HUB::getResourceAllActive(
+			$tmps = HubResource::getAllActive(
 				$page,
 				array(
 					'persona' => $persona,
@@ -307,7 +307,7 @@ class FrontendController extends Controller
 
 	public function actionRequestJoinEmail($organizationId, $email)
 	{
-		$model = new Organization2Email;
+		$model = new Organization2Email();
 		$model->organization_id = $organizationId;
 		$model->user_email = $email;
 
@@ -334,7 +334,7 @@ class FrontendController extends Controller
 	{
 		$this->pageTitle = Yii::t('app', 'Create Organization');
 
-		$model = new Organization;
+		$model = new Organization();
 		$model->scenario = $scenario;
 
 		if (isset($_POST['Organization'])) {
@@ -361,11 +361,11 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$this->render('createOrganization', array(
-			'model' => $model, 'data' => $result, 'personas' => $personas, 'categories' => $categories, 'startupStage' => $startupStages, 'industries' => $industries, 'locations' => $locations, 'data' => json_encode($result)));
+			'model' => $model, 'data' => $result, 'personas' => $personas, 'categories' => $categories, 'startupStage' => $startupStages, 'industries' => $industries, 'locations' => $locations, 'data' => json_encode($result), ));
 	}
 
 	public function actionCreateResource($id)
@@ -375,7 +375,7 @@ class FrontendController extends Controller
 		$this->pageTitle = Yii::t('app', 'Create Resource');
 		$this->activeSubMenuCpanel = 'resource-create';
 
-		$model = new Resource;
+		$model = new Resource();
 
 		if (!empty($id)) {
 			$organization = Organization::model()->findByPk($id);
@@ -431,17 +431,17 @@ class FrontendController extends Controller
 			'startupStage' => $startupStages,
 			'industries' => $industries,
 			'categories' => $categories,
-			'locations' => $locations
+			'locations' => $locations,
 		);
 
 		$this->render('createResource', array(
 			'model' => $model,
-			'organization' => $organization, 'data' => $result, 'personas' => $personas, 'categories' => $categories, 'startupStage' => $startupStages, 'industries' => $industries, 'locations' => $locations, 'data' => json_encode($result)));
+			'organization' => $organization, 'data' => $result, 'personas' => $personas, 'categories' => $categories, 'startupStage' => $startupStages, 'industries' => $industries, 'locations' => $locations, 'data' => json_encode($result), ));
 	}
 
 	public function actionGo($id)
 	{
-		$goToWebsite = HUB::getResource($id);
+		$goToWebsite = HubResource::getResource($id);
 
 		if ($goToWebsite->url_website == null) {
 			Notice::page('Website not found');

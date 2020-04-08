@@ -24,7 +24,7 @@ class CallbackController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'eventbriteCallback' actions
-				'actions' => array('eventUpdate', 'eventCreate', 'attendeeChanges'),
+				'actions' => array('eventChanges', 'attendeeChanges'),
 				'users' => array('*'),
 			),
 			array('deny',  // deny all users
@@ -33,7 +33,7 @@ class CallbackController extends Controller
 		);
 	}
 
-	public function actionEventUpdate()
+	public function actionEventChanges()
 	{
 		$payload = file_get_contents('php://input');
 		/*$payload = '{
@@ -46,39 +46,6 @@ class CallbackController extends Controller
 			},
 			"api_url": "https://www.eventbriteapi.com/v3/events/64592778740/"
 		}';*/
-
-		$junk = new Junk();
-		$junk->code = 'eventbrite-callback-eventUpdate-' . rand(10000, 99999);
-		$junk->content = $payload;
-		$junk->save();
-
-		$jsonArray_payload = json_decode($payload);
-
-		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url)) {
-			// call api_url with token thru guzzle
-			$client = new GuzzleHttp\Client();
-			$response = $client->request('GET', $jsonArray_payload->api_url, array(
-				'query' => ['token' => Yii::app()->getModule('eventbrite')->oauthSecret],
-			));
-
-			$eventArray = json_decode($response->getBody(), true);
-			$result = HubEventbrite::syncEventFromEventbrite($eventArray);
-
-			$junk2 = new Junk();
-			$junk2->code = 'eventbrite-callback-eventUpdate-response-' . rand(10000, 99999);
-			$junk2->content = serialize($eventArray);
-			$junk2->save();
-
-			print_r($result);
-		}
-
-		return false;
-	}
-
-	public function actionEventCreate()
-	{
-		$payload = file_get_contents('php://input');
-
 		/*$payload = '{
 			"api_url": "https://www.eventbriteapi.com/v3/events/65162904000/",
 			"config": {
@@ -89,29 +56,36 @@ class CallbackController extends Controller
 			}
 		}';*/
 
+		$jsonArray_payload = json_decode($payload);
+
+		$actionKey = 'eventUpdate';
+		if($jsonArray_payload->config->action == 'event.created')
+		{
+			$actionKey = 'eventCreate';
+		}
+
 		$junk = new Junk();
-		$junk->code = 'eventbrite-callback-eventCreate-' . rand(10000, 99999);
+		$junk->code = sprintf('eventbrite-callback-%s-%s', $actionKey, rand(10000, 99999));
 		$junk->content = $payload;
 		$junk->save();
 
-		$jsonArray_payload = json_decode($payload);
 
-		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url)) {
+		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url) && !empty($jsonArray_payload->config)) {
+			$webhook = HubEventbrite::getWebhookByAccountId($jsonArray_payload->config->user_id);
+
 			// call api_url with token thru guzzle
 			$client = new GuzzleHttp\Client();
 			$response = $client->request('GET', $jsonArray_payload->api_url, array(
-				'query' => ['token' => Yii::app()->getModule('eventbrite')->oauthSecret],
+				'query' => ['token' => $webhook->eventbrite_oauth_secret],
 			));
 
 			$eventArray = json_decode($response->getBody(), true);
-			$result = HubEventbrite::syncEventFromEventbrite($eventArray);
+			$result = HubEventbrite::syncEventFromEventbrite($webhook, $eventArray);
 
 			$junk2 = new Junk();
-			$junk2->code = 'eventbrite-callback-eventCreate-response-' . rand(10000, 99999);
+			$junk->code = sprintf('eventbrite-callback-%s-response-%s', $actionKey, rand(10000, 99999));
 			$junk2->content = serialize($eventArray);
 			$junk2->save();
-
-			print_r($result);
 		}
 
 		return false;
@@ -137,11 +111,13 @@ class CallbackController extends Controller
 
 		$jsonArray_payload = json_decode($payload);
 
-		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url)) {
+		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url) && !empty($jsonArray_payload->config)) {
+			$webhook = HubEventbrite::getWebhookByAccountId($jsonArray_payload->config->user_id);
+
 			// call api_url with token thru guzzle
 			$client = new GuzzleHttp\Client();
 			$response = $client->request('GET', $jsonArray_payload->api_url, array(
-				'query' => ['token' => Yii::app()->getModule('eventbrite')->oauthSecret],
+				'query' => ['token' => $webhook->eventbrite_oauth_secret],
 			));
 			$attendeeArray = json_decode($response->getBody(), true);
 			$result = HubEventbrite::syncEventRegistrationFromEventbrite(array($attendeeArray));
@@ -150,8 +126,6 @@ class CallbackController extends Controller
 			$junk2->code = 'eventbrite-callback-attendeeChanges-response-' . rand(10000, 99999);
 			$junk2->content = serialize($attendeeArray);
 			$junk2->save();
-
-			print_r($result);
 		}
 
 		return false;

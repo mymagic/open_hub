@@ -8,8 +8,6 @@ class EventbriteModule extends WebModule
 
 	public $var1;
 	public $var2;
-	public $oauthSecret;
-	public $organizationId;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
@@ -127,7 +125,7 @@ class EventbriteModule extends WebModule
 			case 'eventAdminSideNav':
 
 				return array(
-					array('label' => Yii::t('app', 'Sync from Eventbrite'), 'url' => array('//eventbrite/backend/sync2Event'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+					array('label' => Yii::t('app', 'Sync from Eventbrite'), 'url' => array('//eventbrite/backend/selectOrganizations'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
 				);
 
 				break;

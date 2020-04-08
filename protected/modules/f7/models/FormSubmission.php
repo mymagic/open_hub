@@ -112,6 +112,7 @@ class FormSubmission extends FormSubmissionBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
@@ -132,10 +133,10 @@ class FormSubmission extends FormSubmissionBase
 		return '';
 	}
 
-	public function renderJsonData($mode = 'html')
+	public function renderJsonData($mode = 'html', $realm = 'frontend')
 	{
 		if ($mode == 'html') {
-			$return = HubForm::convertJsonToHtml(false, $this->form->json_structure, $this->json_data, $this->form->slug, null, $this->jsonArray_data->EventID);
+			$return = HubForm::convertJsonToHtml(false, $this->form->json_structure, $this->json_data, $this->form->slug, null, $this->jsonArray_data->EventID, $realm);
 		} elseif ($mode == 'csv') {
 			$values = $headers = $return = array();
 			$exportableCsvTags = array('textbox', 'number', 'url', 'email', 'phone', 'list', 'googleplace', 'upload', 'textarea', 'rating', 'radio', 'checkbox');

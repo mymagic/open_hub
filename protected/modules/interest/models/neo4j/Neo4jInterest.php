@@ -70,7 +70,6 @@ class Neo4jInterest extends Neo4j
 
 	public $relationshipData;
 
-
 	public function __construct($model = '')
 	{
 		$this->init();
@@ -87,12 +86,10 @@ class Neo4jInterest extends Neo4j
 		$this->personas = new NeoCollection();
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param string $id
@@ -102,7 +99,6 @@ class Neo4jInterest extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -110,7 +106,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->id;
 	}
-
 
 	/**
 	 * @param string $user_id
@@ -120,7 +115,6 @@ class Neo4jInterest extends Neo4j
 		$this->user_id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -128,7 +122,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->user_id;
 	}
-
 
 	/**
 	 * @param boolean $is_active
@@ -138,7 +131,6 @@ class Neo4jInterest extends Neo4j
 		$this->is_active = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -147,7 +139,6 @@ class Neo4jInterest extends Neo4j
 		return $this->is_active;
 	}
 
-
 	/**
 	 * @return Neo4jIndustry[]|NeoCollection
 	 */
@@ -155,7 +146,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->industries;
 	}
-
 
 	/**
 	 * @param Neo4jIndustry $industry
@@ -167,7 +157,6 @@ class Neo4jInterest extends Neo4j
 			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jIndustry $industry
@@ -183,7 +172,6 @@ class Neo4jInterest extends Neo4j
 		}
 	}
 
-
 	/**
 	 * @return Neo4jSdg[]|NeoCollection
 	 */
@@ -191,7 +179,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->sdgs;
 	}
-
 
 	/**
 	 * @param Neo4jSdg $sdg
@@ -203,7 +190,6 @@ class Neo4jInterest extends Neo4j
 			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jSdg $sdg
@@ -219,7 +205,6 @@ class Neo4jInterest extends Neo4j
 		}
 	}
 
-
 	/**
 	 * @return Neo4jStartupStage[]|NeoCollection
 	 */
@@ -227,7 +212,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->startupStages;
 	}
-
 
 	/**
 	 * @param Neo4jStartupStage $startupStage
@@ -239,7 +223,6 @@ class Neo4jInterest extends Neo4j
 			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jStartupStage $startupStage
@@ -255,7 +238,6 @@ class Neo4jInterest extends Neo4j
 		}
 	}
 
-
 	/**
 	 * @return Neo4jCluster[]|NeoCollection
 	 */
@@ -263,7 +245,6 @@ class Neo4jInterest extends Neo4j
 	{
 		return $this->clusters;
 	}
-
 
 	/**
 	 * @param Neo4jCluster $cluster
@@ -275,7 +256,6 @@ class Neo4jInterest extends Neo4j
 			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jCluster $cluster
@@ -299,7 +279,6 @@ class Neo4jInterest extends Neo4j
 		return $this->personas;
 	}
 
-
 	/**
 	 * @param Neo4jPersona $persona
 	 */
@@ -312,7 +291,6 @@ class Neo4jInterest extends Neo4j
 			}
 		}
 	}
-
 
 	/**
 	 * @param Neo4jPersona $persona

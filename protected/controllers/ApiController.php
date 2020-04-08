@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,11 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
 class ApiController extends Controller
 {
 	public function actionIndex()
@@ -64,7 +64,7 @@ class ApiController extends Controller
 
 	public function actionGetRandomProfiles($looking = '', $limit = 10)
 	{
-		$return['status'] = 'fail';
+		/*$return['status'] = 'fail';
 		$return['msg'] = 'Unknown Error';
 		$return['meta'] = '';
 		$return['data'] = null;
@@ -131,7 +131,7 @@ class ApiController extends Controller
 		header('Access-Control-Allow-Origin: *');
 		header('Content-type: application/json');
 		echo CJSON::encode($return);
-		Yii::app()->end();
+		Yii::app()->end();*/
 	}
 
 	public function actionKeepAlive()
@@ -146,7 +146,7 @@ class ApiController extends Controller
 	// format: pdf
 	public function actionGetUploadedFile($dir, $code, $uid, $format)
 	{
-		if (empty($dir) || empty($code) || empty($uid) || empty($format)) {
+		/*if (empty($dir) || empty($code) || empty($uid) || empty($format)) {
 			Notice::page(Yii::t('notice', 'Please supply the required params'), Notice_ERROR);
 		}
 
@@ -185,7 +185,7 @@ class ApiController extends Controller
 			}
 		} else {
 			Notice::page(Yii::t('notice', 'Requested file not found: {fileName}', ['{fileName}' => $fileName]), Notice_ERROR);
-		}
+		}*/
 	}
 
 	public function actionRenderStateList($country_code)
@@ -194,7 +194,7 @@ class ApiController extends Controller
 		$data = State::model()->findAll(array(
 			'select' => 't.code, t.title',
 			'condition' => "country_code='{$countryCode}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));
@@ -212,7 +212,7 @@ class ApiController extends Controller
 		$data = City::model()->findAll(array(
 			'select' => 't.id, t.title',
 			'condition' => "state_code='{$stateCode}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));
@@ -225,6 +225,7 @@ class ApiController extends Controller
 
 	public function actionGetUserActFeed()
 	{
+		$meta = array();
 		$user = HUB::getUserByUsername(Yii::app()->user->username);
 		if (empty($user)) {
 			$this->outputJsonFail('Invalid User', $meta);
@@ -361,7 +362,7 @@ class ApiController extends Controller
 		$data = ResourceCategory::model()->findAll(array(
 			'select' => 't.id, t.title',
 			'condition' => "typefor='{$typefor_code}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));

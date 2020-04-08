@@ -4,7 +4,7 @@ class FormController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/backend', meaning
-	 * using two-column layout. See 'protected/views/layouts/backend.php'.
+	 *             using two-column layout. See 'protected/views/layouts/backend.php'.
 	 */
 	public $layout = 'backend';
 
@@ -27,6 +27,7 @@ class FormController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -58,7 +59,8 @@ class FormController extends Controller
 
 	/**
 	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
+	 *
+	 * @param int $id the ID of the model to be displayed
 	 */
 	public function actionView($id)
 	{
@@ -76,7 +78,7 @@ class FormController extends Controller
 
 		$this->render('view', array(
 			'model' => $model,
-			'modelSubmission' => $modelSubmission
+			'modelSubmission' => $modelSubmission,
 		));
 	}
 
@@ -86,7 +88,7 @@ class FormController extends Controller
 	 */
 	public function actionCreate($intakeId = '')
 	{
-		$model = new Form;
+		$model = new Form();
 		$model->json_structure = '{}';
 
 		// Uncomment the following line if AJAX validation is needed
@@ -104,13 +106,14 @@ class FormController extends Controller
 
 			$model->jsonArray_structure = json_decode($model->json_structure);
 			$model->jsonArray_stage = json_decode($model->json_stage);
+			$model->jsonArray_event_mapping = json_decode($model->json_event_mapping);
 
 			$transaction = Yii::app()->db->beginTransaction();
 			try {
 				if ($model->save()) {
 					if (!empty($intakeId)) {
 						$intake = Intake::model()->findByPk($intakeId);
-						$form2Intake = new Form2Intake;
+						$form2Intake = new Form2Intake();
 						$form2Intake->intake_id = $intake->id;
 						$form2Intake->form_id = $model->id;
 						$form2Intake->save();
@@ -140,7 +143,8 @@ class FormController extends Controller
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
+	 *
+	 * @param int $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id)
 	{
@@ -162,6 +166,7 @@ class FormController extends Controller
 
 			$model->jsonArray_structure = json_decode($model->json_structure);
 			$model->jsonArray_stage = json_decode($model->json_stage);
+			$model->jsonArray_event_mapping = json_decode($model->json_event_mapping);
 
 			if ($model->save()) {
 				Notice::flash(Yii::t('f7', 'Form Updated'), Notice_SUCCESS);
@@ -178,7 +183,8 @@ class FormController extends Controller
 	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
+	 *
+	 * @param int $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id)
 	{
@@ -213,7 +219,7 @@ class FormController extends Controller
 	}
 
 	/**
-	 * Index
+	 * Index.
 	 */
 	public function actionIndex()
 	{
@@ -266,7 +272,7 @@ class FormController extends Controller
 			}
 
 			$list[] = $tmp[1];
-			$counter++;
+			++$counter;
 		}
 
 		$filename = sprintf('%s.csv', $model->slug);
@@ -285,7 +291,7 @@ class FormController extends Controller
 	{
 		Notice::page(Yii::t('backend', 'You are about to import F7 form submissions to the Central. New organization from submission will be added. Click OK to continue. (Mohammad hardcoded this, it is sucks and kind of useless)'), Notice_WARNING, array(
 			'url' => $this->createUrl('form/importConfirmed', array('id' => $id)),
-			'cancelUrl' => $this->createUrl("form/view?id=$id")
+			'cancelUrl' => $this->createUrl("form/view?id=$id"),
 		));
 	}
 
@@ -302,8 +308,11 @@ class FormController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
+	 *
+	 * @param int $id the ID of the model to be loaded
+	 *
 	 * @return Form the loaded model
+	 *
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
@@ -318,6 +327,7 @@ class FormController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
+	 *
 	 * @param Form $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)

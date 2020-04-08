@@ -22,10 +22,17 @@ class TestController extends Controller
 		);
 	}
 
+	public function actionMatchWebhook($accountId)
+	{
+		$result = HubEventbrite::getWebhookByAccountId($accountId);
+		echo '<pre>';
+		print_r($result->organization->title);
+	}
+
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {
@@ -40,11 +47,8 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
-	public function actionListEvents()
+	public function actionListEvents($oauthSecret, $organizationId)
 	{
-		$oauthSecret = 'MVKMMFOPKKYRIEERZCWG&';
-		$organizationId = '107038522227';
-
 		$client = new exiang\eventbrite\HttpClient($oauthSecret);
 		$tmps = $client->get(sprintf('/organizations/%s/events/?page=1&order_by=name_desc', $organizationId));
 		echo '<pre>';

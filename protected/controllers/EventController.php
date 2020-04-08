@@ -181,7 +181,7 @@ class EventController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($realm = 'backend')
 	{
 		$model = new Event();
 		$model->vendor = 'manual';
@@ -191,22 +191,19 @@ class EventController extends Controller
 
 		if (isset($_POST['Event'])) {
 			$model->attributes = $_POST['Event'];
-			$model->setLatLongAddress($_POST['Event']['latlong_address']);
+			$params['event'] = $_POST['Event'];
+			$model = HubEvent::createEvent($_POST['Event']['title'], $params);
 
-			if (!empty($model->date_started)) {
-				$model->date_started = strtotime($model->date_started);
-			}
-			if (!empty($model->date_ended)) {
-				$model->date_ended = strtotime($model->date_ended);
-			}
-
-			if ($model->save()) {
-				$this->redirect(['view', 'id' => $model->id]);
+			if (!empty($model->id)) {
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm));
+			} else {
+				Notice::page(Yii::t('notice', 'Failed to link data to creator'));
 			}
 		}
 
 		$this->render('create', [
 			'model' => $model,
+			'realm' => $realm,
 		]);
 	}
 
@@ -223,8 +220,14 @@ class EventController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 		if (isset($_POST['Event'])) {
+			$oriModel = clone $model;
 			$model->attributes = $_POST['Event'];
 			$model->setLatLongAddress($_POST['Event']['latlong_address']);
+
+			// convert full address to parts and store
+			if (($oriModel->full_address != $model->full_address) && !empty($model->full_address)) {
+				$model->resetAddressParts();
+			}
 
 			if (!empty($model->date_started)) {
 				$model->date_started = strtotime($model->date_started);
@@ -304,10 +307,10 @@ class EventController extends Controller
 
 	public function actionAdminNoRegistration()
 	{
-		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 		$count = Yii::app()->db->createCommand($sqlCount)->queryScalar();
 
-		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 
 		$dataProvider = new CSqlDataProvider($sql, [
 			'totalItemCount' => $count,

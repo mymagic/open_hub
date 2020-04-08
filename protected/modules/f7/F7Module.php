@@ -43,6 +43,15 @@ class F7Module extends WebModule
 	public function getOrganizationViewTabs($model, $realm = 'backend')
 	{
 		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['f7'][] = array(
+					'key' => 'f7',
+					'title' => 'F7',
+					'viewPath' => 'modules.f7.views.backend._view-organization-formSubmissions',
+				);
+			}
+		}
 
 		return $tabs;
 	}
@@ -54,6 +63,22 @@ class F7Module extends WebModule
 		}
 
 		return $actions;
+	}
+
+	public function getMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['f7'][] = array(
+					'key' => 'f7',
+					'title' => 'F7',
+					'viewPath' => 'modules.f7.views.backend._view-member-formSubmissions',
+				);
+			}
+		}
+
+		return $tabs;
 	}
 
 	public function getUserActFeed($user, $year)
@@ -114,22 +139,20 @@ class F7Module extends WebModule
 
 	public function getBackendAdvanceSearch($controller, $searchFormModel)
 	{
-		$searchModel = new Intake('search');
-		$result['intake'] = $searchModel->searchAdvance($searchFormModel->keyword);
-
 		$searchModel = new Form('search');
 		$result['form'] = $searchModel->searchAdvance($searchFormModel->keyword);
 
 		return array(
+			'form' => array(
+				'tabLabel' => Yii::t('backend', 'Form'),
+				'itemViewPath' => 'application.modules.f7.views.backend._view-form-advanceSearch',
+				'result' => $result['form'],
+			),
+			/*
 			'intake' => array(
 				'tabLabel' => Yii::t('backend', 'Intake'),
 				'itemViewPath' => 'application.modules.f7.views.backend._view-intake-advanceSearch',
 				'result' => $result['intake'],
-			),
-			/*'form' => array(
-				'tabLabel' => Yii::t('backend', 'Form'),
-				'itemViewPath' => 'application.modules.f7.views.backend._view-form-advanceSearch',
-				'result' => $result['form'],
 			),
 			'formSubmission' => array(
 				'tabLabel' => Yii::t('backend', 'Form Submission'),
@@ -137,5 +160,21 @@ class F7Module extends WebModule
 				'result' => $result['formSubmission'],
 			),*/
 		);
+	}
+
+	public function getDashboardViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['f7'][] = array(
+					'key' => 'form',
+					'title' => 'Form',
+					'viewPath' => 'modules.f7.views.backend._view-dashboard-form'
+				);
+			}
+		}
+
+		return $tabs;
 	}
 }

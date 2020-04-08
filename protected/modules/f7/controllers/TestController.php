@@ -25,7 +25,7 @@ class TestController extends Controller
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {
@@ -38,6 +38,25 @@ class TestController extends Controller
 		Yii::t('test', 'Test actions');
 
 		$this->render('index', array('actions' => $actions));
+	}
+
+	public function actionCountRelation($formId)
+	{
+		$form = Form::model()->findByPk($formId);
+		//echo $form->countSubmittedFormSubmissions();
+		echo '<br >';
+		//echo $form->countDraftFormSubmissions();	
+		echo '<br >';
+		echo '<pre>';
+		print_r($form->countWorkflowFormSubmissions());
+	}
+
+	public function actionF7OrganizationBehavior($id)
+	{
+		$organization = Organization::model()->findByPk($id);
+		foreach ($organization->getFormSubmissions() as $submission) {
+			echo sprintf('<li>#%d - %s</li>', $submission->id, $submission->status);
+		}
 	}
 
 	public function actionGetF7UserActFeed()

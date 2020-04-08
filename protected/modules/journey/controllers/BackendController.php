@@ -21,6 +21,7 @@ class BackendController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array(
 					'admin', 'search', 'searchJourney',
+					'getEventSystemActFeed', 'getOrganizationSystemActFeed', 'getOrganizationEmailRequestSystemActFeed', 'getMemberSystemActFeed',
 				),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true || $user->isEcosystem==true',
@@ -53,7 +54,7 @@ class BackendController extends Controller
 
 		$result = array();
 		if (!empty($model['form']->keyword) && $model['form']->validate()) {
-			$modules = YeeModule::getParsableModules();
+			$modules = YeeModule::getActiveParsableModules();
 			foreach ($modules as $moduleKey => $moduleParams) {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'getBackendAdvanceSearch')) {
 					$result = CMap::mergeArray($result, Yii::app()->getModule($moduleKey)->getBackendAdvanceSearch($this, $model['form']));
@@ -133,5 +134,71 @@ class BackendController extends Controller
 		}
 
 		$this->render('searchJourney', array('model' => $model));
+	}
+
+	public function actionGetEventSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$response = $client->post(
+				'getEventSystemActFeed',
+			[
+				'form_params' => [
+					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'page' => $page, 'forceRefresh' => $forceRefresh,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		header('Content-type: application/json');
+		echo $response->getBody();
+	}
+
+	public function actionGetOrganizationSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$response = $client->post(
+				'getOrganizationSystemActFeed',
+			[
+				'form_params' => [
+					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'page' => $page, 'forceRefresh' => $forceRefresh,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		header('Content-type: application/json');
+		echo $response->getBody();
+	}
+
+	public function actionGetMemberSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$response = $client->post(
+				'getMemberSystemActFeed',
+			[
+				'form_params' => [
+					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'page' => $page, 'forceRefresh' => $forceRefresh,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		header('Content-type: application/json');
+		echo $response->getBody();
 	}
 }

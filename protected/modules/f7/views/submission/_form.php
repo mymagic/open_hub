@@ -57,7 +57,7 @@
 	<div class="form-group <?php echo $model->hasErrors('json_data') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'json_data'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'json_data', array('rows' => 2, 'readonly' => 'readonly')); ?>
+			<?php echo $form->bsTextArea($model, 'json_data', array('rows' => 10, 'readonly' => 'readonly')); ?>
 			<?php echo $form->bsError($model, 'json_data'); ?>
 		</div>
 	</div>
@@ -74,3 +74,9 @@
 
 </div><!-- form -->
 
+
+<?php Yii::app()->clientScript->registerScript('js-f7-submission-_form', <<<JS
+
+document.getElementById('FormSubmission_json_data').value = JSON.stringify(JSON.parse(document.getElementById('FormSubmission_json_data').value), undefined, 10);
+JS
+, CClientScript::POS_READY); ?>

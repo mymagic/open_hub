@@ -1,19 +1,6 @@
 <?php
-/**
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the BSD 3-Clause License
-* that is bundled with this package in the file LICENSE.
-* It is also available through the world-wide-web at this URL:
-* https://opensource.org/licenses/BSD-3-Clause
-*
-*
-* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
-* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
-* @license https://opensource.org/licenses/BSD-3-Clause
-*/
+
+// this file should not be open source
 
 use Aws\Credentials\CredentialProvider;
 use Aws\Credentials\Credentials;
@@ -34,7 +21,7 @@ class TestController extends Controller
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {
@@ -49,6 +36,37 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+    public function actionOrganizationMeta($id)
+    {
+		echo '<pre>';
+        $org = Organization::model()->findByPk($id);
+		echo 'When Loaded'; print_r($org->_dynamicData);
+        $org->_dynamicData['Organization-status-isBumi'] = 1;
+		$org->save();
+        echo 'After Saved'; print_r($org->_dynamicData);
+    }
+
+	public function actionActiveParsableModule()
+	{
+		$tmps = YeeModule::getActiveParsableModules();
+		echo '<pre>'; print_r($tmps);
+	}
+
+	public function actionAddressBreakdown()
+	{
+		$address = 'No 642-B, Jalan Yong Pak Khian, Taman Nam Yang, Ujong Pasir, 75050, Melaka, Malaysia';
+		$parts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($address));
+		echo '<pre>';
+		print_r($parts);
+	}
+
+	public function actionMemberSystemActFeed()
+	{
+		$tmps = HubMember::getSystemActFeed('2018-05-01', '2018-05-07');
+		echo '<pre>';
+		print_r($tmps);
+	}
+
 	public function actionCurlWapi()
 	{
 		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
@@ -58,7 +76,7 @@ class TestController extends Controller
 				'getEsLogs',
 			[
 				'form_params' => [
-					'page' => $page,
+					'page' => 1,
 				],
 				'verify' => false,
 			]
@@ -73,11 +91,11 @@ class TestController extends Controller
 
 	public function actionGetMainUrl()
 	{
-		$url = getenv(BASE_API_URL);
+		$url = getenv('BASE_API_URL');
 		echo $url;
 		$parsed = parse_url($url);
 		print_r($parsed);
-		$result = sprintf('%s://%s',$parsed['scheme'], $parsed['host']);
+		$result = sprintf('%s://%s', $parsed['scheme'], $parsed['host']);
 		echo $result;
 	}
 
@@ -356,7 +374,7 @@ class TestController extends Controller
 	public function actionListPartnersLogo()
 	{
 		echo '<pre>';
-		$tmp = HUB::listIdeaPartnersLogo();
+		$tmp = HubIdea::listPartnersLogo();
 		//print_r($tmp);
 		foreach ($tmp as $t) {
 			echo sprintf('<li>%s <img src="%s" width="100px" /></li>', $t->title, $t->getImageLogoUrl());
@@ -928,7 +946,7 @@ class TestController extends Controller
 
 	public function actionIdeaEnterpriseMembershipUpgraded()
 	{
-		$enterprises = HUB::getIdeaUserEnterprises('exiang83@gmail.com');
+		$enterprises = HubIdea::getUserEnterprises('exiang83@gmail.com');
 		$enterprise = $enterprises[0];
 		$return = NotifyMaker::organization_idea_enterpriseMembershipUpgraded($enterprise);
 		print_r($return);
@@ -975,7 +993,7 @@ class TestController extends Controller
 			$criteria->mergeWith($criteriaIndustry, 'AND');
 		}
 
-		$result = new CActiveDataProvider(Organization, array(
+		$result = new CActiveDataProvider('Organization', array(
 			'criteria' => $criteria,
 			'pagination' => array('pageSize' => 30),
 			'sort' => array(
@@ -992,6 +1010,7 @@ class TestController extends Controller
 	public function actionFuturelabBookingStatusException()
 	{
 		Yii::import('application.modules.mentor.models.*');
+		$meta = null;
 		try {
 			$booking = new Booking;
 			$b = HubFuturelab::getBooking(1500);
@@ -1109,21 +1128,21 @@ class TestController extends Controller
 		$sql = sprintf('SELECT * FROM organization_funding WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s raised $%s from %s</li>', $tmp[id], $tmp[amount], $tmp['vc_name']);
+			echo sprintf('<li>#%s raised $%s from %s</li>', $tmp['id'], $tmp['amount'], $tmp['vc_name']);
 		}
 
 		echo '<h4>organizationRevenues</h4>';
 		$sql = sprintf('SELECT * FROM organization_revenue WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s reported $%s on year %s</li>', $tmp[id], $tmp[amount], $tmp['year_reported']);
+			echo sprintf('<li>#%s reported $%s on year %s</li>', $tmp['id'], $tmp['amount'], $tmp['year_reported']);
 		}
 
 		echo '<h4>organizationStatus</h4>';
 		$sql = sprintf('SELECT * FROM organization_status WHERE organization_id=%s', $org->id);
 		$tmps = Yii::app()->db->createCommand($sql)->queryAll();
 		foreach ($tmps as $tmp) {
-			echo sprintf('<li>#%s is %s according to %s</li>', $tmp[id], $tmp[status], $tmp['source']);
+			echo sprintf('<li>#%s is %s according to %s</li>', $tmp['id'], $tmp['status'], $tmp['source']);
 		}
 
 		echo '<h4>persona2Organization</h4>';
@@ -1571,7 +1590,7 @@ class TestController extends Controller
 		}
 	}
 
-	public function actionFuturelabCreateBookingEmail($id)
+	public function actionFuturelabCreateBookingEmail($id, $programId)
 	{
 		Yii::import('application.modules.mentor.models.*');
 		$booking = new Booking;
@@ -1793,15 +1812,7 @@ class TestController extends Controller
 			echo $res->getStatusCode();
 			print_r(json_decode($res->getBody()));
 		} catch (Exception $e) {
-			$errors = json_decode($e->getResponse()->getBody());
-			if (!empty($errors)) {
-				//print_r($errors);
-				foreach ($errors as $errorKey => $error) {
-					$buffer[$errorKey] = $error[0];
-				}
-				print_r($buffer);
-			}
-			//print_r($e->getMessage());
+			print_r($e->getMessage());
 		}
 	}
 
@@ -2094,7 +2105,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2154,7 +2165,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2189,7 +2200,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2210,7 +2221,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2243,7 +2254,7 @@ class TestController extends Controller
 		$endpoint = 'https://search-esearch-zx63o5rpb4egkcrluaepveku74.ap-southeast-1.es.amazonaws.com:443';
 
 		$provider = CredentialProvider::fromCredentials(
-			new Credentials('AKIAJFVDA3DI7ABXG4MQ', 'WvfdZ+q2P8hsbEPL/4YKuUmFbW0Ta0j4RZaUNVY7')
+			new Credentials(Yii::app()->params['esLogKey'], Yii::app()->params['esLogSecret'])
 		);
 
 		$handler = new ElasticsearchPhpHandler('ap-southeast-1', $provider);
@@ -2289,7 +2300,7 @@ class TestController extends Controller
 
 	public function actionLazyLoadIdeaEnterprise()
 	{
-		$tmps = (HUB::getIdeaAllActiveEnterprises(6, 3));
+		$tmps = (HubIdea::getAllActiveEnterprises(6, 3));
 		foreach ($tmps as $tmp) {
 			echo sprintf('%s<br />', $tmp->title);
 		}
@@ -2323,7 +2334,7 @@ class TestController extends Controller
 		echo Yii::app()->getModule('idea')->emailTeam;
 
 		$rfp = IdeaRfp::model()->findByPk(36);
-		HUB::sendIdeaRfp($rfp, true);
+		HubIdea::sendRfp($rfp, true);
 		echo '<pre>';
 		print_r($rfp);
 	}
@@ -2567,11 +2578,6 @@ class TestController extends Controller
 		));
 	}
 
-	public function actionGetResourceByOrganigzationId($id)
-	{
-		return Hub::getResourceByOrganigzationId($id);
-	}
-
 	public function actionExploreProd($keyword = 'plants')
 	{
 		$products = HubIdea::searchProducts($keyword);
@@ -2596,11 +2602,6 @@ class TestController extends Controller
 		foreach ($org as $o) {
 			echo 'org title : ' . $o->title . '<br>';
 		}
-	}
-
-	public function actionGetSurvey()
-	{
-		HubEvent::getEventsForSurvey();
 	}
 
 	public function actionSeolytic()

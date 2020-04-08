@@ -70,7 +70,7 @@ class HubForm
 		return $intake;
 	}
 
-	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '')
+	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm='frontend')
 	{
 		$htmlBody = '';
 		$decoded = json_decode($json, true);
@@ -98,7 +98,7 @@ class HubForm
 				$innerElements = $item['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$csrfTokenName = Yii::app()->request->csrfTokenName;
@@ -131,7 +131,7 @@ class HubForm
                 <input class=" btn btn-primary" type="submit" name="yt1" value="Submit">
             </form>
               %s
-            ', $actionUrl, 'POST', $csrfTokenName, $csrfToken, $htmlBody, $jsTags);
+            ', $actionURL, 'POST', $csrfTokenName, $csrfToken, $htmlBody, $jsTags);
 		} else {
 			$htmlForm = sprintf('
 
@@ -189,27 +189,27 @@ class HubForm
 		return $htmlForm;
 	}
 
-	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData)
+	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		$htmlTag = null;
 		switch ($key) {
 			case 'section':
-				$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData);
+				$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
 				break;
 			case 'group':
-				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData);
+				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
 				break;
 			case 'label':
-				$htmlTag = self::getLabelTag($formType, $value);
+				$htmlTag = self::getLabelTag($formType, $value, $realm);
 				break;
 			case 'headline':
-				$htmlTag = self::getHeadlineTag($value);
+				$htmlTag = self::getHeadlineTag($value, $realm);
 				break;
 			case 'break':
-				$htmlTag = self::getBreakTag($value);
+				$htmlTag = self::getBreakTag($value, $realm);
 				break;
 			case 'divider':
-				$htmlTag = self::getDividerTag($value);
+				$htmlTag = self::getDividerTag($value, $realm);
 				break;
 			case 'button':
 				$htmlTag = self::getButtonTag($isEnabled, $value);
@@ -236,7 +236,7 @@ class HubForm
 				$htmlTag = self::getTextareaTag($isEnabled, $value, $decodedData);
 				break;
 			case 'list':
-				$htmlTag = self::getListTag($isEnabled, $value, $decodedData);
+				$htmlTag = self::getListTag($isEnabled, $value, $decodedData, $realm);
 				break;
 			case 'checkbox':
 				$htmlTag = self::getCheckboxTag($isEnabled, $value, $decodedData);
@@ -415,7 +415,7 @@ class HubForm
 		return $tag;
 	}
 
-	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData)
+	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		$innerHtml = '';
 		foreach ($innerElements as $element) {
@@ -425,7 +425,7 @@ class HubForm
 				throw new Exception('We dont support multiple level of groupping!');
 			}
 
-			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', $params['css'], $innerHtml);
@@ -452,7 +452,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getLabelTag($formType, $params)
+	protected function getLabelTag($formType, $params, $realm = 'frontend')
 	{
 		if ($formType === 'horizontal') {
 			if ($params['required'] === 1) {
@@ -477,7 +477,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getHeadlineTag($params)
+	protected function getHeadlineTag($params, $realm = 'frontend')
 	{
 		if ($params['required'] === 1) {
 			$html = sprintf('<h%s style="%s" class="form-header %s">%s <font color="red">*</font></h%s>', $params['size'], $params['style'], $params['css'], $params['text'], $params['size']);
@@ -549,14 +549,14 @@ class HubForm
 		return $html;
 	}
 
-	protected function getBreakTag($params, $decodedData = '')
+	protected function getBreakTag($params, $decodedData = '', $realm = 'frontend')
 	{
 		$html = sprintf('<br />');
 
 		return $html;
 	}
 
-	protected function getDividerTag($params, $decodedData = '')
+	protected function getDividerTag($params, $decodedData = '', $realm = 'frontend')
 	{
 		$html = sprintf('<hr style="%s" class="%s" />', $params['css'], $params['class']);
 
@@ -744,7 +744,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getListTag($isEnabled, $params, $decodedData)
+	protected function getListTag($isEnabled, $params, $decodedData, $realm = 'frontend')
 	{
 		$dataClass = $params['model_mapping'][$params['name']];
 
@@ -753,37 +753,46 @@ class HubForm
 		$disable = $isEnabled ? '' : 'disabled';
 
 		if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
+
 			return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
 		}
 
-		$selectedItem = empty($decodedData[$params['name']]) ? $params['selected'] : $decodedData[$params['name']];
-
-		$defaultItem = sprintf('<option value="">%s</option>', $params['text']);
-
-		$options .= $defaultItem;
-
-		if (empty($orgs) || count($orgs) === 0) {
-			foreach ($params['items'] as $item) {
-				if ($selectedItem === $item['text']) {
-					$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
-				} else {
-					$options .= sprintf('<option value="%s">%s</option>', $item['text'], $item['text']);
-				}
-			}
-		} else {
-			foreach ($orgs as $item) {
-				$item = ucwords(strtolower($item));
-				if ($selectedItem === $item) {
-					$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
-				} else {
-					$options .= sprintf('<option value="%s">%s</option>', $item, $item);
-				}
-			}
+		if($realm == 'backend' && !$isEnabled && strtolower($dataClass) === 'organization')
+		{
+			$value = $decodedData[$params['name']];
+			$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
 		}
-		$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
+		else
+		{
+			$selectedItem = empty($decodedData[$params['name']]) ? $params['selected'] : $decodedData[$params['name']];
 
-		if (strtolower($dataClass) === 'organization') {
-			$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
+			$defaultItem = sprintf('<option value="">%s</option>', $params['text']);
+	
+			$options .= $defaultItem;
+	
+			if (empty($orgs) || count($orgs) === 0) {
+				foreach ($params['items'] as $item) {
+					if ($selectedItem === $item['text']) {
+						$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
+					} else {
+						$options .= sprintf('<option value="%s">%s</option>', $item['text'], $item['text']);
+					}
+				}
+			} else {
+				foreach ($orgs as $item) {
+					$item = ucwords(strtolower($item));
+					if ($selectedItem === $item) {
+						$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
+					} else {
+						$options .= sprintf('<option value="%s">%s</option>', $item, $item);
+					}
+				}
+			}
+			$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
+	
+			if (strtolower($dataClass) === 'organization') {
+				$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
+			}
 		}
 
 		if (!empty($params['hint'])) {
@@ -912,14 +921,14 @@ class HubForm
                 <input %s name="%s" type="radio" checked="1" id="other-%s" value="%s">
                 <label for="other-%s">%s</label>
                 </div>
-                <input %s name="other-%s" id="other-%s" value="%s" maxlength="40" size="40">', $disable, $params['name'], $params['name'], 'other', $params['name'], 'other', $disable, $params['name'], $params['name'], $decodedData['other-' . $param['name']]);
+                <input %s name="other-%s" id="other-%s" value="%s" maxlength="40" size="40">', $disable, $params['name'], $params['name'], 'other', $params['name'], 'other', $disable, $params['name'], $params['name'], $decodedData['other-' . $params['name']]);
 			} else {
 				$radioHTML .= sprintf('
                 <div class="radio">
                 <input %s name="%s" type="radio" id="other-%s" value="%s">
                 <label for="other-%s">%s</label>
                 </div>
-                <input %s name="other-%s" id="other-%s" value="%s" maxlength="40" size="40">', $disable, $params['name'], $params['name'], 'other', $params['name'], 'other', $disable, $params['name'], $params['name'], $decodedData['other-' . $param['name']]);
+                <input %s name="other-%s" id="other-%s" value="%s" maxlength="40" size="40">', $disable, $params['name'], $params['name'], 'other', $params['name'], 'other', $disable, $params['name'], $params['name'], $decodedData['other-' . $params['name']]);
 			}
 		}
 
@@ -935,7 +944,7 @@ class HubForm
 		$disable = $isEnabled ? '' : 'disabled';
 		$params['items'] = array(
 			array('text' => Yii::t('core', 'Yes')),
-			array('text' => Yii::t('core', 'No'))
+			array('text' => Yii::t('core', 'No')),
 		);
 
 		foreach ($params['items'] as $value) {
@@ -962,7 +971,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData)
+	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		if ($params['mode'] == 'accordion') {
 			$html = sprintf('<div class="panel-group margin-bottom-lg %s" id="%s" role="tablist" aria-multiselectable="true" style="%s">', $params['class'], $params['name'], $params['style']);
@@ -990,7 +999,7 @@ class HubForm
 				$members = $element['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
 		$html .= $htmlBody;
@@ -1139,7 +1148,7 @@ class HubForm
 		$jScripts = $formObject['jscripts'];
 
 		foreach ($formObject as $value) {
-			if ($value['tag'] === 'break' || $value['tag'] === 'divider' || $value['tag'] === 'label' || $vale['tag'] === 'YII_CSRF_TOKEN' || $vale['tag'] === 'button' || $vale['tag'] === 'label') {
+			if ($value['tag'] === 'break' || $value['tag'] === 'divider' || $value['tag'] === 'label' || $value['tag'] === 'YII_CSRF_TOKEN' || $value['tag'] === 'button' || $value['tag'] === 'label') {
 				continue;
 			}
 
@@ -1298,7 +1307,7 @@ class HubForm
 				'Online Media Portal',
 				'Our Newsletter',
 				'Events organized by us',
-				'Email / Newsletter by other organizations'
+				'Email / Newsletter by other organizations',
 			);
 		} elseif (strtolower($model) == 'gender') {
 			return array('Male', 'Female');
@@ -1439,7 +1448,7 @@ class HubForm
 		}
 	}
 
-	public static function getFormSubmissions($user)
+	public static function getFormSubmissions($user, $limit = 100)
 	{
 		$condition = 'user_id=:userId';
 		$params = array(':userId' => $user->id);
@@ -1447,7 +1456,14 @@ class HubForm
 		return FormSubmission::model()->findAll($condition, $params);
 	}
 
-	public static function CanUserChooseThisOrgization($userEmail, $orgTitleSubmittedByUser)
+	public static function getFormSubmissionsByOrganization($organization, $limit = 100)
+	{
+		$sql = sprintf('SELECT *, JSON_EXTRACT(json_data, "$.startup_id") AS startupId, JSON_EXTRACT(json_data, "$.organization_id") AS organizationId FROM `form_submission` WHERE (JSON_EXTRACT(json_data, "$.startup_id")=%s OR JSON_EXTRACT(json_data, "$.organization_id")=%s) GROUP BY id ORDER BY date_modified DESC', $organization->id, $organization->id);
+
+		return FormSubmission::model()->findAllBySql($sql);
+	}
+
+	public static function canUserChooseThisOrgization($userEmail, $orgTitleSubmittedByUser)
 	{
 		if (empty($orgTitleSubmittedByUser)) {
 			throw new Exception('Organization title cannot be empty.');
@@ -1465,76 +1481,202 @@ class HubForm
 		return !empty($orgToEmail);
 	}
 
-	public static function SyncSubmissionsToEvent($intake = '', $pipeline = '', $form = '', $importas = '')
+	public static function syncSubmissions2Event($form)
 	{
-		if (empty('intake')) {
-			// Commands will reach here
-			$allIntakes = Intake::model()->findAll();
+		$status = 'fail';
+		$msg = '';
 
-			foreach ($allIntakes as $intake) {
-				self::SyncSingleIntakeToEvent($intake, $pipeline);
-			}
-		} else {
-			// Web will hit this
+		$instructionValidated = false;
+		$totalOrganizationSuccess = 0;
+		$totalOrganizationFail = 0;
+		$totalRegistrationSuccess = 0;
+		$totalRegistrationFail = 0;
 
-			$intake = Intake::model()->findByAttributes(array('title' => $intake));
+		// validate mapping instruction
+		$instructionValidated = self::validateEventMappingInstruction($form->json_event_mapping);
 
-			self::SyncSingleIntakeToEvent($intake, $pipeline, $form, $importas);
-		}
-	}
+		if ($instructionValidated) {
+			// get mapping instuction
+			$instruction = json_decode($form->json_event_mapping);
 
-	protected function SyncSingleIntakeToEvent($intake, $pipeline, $selectedForm = '', $importas = '')
-	{
-		if (is_null($intake)) {
-			return;
-		}
+			// get event
+			$event = Event::model()->findByPk($instruction->event_id);
 
-		$title = $intake->title;
-
-		$forms = $intake->forms;
-
-		$event = Event::model()->findByAttributes(array('title' => $title));
-
-		EventOrganization::model()->deleteAllByAttributes(array('event_code' => $event->code));
-
-		if (is_null($event)) { //Assuing the event is already created.
-			return;
-		}
-
-		foreach ($forms as $form) {
-			if ($selectedForm !== '' && strtolower($selectedForm) !== strtolower($form->slug)) {
-				continue;
+			if ($instruction->is_sync_draft) {
+				// get all submissionions including draft
+				$submissions = FormSubmission::model()->findAll(
+					array(
+						'condition' => 'form_code=:form_code',
+						'params' => array(':form_code' => $form->code),
+					)
+				);
+			} else {
+				// get all submissionions exluding draft
+				$submissions = FormSubmission::model()->findAll(
+					array(
+						'condition' => 'form_code=:form_code AND status=:status',
+						'params' => array(':form_code' => $form->code, ':status' => 'submit'),
+					)
+				);
 			}
 
-			$submissions = $form->formSubmissions;
+			//
+			// sync eventOrganization
+			if ($instruction->is_sync_organization) {
+				// clear all existing eventOrganizations
+				Yii::app()->db->createCommand()->delete('event_organization', 'event_code=:event_code AND event_vendor_code=:event_vendor_code', array(':event_code' => $event->code, ':event_vendor_code' => 'f7'));
 
-			foreach ($submissions as $submission) {
-				if (strtolower($submission->stage) !== strtolower($pipeline)) {
-					continue;
+				// loop thru all submissions
+				foreach ($submissions as $submission) {
+					//echo '<pre>';print_r($submission->jsonArray_data->startup_id);exit;
+
+					// loop thru all fields associated with organization in instructions
+					foreach ($instruction->organizations as $iOrganization) {
+						$varStartupId = sprintf('%s_id', $iOrganization->map2modal);
+						$varStartupName = $iOrganization->map2modal;
+						$varAsRoleCode = $submission->stage;
+
+						$eo = new EventOrganization();
+						$eo->event_id = $event->id;
+						$eo->event_code = $event->code;
+						$eo->event_vendor_code = 'f7';
+						$eo->date_action = $submission->date_submitted;
+						$eo->organization_id = $submission->jsonArray_data->$varStartupId;
+						$eo->organization_name = $submission->jsonArray_data->$varStartupName;
+						$eo->as_role_code = $iOrganization->workflows->$varAsRoleCode;
+
+						if ($eo->validate()) {
+							if ($eo->save(false)) {
+								$totalOrganizationSuccess++;
+							} else {
+								$totalOrganizationFail++;
+							}
+						} else {
+							$totalOrganizationFail++;
+						}
+					}
 				}
 
-				self::AddOrUpdateSubmissionToEvent($event, $submission, $importas);
+				$status = 'success';
 			}
+
+			// sync eventRegistration
+			if ($instruction->is_sync_event_registration) {
+				// clear all existing eventRegistrations
+				Yii::app()->db->createCommand()->delete('event_registration', 'event_code=:event_code AND event_vendor_code=:event_vendor_code', array(':event_code' => $event->code, ':event_vendor_code' => 'f7'));
+
+				// loop thru all submissions
+				foreach ($submissions as $submission) {
+					// loop thru all fields associated with organization in instructions
+					foreach ($instruction->event_registrations as $iRegistration) {
+						$er = new EventRegistration();
+						$er->event_id = $event->id;
+						$er->event_code = $event->code;
+						$er->event_vendor_code = 'f7';
+
+						// submitted application
+						if (isset($submission->date_submitted)) {
+							$er->date_registered = $submission->date_submitted;
+						}
+						// draft application
+						else {
+							$er->date_registered = $submission->date_modified;
+						}
+
+						$er->jsonArray_original = $submission->jsonArray_data;
+						if (!empty($iRegistration->attendance_map_workflow) && in_array($submission->stage, $iRegistration->attendance_map_workflow)) {
+							$er->is_attended = 1;
+						} else {
+							$er->is_attended = 0;
+						}
+
+						$fields = ['email', 'full_name', 'first_name', 'last_name', 'phone', 'gender', 'nationality', 'organization', 'age_group', 'where_found', 'persona'];
+
+						foreach ($fields as $field) {
+							$var = null;
+							if ($iRegistration->mappings->$field) {
+								if (strstr($iRegistration->mappings->$field, 'f7.')) {
+									$var = str_replace('f7.', '', $iRegistration->mappings->$field);
+									if (isset($submission->jsonArray_data->$var)) {
+										$er->$field = $submission->jsonArray_data->$var;
+									}
+								}
+								// direct value set
+								else {
+									$er->$field = $iRegistration->mappings->$field;
+								}
+							}
+						}
+
+						if (!empty($er->full_name) || !empty($er->email)) {
+							if ($er->validate()) {
+								if ($er->save()) {
+									$totalRegistrationSuccess++;
+								} else {
+									$totalRegistrationFail++;
+								}
+							} else {
+								$totalRegistrationFail++;
+							}
+						}
+					}
+				}
+				$status = 'success';
+			}
+
+			$result = array('status' => $status, 'msg' => $msg, 'data' => array(
+				'totalRegistrationSuccess' => $totalRegistrationSuccess, 'totalRegistrationFail' => $totalRegistrationFail, 'totalOrganizationSuccess' => $totalOrganizationSuccess, 'totalOrganizationFail' => $totalOrganizationFail, 'event' => $event,
+			));
+
+			// echo '<pre>';print_r($result);exit;
+
+			return $result;
 		}
 	}
 
-	protected function AddOrUpdateSubmissionToEvent($event, $submission, $importas = '')
+	public static function validateEventMappingInstruction($json)
 	{
-		$json = $submission->json_data;
+		return true;
+	}
 
-		$decoded = json_decode($json, true);
+	public static function getOpeningForms($dateStart, $dateEnd, $page = 1)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
 
-		$org = Organization::model()->findByAttributes(array('title' => $decoded['startup']));
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
 
-		if (is_null($org)) {
-			return;
-		}
-		if (empty($importas)) {
-			$org->addEventOrganization($event->code, 'participant', array('eventVendorCode' => 'F7'));
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
 		} else {
-			$org->addEventOrganization($event->code, $importas, array('eventVendorCode' => 'F7'));
+			$data = null;
+			$forms = Form::model()->findAll(array(
+				'condition' => 'is_active=1 AND (
+					(:timestampStart >= date_open AND :timestampEnd <= date_close) 
+					OR 
+					(:timestampStart <= date_open AND :timestampEnd >= date_open) 
+					OR 
+					(:timestampStart <= date_close AND :timestampEnd >= date_close) 
+					OR 
+					(:timestampStart <= date_open AND :timestampEnd >= date_close) 
+					)', 
+				'params' => array(':timestampStart' => $timestampStart, ':timestampEnd' => $timestampEnd),
+				'offset' => ($page - 1) * $limit,
+				'limit' => $limit,
+				'order' => 'date_open DESC'
+			));
+
+			foreach ($forms as $form) {
+				$data[] = $form->toApi(array('-jsonStructure'));
+			}
+
+			$status = 'success';
+			$msg = '';
 		}
 
-		$org->save();
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
 	}
 }

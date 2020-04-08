@@ -37,6 +37,32 @@ class Member extends MemberBase
 	public $first_name;
 	public $last_name;
 
+	public function behaviors()
+	{
+		$return = array(
+			/*'backend' => array(
+				'class' => 'application.yeebase.extensions.taggable-behavior.ETaggableBehavior',
+				'tagTable' => 'tag',
+				'tagBindingTable' => 'tag2member',
+				'modelTableFk' => 'user_id',
+				'tagTablePk' => 'id',
+				'tagTableName' => 'name',
+				'tagBindingTableTagId' => 'tag_id',
+				'cacheID' => 'cacheTag2Member',
+				'createTagsAutomatically' => true,
+			),*/
+		);
+
+		foreach (Yii::app()->modules as $moduleKey => $moduleParams) {
+			if (isset($moduleParams['modelBehaviors']) && !empty($moduleParams['modelBehaviors']['Member'])) {
+				$return[$moduleKey] = Yii::app()->getModule($moduleKey)->modelBehaviors['Member'];
+				$return[$moduleKey]['model'] = $this;
+			}
+		}
+
+		return $return;
+	}
+
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
@@ -183,7 +209,7 @@ class Member extends MemberBase
 		$return = array(
 			'userId' => $this->user_id,
 			'username' => $this->username,
-			'fGetPubNubChannelId' => $this->getPubNubChannelId(),
+			//'fGetPubNubChannelId' => $this->getPubNubChannelId(),
 		);
 
 		if (!in_array('-user', $params)) {

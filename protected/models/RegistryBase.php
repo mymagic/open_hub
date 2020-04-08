@@ -277,6 +277,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 

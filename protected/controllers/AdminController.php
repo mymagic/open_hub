@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,16 +9,17 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
 class AdminController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 *             using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout = 'backend';
 
@@ -36,6 +36,7 @@ class AdminController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -44,7 +45,7 @@ class AdminController extends Controller
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array('admin', 'create', 'createConnect', 'view',
 					'block', 'blockConfirmed', 'unblock', 'unblockConfirmed',
-					'resetPassword', 'resetPasswordConfirmed'
+					'resetPassword', 'resetPasswordConfirmed',
 				),
 				'users' => array('@'),
 				'expression' => '$user->isSuperAdmin==true || $user->isAdminManager==true',
@@ -62,7 +63,8 @@ class AdminController extends Controller
 
 	/**
 	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
+	 *
+	 * @param int $id the ID of the model to be displayed
 	 */
 	public function actionView($id)
 	{
@@ -349,9 +351,8 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		// magic connect
-		{
-			$this->redirect('createConnect');
-		}
+
+		$this->redirect('createConnect');
 
 		$model = new Admin('create');
 
@@ -469,8 +470,11 @@ class AdminController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
+	 *
+	 * @param int $id the ID of the model to be loaded
+	 *
 	 * @return Admin the loaded model
+	 *
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
@@ -479,11 +483,13 @@ class AdminController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
 	/**
 	 * Performs the AJAX validation.
+	 *
 	 * @param Admin $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)

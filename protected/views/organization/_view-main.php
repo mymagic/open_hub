@@ -2,6 +2,7 @@
 <div class="row">
 <div class="col col-md-7 margin-bottom-lg">
 	
+	<?php if ($model->score_completeness < 100): ?>
 	<div class="panel panel-default">
 		<div class="panel-heading"><?php echo Yii::t('backend', 'Profile Completeness Score') ?></div>
 		<div class="panel-body">
@@ -19,15 +20,14 @@
 				}
 			?>
 
-			<?php if ($model->score_completeness < 100):?>
 			<div><b>You have completed <?php echo $count ?> out of 10 profile requirement</b><br />
 			Increase your profile strength to improve visibility on our platform services.
 			<a class="margin-top-2x pull-right" href="<?php echo Yii::app()->createUrl('/organization/update', array('id' => $organization->id)) ?>">Update</a>
 			</div>
-			<?php endif; ?>
 
 		</div>
 	</div>
+	<?php endif; ?>
 
 	<!-- profile -->
 	<div class="panel panel-default margin-bottom-2x">

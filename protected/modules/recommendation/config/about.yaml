@@ -1,8 +1,8 @@
 code: "recommendation"
-version: "1.0"
+version: "1.1"
 title: "Recommendation"
 oneliner: "Frontend for recommendation on cpanel to display list of recommendation for members"
-lastUpdate: "2019-08-01"
+lastUpdate: "2020-03-12"
 developer:
   author: "Rosaan Ramasamy"
   organization: "MaGIC"

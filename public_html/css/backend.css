@@ -57,3 +57,13 @@
 {
 	
 }
+
+.timeline-item .date {
+	width: auto;
+}
+
+@media(max-width: 768px) {
+.timeline-item .date {
+	width: 110px;
+}
+}

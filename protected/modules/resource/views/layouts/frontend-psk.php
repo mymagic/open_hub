@@ -7,7 +7,7 @@
 
 
 <?php
-$modules = YeeModule::getParsableModules();
+$modules = YeeModule::getActiveParsableModules();
 foreach ($modules as $moduleKey => $moduleParams) {
 	if (method_exists(Yii::app()->getModule($moduleKey), 'getSharedAssets')) {
 		$assets = Yii::app()->getModule($moduleKey)->getSharedAssets('layout-frontend');

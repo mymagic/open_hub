@@ -85,7 +85,7 @@ class Controller extends BaseController
 	{
 		$navItems['service'] = $navItems['dev'] = array();
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getNavItems')) {
 				$navItems['service'] = CMap::mergeArray($navItems['service'], Yii::app()->getModule($moduleKey)->getNavItems($this, 'backendNavService'));
@@ -134,7 +134,7 @@ class Controller extends BaseController
 					array(
 						'label' => Yii::t('backend', 'Event'), 'url' => '#',
 						'visible' => Yii::app()->user->getState('accessBackend') == true,
-						'active' => $controller->activeMenuMain == 'educ8' ? true : false,
+						'active' => $this->activeMenuMain == 'educ8' ? true : false,
 						'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 						'items' => array(
@@ -364,6 +364,7 @@ class Controller extends BaseController
 
 	public function outputJsonFail($msg, $meta = array())
 	{
+		$data = array();
 		self::outputJson($data, $msg, 'fail', $meta);
 	}
 

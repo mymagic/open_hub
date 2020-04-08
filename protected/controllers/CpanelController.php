@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,13 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
-use Mpdf\Tag\P;
-
 class CpanelController extends Controller
 {
 	/**
@@ -32,6 +30,7 @@ class CpanelController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -43,7 +42,7 @@ class CpanelController extends Controller
 					'index', 'services', 'qa', 'guidelines', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
-					'test', 'activity', 'getTimeline', 'profile'
+					'test', 'activity', 'getTimeline', 'profile',
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
@@ -78,7 +77,7 @@ class CpanelController extends Controller
 		$selected_service_list = HUB::listServiceBookmarkByUser($user);
 
 		$this->render('index', array(
-			'listServices' => $result
+			'listServices' => $result,
 		));
 	}
 
@@ -103,7 +102,7 @@ class CpanelController extends Controller
 
 		$this->render('index', array(
 			'listServices' => $result,
-			'is_popup_process_completed' => $is_popup_process_completed
+			'is_popup_process_completed' => $is_popup_process_completed,
 		));
 	}
 
@@ -172,7 +171,7 @@ class CpanelController extends Controller
 			$model->save();
 		}
 		if (!$model->hasUserEmail(Yii::app()->user->username)) {
-			$i2o = new Individual2Email;
+			$i2o = new Individual2Email();
 			$i2o->individual_id = $model->id;
 			$i2o->user_email = Yii::app()->user->username;
 			$i2o->is_verify = 1;
@@ -213,15 +212,6 @@ class CpanelController extends Controller
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
 		$this->render('guidelines');
-	}
-
-	public function loadLinkup($id)
-	{
-		$model = Linkup::model()->findByPk($id);
-		if ($model === null) {
-			throw new CHttpException(404, 'The requested linkup does not exist.');
-		}
-		return $model;
 	}
 
 	public function actionSetUserService()
@@ -452,7 +442,7 @@ class CpanelController extends Controller
 			//Add the request to Request table
 			$request = Request::model()->findByAttributes(array('status' => 'pending', 'type_code' => 'removeUserAccount', 'user_id' => $id));
 			if (empty($r)) {
-				$request = new Request;
+				$request = new Request();
 				$request->user_id = $id;
 				$request->type_code = 'removeUserAccount';
 				$request->title = 'Request to remove account by user';

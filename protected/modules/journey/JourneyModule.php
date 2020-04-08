@@ -33,6 +33,32 @@ class JourneyModule extends WebModule
 		return $this->_assetsUrl;
 	}
 
+	public function getDashboardViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['journey'][] = array(
+					'key' => 'organization',
+					'title' => 'Organization',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-organization'
+				);
+				$tabs['journey'][] = array(
+					'key' => 'member',
+					'title' => 'Member',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-member'
+				);
+				$tabs['journey'][] = array(
+					'key' => 'event',
+					'title' => 'Event',
+					'viewPath' => 'modules.journey.views.backend._view-dashboard-event'
+				);
+			}
+		}
+
+		return $tabs;
+	}
+
 	//
 	// organization
 	public function getOrganizationViewTabs($model, $realm = 'backend')
@@ -192,6 +218,14 @@ class JourneyModule extends WebModule
 						'label' => Yii::t('app', 'Journey'), 'url' => array('/journey/backend/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true,
 						'active' => $controller->activeMenuMain == 'journey' ? true : false,
 					),
+				);
+
+				break;
+				
+			case 'backendNavDev':
+
+				return array(
+					array('label' => Yii::t('app', 'Junk'), 'url' => array('/junk/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true)
 				);
 
 				break;

@@ -133,7 +133,7 @@ class OrganizationController extends Controller
 		$actions = array();
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
@@ -247,6 +247,7 @@ class OrganizationController extends Controller
 		if (isset($_POST['Organization'])) {
 			$oriModel = clone $model;
 			$model->attributes = $_POST['Organization'];
+			$model->setLatLongAddress($_POST['Organization']['latlong_address']);
 
 			// convert full address to parts and store
 			if (($oriModel->full_address != $model->full_address) && !empty($model->full_address)) {
@@ -853,7 +854,7 @@ class OrganizationController extends Controller
 	{
 		$tabs = array();
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationViewTabs')) {
 				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getOrganizationViewTabs($model, $realm));

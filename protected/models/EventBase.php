@@ -1,19 +1,5 @@
 <?php
-/**
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the BSD 3-Clause License
-* that is bundled with this package in the file LICENSE.
-* It is also available through the world-wide-web at this URL:
-* https://opensource.org/licenses/BSD-3-Clause
-*
-*
-* @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
-* @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
-* @license https://opensource.org/licenses/BSD-3-Clause
-*/
+
 
 /**
  * This is the model class for table "event".
@@ -44,6 +30,7 @@
 			 * @property string $json_extra
 			 * @property integer $date_added
 			 * @property integer $date_modified
+			 * @property integer $is_survey_enabled
  *
  * The followings are the available model relations:
  * @property EventGroup $eventGroup
@@ -94,6 +81,7 @@
  			$this->is_paid_event = null;
  			$this->is_cancelled = null;
  			$this->is_active = null;
+ 			$this->is_survey_enabled = null;
  		} else {
  		}
  	}
@@ -115,7 +103,7 @@
  		// will receive user inputs.
  		return array(
 			array('code, title, date_started, vendor', 'required'),
-			array('date_started, date_ended, is_paid_event, is_cancelled, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('date_started, date_ended, is_paid_event, is_cancelled, is_active, date_added, date_modified, is_survey_enabled', 'numerical', 'integerOnly' => true),
 			array('code, event_group_code, vendor_code', 'length', 'max' => 64),
 			array('title, genre, funnel', 'length', 'max' => 128),
 			array('url_website, at, full_address, email_contact', 'length', 'max' => 255),
@@ -125,7 +113,7 @@
 			array('text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on' => 'search'),
+			array('id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, json_original, json_extra, date_added, date_modified, is_survey_enabled, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -188,6 +176,7 @@
 		'json_extra' => Yii::t('app', 'Json Extra'),
 		'date_added' => Yii::t('app', 'Date Added'),
 		'date_modified' => Yii::t('app', 'Date Modified'),
+		'is_survey_enabled' => Yii::t('app', 'Is Survey Enabled'),
 		);
 
  		$return['inputIndustries'] = Yii::t('app', 'Industries');
@@ -262,6 +251,7 @@
  			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
  			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
  		}
+ 		$criteria->compare('is_survey_enabled', $this->is_survey_enabled);
 
  		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
@@ -269,7 +259,7 @@
 		));
  	}
 
- 	public function toApi($params = '')
+ 	public function toApi($params = array())
  	{
  		$this->fixSpatial();
 
@@ -303,6 +293,7 @@
 			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
 			'fDateModified' => $this->renderDateModified(),
+			'isSurveyEnabled' => $this->is_survey_enabled,
 		);
 
  		// many2many
@@ -363,6 +354,7 @@
 			'isPaidEvent' => array('condition' => 't.is_paid_event = 1'),
 			'isCancelled' => array('condition' => 't.is_cancelled = 1'),
 			'isActive' => array('condition' => 't.is_active = 1'),
+			'isSurveyEnabled' => array('condition' => 't.is_survey_enabled = 1'),
 		);
  	}
 
@@ -431,6 +423,9 @@
  			if ($this->is_paid_event == '') {
  				$this->is_paid_event = null;
  			}
+ 			if ($this->is_survey_enabled == '') {
+ 				$this->is_survey_enabled = null;
+ 			}
  			if (!empty($this->date_started)) {
  				if (!is_numeric($this->date_started)) {
  					$this->date_started = strtotime($this->date_started);
@@ -469,10 +464,10 @@
  			if (empty($this->url_website)) {
  				$this->url_website = null;
  			}
- 			if (empty($this->date_ended) && $this->date_ended != 0) {
+ 			if (empty($this->date_ended) && $this->date_ended !== 0) {
  				$this->date_ended = null;
  			}
- 			if (empty($this->is_paid_event) && $this->is_paid_event != 0) {
+ 			if (empty($this->is_paid_event) && $this->is_paid_event !== 0) {
  				$this->is_paid_event = null;
  			}
  			if (empty($this->genre)) {
@@ -508,6 +503,9 @@
  			if (empty($this->json_extra)) {
  				$this->json_extra = null;
  			}
+ 			if (empty($this->is_survey_enabled) && $this->is_survey_enabled !== 0) {
+ 				$this->is_survey_enabled = null;
+ 			}
 
  			return true;
  		} else {
@@ -529,6 +527,9 @@
  		}
  		if ($this->is_active != '' || $this->is_active != null) {
  			$this->is_active = intval($this->is_active);
+ 		}
+ 		if ($this->is_survey_enabled != '' || $this->is_survey_enabled != null) {
+ 			$this->is_survey_enabled = intval($this->is_survey_enabled);
  		}
 
  		$this->jsonArray_extra = json_decode($this->json_extra);
@@ -593,6 +594,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -683,8 +685,9 @@
  	{
  		if ($this->hasIndustry($key)) {
  			$many2many = Event2Industry::model()->findByAttributes(array('event_id' => $this->id, 'industry_id' => $key));
-
- 			return $many2many->delete();
+ 			if (!empty($many2many)) {
+ 				return $many2many->delete();
+ 			}
  		}
 
  		return false;
@@ -758,8 +761,9 @@
  	{
  		if ($this->hasPersona($key)) {
  			$many2many = Event2Persona::model()->findByAttributes(array('event_id' => $this->id, 'persona_id' => $key));
-
- 			return $many2many->delete();
+ 			if (!empty($many2many)) {
+ 				return $many2many->delete();
+ 			}
  		}
 
  		return false;
@@ -833,8 +837,9 @@
  	{
  		if ($this->hasStartupStage($key)) {
  			$many2many = Event2StartupStage::model()->findByAttributes(array('event_id' => $this->id, 'startup_stage_id' => $key));
-
- 			return $many2many->delete();
+ 			if (!empty($many2many)) {
+ 				return $many2many->delete();
+ 			}
  		}
 
  		return false;

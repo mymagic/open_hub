@@ -271,7 +271,7 @@ class PublishController extends Controller
 		//Server side checking if organization is available before and does
 		//not belong to this user.
 		if ($formContainStarupModel) {
-			if (!HubForm::CanUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
+			if (!HubForm::canUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
 				$error = Yii::t('f7', 'The company/startup name you entered has been taken.');
 				$model->addError($error, $error);
 
@@ -626,9 +626,9 @@ class PublishController extends Controller
 			$localFile = '';
 
 			if (!empty($_FILES["$uploadControl"]['name'])) {
-				// ys: fuck the hardcode, filesize limit should be taken from the json form structure
-				if ($_FILES["$uploadControl"]['size'] > 5242880) { // Max file size to upload 5MB
-					throw new Exception(Yii::t('f7', 'Size of the file you are trying to upload is more than the allowed size of 5MB.'));
+				// ys: todo: fuck the hardcode, filesize limit should be taken from the json form structure
+				if ($_FILES["$uploadControl"]['size'] > 10485760) { // Max file size to upload 10MB
+					throw new Exception(Yii::t('f7', 'Size of the file you are trying to upload is more than the allowed size of 10MB.'));
 				}
 				$extension = end(explode('.', $_FILES["$uploadControl"]['name']));
 

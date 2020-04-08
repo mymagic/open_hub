@@ -53,7 +53,7 @@ class BackendController extends Controller
 		$stat['general']['totalOrganizations'] = Yii::app()->db->createCommand('SELECT COUNT(DISTINCT(organization_id)) FROM resource2organization')->queryScalar();
 
 		// category
-		$tmps = HUB::getResourceTypefors();
+		$tmps = HubResource::getTypefors();
 		foreach ($tmps as $tmpKey => $tmpValues) {
 			$count = Yii::app()->db->createCommand(sprintf("SELECT COUNT(r.id) FROM resource as r, resource_category as c, resource2resource_category as r2c WHERE r2c.resource_category_id=c.id AND r2c.resource_id=r.id AND c.typefor='%s'", $tmpKey))->queryScalar();
 

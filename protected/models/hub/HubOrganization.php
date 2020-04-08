@@ -565,6 +565,7 @@ class HubOrganization
 			// todo: f7 form, organization can be use in json so is hard to process
 
 			// modularize:
+			// instead of getActiveParsableModules, should get all working modules as data in db still need to relink
 			$modules = YeeModule::getParsableModules();
 			foreach ($modules as $moduleKey => $moduleParams) {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'doOrganizationsMerge')) {
@@ -611,5 +612,29 @@ class HubOrganization
 		}
 
 		return $model;
+	}
+
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
+
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
+
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
+		} else {
+			$data = null;
+			$sql = sprintf('SELECT * FROM organization WHERE is_active=1 AND date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page - 1) * $limit, $limit);
+			$data = Organization::model()->findAllBySql($sql);
+
+			$status = 'success';
+			$msg = '';
+		}
+
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
 	}
 }

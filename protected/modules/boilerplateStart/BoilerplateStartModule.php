@@ -101,6 +101,114 @@ class BoilerplateStartModule extends WebModule
 	}
 
 	//
+	// organizationFunding
+	public function getOrganizationFundingViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event feature
+	public function getOrganizationFundingActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
+	// organizationRevenue
+	public function getOrganizationRevenueViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event feature
+	public function getOrganizationRevenueActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
+	// organizationStatus
+	public function getOrganizationStatusViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event feature
+	public function getOrganizationStatusActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
 	// individual
 	// these are the functions called by core individual feature
 	public function getIndividualViewTabs($model, $realm = 'backend')
@@ -124,6 +232,198 @@ class BoilerplateStartModule extends WebModule
 	public function getIndividualActFeed($individual, $year)
 	{
 		return null;
+	}
+
+	//
+	// event
+	public function getEventViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event feature
+	public function getEventActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
+	// event
+	public function getEventGroupViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event feature
+	public function getEventGroupActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
+	// eventRegistration
+	public function getEventRegistrationViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core event registration feature
+	public function getEventRegistrationActions($model, $realm = 'backend')
+	{
+		$actions = array();
+
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} */
+
+		return $actions;
+	}
+
+	//
+	// member
+	public function getMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core member feature
+	public function getMemberActions($model, $realm = 'backend')
+	{
+		$actions = array();
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} elseif ($realm == 'cpanel') {
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Frontend Action 1',
+				'title' => 'Frontend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->user_id)),
+			);
+		}*/
+
+		return $actions;
+	}
+
+	//
+	// admin
+	public function getAdminViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+		}
+
+		return $tabs;
+	}
+
+	// these are the functions called by core member feature
+	public function getAdminActions($model, $realm = 'backend')
+	{
+		$actions = array();
+		/*if ($realm == 'backend') {
+			if (!Yii::app()->user->accessBackend) {
+				return;
+			}
+
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Backend Action 1',
+				'title' => 'Backend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/backend/action1', array('id' => $model->user_id)),
+			);
+		} elseif ($realm == 'cpanel') {
+			$actions['boilerplateStart'][] = array(
+				'visual' => 'primary',
+				'label' => 'Frontend Action 1',
+				'title' => 'Frontend Action 1 short description',
+				'url' => Yii::app()->controller->createUrl('/boilerplateStart/frontend/action1', array('id' => $model->user_id)),
+			);
+		}*/
+
+		return $actions;
 	}
 
 	//
@@ -200,6 +500,16 @@ class BoilerplateStartModule extends WebModule
 		}
 
 		return $return;
+	}
+
+	public function enable()
+	{
+		return array('status' => 'success', 'msg' => 'Not Implemented', 'data' => array());
+	}
+
+	public function disable()
+	{
+		return array('status' => 'success', 'msg' => 'Not Implemented', 'data' => array());
 	}
 
 	public function install($forceReset = false)

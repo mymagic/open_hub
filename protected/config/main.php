@@ -105,7 +105,8 @@ $return = array(
 			'charset' => 'utf8',
 			'initSQLs' => array("set time_zone='+00:00';"),
 			'emulatePrepare' => true,
-			'enableParamLogging' => true,
+			'enableParamLogging' => false,
+			'enableProfiling' => false,
 			'pdoClass' => 'NestedPDO',
 		),
 		'cache' => array(
@@ -132,23 +133,19 @@ $return = array(
 				array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'trace, info, warning',
+					'logFile' => 'all.log',
 				),
 				array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'error',
-					'logFile' => 'error',
+					'logFile' => 'error.log',
 				),
 				 array(
 					'class' => 'application.yeebase.extensions.ys.ProfileFileLogRoute',
 					'levels' => 'profile',
-					'report' => 'callstack'
-				),
-				// uncomment the following to show log messages on web pages
-				/*
-				array(
-					'class'=>'CWebLogRoute',
-				),
-				*/
+					'report' => 'callstack',
+					'logFile' => 'db.log',
+				),		
 			),
 		),
 		'esLog' => array(
@@ -224,6 +221,8 @@ $modules_dir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DI
 $handle = opendir($modules_dir);
 while (false !== ($file = readdir($handle))) {
 	if ($file != '.' && $file != '..' && is_dir($modules_dir . $file)) {
+		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'base.php'));
+		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.base.php'));
 		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php'));
 	}
 }
@@ -233,7 +232,7 @@ $return['components']['urlManager']['rules'] = CMap::mergeArray($return['compone
 
 // domain specific override
 $domainSettings = sprintf('%s/config/domain.php', Yii::getPathOfAlias('overrides'));
-if (!empty($domainSettings)) {
+if (!empty($domainSettings) && is_array($domainSettings)) {
 	if (array_key_exists($_SERVER['SERVER_NAME'], $domainSettings)) {
 		$return = CMap::mergeArray($return, $domainSettings[$_SERVER['SERVER_NAME']]);
 	}

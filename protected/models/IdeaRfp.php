@@ -90,7 +90,7 @@ class IdeaRfp extends IdeaRfpBase
 		return $return;
 	}
 
-	public function toApi($params = '')
+	public function toApi($params = array())
 	{
 		$return = array(
 			'id' => $this->id,
@@ -200,6 +200,7 @@ class IdeaRfp extends IdeaRfpBase
 			foreach ($result as $r) {
 				$newResult[$r['code']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

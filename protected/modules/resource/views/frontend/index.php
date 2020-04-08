@@ -53,7 +53,11 @@ $this->breadcrumbs = array(
   <?php if (!empty($model['data'])): foreach ($model['data'] as $resource): ?>
   <div class="item row">
     <div class="col-xs-9">
+    <?php if (!empty($resource['slug'])): ?>
+      <h3><a href="<?php echo $this->createUrl('/resource/frontend/viewBySlug', array('slug' => $resource['slug'], 'brand' => $this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> </a></h3>
+    <?php else: ?>
       <h3><a href="<?php echo $this->createUrl('/resource/frontend/view', array('id' => $resource['id'], 'brand' => $this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> </a></h3>
+    <?php endif; ?>
       <?php echo ysUtil::truncate(strip_tags($resource->getAttrData('html_content'), 250)) ?>
       <div class="text-muted margin-top-lg">
           <?php echo $resource['resourceCategories'][0]['title'] ?>
@@ -64,7 +68,7 @@ $this->breadcrumbs = array(
         <a href="<?php echo $this->createUrl('/resource/frontend/organization', array('id' => $resource['organizations'][0]['id'], 'brand' => $this->layoutParams['brand']))?>" class="thumbnail">
         <?php if (!empty($resource['imageLogoUrl'])): ?>
           <img width="125" height="71" src="<?php echo $resource->getImageLogoUrl() ?>" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
-        <?php elseif(!empty($resource['organizations'][0]['imageLogoUrl'])): ?>
+        <?php elseif (!empty($resource['organizations'][0]['imageLogoUrl'])): ?>
           <img width="125" height="71" src="<?php echo $resource['organizations'][0]->getImageLogoUrl() ?>" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" />
         <?php endif; ?>
         </a>
@@ -93,10 +97,10 @@ $this->breadcrumbs = array(
 <h1 class="hidden"><u><?php echo Yii::t('resource', 'Featured Resources') ?></u></h1>
 <br />
 
-<?php if(!empty($highlightedOrganizations)): ?>
+<?php if (!empty($highlightedOrganizations)): ?>
 <div class="row" style="display: flex; display: -webkit-flex; flex-wrap: wrap; height: 100%;">
 <?php foreach ($highlightedOrganizations as $organization): ?>
-<?php if(!empty($organization)): ?>
+<?php if (!empty($organization)): ?>
   <div class="col-xs-6 col-sm-4 col-md-2">
     <a class="thumbnail" href="<?php echo $this->createUrl('/resource/frontend/organization', array('id' => $organization->id, 'brand' => $this->layoutParams['brand']))?>" style="border:0"><div class="full-width" style=""><img src="<?php echo $organization->getImageLogoUrl() ?>" alt="<?php echo $organization->title ?>" style="" /></div></a>
   </div>

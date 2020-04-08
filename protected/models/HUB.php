@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,13 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
-use Symfony\Component\Yaml\Yaml;
-
 class HUB extends Component
 {
 	public static function now()
@@ -1117,7 +1115,7 @@ class HUB extends Component
 	}
 
 	// get transaction by ref_id
-	public static function getTransactionsByRefId($refId)
+	public static function getTransactionsByRefId($refId, $pagi = null)
 	{
 		$pagi['auto'] = isset($pagi['auto']) ? $pagi['auto'] : false;
 		$pagi['currentPage'] = isset($pagi['currentPage']) ? $pagi['currentPage'] : 0;
@@ -1130,7 +1128,7 @@ class HUB extends Component
 			$pagination = array('pageSize' => $pagi['pageSize'], 'currentPage' => $pagi['currentPage'], 'validateCurrentPage' => false);
 		}
 
-		$dataProvider = new CActiveDataProvider(Transaction, array(
+		$dataProvider = new CActiveDataProvider('Transaction', array(
 			'criteria' => $criteria,
 			'sort' => array('defaultOrder' => 't.date_modified DESC'),
 			'pagination' => $pagination,
@@ -1143,342 +1141,6 @@ class HUB extends Component
 			'pages' => $dataProvider->pagination,
 		);
 	}
-
-	//
-	//
-	// idea
-
-	//
-	// idea product / productCategory
-
-	public static function getIdeaAllActiveProductCategories()
-	{
-		return HubIdea::getAllActiveProductCategories();
-	}
-
-	public static function getIdeaAllHighlightedProductCategories()
-	{
-		return HubIdea::getAllHighlightedProductCategories();
-	}
-
-	public static function getIdeaProductCategoryById($id)
-	{
-		return HubIdea::getProductCategoryById($id);
-	}
-
-	// get all product that is
-	// highlighted in idea and (Product-idea-isHighlight)
-	// belong to organization that enrolled to idea (Organization-idea-isEnrolled) and
-	// has organization membership type in idea that is idea or idea+ (Organization-idea-membershipType)
-	public static function getIdeaAllHighlightedProducts()
-	{
-		return HubIdea::getAllHighlightedProducts();
-	}
-
-	public static function getIdeaProductsByCategory($productCategoryId)
-	{
-		return HubIdea::getProductsByCategory($productCategoryId);
-	}
-
-	public static function getIdeaProductDetail($id)
-	{
-		return HubIdea::getProductDetail($id);
-	}
-
-	public static function searchIdeaProducts($keyword)
-	{
-		return HubIdea::searchProducts($keyword);
-	}
-
-	//
-	// idea enterprise
-	public static function createIdeaEnterpriseOrganization($title, $params)
-	{
-		return HubIdea::createEnterpriseOrganization($title, $params);
-	}
-
-	public static function updateIdeaEnterpriseOrganization($enterprise, $userEmail, $params)
-	{
-		return HubIdea::updateEnterpriseOrganization($enterprise, $userEmail, $params);
-	}
-
-	// get list of enterprises own by this user that already enroll to IDEA
-	public static function getIdeaUserEnterprises($username)
-	{
-		return HubIdea::getUserEnterprises($username);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaEnterpriseById($id)
-	{
-		return HubIdea::getEnterpriseById($id);
-	}
-
-	public static function getIdeaAllHighlightedEnterprises()
-	{
-		return HubIdea::getAllHighlightedEnterprises();
-	}
-
-	public static function getIdeaUserApplicableEnterprises($username)
-	{
-		return HubIdea::getUserApplicableEnterprises($username);
-	}
-
-	public static function getIdeaAllActiveEnterprises($offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getAllActiveEnterprises($offset, $baseLimit);
-	}
-
-	public static function getIdeaAllActiveAccreditedEnterprises($offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getAllActiveAccreditedEnterprises($offset, $baseLimit);
-	}
-
-	// filter with meta for idea organization only
-	public static function searchIdeaEnterprises($keyword, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::searchEnterprises($keyword, $offset, $baseLimit);
-	}
-
-	public static function searchIdeaAccreditedEnterprises($keyword, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::searchAccreditedEnterprises($keyword, $offset, $baseLimit);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaEnterprisesByProductCategoryId($productCategoryId, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getEnterprisesByProductCategoryId($productCategoryId, $offset, $baseLimit);
-	}
-
-	// make sure filter with meta for idea organization only
-	// productCategoryIds: multiple productCategory Id saperate by comma
-	public static function getIdeaEnterprisesByProductCategoryIds($productCategoryIds, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getEnterprisesByProductCategoryIds($productCategoryIds, $offset, $baseLimit);
-	}
-
-	// pass in an enterprise, get others suggested one
-	public static function getIdeaSuggestedEnterprises($enterprise)
-	{
-		return HubIdea::getSuggestedEnterprises($enterprise);
-	}
-
-	public static function applyIdeaEnterprise($organization, $userEmail)
-	{
-		return HubIdea::applyEnterprise($organization, $userEmail);
-	}
-
-	public static function enrollIdeaEnterprise($organization, $userEmail)
-	{
-		return HubIdea::enrollEnterprise($organization, $userEmail);
-	}
-
-	// set organization is apply for accreditation
-	public static function applyIdeaAccreditation($organization, $userEmail)
-	{
-		return HubIdea::applyAccreditation($organization, $userEmail);
-	}
-
-	public static function approveIdeaEnterpriseApplication($organization)
-	{
-		return HubIdea::approveEnterpriseApplication($organization);
-	}
-
-	public static function removeIdeaEnterprise($organization)
-	{
-		return HubIdea::removeEnterprise($organization);
-	}
-
-	public static function upgradeIdeaEnterpriseMembership($organization)
-	{
-		return HubIdea::upgradeEnterpriseMembership($organization);
-	}
-
-	public static function downgradeIdeaEnterpriseMembership($organization)
-	{
-		return HubIdea::downgradeEnterpriseMembership($organization);
-	}
-
-	//
-	// idea partner
-	public static function createIdeaPartnerOrganization($title, $params)
-	{
-		return HubIdea::createPartnerOrganization($title, $params);
-	}
-
-	public static function updateIdeaPartnerOrganization($partner, $userEmail, $params)
-	{
-		return HubIdea::updatePartnerOrganization($partner, $userEmail, $params);
-	}
-
-	public static function getIdeaUserApplicablePartners($username)
-	{
-		return HubIdea::getUserApplicablePartners($username);
-	}
-
-	public static function getIdeaUserPartners($username)
-	{
-		return HubIdea::getUserPartners($username);
-	}
-
-	public static function getIdeaPartnerById($id)
-	{
-		return HubIdea::getPartnerById($id);
-	}
-
-	public static function applyIdeaPartner($organization, $userEmail)
-	{
-		return HubIdea::applyPartner($organization, $userEmail);
-	}
-
-	public static function enrollIdeaPartner($organization, $userEmail)
-	{
-		return HubIdea::enrollPartner($organization, $userEmail);
-	}
-
-	public static function approveIdeaPartnerApplication($organization)
-	{
-		return HubIdea::approvePartnerApplication($organization);
-	}
-
-	public static function removeIdeaPartner($organization)
-	{
-		return HubIdea::removePartner($organization);
-	}
-
-	public static function listIdeaPartnersLogo()
-	{
-		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'listIdeaPartnersLogo', sha1(json_encode(array('v1'))));
-		$return = Yii::app()->cache->get($cacheId);
-		if ($return === false || $useCache === false) {
-			$result = HubIdea::listPartnersLogo();
-			Yii::app()->cache->set($cacheId, $result, 300);
-			$return = $result;
-		}
-
-		return $return;
-	}
-
-	public static function listIdeaPartners()
-	{
-		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'listIdeaPartners', sha1(json_encode(array('v1'))));
-		$return = Yii::app()->cache->get($cacheId);
-		if ($return === false || $useCache === false) {
-			$result = HubIdea::listPartners();
-			Yii::app()->cache->set($cacheId, $result, 300);
-			$return = $result;
-		}
-
-		return $return;
-	}
-
-	//
-	// idea organization
-	public static function createIdeaOrganization($title, $params)
-	{
-		return HubIdea::createOrganization($title, $params);
-	}
-
-	public static function updateOrganization($organization, $userEmail, $params)
-	{
-		return HubIdea::updateOrganization($organization, $userEmail, $params);
-	}
-
-	// get list of organizations own by this user that already enroll to IDEA
-	public static function getIdeaUserOrganizations($username)
-	{
-		return HubIdea::getUserOrganizations($username);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaOrganizationById($id)
-	{
-		return HubIdea::getOrganizationById($id);
-	}
-
-	// idea wishlist
-	public static function addIdeaEnterprise2Wishlist($partner, $enterprise)
-	{
-		return HubIdea::addEnterprise2Wishlist($partner, $enterprise);
-	}
-
-	public static function getIdeaWishlist($id)
-	{
-		return HubIdea::getWishlist($id);
-	}
-
-	public static function getIdeaWishlistByPartnerEnterprise($partner, $enterprise)
-	{
-		return HubIdea::getWishlistByPartnerEnterprise($partner, $enterprise);
-	}
-
-	public static function removeIdeaEnterpriseFromWishlist($partner, $enterprise)
-	{
-		return HubIdea::removeEnterpriseFromWishlist($partner, $enterprise);
-	}
-
-	public static function getIdeaEnterprisesFromWishlist($partner)
-	{
-		return HubIdea::getEnterprisesFromWishlist($partner);
-	}
-
-	//
-	// idea rfp
-	public static function sendIdeaRfp($ideaRfp, $forceSend = false)
-	{
-		return HubIdea::sendRfp($ideaRfp, $forceSend);
-	}
-
-	public static function sendIdeaNewRfp($partner, $arrayEnterprises, $title, $htmlContent)
-	{
-		return HubIdea::sendNewRfp($partner, $arrayEnterprises, $title, $htmlContent);
-	}
-
-	public static function listIdeaRfpsByPartner($partner)
-	{
-		return HubIdea::listRfpsByPartner($partner);
-	}
-
-	public static function listIdeaNewRfpsByUser($user)
-	{
-		return HubIdea::listNewRfpsByUser($user);
-	}
-
-	public static function replaceIdeaPartnerIdInUrl($url, $partnerId)
-	{
-		return HubIdea::replacePartnerIdInUrl($url, $partnerId);
-	}
-
-	//
-	// resource
-	public static function getResourceTypefors()
-	{
-		return HubResource::getTypefors();
-	}
-
-	public static function getResourceAllActive($page, $filter)
-	{
-		return HubResource::getAllActive($page, $filter);
-	}
-
-	public static function getResourceAllFeatured()
-	{
-		return HubResource::getAllFeatured();
-	}
-
-	public static function getResource($id)
-	{
-		return HubResource::getResource($id);
-	}
-
-	public static function getResourceBySlug($slug)
-	{
-		return HubResource::getBySlug($slug);
-	}
-
 
 	//
 	// service
@@ -1732,6 +1394,11 @@ class HUB extends Component
 		return $notify;
 	}
 
+	// not implemented
+	public static function sendSms($receiverMobileNo, $msg)
+	{
+	}
+
 	public static function sendEmail($email, $name, $title, $content, $options = '')
 	{
 		$receivers[] = array('email' => $email, 'name' => $name);
@@ -1848,7 +1515,7 @@ class HUB extends Component
 			}
 
 			foreach ($result as &$r) {
-				$r['serviceTitle'] = $registeredServices[$r[service]];
+				$r['serviceTitle'] = $registeredServices[$r['service']];
 			}
 
 			// loop thru all and sort by timestamp
@@ -2314,41 +1981,5 @@ class HUB extends Component
 		} catch (Exception $e) {
 			throw new Exception('Failed to remove account from MentorFutureLab2Email table: ' . $e->getMessage());
 		}
-	}
-
-	// bumi module
-	public function checkIndividualIsBumiStatus($individual)
-	{
-		return HubBumi::checkIndividualIsBumi($individual);
-	}
-
-	// bumi module
-	public function checkOrganizationIsBumiStatus($organization)
-	{
-		return HubBumi::checkOrganizationIsBumi($organization);
-	}
-
-	// bumi module
-	public function checkEventRegistrationIsBumiStatus($eventRegistration)
-	{
-		return HubBumi::checkEventRegistrationIsBumi($eventRegistration);
-	}
-
-	// bumi module
-	public function checkIndividualIsIndianStatus($individual)
-	{
-		return HubBumi::checkIndividualIsIndian($individual);
-	}
-
-	// bumi module
-	public function checkEventRegistrationIsIndianStatus($eventRegistration)
-	{
-		return HubBumi::checkEventRegistrationIsIndian($eventRegistration);
-	}
-
-	//bumi module
-	public function updateBumiIndianStatusForEventRegistration($eventRegistration)
-	{
-		return HubBumi::updateIsBumiIndianForEventRegistration($eventRegistration);
 	}
 }

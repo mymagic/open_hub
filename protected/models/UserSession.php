@@ -58,7 +58,7 @@ class UserSession extends UserSessionBase
 	public function isSessionExists($userId, $sessionId)
 	{
 		$record = $this->find(
-		 	array(
+			array(
 			'select' => 'id',
 			'condition' => 'session_code=:sessionId AND user_id=:userId',
 			'params' => array(':sessionId' => $sessionId, ':userId' => $userId))

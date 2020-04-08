@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'layout' => '//layouts/backend',
+	'layout' => 'backend',
 	'isDeleteDisabled' => true,
 	'moduleCode' => 'f7',
 	'isAllowMeta' => true,
@@ -34,6 +34,8 @@ return array(
 		'structure' => array(
 		),
 		'stage' => array(
+		),
+		'event_mapping' => array(
 		),
 	),
 	'foreignKey' => array(

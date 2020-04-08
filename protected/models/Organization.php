@@ -138,8 +138,8 @@ class Organization extends OrganizationBase
 			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
 
 			// idea
-			'ideaRfps' => array(self::HAS_MANY, 'IdeaRfp', array('partner_organization_code' => 'code')),
-			'ideaActiveRfps' => array(self::HAS_MANY, 'IdeaRfp', array('partner_organization_code' => 'code'), 'condition' => "ideaActiveRfps.status != 'cancel'"),
+			// 'ideaRfps' => array(self::HAS_MANY, 'IdeaRfp', array('partner_organization_code' => 'code')),
+			// 'ideaActiveRfps' => array(self::HAS_MANY, 'IdeaRfp', array('partner_organization_code' => 'code'), 'condition' => "ideaActiveRfps.status != 'cancel'"),
 
 			// todo: ideaRfps2Enterprise relationship was disabled but need to enable for organization merge feature, not sure will it affect performance or not
 			//'ideaRfps2Enterprise' => array(self::HAS_MANY, 'IdeaRfp2Enterprise', array('enterprise_organization_code'=>'code')),
@@ -1124,7 +1124,7 @@ class Organization extends OrganizationBase
 			$result[] = array('key' => '', 'title' => '');
 		}
 
-		if (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['mode']) && $htmlOptions['params']['mode'] == 'ideaPartnerCode') {
+		/*if (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['mode']) && $htmlOptions['params']['mode'] == 'ideaPartnerCode') {
 			$sql = sprintf("SELECT o.code as `key`, o.title as `title` FROM `organization` as o 
 
 			INNER JOIN `meta_structure` as ms1 on ms1.ref_table='organization'
@@ -1154,7 +1154,7 @@ class Organization extends OrganizationBase
 			GROUP BY o.id ORDER BY o.title ASC");
 
 			$result = Yii::app()->db->createCommand($sql)->queryAll();
-		} elseif (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['mode']) && $htmlOptions['params']['mode'] == 'isActiveCode') {
+		} else*/if (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['mode']) && $htmlOptions['params']['mode'] == 'isActiveCode') {
 			$result = Yii::app()->db->createCommand()->select('code as key, title as title')->from(self::tableName())->order(array('title ASC'))->where('is_active=:isActive', array(':isActive' => 1))->queryAll();
 		} elseif (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['mode']) && $htmlOptions['params']['mode'] == 'code') {
 			$result = Yii::app()->db->createCommand()->select('code as key, title as title')->from(self::tableName())->order(array('title ASC'))->queryAll();
@@ -1169,6 +1169,7 @@ class Organization extends OrganizationBase
 			foreach ($result as $r) {
 				$newResult[$r['key']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
@@ -1238,9 +1239,9 @@ class Organization extends OrganizationBase
 			$this->address_line1 = $addressParts['line1'];
 			$this->address_line2 = $addressParts['line2'];
 			$this->address_zip = $addressParts['zipcode'];
-			$this->address_city = $addressParts['city'];
-			$this->address_state = $addressParts['state'];
-			$this->address_country_code = $addressParts['countryCode'];
+			if(!empty($addressParts['city'])) $this->address_city = $addressParts['city'];
+			if(!empty($addressParts['state'])) $this->address_state = $addressParts['state'];
+			if(!empty($addressParts['countryCode'])) $this->address_country_code = $addressParts['countryCode'];
 			$this->setLatLongAddress(array($addressParts['lat'], $addressParts['lng']));
 		}
 	}

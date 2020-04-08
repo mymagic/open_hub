@@ -1,3 +1,16 @@
+<?php 
+	// codemirror
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/edit/matchbrackets.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/scroll/simplescrollbars.js', CClientScript::POS_END);
+
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/mode/javascript/javascript.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/mode/clike/clike.js', CClientScript::POS_END);
+
+	Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.css');
+	Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/theme/midnight.css');
+?>
+
 <?php
 /* @var $this SubmissionController */
 /* @var $model FormSubmission */
@@ -44,10 +57,28 @@ $this->menu = array(
 		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 
-		array('name' => 'Submitted Data', 'type' => 'raw', 'value' => sprintf('<div class="white-bg padding-xlg margin-bottom-2x border">%s</div>', $model->renderJsonData('html'))),
+		array('name' => 'Submitted Data', 'type' => 'raw', 'value' => sprintf('<div class="white-bg padding-xlg margin-bottom-2x border">%s</div>', $model->renderJsonData('html', 'backend'))),
 
 		// developer only
-		array('name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea class="full-width" rows="6" disabled>%s</textarea>', nl2br($model->json_data)), 'visible' => Yii::app()->user->isDeveloper),
+		array('name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_data)), 'visible' => Yii::app()->user->isDeveloper),
 	),
 )); ?>
 </div>
+
+
+<?php Yii::app()->clientScript->registerScript('js-f7-update', <<<JS
+
+document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
+/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
+    htmlMode: true,
+    lineNumbers: true,
+    matchBrackets: true,
+    mode: "application/json",
+    indentUnit: 4,
+    indentWithTabs: true,
+    lineWrapping: true,
+    scrollbarStyle: 'simple',
+    theme:'midnight',   
+});*/
+JS
+, CClientScript::POS_READY); ?>

@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,11 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
 class Resource extends ResourceBase
 {
 	public $searchOrganizationId;
@@ -162,7 +162,7 @@ class Resource extends ResourceBase
 				'class' => 'application.yeebase.components.behaviors.SpatialDataBehavior',
 				'spatialFields' => array(
 					// all spatial fields here
-					'latlong_address'
+					'latlong_address',
 				),
 			),
 
@@ -176,7 +176,7 @@ class Resource extends ResourceBase
 				'tagBindingTableTagId' => 'tag_id',
 				'cacheID' => 'cacheTag2Resource',
 				'createTagsAutomatically' => true,
-			)
+			),
 		);
 
 		foreach (Yii::app()->modules as $moduleKey => $moduleParams) {
@@ -210,7 +210,7 @@ class Resource extends ResourceBase
 			$params['compareOperator'] = 'AND';
 		}
 
-		$criteria = new CDbCriteria;
+		$criteria = new CDbCriteria();
 		$criteria->with = array('organizations');
 		$criteria->together = true;
 
@@ -250,7 +250,7 @@ class Resource extends ResourceBase
 
 		// tag
 		if ($this->searchBackendTags !== null) {
-			$criteriaBackendTag = new CDbCriteria;
+			$criteriaBackendTag = new CDbCriteria();
 			$criteriaBackendTag->together = true;
 			$criteriaBackendTag->with = array('tags');
 			foreach ($this->searchBackendTags as $backendTag) {
@@ -259,7 +259,7 @@ class Resource extends ResourceBase
 			$criteria->mergeWith($criteriaBackendTag, $params['compareOperator']);
 		}
 		if ($this->inputBackendTags !== null) {
-			$criteriaInputBackendTag = new CDbCriteria;
+			$criteriaInputBackendTag = new CDbCriteria();
 			$criteriaInputBackendTag->together = true;
 			$criteriaInputBackendTag->with = array('tag2Resources');
 			foreach ($this->inputBackendTags as $backendTag) {
@@ -316,7 +316,7 @@ class Resource extends ResourceBase
 
 	public function renderTypeFor($output = 'html')
 	{
-		$typeFors = HUB::getResourceTypefors();
+		$typeFors = HubResource::getTypefors();
 
 		return ucwords($typeFors[$this->typefor]);
 	}
@@ -420,6 +420,7 @@ class Resource extends ResourceBase
 			foreach ($result as $r) {
 				$newResult[$r['key']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 
@@ -429,14 +430,14 @@ class Resource extends ResourceBase
 	public function renderOrganization($mode)
 	{
 		$buffer = '';
-		$total = COUNT($this->organizations);
+		$total = count($this->organizations);
 		$i = 0;
 		foreach ($this->organizations as $organization) {
 			$buffer .= sprintf('%s', $organization->title);
 			if ($i != $total - 1) {
 				$buffer .= ', ';
 			}
-			$i++;
+			++$i;
 		}
 
 		return $buffer;

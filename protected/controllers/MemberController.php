@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,7 +9,9 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
@@ -18,7 +19,7 @@ class MemberController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 *             using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout = 'backend';
 
@@ -35,6 +36,7 @@ class MemberController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -146,9 +148,8 @@ class MemberController extends Controller
 	public function actionCreate()
 	{
 		// magic connect
-		{
-			$this->redirect('createConnect');
-		}
+
+		$this->redirect('createConnect');
 
 		$model = new Member('create');
 
@@ -233,11 +234,13 @@ class MemberController extends Controller
 
 	/**
 	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
+	 *
+	 * @param int $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
-		$member = $this->loadModel($id)->with('products:deposits');
+		$member = $this->loadModel($id);
+		$model = $member;
 		$frauds = null;
 		$user = $member->user;
 		$username = $user->username;
@@ -251,21 +254,35 @@ class MemberController extends Controller
 			}
 		}
 
-		// find duplicate full name
-		if (!empty($user->profile->full_name)) {
-			$sqlSelectDoubleFullName = 'SELECT u.id, u.username, u.is_active FROM user as u, member as m, profile as p WHERE m.username=u.username AND p.user_id=u.id AND p.full_name=:fullName AND m.username!=:username GROUP BY u.id ORDER BY u.date_last_login DESC';
-			$command = Yii::app()->db->createCommand($sqlSelectDoubleFullName);
-			$command->bindParam(':fullName', $user->profile->full_name, PDO::PARAM_STR);
-			$command->bindParam(':username', $username, PDO::PARAM_STR);
-			$tmps = $command->queryAll();
-			foreach ($tmps as $t) {
-				$frauds[] = array('type' => 'duplicateFullName', 'msg' => Yii::t('backend', 'Duplicate full name with user <a href="{link}"><span class="label label-{active}">{username}</span></a>', array('{username}' => $t['username'], '{active}' => $t['is_active'] ? 'success' : 'danger', '{link}' => $this->createUrl('member/view', array('id' => $t['id'])))));
+		$actions = array();
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getMemberActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getMemberActions($model, 'cpanel'));
+				}
 			}
 		}
 
+		$tabs = self::composeMemberViewTabs($model, $realm);
+
 		$this->render('view', array(
 			'model' => $member,
-			'frauds' => $frauds
+			'member' => $model,
+			'actions' => $actions,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 		));
 	}
 
@@ -395,7 +412,7 @@ class MemberController extends Controller
 			//Add the request to Request table
 			$request = Request::model()->findByAttributes(array('status' => 'pending', 'type_code' => 'removeUserAccount', 'user_id' => $id));
 			if (empty($r)) {
-				$request = new Request;
+				$request = new Request();
 				$request->user_id = $id;
 				$request->type_code = 'removeUserAccount';
 				$request->title = 'Request to remove account by admin';
@@ -474,8 +491,11 @@ class MemberController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
+	 *
+	 * @param int $id the ID of the model to be loaded
+	 *
 	 * @return Member the loaded model
+	 *
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
@@ -484,11 +504,13 @@ class MemberController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
 	/**
 	 * Performs the AJAX validation.
+	 *
 	 * @param Member $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
@@ -497,5 +519,37 @@ class MemberController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	public function composeMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getMemberViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
+
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
+
+		ksort($tabs);
+
+		if (Yii::app()->user->isDeveloper) {
+			$tabs['member'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
+
+		return $tabs;
 	}
 }

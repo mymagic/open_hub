@@ -8,27 +8,26 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Event'), 'url' => array('/event/admin')),
-	array('label' => Yii::t('app', 'Create Event'), 'url' => array('/event/create')),),
+	array('label' => Yii::t('app', 'Overview'), 'url' => array('/event/overview')),
 );
 ?>
 
 <h1><?php echo Yii::t('backend', 'Events without Registrations'); ?></h1>
 
-
 <?php $this->widget('application.components.widgets.GridView', array(
 	'id' => 'event-adminNoRegistration-grid',
 	'dataProvider' => $events,
 	'columns' => array(
-		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		'code',
-		'title',
-		/*array(
-			'class'=>'application.components.widgets.ButtonColumn',
+		array('name' => 'id', 'header' => Event::getOneAttributeLabel('id'), 'cssClassExpression' => 'id', 'value' => $data['id'], 'headerHtmlOptions' => array('class' => 'id')),
+		array('name' => 'title', 'header' => Event::getOneAttributeLabel('title'), 'value' => $data['title']),
+		array('name' => 'date_started', 'header' => Event::getOneAttributeLabel('date_started'), 'cssClassExpression' => 'date_started', 'value' => 'Html::formatDateTime($data[\'date_started\'], \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date')),
+		array('name' => 'is_active', 'header' => Event::getOneAttributeLabel('is_active'), 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data[\'is_active\'])', 'headerHtmlOptions' => array('class' => 'boolean')),
+		array(
+			'class' => 'application.components.widgets.ButtonColumn',
 				'template' => '{view}',
 				'buttons' => array(
-					'view' => array('url'=>'Yii::app()->controller->createUrl("/event/view", array("id"=>"$data->id"))'),
+					'view' => array('url' => 'Yii::app()->controller->createUrl("/event/view", array("id"=>$data[id]))'),
 				),
-		),*/
+		)
 	),
 )); ?>

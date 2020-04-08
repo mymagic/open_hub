@@ -13,7 +13,7 @@ return array(
 		'view' => 'admin, create, update, delete',
 	),
 	'admin' => array(
-		'list' => array('id', 'event_code', 'organzation_code', 'department'),
+		'list' => array('id', 'event_code', 'organzation_code', 'department', 'as_role_code'),
 		'sortDefaultOrder' => 't.id DESC',
 	),
 	'structure' => array(

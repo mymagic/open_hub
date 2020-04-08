@@ -27,13 +27,13 @@ class TestController extends Controller
 	public function actionBoilerplateStartOrganizationBehavior()
 	{
 		$organization = new Organization;
-		var_dump($organization->shout());
+		var_dump($organization->shoutBoilerplateStart());
 	}
 
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {

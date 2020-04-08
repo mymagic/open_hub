@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,13 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
-use GeoIp2\WebService\Client;
-
 class HubGeo
 {
 	public static function geocoder2AddressParts($geocoder)
@@ -179,7 +177,7 @@ class HubGeo
 
 	public static function address2TimezoneArray($address)
 	{
-		$url = sprintf('https://maps.googleapis.com/maps/api/timezone/json?location=%s&timestamp=%s&key=%s', self::address2Loc($address), self::now(), Yii::app()->params['googleMapApiKey']);
+		$url = sprintf('https://maps.googleapis.com/maps/api/timezone/json?location=%s&timestamp=%s&key=%s', self::address2Loc($address), HUB::now(), Yii::app()->params['googleMapApiKey']);
 		$client = new GuzzleHttp\Client();
 		$res = $client->request('GET', $url);
 		$result = json_decode($res->getBody());
@@ -259,7 +257,7 @@ class HubGeo
 				'stateCode' => $result->getAdminLevels()->first()->getCode(),
 				'country' => $result->getCountry()->getName(),
 				'countryCode' => $result->getCountryCode(),
-				'fullAddress' => $fullAddress
+				'fullAddress' => $fullAddress,
 			);
 		} catch (Exception $e) {
 			return '';
@@ -291,6 +289,11 @@ class HubGeo
 		$angle = atan2(sqrt($a), $b);
 
 		return self::to2Decimal($angle * $earthRadius);
+	}
+
+	public static function to2Decimal($float)
+	{
+		return number_format((float) $float, 2, '.', '');
 	}
 
 	// return route distance in meter

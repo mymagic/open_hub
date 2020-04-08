@@ -1,32 +1,33 @@
 <?php
 
-
-/**
- * This is the model class for table "form".
- *
- * The followings are the available columns in table 'form':
-			 * @property integer $id
-			 * @property string $code
-			 * @property string $slug
-			 * @property integer $date_open
-			 * @property integer $date_close
-			 * @property string $json_structure
-			 * @property string $json_stage
-			 * @property integer $is_multiple
-			 * @property integer $is_login_required
-			 * @property string $title
-			 * @property string $text_short_description
-			 * @property integer $is_active
-			 * @property string $timezone
-			 * @property integer $date_added
-			 * @property integer $date_modified
-			 * @property integer $type
-			 * @property string $text_note
- *
- * The followings are the available model relations:
- * @property Form2intake[] $form2intakes
- * @property FormSubmission[] $formSubmissions
- */
+ /**
+  * This is the model class for table "form".
+  *
+  * The followings are the available columns in table 'form':
+  *
+  * @property int $id
+  * @property string $code
+  * @property string $slug
+  * @property int $date_open
+  * @property int $date_close
+  * @property string $json_structure
+  * @property string $json_stage
+  * @property int $is_multiple
+  * @property int $is_login_required
+  * @property string $title
+  * @property string $text_short_description
+  * @property int $is_active
+  * @property string $timezone
+  * @property int $date_added
+  * @property int $date_modified
+  * @property int $type
+  * @property string $text_note
+  * @property string $json_event_mapping
+  *
+  * The followings are the available model relations:
+  * @property Form2intake[] $form2intakes
+  * @property FormSubmission[] $formSubmissions
+  */
  class FormBase extends ActiveRecordBase
  {
  	public $uploadPath;
@@ -44,6 +45,7 @@
  	// json
  	public $jsonArray_structure;
  	public $jsonArray_stage;
+ 	public $jsonArray_event_mapping;
 
  	public function init()
  	{
@@ -68,7 +70,7 @@
  	}
 
  	/**
- 	 * @return array validation rules for model attributes.
+ 	 * @return array validation rules for model attributes
  	 */
  	public function rules()
  	{
@@ -83,14 +85,14 @@
 			array('text_short_description, text_note', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, slug, date_open, date_close, json_structure, json_stage, is_multiple, is_login_required, title, text_short_description, is_active, timezone, date_added, date_modified, type, text_note, sdate_open, edate_open, sdate_close, edate_close, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
+			array('id, code, slug, date_open, date_close, json_structure, json_stage, is_multiple, is_login_required, title, text_short_description, is_active, timezone, date_added, date_modified, type, text_note, json_event_mapping, sdate_open, edate_open, sdate_close, edate_close, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
  	}
 
  	/**
- 	 * @return array relational rules.
+ 	 * @return array relational rules
  	 */
  	public function relations()
  	{
@@ -129,10 +131,11 @@
 		'date_modified' => Yii::t('app', 'Date Modified'),
 		'type' => Yii::t('app', 'Type'),
 		'text_note' => Yii::t('app', 'Text Note'),
+		'json_event_mapping' => Yii::t('app', 'Json Event Mapping'),
 		);
 
  		// meta
- 		$return = array_merge((array)$return, array_keys($this->_dynamicFields));
+ 		$return = array_merge((array) $return, array_keys($this->_dynamicFields));
  		foreach ($this->_metaStructures as $metaStruct) {
  			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
  		}
@@ -150,13 +153,13 @@
  	 * - Pass data provider to CGridView, CListView or any similar widget.
  	 *
  	 * @return CActiveDataProvider the data provider that can return the models
- 	 * based on the search/filter conditions.
+ 	 *                             based on the search/filter conditions
  	 */
  	public function search()
  	{
  		// @todo Please modify the following code to remove attributes that should not be searched.
 
- 		$criteria = new CDbCriteria;
+ 		$criteria = new CDbCriteria();
 
  		$criteria->compare('id', $this->id);
  		$criteria->compare('code', $this->code, true);
@@ -191,6 +194,7 @@
  		}
  		$criteria->compare('type', $this->type);
  		$criteria->compare('text_note', $this->text_note, true);
+ 		$criteria->compare('json_event_mapping', $this->json_event_mapping, true);
 
  		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
@@ -224,6 +228,7 @@
 			'fDateModified' => $this->renderDateModified(),
 			'type' => $this->type,
 			'textNote' => $this->text_note,
+			'jsonEventMapping' => $this->json_event_mapping,
 		);
 
  		// many2many
@@ -275,7 +280,9 @@
  	/**
  	 * Returns the static model of the specified AR class.
  	 * Please note that you should have this exact method in all your CActiveRecord descendants!
- 	 * @param string $className active record class name.
+ 	 *
+ 	 * @param string $className active record class name
+ 	 *
  	 * @return Form the static model class
  	 */
  	public static function model($className = __CLASS__)
@@ -285,7 +292,8 @@
 
  	/**
  	 * This is invoked before the record is validated.
- 	 * @return boolean whether the record should be saved.
+ 	 *
+ 	 * @return bool whether the record should be saved
  	 */
  	public function beforeValidate()
  	{
@@ -311,7 +319,8 @@
 
  	/**
  	 * This is invoked before the record is saved.
- 	 * @return boolean whether the record should be saved.
+ 	 *
+ 	 * @return bool whether the record should be saved
  	 */
  	protected function beforeSave()
  	{
@@ -343,6 +352,10 @@
  			if ($this->json_stage == 'null') {
  				$this->json_stage = null;
  			}
+ 			$this->json_event_mapping = json_encode($this->jsonArray_event_mapping);
+ 			if ($this->json_event_mapping == 'null') {
+ 				$this->json_event_mapping = null;
+ 			}
 
  			// save as null if empty
  			if (empty($this->slug)) {
@@ -362,6 +375,9 @@
  			}
  			if (empty($this->text_note)) {
  				$this->text_note = null;
+ 			}
+ 			if (empty($this->json_event_mapping)) {
+ 				$this->json_event_mapping = null;
  			}
 
  			return true;
@@ -388,6 +404,7 @@
 
  		$this->jsonArray_structure = json_decode($this->json_structure);
  		$this->jsonArray_stage = json_decode($this->json_stage);
+ 		$this->jsonArray_event_mapping = json_decode($this->json_event_mapping);
 
  		parent::afterFind();
  	}
@@ -399,7 +416,7 @@
  	}
 
  	/**
- 	 * These are function for foregin refer usage
+ 	 * These are function for foregin refer usage.
  	 */
  	public function getForeignReferList($isNullable = false, $is4Filter = false)
  	{
@@ -417,6 +434,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -434,8 +452,8 @@
  	}
 
  	/**
- 	* These are function for spatial usage
- 	*/
+ 	 * These are function for spatial usage.
+ 	 */
  	public function fixSpatial()
  	{
  	}

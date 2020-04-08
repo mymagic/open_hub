@@ -219,6 +219,7 @@ class EmbedController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested record does not exist.');
 		}
+
 		return $model;
 	}
 

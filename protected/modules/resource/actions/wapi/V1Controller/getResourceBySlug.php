@@ -9,7 +9,7 @@ class getResourceBySlug extends Action
 		$meta['input']['slug'] = $slug;
 
 		try {
-			$resource = HUB::getResourceBySlug($slug);
+			$resource = HubResource::getBySlug($slug);
 			$this->getController()->outputSuccess($resource->toApi(array('config' => array('mode' => 'public'))), $meta);
 		} catch (Exception $e) {
 			$this->getController()->outputFail($e->getMessage(), $meta);

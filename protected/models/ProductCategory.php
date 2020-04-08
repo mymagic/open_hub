@@ -110,24 +110,14 @@ class ProductCategory extends ProductCategoryBase
 			$result[] = array('key' => '', 'title' => '');
 		}
 
-		if ($htmlOptions['params']['mode'] == 'idea-isEnabled') {
-			$sql = sprintf("SELECT pc.id as `key`, pc.title as `title` FROM `product_category` as pc 
-			INNER JOIN `meta_structure` as ms on ms.ref_table='product_category' INNER JOIN `meta_item` as mi on mi.meta_structure_id=ms.id 
-			WHERE 
-			(ms.code='ProductCategory-idea-isEnabled' AND mi.value=1 AND mi.ref_id=pc.id)
-			GROUP BY pc.id
-			ORDER BY pc.ordering ASC");
-
-			$result = Yii::app()->db->createCommand($sql)->queryAll();
-		} else {
-			$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->queryAll();
-		}
+		$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->queryAll();
 
 		if ($is4Filter) {
 			$newResult = array();
 			foreach ($result as $r) {
 				$newResult[$r['key']] = $r['title'];
 			}
+
 			return $newResult;
 		}
 

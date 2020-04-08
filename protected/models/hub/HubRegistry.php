@@ -23,6 +23,7 @@ class HubRegistry
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested registry does not exist.');
 		}
+
 		return $model;
 	}
 

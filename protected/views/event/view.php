@@ -55,6 +55,7 @@ $this->menu = [
 				['label' => $model->attributeLabel('date_ended'), 'value' => $model->renderDateEnded()],
 				['name' => 'is_paid_event', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_paid_event)],
 				['name' => 'is_cancelled', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_cancelled)],
+				['name' => 'is_survey_enabled', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_survey_enabled)],
 				'genre',
 				'funnel',
 
@@ -66,17 +67,32 @@ $this->menu = [
 			],
 		]); ?>
 
-		<?php if (!empty($model->full_address)):?>
-		<div class="row"><div class="col col-xs-12">
-		<h3><?php echo $model->getAttributeLabel('full_address'); ?></h3>
-		<p><?php echo $model->full_address; ?></p>
-		<?php if (!empty($model->latlong_address[0]) && !empty($model->latlong_address[1])): ?>
-			<?php echo Html::mapView('map-resourceAddress', $model->latlong_address[0], $model->latlong_address[1]); ?>
-		<?php endif; ?>
-		</div></div>
-		
-		<?php endif; ?></div>
+		</div>
 	</div>
+
+	<!-- address -->
+	<div class="panel panel-default margin-bottom-2x">
+		<div class="panel-heading"><?php echo Yii::t('backend', 'Address') ?></div>
+		<div class="crud-view">
+		<?php $this->widget('application.components.widgets.DetailView', array(
+			'data' => $model,
+			'attributes' => array(
+				'full_address',
+				'address_line1',
+				'address_line2',
+				'address_city',
+				'address_zip',
+				'address_state',
+				array('name' => 'address_country_code', 'value' => $model->addressCountry->printable_name),
+			),
+		)); ?>
+		<?php if (!empty($model->latlong_address[0]) && !empty($model->latlong_address[1])): ?>
+			<?php echo Html::mapView('map-eventAddress', $model->latlong_address[0], $model->latlong_address[1]) ?>
+		<?php endif; ?>
+		</div>
+	</div>
+	<!-- /address -->
+
 
 	<!-- owner -->
 	<div class="ibox m2mBox">
@@ -84,10 +100,19 @@ $this->menu = [
 			<h5><?php echo $model->getAttributeLabel('owners'); ?></h5>
 			<a class="btn btn-xs btn-success pull-right" href="<?php echo $this->createUrl('eventOwner/create', ['eventCode' => $model->code]); ?>">Add</a>
 		</div>
-		<div class="ibox-content">
-		<?php if (!empty($model->eventOwners)): ?><ul><?php foreach ($model->eventOwners as $eventOwner):?>
-			<li class="margin-bottom-md"><a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a> \ <?php echo $eventOwner->department; ?> <span class="btn-group btn-group-xs pull-right"><a class="btn btn-white" href="<?php echo $this->createUrl('/eventOwner/update', ['id' => $eventOwner->id]); ?>">Edit</a> <a class="btn btn-danger" href="<?php echo $this->createUrl('/eventOwner/delete', ['id' => $eventOwner->id]); ?>">Delete</a></span></li>
-		<?php endforeach; ?></ul><?php endif; ?>
+		<div class="ibox-content nopadding">
+		<?php if (!empty($model->eventOwners)): ?><table class="table table-striped">
+			<?php foreach ($model->eventOwners as $eventOwner):?>
+			<tr>
+				<td>
+					<a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a><?php if(!empty($eventOwner->department)): ?> \ <?php echo $eventOwner->department; ?><?php endif; ?>
+					<span class="label label-default label-sm">&nbsp;<?php echo $eventOwner->as_role_code ?></span>
+				</td> 
+				<td class="width-lg text-center">
+					<span class="btn-group btn-group-xs"><a class="btn btn-white" href="<?php echo $this->createUrl('/eventOwner/update', ['id' => $eventOwner->id]); ?>">Edit</a> <a class="btn btn-danger" href="<?php echo $this->createUrl('/eventOwner/delete', ['id' => $eventOwner->id]); ?>">Delete</a></span>
+				</td>
+			</tr>
+		<?php endforeach; ?></table><?php endif; ?>
 		</div>
 	</div>
 	<!-- /owner -->
@@ -341,6 +366,7 @@ $this->menu = [
 <?php endif; ?>
 
 
+<?php if ($model->is_survey_enabled): ?>
 <h3><?php echo Html::faIcon('fa fa-file'); ?> Surveys</h3>
 <div class="well">
 	<form action="<?php echo $this->createUrl('event/sendSurvey', ['eventId' => $model->id]); ?>" method="POST" class="form form-inline">
@@ -349,6 +375,7 @@ $this->menu = [
 		<input type="submit" class="btn btn-sm btn-success" value="Send" />
 	</form>
 </div>
+<?php endif; ?>
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-new" role="tablist">
@@ -360,7 +387,7 @@ $this->menu = [
 <div class="tab-content padding-lg white-bg">
 <?php foreach ($tabs as $tabModuleKey => $tabModules): ?><?php foreach ($tabModules as $tabModule): ?>
 	<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : ''; ?>" id="<?php echo $tabModule['key']; ?>">
-		<?php echo $this->renderPartial($tabModule['viewPath'], ['model' => $model, 'event' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries]); ?>
+		<?php echo $this->renderPartial($tabModule['viewPath'], ['model' => $model, 'event' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab]); ?>
 	</div>
 <?php endforeach; ?><?php endforeach; ?>
 </div>

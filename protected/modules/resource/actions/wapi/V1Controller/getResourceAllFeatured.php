@@ -6,7 +6,7 @@ class getResourceAllFeatured extends Action
 	{
 		$meta = array();
 
-		$tmps = HUB::getResourceAllFeatured();
+		$tmps = HubResource::getAllFeatured();
 
 		if (!empty($tmps['items'])) {
 			foreach ($tmps['items'] as $tmp) {

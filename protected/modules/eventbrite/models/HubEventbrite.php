@@ -2,6 +2,35 @@
 
 class HubEventbrite
 {
+	// query eventbrite_organization_webhook to find detail data using eventbrite account id
+	public static function getWebhookByAccountId($accountId)
+	{
+		$result = EventbriteOrganizationWebhook::model()->find('eventbrite_account_id=:accountId', array(':accountId' => $accountId));
+
+		return $result;
+	}
+
+	public static function getWebhookById($webhookId)
+	{
+		$result = EventbriteOrganizationWebhook::model()->findByPk($webhookId);
+
+		return $result;
+	}
+
+	public static function getAllActiveWebhooks()
+	{
+		$result = EventbriteOrganizationWebhook::model()->findAll('is_active=:isActive', array(':isActive' => 1));
+
+		return $result;
+	}
+
+	public static function getSyncableWebhooks()
+	{
+		$result = EventbriteOrganizationWebhook::model()->findAll("is_active=:isActive AND eventbrite_oauth_secret IS NOT NULL AND eventbrite_oauth_secret != ''", array(':isActive' => 1));
+
+		return $result;
+	}
+
 	// get event from db by eventbrite code
 	public static function getEventByCode($code)
 	{
@@ -9,25 +38,25 @@ class HubEventbrite
 	}
 
 	// return eventbrite objects as result
-	public static function getEvents($page = 1)
+	public static function getEvents($webhook, $page = 1)
 	{
-		$client = new exiang\eventbrite\HttpClient(Yii::app()->getModule('eventbrite')->oauthSecret);
-		$result = $client->get(sprintf('/organizations/%s/events/?page=%s&order_by=start_desc', Yii::app()->getModule('eventbrite')->organizationId, $page));
+		$client = new exiang\eventbrite\HttpClient($webhook->eventbrite_oauth_secret);
+		$result = $client->get(sprintf('/organizations/%s/events/?page=%s&order_by=start_desc', $webhook->eventbrite_account_id, $page));
 
 		return $result;
 	}
 
-	public static function getEvent($id)
+	public static function getEvent($webhook, $id)
 	{
-		$client = new exiang\eventbrite\HttpClient(Yii::app()->getModule('eventbrite')->oauthSecret);
+		$client = new exiang\eventbrite\HttpClient($webhook->eventbrite_oauth_secret);
 		$result = $client->get(sprintf('/events/%s?expand=organizer,venue', $id));
 
 		return $result;
 	}
 
-	public static function getAttendees($id, $page = 1)
+	public static function getAttendees($webhook, $id, $page = 1)
 	{
-		$client = new exiang\eventbrite\HttpClient(Yii::app()->getModule('eventbrite')->oauthSecret);
+		$client = new exiang\eventbrite\HttpClient($webhook->eventbrite_oauth_secret);
 		$result = $client->get(sprintf('/events/%s/attendees?page=%s&expand=order', $id, $page));
 
 		return $result;
@@ -35,19 +64,19 @@ class HubEventbrite
 
 	// return only the attendees section of the returned json of all pages
 	// https://hubd.mymagic.my/eventbrite/backend/sync2EventRegistrationConfirmed/code/28450779046
-	public static function getAttendeesAllPages($id)
+	public static function getAttendeesAllPages($webhook, $id)
 	{
 		$result = array();
 
 		// get the first page of attendees
-		$pages[1] = self::getAttendees($id, 1);
+		$pages[1] = self::getAttendees($webhook, $id, 1);
 		$result = $pages[1]['attendees'];
 
 		// has multiple pages
 		if ($pages[1]['pagination']['page_count'] > 1) {
 			// get subsequence pages
 			for ($i = 2; $i <= $pages[1]['pagination']['page_count']; ++$i) {
-				$pages[$i] = self::getAttendees($id, $i);
+				$pages[$i] = self::getAttendees($webhook, $id, $i);
 				$result = array_merge($result, $pages[$i]['attendees']);
 			}
 		}
@@ -56,7 +85,7 @@ class HubEventbrite
 	}
 
 	// pass in event object acquited from api
-	public static function syncEventFromEventbrite($event)
+	public static function syncEventFromEventbrite($webhook, $event)
 	{
 		$status = 'fail';
 		$msg = 'Unknown error';
@@ -71,6 +100,17 @@ class HubEventbrite
 				$count = 1;
 				$status = 'success';
 				$msg = sprintf('%s new/existing records updated', $count);
+
+				$event = Event::model()->findByPk(Yii::app()->db->lastInsertID);
+				if(!$event->hasEventOwner($webhook->organization_code, $webhook->as_role_code))
+				{
+					// add event owner
+					$owner = new EventOwner;
+					$owner->event_code = $event->code;
+					$owner->organization_code = $webhook->organization_code;
+					$owner->as_role_code = $webhook->as_role_code;
+					$owner->save();
+				}
 
 				$log = Yii::app()->esLog->log(sprintf('synced %s events from Eventbrite thru api', $count), 'event', array('trigger' => 'HubEventbrite::syncEventFromEventbrite', 'model' => 'Event', 'action' => '', 'id' => ''));
 			}
@@ -100,7 +140,7 @@ class HubEventbrite
 			$sql = sprintf(
 				'INSERT INTO event (code, title, text_short_desc, date_started, date_ended, at, email_contact, full_address, address_country_code, latlong_address, vendor, vendor_code, json_original, is_active, date_added, date_modified) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE code=VALUES(code), title=VALUES(title), text_short_desc=VALUES(text_short_desc), date_started=VALUES(date_started), date_ended=VALUES(date_ended), at=VALUES(at), email_contact=VALUES(email_contact), full_address=VALUES(full_address), address_country_code=VALUES(address_country_code), latlong_address=VALUES(latlong_address), vendor=VALUES(vendor), vendor_code=VALUES(vendor_code), json_original=VALUES(json_original), is_active=VALUES(is_active), date_modified=VALUES(date_modified); ',
-				$event['id'],
+				Yii::app()->db->quoteValue($event['id']),
 				Yii::app()->db->quoteValue($event['name']['text']),
 				Yii::app()->db->quoteValue($event['description']['text']),
 				strtotime($event['start']['utc']),
@@ -111,7 +151,7 @@ class HubEventbrite
 				$addressCountryCode,
 				($latlong),
 				Yii::app()->db->quoteValue('eventbrite'),
-				$event['id'],
+				Yii::app()->db->quoteValue($event['id']),
 				Yii::app()->db->quoteValue(json_encode($event)),
 				$isActive,
 				time(),
@@ -119,9 +159,15 @@ class HubEventbrite
 			);
 		} else {
 			$sql = sprintf(
-				'INSERT INTO event (code, title, text_short_desc, date_started, date_ended, email_contact, full_address, address_country_code, latlong_address, vendor, vendor_code, json_original, is_active, date_added, date_modified) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+				'INSERT INTO event (
+				code, title, text_short_desc, date_started, date_ended, 
+				email_contact, full_address, address_country_code, latlong_address, vendor, 
+				vendor_code, json_original, is_active, date_added, date_modified) VALUES (
+				%s, %s, %s, %s, %s, 
+				%s, %s, %s, %s, %s, 
+				%s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE code=VALUES(code), title=VALUES(title), text_short_desc=VALUES(text_short_desc), date_started=VALUES(date_started), date_ended=VALUES(date_ended), at=VALUES(at), email_contact=VALUES(email_contact), full_address=VALUES(full_address), address_country_code=VALUES(address_country_code), latlong_address=VALUES(latlong_address), vendor=VALUES(vendor), vendor_code=VALUES(vendor_code), json_original=VALUES(json_original), is_active=VALUES(is_active), date_modified=VALUES(date_modified); ',
-				$event['id'],
+				Yii::app()->db->quoteValue($event['id']),
 				Yii::app()->db->quoteValue($event['name']['text']),
 				Yii::app()->db->quoteValue($event['description']['text']),
 				strtotime($event['start']['utc']),
@@ -131,16 +177,13 @@ class HubEventbrite
 				$addressCountryCode,
 				($latlong),
 				Yii::app()->db->quoteValue('eventbrite'),
-				$event['id'],
+				Yii::app()->db->quoteValue($event['id']),
 				Yii::app()->db->quoteValue(json_encode($event)),
 				$isActive,
 				time(),
 				time()
 			);
 		}
-
-		//echo $sql;
-		//exit;
 
 		return $sql;
 	}
@@ -177,7 +220,7 @@ class HubEventbrite
 				$mEventRegistration = EventRegistration::model()->findAllByAttributes(['event_vendor_code' => $event_vendor_code, 'registration_code' => $registration_code]);
 				if (!empty($mEventRegistration)) {
 					foreach ($mEventRegistration as $eventRegistration) {
-						$update = HUB::updateBumiIndianStatusForEventRegistration($eventRegistration);
+						$update = HubBumi::updateIsBumiIndianForEventRegistration($eventRegistration);
 					}
 				}
 			}

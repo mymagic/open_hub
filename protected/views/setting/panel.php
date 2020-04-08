@@ -31,6 +31,17 @@ $this->menu = array(
 )); ?>
 
 <fieldset class="margin-top-lg">
+<legend><?php echo Yii::t('backend', 'General') ?></legend>
+<div class="form-group">
+	<div class="col-sm-2"><?php echo Yii::t('backend', 'Master Organization') ?></div>
+	<div class="col-sm-10">
+		<?php echo $form->bsTextField($model['organization-master-code'], 'value', array('name' => 'Setting[organization-master-code]')); ?>
+		<p class="help-block"><?php echo Yii::t('backend', 'Insert the UUID code of the master organization here. A master organization is the owner of this installation.') ?></p>
+	</div>
+</div>
+</fieldset>
+
+<fieldset class="margin-top-lg">
 <legend><?php echo Yii::t('backend', 'SEO') ?></legend>
 <div class="form-group">
 	<div class="col-sm-2"><?php echo Yii::t('backend', 'Meta Title') ?></div>

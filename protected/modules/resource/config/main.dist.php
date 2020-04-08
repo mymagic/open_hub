@@ -1,14 +1,9 @@
 <?php
 
 return array(
-	'import' => array(
-		'application.modules.resource.models.*',
-		'application.modules.resource.models.neo4j.*',
-	),
-
 	'modules' => array(
 		'resource' => array(
-			'emailTeam' => 'exiang83+tech@gmail.com'
+			'emailTeam' => 'email@gmail.com'
 		),
 	),
 
@@ -18,7 +13,7 @@ return array(
 				//
 				// resource
 				'resource/<id:\d+>' => 'resource/frontend/view',
-				'resource/<slug>' => 'resource/frontend/viewBySlug',
+				'resource/slug/<slug>' => 'resource/frontend/viewBySlug',
 				'resource/by/<id:\d+>' => 'resource/frontend/organization',
 				'<language:(ms|en|zh)>/resource/<slug>' => 'resource/frontend/viewBySlug',
 				'<language:(ms|en|zh)>/resource/<id:\d+>' => 'resource/frontend/view',

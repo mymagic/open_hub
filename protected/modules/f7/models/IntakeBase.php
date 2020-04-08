@@ -1,34 +1,34 @@
 <?php
 
-
-/**
- * This is the model class for table "intake".
- *
- * The followings are the available columns in table 'intake':
-			 * @property integer $id
-			 * @property string $code
-			 * @property string $slug
-			 * @property string $title
-			 * @property string $text_oneliner
-			 * @property string $text_short_description
-			 * @property string $image_logo
-			 * @property integer $date_started
-			 * @property integer $date_ended
-			 * @property integer $is_active
-			 * @property integer $is_highlight
-			 * @property string $json_extra
-			 * @property integer $date_added
-			 * @property integer $date_modified
- *
- * The followings are the available model relations:
- * @property Form2intake[] $form2intakes
- * @property Impact[] $impacts
- * @property Industry[] $industries
- * @property Persona[] $personas
- * @property Sdg[] $sdgs
- * @property StartupStage[] $startupStages
- * @property Tag2intake[] $tag2intakes
- */
+ /**
+  * This is the model class for table "intake".
+  *
+  * The followings are the available columns in table 'intake':
+  *
+  * @property int $id
+  * @property string $code
+  * @property string $slug
+  * @property string $title
+  * @property string $text_oneliner
+  * @property string $text_short_description
+  * @property string $image_logo
+  * @property int $date_started
+  * @property int $date_ended
+  * @property int $is_active
+  * @property int $is_highlight
+  * @property string $json_extra
+  * @property int $date_added
+  * @property int $date_modified
+  *
+  * The followings are the available model relations:
+  * @property Form2intake[] $form2intakes
+  * @property Impact[] $impacts
+  * @property Industry[] $industries
+  * @property Persona[] $personas
+  * @property Sdg[] $sdgs
+  * @property StartupStage[] $startupStages
+  * @property Tag2intake[] $tag2intakes
+  */
  class IntakeBase extends ActiveRecordBase
  {
  	public $uploadPath;
@@ -78,7 +78,7 @@
  	}
 
  	/**
- 	 * @return array validation rules for model attributes.
+ 	 * @return array validation rules for model attributes
  	 */
  	public function rules()
  	{
@@ -100,14 +100,14 @@
  	}
 
  	/**
- 	 * @return array relational rules.
+ 	 * @return array relational rules
  	 */
  	public function relations()
  	{
  		// NOTE: you may need to adjust the relation name and the related
  		// class name for the relations automatically generated below.
  		return array(
-			'form2intakes' => array(self::HAS_MANY, 'Form2intake', 'intake_id'),
+			'form2intakes' => array(self::HAS_MANY, 'Form2Intake', 'intake_id'),
 			'impacts' => array(self::MANY_MANY, 'Impact', 'impact2intake(intake_id, impact_id)'),
 			'industries' => array(self::MANY_MANY, 'Industry', 'industry2intake(intake_id, industry_id)'),
 			'personas' => array(self::MANY_MANY, 'Persona', 'persona2intake(intake_id, persona_id)'),
@@ -150,7 +150,7 @@
  		$return['inputSdgs'] = Yii::t('app', 'Sdgs');
 
  		// meta
- 		$return = array_merge((array)$return, array_keys($this->_dynamicFields));
+ 		$return = array_merge((array) $return, array_keys($this->_dynamicFields));
  		foreach ($this->_metaStructures as $metaStruct) {
  			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
  		}
@@ -168,13 +168,13 @@
  	 * - Pass data provider to CGridView, CListView or any similar widget.
  	 *
  	 * @return CActiveDataProvider the data provider that can return the models
- 	 * based on the search/filter conditions.
+ 	 *                             based on the search/filter conditions
  	 */
  	public function search()
  	{
  		// @todo Please modify the following code to remove attributes that should not be searched.
 
- 		$criteria = new CDbCriteria;
+ 		$criteria = new CDbCriteria();
 
  		$criteria->compare('id', $this->id);
  		$criteria->compare('code', $this->code, true);
@@ -326,7 +326,9 @@
  	/**
  	 * Returns the static model of the specified AR class.
  	 * Please note that you should have this exact method in all your CActiveRecord descendants!
- 	 * @param string $className active record class name.
+ 	 *
+ 	 * @param string $className active record class name
+ 	 *
  	 * @return Intake the static model class
  	 */
  	public static function model($className = __CLASS__)
@@ -336,7 +338,8 @@
 
  	/**
  	 * This is invoked before the record is validated.
- 	 * @return boolean whether the record should be saved.
+ 	 *
+ 	 * @return bool whether the record should be saved
  	 */
  	public function beforeValidate()
  	{
@@ -370,7 +373,8 @@
 
  	/**
  	 * This is invoked before the record is saved.
- 	 * @return boolean whether the record should be saved.
+ 	 *
+ 	 * @return bool whether the record should be saved
  	 */
  	protected function beforeSave()
  	{
@@ -483,12 +487,12 @@
 				'tagBindingTableTagId' => 'tag_id',
 				'cacheID' => 'cacheTag2Intake',
 				'createTagsAutomatically' => true,
-			)
+			),
 		);
  	}
 
  	/**
- 	 * These are function for foregin refer usage
+ 	 * These are function for foregin refer usage.
  	 */
  	public function getForeignReferList($isNullable = false, $is4Filter = false)
  	{
@@ -506,6 +510,7 @@
  			foreach ($result as $r) {
  				$newResult[$r['key']] = $r['title'];
  			}
+
  			return $newResult;
  		}
 
@@ -523,8 +528,8 @@
  	}
 
  	/**
- 	* These are function for spatial usage
- 	*/
+ 	 * These are function for spatial usage.
+ 	 */
  	public function fixSpatial()
  	{
  	}
@@ -576,7 +581,7 @@
  	public function addIndustry($key)
  	{
  		if ($this->hasNoIndustry($key)) {
- 			$many2many = new Industry2Intake;
+ 			$many2many = new Industry2Intake();
  			$many2many->intake_id = $this->id;
  			$many2many->industry_id = $key;
 
@@ -652,7 +657,7 @@
  	public function addPersona($key)
  	{
  		if ($this->hasNoPersona($key)) {
- 			$many2many = new Persona2Intake;
+ 			$many2many = new Persona2Intake();
  			$many2many->intake_id = $this->id;
  			$many2many->persona_id = $key;
 
@@ -728,7 +733,7 @@
  	public function addStartupStage($key)
  	{
  		if ($this->hasNoStartupStage($key)) {
- 			$many2many = new StartupStage2Intake;
+ 			$many2many = new StartupStage2Intake();
  			$many2many->intake_id = $this->id;
  			$many2many->startup_stage_id = $key;
 
@@ -804,7 +809,7 @@
  	public function addImpact($key)
  	{
  		if ($this->hasNoImpact($key)) {
- 			$many2many = new Impact2Intake;
+ 			$many2many = new Impact2Intake();
  			$many2many->intake_id = $this->id;
  			$many2many->impact_id = $key;
 
@@ -880,7 +885,7 @@
  	public function addSdg($key)
  	{
  		if ($this->hasNoSdg($key)) {
- 			$many2many = new Sdg2Intake;
+ 			$many2many = new Sdg2Intake();
  			$many2many->intake_id = $this->id;
  			$many2many->sdg_id = $key;
 

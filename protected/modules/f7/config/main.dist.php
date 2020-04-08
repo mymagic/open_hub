@@ -1,22 +1,7 @@
 <?php
 
 return array(
-	'import' => array(
-		'application.modules.f7.models.*',
-	),
-
-	'modules' => array(
-		'f7' => array(
-		),
-	),
-
 	'components' => array(
-		'request' => array(
-			'noValidationRegex' => array(
-				'f7/form/import*',
-			),
-		),
-
 		'urlManager' => array(
 			'rules' => array(
 				//
@@ -28,5 +13,5 @@ return array(
 				'f7/publish/<action:(index|view|edit|save|confirm)>/<slug>' => 'f7/publish/<action>',
 			),
 		),
-	),
+	)
 );

@@ -5,9 +5,9 @@ mkdir _release/tmp
 
 # git submodule update --init --recursive --force
 
-mkdir -p _release/tmp/public_html/ && cp -r public_html/ _release/tmp/public_html
-mkdir -p _release/tmp/protected/ && cp -r protected/ _release/tmp/protected
-mkdir -p _release/tmp/framework/ && cp -r framework/ _release/tmp/framework
+mkdir -p _release/tmp/public_html/ && cp -r public_html/ _release/tmp/public_html/
+mkdir -p _release/tmp/protected/ && cp -r protected/ _release/tmp/protected/
+mkdir -p _release/tmp/framework/ && cp -r framework/ _release/tmp/framework/
 cp LICENSE _release/tmp/LICENSE
 
 rm _release/tmp/protected/.env

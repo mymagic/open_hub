@@ -56,7 +56,7 @@ class SwaggerController extends Controller
 		}
 
 		// find all api from module /module/data/api folder
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			$modulePath = Yii::getPathOfAlias('modules');
 			$filePath = sprintf('%s/%s/data/api', $modulePath, $moduleKey);

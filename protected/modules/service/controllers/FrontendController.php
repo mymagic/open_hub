@@ -47,7 +47,7 @@ class FrontendController extends Controller
 		$service_list = HUB::listServiceBookmarkable();
 		$service_list_array = array();
 		//$selected_service_list = HUB::listServiceBookmarkByUser($user);
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 
 		foreach ($service_list as $key => $service) {
 			$buttons = array();

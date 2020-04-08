@@ -14,7 +14,7 @@ return array(
 		'view' => 'admin, create, update, delete',
 	),
 	'admin' => array(
-		'list' => array('id', 'vendor', 'vendor_code', 'title', 'date_started', 'at', 'is_active'),
+		'list' => array('id', 'vendor', 'vendor_code', 'title', 'date_started', 'at', 'is_active', 'is_survey_enabled'),
 		'sortDefaultOrder' => 't.date_started DESC',
 	),
 	'structure' => array(

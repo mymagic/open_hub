@@ -162,10 +162,15 @@ class SettingController extends Controller
 
 	public function actionPanel()
 	{
-		// seo
-		$model['seo-meta-title'] = $this->loadModelByCode('seo-meta-title');
-		$model['seo-meta-keywords'] = $this->loadModelByCode('seo-meta-keywords');
-		$model['seo-meta-description'] = $this->loadModelByCode('seo-meta-description');
+		// auto create if not found
+		$model['seo-meta-title'] = (!Setting::isCodeExists('seo-meta-title')) ? Setting::setSetting('seo-meta-title', '', 'string') : $this->loadModelByCode('seo-meta-title');
+
+		$model['seo-meta-keywords'] = (!Setting::isCodeExists('seo-meta-keywords')) ? Setting::setSetting('seo-meta-keywords', '', 'text') : $this->loadModelByCode('seo-meta-keywords');
+
+		$model['seo-meta-description'] = (!Setting::isCodeExists('seo-meta-description')) ? Setting::setSetting('seo-meta-description', '', 'text') : $this->loadModelByCode('seo-meta-description');
+		
+		$model['organization-master-code'] = (!Setting::isCodeExists('organization-master-code')) ? Setting::setSetting('organization-master-code', '', 'string') : $this->loadModelByCode('organization-master-code');
+
 
 		if (isset($_POST['Setting'])) {
 			// seo
@@ -175,6 +180,10 @@ class SettingController extends Controller
 			$model['seo-meta-keywords']->save(false);
 			$model['seo-meta-description']->value = $_POST['Setting']['seo-meta-description'];
 			$model['seo-meta-description']->save(false);
+
+			// organization
+			$model['organization-master-code']->value = $_POST['Setting']['organization-master-code'];
+			$model['organization-master-code']->save(false);
 
 			// when done
 			Notice::flash(Yii::t('backend', 'Your settings have been saved successfully'), Notice_SUCCESS);
@@ -237,6 +246,7 @@ class SettingController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 
@@ -246,6 +256,7 @@ class SettingController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested setting does not exist.');
 		}
+
 		return $model;
 	}
 

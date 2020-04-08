@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,7 +9,9 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
@@ -18,7 +19,7 @@ class LingualController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 *             using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout = 'backend';
 
@@ -42,6 +43,7 @@ class LingualController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -106,7 +108,7 @@ class LingualController extends Controller
 			$buffer = "<?php\nreturn array (\n";
 			$totalLine = count($_POST['langKey']);
 
-			for ($i = 0; $i < $totalLine; $i++) {
+			for ($i = 0; $i < $totalLine; ++$i) {
 				$buffer .= sprintf("\n\t'%s' => '%s',", addcslashes($_POST['langKey'][$i], "'"), addcslashes(trim($_POST['langValue'][$i]), "'"));
 			}
 			$buffer .= "\n);\n?>";
@@ -126,6 +128,7 @@ class LingualController extends Controller
 
 	public function actionEditPredefined($scope)
 	{
+		$canSave = false;
 		$filePath = Yii::getPathOfAlias('data') . DIRECTORY_SEPARATOR . 'message' . DIRECTORY_SEPARATOR . $scope . '.tag.tpl';
 
 		if (isset($_POST['YII_CSRF_TOKEN']) && isset($_POST['content'])) {

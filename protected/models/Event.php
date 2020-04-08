@@ -97,17 +97,19 @@ class Event extends EventBase
 		// will receive user inputs.
 		return [
 			['code, title, date_started, vendor', 'required'],
-			['date_started, date_ended, is_paid_event, is_cancelled, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true],
+			['date_started, date_ended, is_paid_event, is_cancelled, is_active, is_survey_enabled, date_added, date_modified', 'numerical', 'integerOnly' => true],
 			['code, event_group_code, vendor_code', 'length', 'max' => 64],
 			['title, genre, funnel', 'length', 'max' => 128],
 			['url_website, at, full_address, email_contact', 'length', 'max' => 255],
 			['vendor', 'length', 'max' => 32],
+			array('address_zip', 'length', 'max' => 16),
+			array('address_line1, address_line2, address_city, address_state', 'length', 'max' => 128),
 			['address_country_code', 'length', 'max' => 2],
 			['address_state_code', 'length', 'max' => 6],
 			['text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, latlong_address, email_contact, is_cancelled, is_active, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
+			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, address_line1, address_line2, address_zip, address_city, address_state, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
 			// meta
 			['_dynamicData', 'safe'],
 		];
@@ -142,6 +144,7 @@ class Event extends EventBase
 		// class name for the relations automatically generated below.
 		return [
 			'eventGroup' => [self::BELONGS_TO, 'EventGroup', 'event_group_code'],
+			'country' => [self::BELONGS_TO, 'Country', ['address_country_code' => 'code']],
 			'addressCountry' => [self::BELONGS_TO, 'Country', 'address_country_code'],
 			'addressState' => [self::BELONGS_TO, 'State', 'address_state_code'],
 			'industries' => [self::MANY_MANY, 'Industry', 'event2industry(event_id, industry_id)'],
@@ -187,6 +190,7 @@ class Event extends EventBase
 			'isCancelled' => ['condition' => 't.is_cancelled = 1'],
 			'isNotCancelled' => ['condition' => 't.is_cancelled != 1'],
 			'isActive' => ['condition' => 't.is_active = 1'],
+			'isSurveyEnabled' => ['condition' => 't.is_survey_enabled = 1'],
 		];
 	}
 
@@ -248,12 +252,12 @@ class Event extends EventBase
 		$criteria = new CDbCriteria();
 		$criteria->together = true;
 
-		$criteria->compare('id', $this->id, false, $params['compareOperator']);
-		$criteria->compare('code', $this->code, true, $params['compareOperator']);
+		$criteria->compare('t.id', $this->id, false, $params['compareOperator']);
+		$criteria->compare('t.code', $this->code, true, $params['compareOperator']);
 		$criteria->compare('event_group_code', $this->event_group_code, true, $params['compareOperator']);
-		$criteria->compare('title', $this->title, true, $params['compareOperator']);
+		$criteria->compare('t.title', $this->title, true, $params['compareOperator']);
 		$criteria->compare('text_short_desc', $this->text_short_desc, true, $params['compareOperator']);
-		$criteria->compare('url_website', $this->url_website, true, $params['compareOperator']);
+		$criteria->compare('t.url_website', $this->url_website, true, $params['compareOperator']);
 		if (!empty($this->sdate_started) && !empty($this->edate_started)) {
 			$sTimestamp = strtotime($this->sdate_started);
 			$eTimestamp = strtotime("{$this->edate_started} +1 day");
@@ -276,7 +280,8 @@ class Event extends EventBase
 		$criteria->compare('latlong_address', $this->latlong_address, true, $params['compareOperator']);
 		$criteria->compare('email_contact', $this->email_contact, true, $params['compareOperator']);
 		$criteria->compare('is_cancelled', $this->is_cancelled, false, $params['compareOperator']);
-		$criteria->compare('is_active', $this->is_active, false, $params['compareOperator']);
+		$criteria->compare('t.is_active', $this->is_active, false, $params['compareOperator']);
+		$criteria->compare('is_survey_enabled', $this->is_survey_enabled, false, $params['compareOperator']);
 		//$criteria->compare('json_original',$this->json_original,true, $params['compareOperator']);
 		//$criteria->compare('json_extra',$this->json_extra,true);
 		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
@@ -309,6 +314,13 @@ class Event extends EventBase
 			}
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
+
+		// either event or event group title
+		$criteria2 = new CDbCriteria();
+		$criteria2->together = true;
+		$criteria2->with = ['eventGroup'];
+		$criteria2->compare('eventGroup.title', $this->title, true, 'OR');
+		$criteria->mergeWith($criteria2, 'OR');
 
 		return new CActiveDataProvider($this, [
 			'criteria' => $criteria,
@@ -396,8 +408,12 @@ class Event extends EventBase
 			'urlWebsite' => $this->url_website,
 			'dateStarted' => $this->date_started,
 			'fDateStarted' => $this->renderDateStarted(),
+			'fDateStartedDateOnly' => $this->renderDateStarted('date'),
+			'fDateStartedTimeOnly' => $this->renderDateStarted('time'),
 			'dateEnded' => $this->date_ended,
 			'fDateEnded' => $this->renderDateEnded(),
+			'fDateEndedDateOnly' => $this->renderDateEnded('date'),
+			'fDateEndedTimeOnly' => $this->renderDateEnded('time'),
 			'isPaidEvent' => $this->is_paid_event,
 			'genre' => $this->genre,
 			'funnel' => $this->funnel,
@@ -411,6 +427,7 @@ class Event extends EventBase
 			'emailContact' => $this->email_contact,
 			'isCancelled' => $this->is_cancelled,
 			'isActive' => $this->is_active,
+			'isSurveyEnabled' => $this->is_survey_enabled,
 			'dateAdded' => $this->date_added,
 			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
@@ -424,6 +441,9 @@ class Event extends EventBase
 				'urlBackendView' => Yii::app()->createAbsoluteUrl('/event/view', ['id' => $this->id]),
 			];
 			$return = array_merge($return, $set);
+		}
+		if (!in_array('-eventGroup', $params) && !empty($this->eventGroup)) {
+			$return['eventGroup'][] = $this->eventGroup->toApi(['-event', $params['config']]);
 		}
 
 		// many2many
@@ -444,6 +464,28 @@ class Event extends EventBase
 		}
 
 		return $return;
+	}
+
+	public function renderDateStarted($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_started, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_started, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_started, 'standard', 'standard', '-', $this->getTimezone());
+		}
+	}
+
+	public function renderDateEnded($format = '')
+	{
+		if ($format == 'date') {
+			return Html::formatDateTimezone($this->date_ended, 'standard', '', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == 'time') {
+			return Html::formatDateTimezone($this->date_ended, '', 'standard', '-', $this->getTimezone(), 'GMT', true);
+		} elseif ($format == '') {
+			return Html::formatDateTimezone($this->date_ended, 'standard', 'standard', '-', $this->getTimezone());
+		}
 	}
 
 	public function hasSurveyForm()
@@ -472,11 +514,18 @@ class Event extends EventBase
 		return Event::model()->find('t.title=:title', [':title' => trim($title)]);
 	}
 
-	public function hasEventOwner($organizationCode)
+	public function hasEventOwner($organizationCode, $asRoleCode='')
 	{
 		foreach ($this->eventOwners as $eventOwner) {
 			if ($eventOwner->organization_code == $organizationCode) {
-				return $eventOwner;
+				if(!empty($asRoleCode) && $eventOwner->as_role_code == $asRoleCode)
+				{
+					return $eventOwner;
+				}
+				else
+				{
+					return $eventOwner;
+				}
 			}
 		}
 
@@ -496,5 +545,19 @@ class Event extends EventBase
 			'criteria' => $criteria,
 			'sort' => ['defaultOrder' => 't.date_started DESC'],
 		]);
+	}
+
+	public function resetAddressParts()
+	{
+		if (!empty($this->full_address)) {
+			$addressParts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($this->full_address));
+			$this->address_line1 = $addressParts['line1'];
+			$this->address_line2 = $addressParts['line2'];
+			$this->address_zip = $addressParts['zipcode'];
+			$this->address_city = $addressParts['city'];
+			$this->address_state = $addressParts['state'];
+			$this->address_country_code = $addressParts['countryCode'];
+			$this->setLatLongAddress(array($addressParts['lat'], $addressParts['lng']));
+		}
 	}
 }

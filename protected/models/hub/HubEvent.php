@@ -33,12 +33,34 @@ class HubEvent
 
 	public static function createEvent($title, $params = array())
 	{
-		$event = new Event();
-		$event->title = $title;
-		$event->date_started = $params['date_started'];
-		$event->date_ended = $params['date_ended'];
-		$event->vendor = $params['vendor'];
-		$event->save();
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$event = new Event();
+			$event->title = $title;
+			$event->attributes = $params['event'];
+
+			if (!empty($event->full_address)) {
+				$event->resetAddressParts();
+			}
+
+			if (!empty($event->date_started)) {
+				$event->date_started = strtotime($event->date_started);
+			}
+			if (!empty($event->date_ended)) {
+				$event->date_ended = strtotime($event->date_ended);
+			}
+
+			if ($event->save()) {
+				$log = Yii::app()->esLog->log(sprintf("created '%s'", $event->title), 'event', array('trigger' => 'HubEvent::createEvent', 'model' => 'Event', 'action' => 'create', 'id' => $event->id, 'eventId' => $event->id), '', array());
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($event->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
 
 		return $event;
 	}
@@ -238,7 +260,7 @@ class HubEvent
 
 		foreach ($events as $event) {
 			// event must be active and not cancel
-			if ($event->is_active == 1 && $event->is_cancelled != 1) {
+			if ($event->is_active == 1 && $event->is_cancelled != 1 && $event->is_survey_enabled) {
 				$participantDetails = array();
 				foreach ($event->eventRegistrationsAttended as $eventRegistration) {
 					$participantDetail['email'] = $eventRegistration->email;
@@ -291,5 +313,41 @@ class HubEvent
 		}
 
 		return $result;
+	}
+
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
+
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
+
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
+		} else {
+			$data = Event::model()->findAll(array(
+				'condition' => 'is_active=1 AND is_cancelled!=1 AND (
+					(:timestampStart >= date_started AND :timestampEnd <= date_ended) 
+					OR 
+					(:timestampStart <= date_started AND :timestampEnd >= date_started)
+					OR 
+					(:timestampStart <= date_ended AND :timestampEnd >= date_ended)
+					OR 
+					(:timestampStart <= date_started AND :timestampEnd >= date_ended) 
+				)',
+				'params' => array(':timestampStart' => $timestampStart, ':timestampEnd' => $timestampEnd),
+				'offset' => ($page - 1) * $limit,
+				'limit' => $limit,
+				'order' => 'date_started DESC'
+			));
+
+			$status = 'success';
+			$msg = '';
+		}
+
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
 	}
 }

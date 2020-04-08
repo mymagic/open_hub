@@ -34,6 +34,7 @@ class Page extends PageBase
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested content does not exist.');
 		}
+
 		return $model;
 	}
 }

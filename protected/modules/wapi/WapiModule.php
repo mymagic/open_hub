@@ -32,7 +32,7 @@ class WapiModule extends WebModule
 
 		// import the module-level models and components
 		$imports[] = 'wapi.components.*';
-		foreach (YeeModule::getParsableModules() as $moduleKey => $moduleParams) {
+		foreach (YeeModule::getActiveParsableModules() as $moduleKey => $moduleParams) {
 			$imports[] = sprintf('application.modules.%s.models.*', $moduleKey);
 		}
 		$this->setImport($imports);

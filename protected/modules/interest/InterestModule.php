@@ -126,19 +126,19 @@ class InterestModule extends WebModule
 		//cpanelNavDashboard , cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
 		switch ($forInterface) {
 			case 'backendNavService': {
-					return array(
+					/*return array(
 						array(
-							'label' => Yii::t('backend', 'Interest'), 'url' => '#',
+							'label' => Yii::t('interest', 'Interest'), 'url' => '#',
 							'visible' => Yii::app()->user->getState('accessBackend') == true,
 							'active' => $controller->activeMenuMain == 'interest' ? true : false,
 							'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 							'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 							'items' => array(
-								array('label' => Yii::t('app', 'Overview'), 'url' => array('/interest/interest/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								array('label' => Yii::t('app', 'Create'), 'url' => array('/interest/interest/create'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+								array('label' => Yii::t('interest', 'Manage All'), 'url' => array('/interest/interest/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+								array('label' => Yii::t('interest', 'Create'), 'url' => array('/interest/interest/create'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
 							),
 						),
-					);
+					);*/
 					break;
 				}
 			case 'cpanelNavDashboard': {

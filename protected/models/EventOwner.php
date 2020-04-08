@@ -52,6 +52,9 @@ class EventOwner extends EventOwnerBase
 	{
 		// custom code here
 		// ...
+		if (empty($this->as_role_code)) {
+			$this->as_role_code = 'owner';
+		}
 
 		return parent::beforeSave();
 	}
