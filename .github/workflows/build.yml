@@ -30,8 +30,6 @@ jobs:
     
     - name: Pack Release
       run: |
-        rm -r ./_release/tmp
-        rm -r ./_release/tmp/
         mkdir ./_release/
         mkdir ./_release/tmp/
         mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html/ ./_release/tmp/public_html/
