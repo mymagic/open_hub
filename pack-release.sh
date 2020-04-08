@@ -19,13 +19,13 @@ rm -rf ./_release/tmp/.git*
 
 mkdir ./_release/tmp/protected/runtime/
 mkdir ./_release/tmp/protected/overrides/
-mkdir ./_release/tmp/public_html/assets/
+#mkdir ./_release/tmp/public_html/assets/
 
 chmod -R 777 ./_release/tmp/protected/vendor
 chmod -R 777 ./_release/tmp/protected/messages
 chmod -R 777 ./_release/tmp/public_html/uploads
 chmod -R 777 ./_release/tmp/protected/runtime
-chmod -R 777 ./_release/tmp/public_html/assets
+#chmod -R 777 ./_release/tmp/public_html/assets
 chmod -R 777 ./_release/tmp/protected/data
 chmod -R 777 ./_release/tmp/protected/modules
 
