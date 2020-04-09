@@ -35,9 +35,9 @@ jobs:
         mkdir -p ./_release/tmp/protected/ && cp -r ./protected ./_release/tmp/ &&
         mkdir -p ./_release/tmp/framework/ && cp -r ./framework ./_release/tmp/ &&
         cp LICENSE ./_release/tmp/LICENSE && 
-        mkdir -mp 777 ./_release/tmp/protected/overrides/ && 
-        mkdir -mp 777 ./_release/tmp/protected/runtime/ && 
-        mkdir -mp 777 ./_release/tmp/public_html/assets/
+        mkdir -m 777 ./_release/tmp/protected/overrides/ && 
+        mkdir -m 777 ./_release/tmp/protected/runtime/ && 
+        mkdir -m 777 ./_release/tmp/public_html/assets/
       
     - name: Pack Release
       working-directory: ./_release/tmp/
