@@ -21,6 +21,13 @@ jobs:
         ini-values: post_max_size=48M, short_open_tag=On, output_buffering=20480  
         tools: phpunit
     
+    - name: Install composer dependencies
+      working-directory: ./protected
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+      
     - name: Prepare Release
       run: |
         mkdir ./_release/ && mkdir ./_release/tmp/
@@ -34,7 +41,9 @@ jobs:
         mkdir -m 777 ./_release/tmp/public_html/assets/ && 
         mkdir -m 777 ./_release/tmp/public_html/uploads/ && 
         rm -rf ./_release/tmp/.git* &&
-        chmod -R 777 ./_release/tmp/protected/data/
+        chmod -R 777 ./_release/tmp/protected/data/ &&
+        chmod -R 777 ./_release/tmp/protected/modules/ && 
+        chmod -R 777 ./_release/tmp/protected/vendor/ 
       
     - name: Pack Release
       working-directory: ./_release/tmp/
