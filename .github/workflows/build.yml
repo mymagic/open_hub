@@ -37,7 +37,10 @@ jobs:
         cp LICENSE ./_release/tmp/LICENSE && 
         mkdir -m 777 ./_release/tmp/protected/overrides/ && 
         mkdir -m 777 ./_release/tmp/protected/runtime/ && 
-        mkdir -m 777 ./_release/tmp/public_html/assets/
+        mkdir -m 777 ./_release/tmp/protected/messages/ && 
+        mkdir -m 777 ./_release/tmp/public_html/assets/ && 
+        mkdir -m 777 ./_release/tmp/public_html/uploads/ && 
+        rm -rf ./_release/tmp/.git*
       
     - name: Pack Release
       working-directory: ./_release/tmp/
