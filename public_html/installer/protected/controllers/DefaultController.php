@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Yaml\Yaml;
+use Exiang\YsUtil\YsUtil;
 
 class DefaultController extends CController
 {
@@ -162,7 +163,9 @@ class DefaultController extends CController
 			}
 
 			//echo $envBuffer;exit;
-			chmod($this->envFilePath, 0777);
+			if (file_exists($this->envFilePath)) {
+				chmod($this->envFilePath, 0777);
+			}
 			file_put_contents($this->envFilePath, $envBuffer);
 
 			$this->redirect(array('setupDb'));
