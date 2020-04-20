@@ -8,9 +8,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage State'), 'url' => array('/state/admin')),
-	array('label' => Yii::t('app', 'Create State'), 'url' => array('/state/create')),
-	array('label' => Yii::t('app', 'Update State'), 'url' => array('/state/update', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage State'), 'url' => array('/state/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create State'), 'url' => array('/state/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update State'), 'url' => array('/state/update', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	),
 );
 ?>
 

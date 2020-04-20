@@ -9,7 +9,10 @@ $this->breadcrumbs = array(
 
 if (empty($forRecord)) {
 	$this->menu = array(
-	array('label' => Yii::t('app', 'Manage Proof'), 'url' => array('/proof/admin')),
+	array(
+		'label' => Yii::t('app', 'Manage Proof'), 'url' => array('/proof/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
 );
 }
 ?>

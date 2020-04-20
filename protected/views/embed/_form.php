@@ -32,18 +32,23 @@
 			<?php echo $form->bsError($model, 'code'); ?>
 		</div>
 	</div>
-												
+
 
 	<div class="form-group <?php echo $model->hasErrors('text_note') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'text_note'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'text_note', array('rows' => 2, 'disabled' => Yii::app()->user->isDeveloper ? false : true)); ?>
+			<?php echo $form->bsTextArea($model, 'text_note', array(
+				'rows' => 2,
+				// 'disabled' => Yii::app()->user->isDeveloper ? false : true
+				'disabled' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]]) ? false : true
+				)); ?>
 			<?php echo $form->bsError($model, 'text_note'); ?>
 		</div>
 	</div>
 
 
-	<?php if (Yii::app()->user->isDeveloper): ?>
+	<?php // if (Yii::app()->user->isDeveloper): ?>
+	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])): ?>
 	<div class="form-group <?php echo $model->hasErrors('is_title_enabled') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_title_enabled'); ?>
 		<div class="col-sm-10">
@@ -87,7 +92,7 @@
 			<?php echo $form->bsError($model, 'is_default'); ?>
 		</div>
 	</div>
-	
+
 	<?php endif; ?>
 
 	<?php if (!$model->isNewRecord): ?>
@@ -97,7 +102,7 @@
 		<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-zh" data-toggle="tab">中文</a></li><?php endif; ?>
 	</ul>
 	<div class="tab-content">
-			
+
 		<?php if (array_key_exists('en', Yii::app()->params['languages'])): ?>
 		<!-- English -->
 		<div class="tab-pane active" id="pane-en">
@@ -145,7 +150,7 @@
 		</div>
 		<!-- /English -->
 		<?php endif; ?>
-		
+
 		<?php if (array_key_exists('ms', Yii::app()->params['languages'])): ?>
 		<!-- Bahasa -->
 		<div class="tab-pane " id="pane-ms">
@@ -193,8 +198,8 @@
 		</div>
 		<!-- /Bahasa -->
 		<?php endif; ?>
-		
-		
+
+
 		<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?>
 		<!-- 中文 -->
 		<div class="tab-pane " id="pane-zh">
@@ -206,7 +211,7 @@
 					<?php echo $form->bsTextField($model, 'title_zh'); ?>
 					<?php echo $form->bsError($model, 'title_zh'); ?>
 				</div>
-			</div>	
+			</div>
 			<?php endif; ?>
 
 			<?php if ($model->is_text_description_enabled): ?>
@@ -242,7 +247,7 @@
 		</div>
 		<!-- /中文 -->
 		<?php endif; ?>
-		
+
 
 	</div>
 	<?php endif; ?>

@@ -55,17 +55,20 @@ class OrganizationController extends Controller
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array(
-					'list', 'view', 'create', 'update', 'admin', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+					'list', 'view', 'create', 'update', 'admin',
+					'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
+					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject'
 				),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('housekeeping'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow',
@@ -85,7 +88,8 @@ class OrganizationController extends Controller
 				'allow',
 				'actions' => array('overview', 'view', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isEcosystem==true',
+				// 'expression' => '$user->isEcosystem==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'deny',  // deny all users
@@ -871,7 +875,8 @@ class OrganizationController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'developer']])) {
 			$tabs['organization'][] = array(
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',

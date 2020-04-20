@@ -532,26 +532,26 @@ class HUB extends Component
 			// is it magic alumni?
 			// todo: filter magic alumni by event only owned by magic
 			if ($filter['magic'] == 1) {
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			}
 			// is it magic sea?
@@ -565,94 +565,94 @@ class HUB extends Component
 					$extraJoin = "INNER JOIN sea_form_basic as sfb ON o.id = sfb.organization_id AND sfb.status = 'approved'";
 				}
 
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				INNER JOIN `meta_structure` as ms1 on ms1.ref_table='organization'
 				INNER JOIN `meta_item` as mi1 on mi1.meta_structure_id=ms1.id
-				
+
 				INNER JOIN `meta_structure` as ms2 on ms2.ref_table='organization'
 				INNER JOIN `meta_item` as mi2 on mi2.meta_structure_id=ms2.id
 
 				%s
 
-				WHERE %s 
+				WHERE %s
 				AND (ms1.code='Organization-idea-membershipType' AND %s AND mi1.ref_id=o.id)
-				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id) 
+				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id)
 
 				GROUP BY o.id ORDER BY o.title ASC) tmp", $extraJoin, $bufferFilter, $ideaMembershipType);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
 
 				INNER JOIN `meta_structure` as ms1 on ms1.ref_table='organization'
 				INNER JOIN `meta_item` as mi1 on mi1.meta_structure_id=ms1.id
-				
+
 				INNER JOIN `meta_structure` as ms2 on ms2.ref_table='organization'
 				INNER JOIN `meta_item` as mi2 on mi2.meta_structure_id=ms2.id
-			
+
 				%s
-				
-				WHERE %s 
+
+				WHERE %s
 				AND (ms1.code='Organization-idea-membershipType' AND %s AND mi1.ref_id=o.id)
-				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id) 
-				
+				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id)
+
 				GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $extraJoin, $bufferFilter, $ideaMembershipType, $offset, $limitPerPage);
 			} elseif ($filter['ecosystem-builder'] == 1) {
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			} else {
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				WHERE %s GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			}
 
@@ -744,11 +744,11 @@ class HUB extends Component
 		}
 		$filter['magic'] = preg_replace('/[^A-Za-z0-9]/', '', $filter['magic']);
 		if ($filter['magic'] === 1) {
-			$tempSql .= 'SELECT o.* FROM organization as `o` 
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+			$tempSql .= 'SELECT o.* FROM organization as `o`
+                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
                     LEFT JOIN persona as persona ON p2o.persona_id=persona.id
 
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
                     LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
                     JOIN event_organization as eo ON eo.organization_id=o.id
@@ -757,11 +757,11 @@ class HUB extends Component
 
 			$sql = sprintf($tempSql, $bufferFilter, $limit);
 		} else {
-			$tempSql .= 'SELECT o.* FROM organization as `o` 
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+			$tempSql .= 'SELECT o.* FROM organization as `o`
+                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
                     LEFT JOIN persona as persona ON p2o.persona_id=persona.id
 
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
                     LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
                     WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s';
@@ -1981,5 +1981,58 @@ class HUB extends Component
 		} catch (Exception $e) {
 			throw new Exception('Failed to remove account from MentorFutureLab2Email table: ' . $e->getMessage());
 		}
+	}
+
+	/**
+	 * to check whether role is allowed to access the route/action
+	 *
+	 * @param string $role
+	 * @param object $controller
+	 * @param string $action this param could be use for custom part to be accessed by the role
+	 *
+	 * @return boolean
+	 **/
+	public function roleCheckerAction($role, $controller, $action = '') {
+		$roles = explode(',',$role);
+
+		/*
+		 * if user session is System Admin and role supplied
+		 */
+		if(in_array('superAdmin',$roles)){
+			// this checkAccess is defined in _accessView & _accessForm to check the route is been set to that role. so if it has been set then do not return true
+			if(!isset($controller->checkAccess)){
+				return true;
+			}
+		}
+
+		if(is_numeric($role)){
+			$column = 'roles.id';
+		} else {
+			$column = 'roles.code';
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->with = ['roles'];
+
+		$condition = "t.module=:module AND t.controller=:controller AND t.action=:action";
+		$params = array(
+            ':module' => !empty($controller->module->id) ? $controller->module->id : '',
+            ':controller' => $controller->id,
+            ':action' => !empty($action) ? $action : $controller->action->id,
+		);
+		if(isset($filter) && isset($value)){
+			$condition .= " AND $filter";
+			$params[':role'] = $value;
+		}
+		$criteria->condition = $condition;
+		$criteria->params = $params;
+
+		$criteria->addInCondition($column,$roles);
+		//var_dump($column, $roles);
+
+		// $count = Access::model()->with('roles')->count($condition, $params);
+		$count = Access::model()->isActive()->count($criteria);
+
+		return ($count > 0) ? true : false;
 	}
 }

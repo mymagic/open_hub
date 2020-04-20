@@ -8,7 +8,9 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Form2Intake'), 'url' => array('/f7/form2Intake/admin')),
+	array(
+		'label' => Yii::t('app', 'Manage Form2Intake'), 'url' => array('/f7/form2Intake/admin'), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
 );
 ?>
 

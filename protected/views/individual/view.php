@@ -8,9 +8,19 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Individual'), 'url' => array('/individual/admin')),
-	array('label' => Yii::t('app', 'Create Individual'), 'url' => array('/individual/create'), 'visible' => Yii::app()->user->isAdmin),
-	array('label' => Yii::t('app', 'Update Individual'), 'url' => array('/individual/update', 'id' => $model->id), 'visible' => Yii::app()->user->isAdmin),
+	array(
+		'label' => Yii::t('app', 'Manage Individual'), 'url' => array('/individual/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Individual'), 'url' => array('/individual/create'),
+		// 'visible' => Yii::app()->user->isAdmin,
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update Individual'), 'url' => array('/individual/update', 'id' => $model->id),
+		// 'visible' => Yii::app()->user->isAdmin,
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')),
 );
 ?>
 
@@ -32,8 +42,12 @@ $this->menu = array(
 				array('name' => 'image_photo', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_photo')),
 				array('name' => 'country_code', 'value' => $model->country->printable_name),
 				array('name' => 'state_code', 'value' => $model->state->title),
+				/*
 				array('name' => 'ic_number', 'visible' => Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin),
 				array('name' => 'mobile_number', 'visible' => Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin),
+				*/
+				array('name' => 'ic_number', 'visible' => Yii::app()->user->getState('accessSensitiveData')),
+				array('name' => 'mobile_number', 'visible' => Yii::app()->user->getState('accessSensitiveData')),
 				array('name' => 'text_address_residential', 'type' => 'raw', 'value' => nl2br($model->text_address_residential)),
 				array('name' => 'can_code',  'type' => 'raw', 'value' => Html::renderBoolean($model->can_code)),
 			),
@@ -70,24 +84,26 @@ $this->menu = array(
 	<div class="panel panel-default new-panel">
 		<div class="panel-heading"><h3 class="panel-title">Insert New Email</h3></div>
 		<div class="panel-body">
-			<div class="form"><?php $individual2Email = new Individual2Email; $form = $this->beginWidget('ActiveForm', array(
-					'action' => $this->createUrl('individual/addIndividual2Email', array('individualId' => $model->id, 'realm' => $realm)),
-					'method' => 'POST',
-					'htmlOptions' => array('class' => 'form-inline')
-				)); ?>
-			
-				<div class="form-group">
-					<?php echo $form->bsTextField($individual2Email, 'user_email', array('placeholder' => 'Email')) ?>
-				</div>
-				<button type="submit" class="btn btn-success">Add</button>
-			
-			<?php $this->endWidget(); ?></div>
+			<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'addIndividual2Email')): ?>
+				<div class="form"><?php $individual2Email = new Individual2Email; $form = $this->beginWidget('ActiveForm', array(
+						'action' => $this->createUrl('individual/addIndividual2Email', array('individualId' => $model->id, 'realm' => $realm)),
+						'method' => 'POST',
+						'htmlOptions' => array('class' => 'form-inline')
+					)); ?>
 
-			<p class="text-muted">
-			You can add new email to this individual profile.
-			</p>
+					<div class="form-group">
+						<?php echo $form->bsTextField($individual2Email, 'user_email', array('placeholder' => 'Email')) ?>
+					</div>
+					<button type="submit" class="btn btn-success">Add</button>
 
+				<?php $this->endWidget(); ?></div>
+
+				<p class="text-muted">
+				You can add new email to this individual profile.
+				</p>
 			<hr />
+			<?php endif; ?>
+
 			<div class="row text-muted">
 				<div class="col-xs-3"><span>Legend:</span></div>
 				<div class="col-xs-3 text-center"><span class="text-info"><?php echo Html::faIcon('fa-circle-o') ?></span> <small>Pending</small></div>
@@ -99,7 +115,7 @@ $this->menu = array(
 	<div id="section-individual2Emails" class="margin-bottom-3x">
 		<span class="text-muted"><?php echo Html::faIcon('fa-spinner fa-spin') ?> Loading...</span>
 	</div>
-	
+
 	<?php Yii::app()->clientScript->registerScript(
 					'backend-individual-view',
 		sprintf("$('#section-individual2Emails').load('%s', function(){});", $this->createUrl('individual/getIndividual2Emails', array('individualId' => $model->id, 'realm' => $realm)))

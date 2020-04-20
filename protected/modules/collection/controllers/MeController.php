@@ -16,7 +16,8 @@ class MeController extends Controller
 		return array(
 			array('allow',  // deny all users
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true || $user->isSuperAdmin==true',
+				// 'expression' => '$user->isAdmin==true || $user->isSuperAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"admin"]])',
 		),
 		array('deny',  // deny all users
 				'users' => array('*'),

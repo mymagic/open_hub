@@ -9,9 +9,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Industry'), 'url' => array('/industry/admin')),
-	array('label' => Yii::t('app', 'Create Industry'), 'url' => array('/industry/create')),
-	array('label' => Yii::t('app', 'View Industry'), 'url' => array('/industry/view', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage Industry'), 'url' => array('/industry/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Industry'), 'url' => array('/industry/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'View Industry'), 'url' => array('/industry/view', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'view')
+	),
 );
 ?>
 

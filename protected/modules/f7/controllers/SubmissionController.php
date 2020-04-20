@@ -40,12 +40,14 @@ class SubmissionController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('view', 'exportCsv', 'exportPdf', 'update', 'view'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'create', 'admin', 'delete', 'deleteConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

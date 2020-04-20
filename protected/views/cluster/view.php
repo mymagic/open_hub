@@ -8,9 +8,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Cluster'), 'url' => array('/cluster/admin')),
-	array('label' => Yii::t('app', 'Create Cluster'), 'url' => array('/cluster/create')),
-	array('label' => Yii::t('app', 'Update Cluster'), 'url' => array('/cluster/update', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage Cluster'), 'url' => array('/cluster/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Cluster'), 'url' => array('/cluster/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update Cluster'), 'url' => array('/cluster/update', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	),
 );
 ?>
 

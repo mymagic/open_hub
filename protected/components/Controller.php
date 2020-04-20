@@ -98,18 +98,41 @@ class Controller extends BaseController
 		$navItems = array(
 			array(
 				'label' => Yii::t('app', 'User') . ' <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
+				'visible' => Yii::app()->user->getState('accessBackend') == true &&
+					!HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'ecosystem'],'checkAccess'=>true]) && (
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'member','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'admin','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'backend','action'=>(object)['id'=>'connect']])
+				),
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 				'items' => array(
-					array('label' => Yii::t('app', 'Member'), 'url' => array('/member/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isMemberManager')),
-					array('label' => Yii::t('app', 'Admin'), 'url' => array('/admin/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isAdminManager')),
-					array('label' => Yii::t('app', 'Connect'), 'url' => array('/backend/connect'), 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isDeveloper')),
+					array(
+						'label' => Yii::t('app', 'Member'), 'url' => Yii::app()->createUrl('member/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isMemberManager')
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'member','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Admin'), 'url' => Yii::app()->createUrl('admin/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isAdminManager')
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'admin','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Connect'), 'url' => Yii::app()->createUrl('backend/connect'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isDeveloper')
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'backend','action'=>(object)['id'=>'connect']])
+					)
 				),
 			),
 			array(
 				'label' => Yii::t('backend', 'Commons') . ' <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('accessBackend') == true,
+				'visible' => Yii::app()->user->getState('accessBackend') == true && (
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organization','action'=>(object)['id'=>'overview']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organization','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationFunding','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationRevenue','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationStatus','action'=>(object)['id'=>'admin']])
+				),
 				'active' => $this->activeMenuMain == 'common' ? true : false,
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
@@ -121,34 +144,79 @@ class Controller extends BaseController
 						'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 						'items' => array(
-							array('label' => Yii::t('app', 'Overview'), 'url' => array('/organization/overview'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Manage All'), 'url' => array('/organization/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Manage Funding'), 'url' => array('/organizationFunding/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
+							array(
+								'label' => Yii::t('app', 'Overview'), 'url' => Yii::app()->createUrl('organization/overview'),
+								'visible' => Yii::app()->user->getState('accessBackend') == true
+							),
+							array(
+								'label' => Yii::t('app', 'Manage All'), 'url' => Yii::app()->createUrl('organization/admin'),
+								'visible' => Yii::app()->user->getState('accessBackend') == true
+							),
+							array(
+								'label' => Yii::t('app', 'Manage Funding'), 'url' => Yii::app()->createUrl('organizationFunding/admin'),
+								// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationFunding','action'=>(object)['id'=>'admin']]) || Yii::app()->user->getState('accessSensitiveData') == true
+							),
 							//array('label' => Yii::t('app', 'Manage Revenue'), 'url' => array('/milestone/adminRevenue'), 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem')),
-							array('label' => Yii::t('app', 'Manage Revenue'), 'url' => array('/organizationRevenue/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
-							array('label' => Yii::t('app', 'Manage Status'), 'url' => array('/organizationStatus/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true),
+							array(
+								'label' => Yii::t('app', 'Manage Revenue'), 'url' => Yii::app()->createUrl('organizationRevenue/admin'),
+								// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationRevenue','action'=>(object)['id'=>'admin']]) || Yii::app()->user->getState('accessSensitiveData') == true
+							),
+							array(
+								'label' => Yii::t('app', 'Manage Status'), 'url' => Yii::app()->createUrl('organizationStatus/admin'),
+								// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true || Yii::app()->user->getState('isSensitiveDataAdmin') == true
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organizationStatus','action'=>(object)['id'=>'admin']]) || Yii::app()->user->getState('accessSensitiveData') == true
+							),
 						),
 					),
 					// array('label'=>Yii::t('app', 'Charge'), 'url'=>array('/charge/admin'), 'visible'=>Yii::app()->user->getState('accessBackend')==true),
-					array('label' => Yii::t('app', 'Individual'), 'url' => array('/individual/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+					array(
+						'label' => Yii::t('app', 'Individual'), 'url' => array('/individual/admin'),
+						// 'visible' => Yii::app()->user->getState('accessBackend') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'individual','action'=>(object)['id'=>'admin']])
+					),
 					array(
 						'label' => Yii::t('backend', 'Event'), 'url' => '#',
-						'visible' => Yii::app()->user->getState('accessBackend') == true,
+						// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+						'visible' => Yii::app()->user->getState('accessBackend') == true && (
+							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'overview']]) ||
+							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventGroup','action'=>(object)['id'=>'admin']]) ||
+							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'admin']]) ||
+							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventRegistration','action'=>(object)['id'=>'admin']])
+						),
 						'active' => $this->activeMenuMain == 'educ8' ? true : false,
 						'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 						'items' => array(
-							array('label' => Yii::t('app', 'Overview'), 'url' => array('/event/overview'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Event Group'), 'url' => array('/eventGroup/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Event'), 'url' => array('/event/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-							array('label' => Yii::t('app', 'Event Registration'), 'url' => array('/eventRegistration/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+							array(
+								'label' => Yii::t('app', 'Overview'), 'url' => array('/event/overview'),
+								// 'visible' => Yii::app()->user->getState('accessBackend') == true
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'overview']])
+							),
+							array(
+								'label' => Yii::t('app', 'Event Group'), 'url' => array('/eventGroup/admin'),
+								// 'visible' => Yii::app()->user->getState('accessBackend') == true
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventGroup','action'=>(object)['id'=>'admin']])
+							),
+							array(
+								'label' => Yii::t('app', 'Event'), 'url' => array('/event/admin'),
+								// 'visible' => Yii::app()->user->getState('accessBackend') == true
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'admin']])
+							),
+							array(
+								'label' => Yii::t('app', 'Event Registration'), 'url' => array('/eventRegistration/admin'),
+								// 'visible' => Yii::app()->user->getState('accessBackend') == true
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventRegistration','action'=>(object)['id'=>'admin']])
+							),
 						),
 					),
 				),
 			),
 			array(
 				'label' => Yii::t('backend', 'Services') . ' <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
+				// 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
+				'visible' => Yii::app()->user->getState('accessBackend') == true && !HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'ecosystem'],'checkAccess'=>true]),
 				'active' => $this->activeMenuMain == 'service' ? true : false,
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
@@ -157,48 +225,142 @@ class Controller extends BaseController
 
 			array(
 				'label' => Yii::t('backend', 'Master Data') . ' <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('isSuperAdmin') == true,
+				// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true,
+				'visible' => (
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'productCategory','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'cluster','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'persona','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'industry','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'impact','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'sdg','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'startupStage','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'legalform','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'country','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'state','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'city','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'service','action'=>(object)['id'=>'admin']])
+				),
 				'active' => $this->activeMenuMain == 'masterData' ? true : false,
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 				'items' => array(
-					array('label' => Yii::t('app', 'Product Category'), 'url' => array('/productCategory/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Cluster'), 'url' => array('/cluster/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Persona'), 'url' => array('/persona/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Industry'), 'url' => array('/industry/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Impact'), 'url' => array('/impact/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'SDG'), 'url' => array('/sdg/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Startup Stages'), 'url' => array('/startupStage/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
-					array('label' => Yii::t('app', 'Legal Form'), 'url' => array('/legalform/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin') == true),
+					array(
+						'label' => Yii::t('app', 'Product Category'), 'url' => array('/productCategory/admin'),
+						//'visible' => Yii::app()->user->getState('isSuperAdmin') == true,
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'productCategory','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Cluster'), 'url' => array('/cluster/admin'),
+						//'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'cluster','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Persona'), 'url' => array('/persona/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'persona','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Industry'), 'url' => array('/industry/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'industry','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Impact'), 'url' => array('/impact/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'impact','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'SDG'), 'url' => array('/sdg/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'sdg','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Startup Stages'), 'url' => array('/startupStage/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'startupStage','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Legal Form'), 'url' => array('/legalform/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'legalform','action'=>(object)['id'=>'admin']])
+					),
 
-					array('label' => Yii::t('app', 'Country'), 'url' => array('/country/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
-					array('label' => Yii::t('app', 'State'), 'url' => array('/state/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
-					array('label' => Yii::t('app', 'City'), 'url' => array('/city/admin'), 'visible' => Yii::app()->user->getState('isSuperAdmin')),
+					array(
+						'label' => Yii::t('app', 'Country'), 'url' => array('/country/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'country','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'State'), 'url' => array('/state/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'state','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'City'), 'url' => array('/city/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'city','action'=>(object)['id'=>'admin']])
+					),
 
 					// developer only
-					array('label' => Yii::t('app', 'Service') . ' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'), 'visible' => Yii::app()->user->getState('isDeveloper')),
+					array(
+						'label' => Yii::t('app', 'Service') . ' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'),
+						// 'visible' => Yii::app()->user->getState('isDeveloper'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'service','action'=>(object)['id'=>'admin']])
+					),
 				),
 			),
 			array(
 				'label' => Yii::t('app', 'Site') . ' <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('accessBackend') == true && (Yii::app()->user->isSuperAdmin || Yii::app()->user->isContentManager),
+				// 'visible' => Yii::app()->user->getState('accessBackend') == true && (Yii::app()->user->isSuperAdmin || Yii::app()->user->isContentManager),
+				'visible' => Yii::app()->user->getState('accessBackend') == true && (
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'embed','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'lingual','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'setting','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'registry','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'request','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'seolytic','action'=>(object)['id'=>'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'default','action'=>(object)['id'=>'index'],'module'=>(object)['id'=>'sys']])
+				),
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 				'items' => array(
 					//array('label'=>Yii::t('app', 'Page'), 'url'=>array('/page/admin'),),
-					array('label' => Yii::t('app', 'Embed'), 'url' => array('/embed/admin')),
+					array(
+						'label' => Yii::t('app', 'Embed'), 'url' => array('/embed/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'embed','action'=>(object)['id'=>'admin']])
+					),
 					//array('label'=>Yii::t('app', 'Faq'), 'url'=>array('/faq/admin'),),
-					array('label' => Yii::t('app', 'Lingual'), 'url' => array('/lingual/admin')),
-					array('label' => Yii::t('app', 'Setting'), 'url' => array('/setting/index')),
-					array('label' => Yii::t('app', 'Registry'), 'url' => array('/registry/index')),
-					array('label' => Yii::t('app', 'Request'), 'url' => array('/request/admin')),
-					array('label' => Yii::t('app', 'SEO'), 'url' => array('/seolytic/admin')),
-					array('label' => Yii::t('backend', 'System'), 'url' => array('/sys/default'), 'visible' => Yii::app()->user->getState('isSuperAdmin') && Yii::app()->hasModule('sys')),
+					array(
+						'label' => Yii::t('app', 'Lingual'), 'url' => array('/lingual/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'lingual','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Setting'), 'url' => array('/setting/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'setting','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Registry'), 'url' => array('/registry/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'registry','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Request'), 'url' => array('/request/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'request','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'SEO'), 'url' => array('/seolytic/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'seolytic','action'=>(object)['id'=>'admin']])
+					),
+					array(
+						'label' => Yii::t('backend', 'System'), 'url' => array('/sys/default'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') && Yii::app()->hasModule('sys'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'default','action'=>(object)['id'=>'index'],'module'=>(object)['id'=>'sys']]) && Yii::app()->hasModule('sys')
+					),
 				),
 			),
 			array(
 				'label' => '<span class="label label-warning">' . Yii::t('backend', 'Dev') . '</span> <b class="caret"></b>', 'url' => '#',
-				'visible' => Yii::app()->user->getState('accessBackend') == true && Yii::app()->user->getState('isDeveloper'),
+				// 'visible' => Yii::app()->user->getState('accessBackend') == true && Yii::app()->user->getState('isDeveloper'),
+				'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'developer']]),
 				'active' => $this->activeMenuMain == 'dev' ? true : false,
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),

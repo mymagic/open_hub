@@ -128,7 +128,8 @@
 		</div>
 	</div>
 
-	<?php if (Yii::app()->user->accessBackend && Yii::app()->user->isDeveloper):?>
+	<?php // if (Yii::app()->user->accessBackend && Yii::app()->user->isDeveloper):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])):?>
 	<?php echo Notice::inline(Yii::t('notice', 'Meta Data Only accessible by developer role'), Notice_WARNING) ?>
 	<?php $this->renderPartial('../../yeebase/views/metaStructure/_sharedForm', array('form' => $form, 'model' => $model)); ?>
 	<?php endif; ?>

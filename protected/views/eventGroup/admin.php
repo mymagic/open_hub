@@ -8,7 +8,10 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Create EventGroup'), 'url' => array('/eventGroup/create')),
+	array(
+		'label' => Yii::t('app', 'Create EventGroup'), 'url' => array('/eventGroup/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -50,6 +53,11 @@ $('.search-form form').submit(function(){
 		array('name' => 'total events', 'type' => 'raw', 'value' => 'count($data->eventsActive)', 'filter' => false, 'htmlOptions' => array('class' => 'text-center')),
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-					),
+			'buttons' => array(
+				'view'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+				'update'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update'); }),
+				'delete' =>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete'); })
+			),
+		),
 	),
 )); ?>

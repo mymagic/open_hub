@@ -9,9 +9,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Registry'), 'url' => array('/registry/admin')),
-	array('label' => Yii::t('app', 'Create Registry'), 'url' => array('/registry/create')),
-	array('label' => Yii::t('app', 'View Registry'), 'url' => array('/registry/view', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage Registry'), 'url' => array('/registry/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Registry'), 'url' => array('/registry/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'View Registry'), 'url' => array('/registry/view', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'view')
+	),
 );
 ?>
 

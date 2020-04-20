@@ -8,7 +8,11 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Create Form'), 'url' => array('/f7/submission/create'), 'visible' => Yii::app()->user->isDeveloper),
+	array(
+		'label' => Yii::t('app', 'Create Form'), 'url' => array('/f7/submission/create'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+	),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -48,6 +52,11 @@ $('.search-form form').submit(function(){
 		//array('name' => 'date_submitted', 'value' => 'Html::formatDateTimezone($data->date_submitted,  "long", "medium", "-", $data->form->timezone)', 'filter' => false),
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-					),
+			'buttons' => array(
+				'view'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+				'update'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update'); }),
+				'delete'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete'); })
+			),
+		),
 	),
 )); ?>

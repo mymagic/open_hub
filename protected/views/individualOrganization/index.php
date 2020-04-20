@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage IndividualOrganization'), 'url' => array('/individualOrganization/admin')),
-	array('label' => Yii::t('app', 'Create IndividualOrganization'), 'url' => array('/individualOrganization/create')),
+	array(
+		'label' => Yii::t('app', 'Manage IndividualOrganization'), 'url' => array('/individualOrganization/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create IndividualOrganization'), 'url' => array('/individualOrganization/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 

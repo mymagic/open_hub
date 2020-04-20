@@ -8,8 +8,13 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Organizations'), 'url' => array('/organization/admin')),
-	array('label' => Yii::t('app', 'Create Organization'), 'url' => array('/organization/create')),
+	array(
+        'label' => Yii::t('app', 'Manage Organizations'), 'url' => Yii::app()->createUrl('organization/admin'),
+        'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organization','action'=>(object)['id'=>'admin']])
+    ),
+	array(
+        'label' => Yii::t('app', 'Create Organization'), 'url' => Yii::app()->createUrl('organization/create'),
+        'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'organization','action'=>(object)['id'=>'create']])),
 );
 ?>
 
@@ -29,7 +34,7 @@ $this->menu = array(
     <div class="col-sm-6">
         <div class="well">
         <h3>Merge This <span class="pull-right" id="switch" style="cursor:pointer"><?php echo Html::faIcon('fa fa-exchange') ?></span></h3>
-        
+
         <?php echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class' => 'form-control ', 'v-model' => 'sourceKeyword', 'nullable' => true)); ?>
 
         <div class="margin-top-lg" v-html="previewSource"></div>
@@ -75,23 +80,23 @@ var vue = new Vue({
     el: '#vue-mergeOrganization',
     data: {sourceKeyword:'', targetKeyword:'', previewSource:'', previewTarget:''},
     watch: {sourceKeyword: 'fetchOrganizationNode2Source', targetKeyword: 'fetchOrganizationNode2Target'},
-    methods: 
+    methods:
     {
         fetchOrganizationNode2Source: function()
         {
             var self = this;
             self.previewSource = '<center><i class=\"fa fa-3x fas fa-spinner fa-spin\"></i></center>';
-            $.get(baseUrl+'/organization/getOrganizationNodes?keyword='+self.sourceKeyword, function( html ) 
+            $.get(baseUrl+'/organization/getOrganizationNodes?keyword='+self.sourceKeyword, function( html )
 			{
 				self.previewSource = html;
 			});
         },
-        
+
         fetchOrganizationNode2Target: function()
         {
             var self = this;
             self.previewTarget = '<center><i class=\"fa fa-3x fas fa-spinner fa-spin\"></i></center>';
-            $.get(baseUrl+'/organization/getOrganizationNodes?keyword='+self.targetKeyword, function( html ) 
+            $.get(baseUrl+'/organization/getOrganizationNodes?keyword='+self.targetKeyword, function( html )
 			{
 				self.previewTarget = html;
 			});
@@ -104,7 +109,7 @@ $('#targetKeyword').chosen().change(function() {vue.\$data.targetKeyword = $('#t
 $('#switch').click(function(){
     var source = $('#sourceKeyword').val();
     var target = $('#targetKeyword').val();
-    
+
     $('#sourceKeyword').val(target).trigger('chosen:updated').trigger('change');
     $('#targetKeyword').val(source).trigger('chosen:updated').trigger('change');
 });

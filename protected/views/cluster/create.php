@@ -8,7 +8,10 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Cluster'), 'url' => array('/cluster/admin')),
+	array(
+		'label' => Yii::t('app', 'Manage Cluster'), 'url' => array('/cluster/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
 );
 ?>
 

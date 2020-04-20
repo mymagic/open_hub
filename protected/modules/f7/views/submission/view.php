@@ -1,4 +1,4 @@
-<?php 
+<?php
 	// codemirror
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.js', CClientScript::POS_END);
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/edit/matchbrackets.js', CClientScript::POS_END);
@@ -21,11 +21,29 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Submission'), 'url' => array('/f7/submission/admin'), 'visible' => Yii::app()->user->isDeveloper),
-	array('label' => Yii::t('app', 'Create Submission'), 'url' => array('/f7/submission/create'), 'visible' => Yii::app()->user->isDeveloper),
-	array('label' => Yii::t('app', 'Update Submission'), 'url' => array('/f7/submission/update', 'id' => $model->id)),
-	array('label' => Yii::t('app', 'Delete Submission'), 'url' => array('/f7/submission/delete', 'id' => $model->id), 'visible' => Yii::app()->user->isDeveloper),
-	array('label' => Yii::t('app', 'View Form'), 'url' => array('/f7/form/view', 'id' => $model->form->id)),
+	array(
+		'label' => Yii::t('app', 'Manage Submission'), 'url' => array('/f7/submission/admin'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Submission'), 'url' => array('/f7/submission/create'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update Submission'), 'url' => array('/f7/submission/update', 'id' => $model->id),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update')
+	),
+	array(
+		'label' => Yii::t('app', 'Delete Submission'), 'url' => array('/f7/submission/delete', 'id' => $model->id),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete')
+	),
+	array(
+		'label' => Yii::t('app', 'View Form'), 'url' => array('/f7/form/view', 'id' => $model->form->id),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'form','action'=>(object)['id'=>'view'],'module'=>(object)['id'=>'f7']])
+	),
 );
 ?>
 
@@ -60,7 +78,11 @@ $this->menu = array(
 		array('name' => 'Submitted Data', 'type' => 'raw', 'value' => sprintf('<div class="white-bg padding-xlg margin-bottom-2x border">%s</div>', $model->renderJsonData('html', 'backend'))),
 
 		// developer only
-		array('name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_data)), 'visible' => Yii::app()->user->isDeveloper),
+		array(
+			'name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_data)),
+			// 'visible' => Yii::app()->user->isDeveloper
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])
+		),
 	),
 )); ?>
 </div>
@@ -78,7 +100,7 @@ document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(d
     indentWithTabs: true,
     lineWrapping: true,
     scrollbarStyle: 'simple',
-    theme:'midnight',   
+    theme:'midnight',
 });*/
 JS
 , CClientScript::POS_READY); ?>

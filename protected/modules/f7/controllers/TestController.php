@@ -14,7 +14,8 @@ class TestController extends Controller
 		return array(
 			array('allow',  // deny all users
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])',
 	  ),
 	  array('deny',  // deny all users
 				'users' => array('*'),
@@ -45,7 +46,7 @@ class TestController extends Controller
 		$form = Form::model()->findByPk($formId);
 		//echo $form->countSubmittedFormSubmissions();
 		echo '<br >';
-		//echo $form->countDraftFormSubmissions();	
+		//echo $form->countDraftFormSubmissions();
 		echo '<br >';
 		echo '<pre>';
 		print_r($form->countWorkflowFormSubmissions());

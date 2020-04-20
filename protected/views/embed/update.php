@@ -9,9 +9,19 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Embed'), 'url' => array('admin')),
-	array('label' => Yii::t('app', 'Create Embed'), 'url' => array('create'), 'visible' => Yii::app()->user->isDeveloper),
-	array('label' => Yii::t('app', 'View Embed'), 'url' => array('view', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage Embed'), 'url' => array('admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Embed'), 'url' => array('create'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'View Embed'), 'url' => array('view', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'view')
+	),
 );
 ?>
 

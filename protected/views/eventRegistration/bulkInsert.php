@@ -8,7 +8,10 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage EventRegistration'), 'url' => array('/eventRegistration/admin')),
+	array(
+        'label' => Yii::t('app', 'Manage EventRegistration'), 'url' => array('/eventRegistration/admin'),
+        'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+    ),
 );
 ?>
 
@@ -48,8 +51,8 @@ $this->menu = array(
 			'enctype' => 'multipart/form-data',
 		)
 	)); ?>
-    
-    
+
+
     <?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
     <?php if ($model->hasErrors()): ?>
         <?php echo $form->bsErrorSummary($model); ?>
@@ -71,13 +74,13 @@ $this->menu = array(
             <?php echo $form->bsError($model, 'uploadFile_excel'); ?>
         </div>
     </div>
-    
+
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<?php echo $form->bsBtnSubmit(Yii::t('core', 'Upload')); ?>
 		</div>
     </div>
-    
+
     <?php $this->endWidget(); ?>
     </div>
 </div>

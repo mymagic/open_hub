@@ -55,7 +55,8 @@ class EventRegistrationController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin', 'housekeeping', 'housekeepingConfirmed', 'bulkInsert', 'bulkInsertConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
@@ -424,7 +425,8 @@ class EventRegistrationController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'developer']])) {
 			$tabs['eventRegistration'][] = array(
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',

@@ -11,7 +11,11 @@ $this->menu = array(
 	array('label' => Yii::t('app', 'Manage Page'), 'url' => array('admin')),
 	array('label' => Yii::t('app', 'Create Page'), 'url' => array('create')),
 	array('label' => Yii::t('app', 'Update Page'), 'url' => array('update', 'id' => $model->id)),
-	array('label' => Yii::t('app', 'Delete Page'), 'url' => array('delete', 'id' => $model->id), 'visible' => (Yii::app()->user->isDeveloper) ? true : false),
+	array(
+		'label' => Yii::t('app', 'Delete Page'), 'url' => array('delete', 'id' => $model->id),
+		// 'visible' => (Yii::app()->user->isDeveloper) ? true : false
+		'visible' => (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])) ? true : false
+	),
 );
 ?>
 
@@ -37,10 +41,10 @@ $this->menu = array(
 	<li class="active"><a href="#pane-en" data-toggle="tab">English</a></li>
 		<li class=""><a href="#pane-ms" data-toggle="tab">Bahasa</a></li>
 		<li class=""><a href="#pane-zh" data-toggle="tab">中文</a></li>
-	
+
 </ul>
 <div class="tab-content">
-	
+
 	<!-- English -->
 	<div class="tab-pane active" id="pane-en">
 
@@ -53,11 +57,11 @@ $this->menu = array(
 		array('name' => 'html_content_en', 'type' => 'html', 'value' => $model->html_content_en),
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /English -->
-		
-	
+
+
 	<!-- Bahasa -->
 	<div class="tab-pane " id="pane-ms">
 
@@ -70,11 +74,11 @@ $this->menu = array(
 		array('name' => 'html_content_ms', 'type' => 'html', 'value' => $model->html_content_ms),
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /Bahasa -->
-		
-	
+
+
 	<!-- 中文 -->
 	<div class="tab-pane " id="pane-zh">
 
@@ -87,10 +91,10 @@ $this->menu = array(
 		array('name' => 'html_content_zh', 'type' => 'html', 'value' => $model->html_content_zh),
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /中文 -->
-		
+
 
 </div>
 </div>

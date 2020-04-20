@@ -8,10 +8,22 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Milestone'), 'url' => array('/milestone/admin')),
-	array('label' => Yii::t('app', 'Create Milestone'), 'url' => array('/milestone/create')),
-	array('label' => Yii::t('app', 'Update Milestone'), 'url' => array('/milestone/update', 'id' => $model->id)),
-	array('label' => Yii::t('app', 'Delete Milestone'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?'))),
+	array(
+		'label' => Yii::t('app', 'Manage Milestone'), 'url' => array('/milestone/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Milestone'), 'url' => array('/milestone/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update Milestone'), 'url' => array('/milestone/update', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	),
+	array(
+		'label' => Yii::t('app', 'Delete Milestone'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'delete')
+	),
 );
 ?>
 
@@ -93,7 +105,7 @@ $this->menu = array(
 					</div>
 				</div>
 				<?php endfor; ?>
-				
+
 			</div></div>
 		</div>
 	</div>
@@ -109,18 +121,18 @@ $this->menu = array(
 	var vue = new Vue({
 		el: '#form-milestone-values',
 		data: {id:'', year:'', viewMode:'weekly', values:[]},
-		ready: function () 
+		ready: function ()
 		{
 			this.fetchData();
 			this.renderViewMode();
 		},
-		
-		methods: 
+
+		methods:
 		{
 			fetchData: function()
 			{
 				var self = this;
-				$.get(baseUrl+'/api/getMilestone?id='+self.id+'&year='+self.year, function(json) 
+				$.get(baseUrl+'/api/getMilestone?id='+self.id+'&year='+self.year, function(json)
 				{
 					self.values = json.data.jsonArrayValue[self.year];
 				});
@@ -157,7 +169,7 @@ $this->menu = array(
 				postData['domId'] = domId;
 				postData['key'] = 'value';
 				postData[csrfTokenName] = csrfToken;
-				
+
 				$.post(baseUrl+'/api/updateMilestoneWeekValue?id='+milestoneId, postData, function(json) {
 					if(json.status == 'success')
 					{
@@ -171,7 +183,7 @@ $this->menu = array(
 						toastr.error(json.msg);
 					}
 				}, 'json');
-				
+
 			},
 			changedRealized: function(e)
 			{
@@ -194,7 +206,7 @@ $this->menu = array(
 				postData['week'] = week;
 				postData['domId'] = domId;
 				postData[csrfTokenName] = csrfToken;
-				
+
 				$.post(baseUrl+'/api/updateMilestoneWeekRealized?id='+milestoneId, postData, function(json) {
 					if(json.status == 'success')
 					{
@@ -209,7 +221,7 @@ $this->menu = array(
 						toastr.error(json.msg);
 					}
 				}, 'json');
-				
+
 			},
 			setViewMode: function(e)
 			{
@@ -227,7 +239,7 @@ $this->menu = array(
 				$.post(baseUrl+'/api/updateMilestoneViewMode?id='+this.id, postData, function(json) {
 					if(json.status == 'success')
 					{
-						
+
 					}
 				}, 'json');
 
@@ -255,7 +267,7 @@ $this->menu = array(
 						$('#section-month-'+m).show().addClass('col-sm-6').removeClass('col-sm-12');
 						$('#section-month-'+m+'-week-4').show().addClass('col-sm-12').removeClass('col-sm-3');
 						for(w=1; w<=3; w++) $('#section-month-'+m+'-week-'+w).hide();
-						
+
 					}
 				}
 				// every 6 months
@@ -267,7 +279,7 @@ $this->menu = array(
 						$('#section-month-'+m).show().addClass('col-sm-6').removeClass('col-sm-12');
 						$('#section-month-'+m+'-week-4').show().addClass('col-sm-12').removeClass('col-sm-3');
 						for(w=1; w<=3; w++) $('#section-month-'+m+'-week-'+w).hide();
-						
+
 					}
 				}
 				// yearly
@@ -290,6 +302,6 @@ $this->menu = array(
 			},
 		}
 	})
-	
+
 ");
 ?>

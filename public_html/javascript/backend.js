@@ -95,6 +95,16 @@ $(function() {
 	  }
 	});
 
+	$('a[class^=cls-select-]').on('click', function(){
+		var chkAll = false;
+		if($(this).text() == 'Select All')
+			chkAll = true
+		$(this).text(chkAll ? 'Deselect All' : 'Select All');
+		var mod = $(this).attr('class').replace('cls-select-', '');
+		$('.access-'+ (mod=='' ? '0' : mod)).prop('checked', chkAll);
+		// alert(mod);
+		return false;
+	});
 });
 
 function updateQuickInfo()

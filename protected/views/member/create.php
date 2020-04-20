@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('backend', 'Manage Member'), 'url' => array('/member/admin')),
-	array('label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create')),
+	array(
+		'label' => Yii::t('backend', 'Manage Member'), 'url' => array('/member/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 
@@ -34,9 +40,9 @@ $this->menu = array(
 	<?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
 <?php if ($model->hasErrors()): ?>
 	<?php echo $form->bsErrorSummary($model); ?>
-<?php endif; ?>	
-	
-		
+<?php endif; ?>
+
+
 	<div class="form-group <?php echo $model->hasErrors('username') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'username'); ?>
 		<div class="col-sm-9">
@@ -44,8 +50,8 @@ $this->menu = array(
 			<?php echo $form->bsError($model, 'username'); ?>
 		</div>
 	</div>
-	
-	
+
+
 	<div class="form-group <?php echo $model->hasErrors('full_name') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'full_name'); ?>
 		<div class="col-sm-9">

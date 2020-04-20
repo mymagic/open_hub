@@ -50,7 +50,8 @@ class JunkController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'clear', 'clearConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

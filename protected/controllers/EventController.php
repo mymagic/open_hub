@@ -56,7 +56,8 @@ class EventController extends Controller
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
 				'users' => ['@'],
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			],
 			['deny',  // deny all users
 				'users' => ['*'],
@@ -470,7 +471,8 @@ class EventController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'developer']])) {
 			$tabs['event'][] = [
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',

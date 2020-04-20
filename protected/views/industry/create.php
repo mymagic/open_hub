@@ -8,7 +8,10 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Industry'), 'url' => array('/industry/admin')),
+	array(
+		'label' => Yii::t('app', 'Manage Industry'), 'url' => array('/industry/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
 );
 ?>
 

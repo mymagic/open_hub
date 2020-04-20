@@ -21,11 +21,12 @@ class BackendController extends Controller
 			array('allow',
 				'actions' => array('selectOrganizations', 'sync2Event', 'sync2EventConfirmed', 'sync2EventRegistrationConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
-			), g,
+			),
 		);
 	}
 

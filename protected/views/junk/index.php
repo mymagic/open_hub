@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Junk'), 'url' => array('/junk/admin')),
-	array('label' => Yii::t('app', 'Create Junk'), 'url' => array('/junk/create')),
+	array(
+		'label' => Yii::t('app', 'Manage Junk'), 'url' => array('/junk/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Junk'), 'url' => array('/junk/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 

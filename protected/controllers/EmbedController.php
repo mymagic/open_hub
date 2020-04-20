@@ -49,12 +49,14 @@ class EmbedController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('index', 'view', 'update', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isContentManager==true || $user->isDeveloper==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isContentManager==true || $user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('create', 'delete', 'deleteConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

@@ -9,8 +9,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Setting Panel'), 'url' => array('panel')),
-	array('label' => Yii::t('app', 'Manage Setting'), 'url' => array('admin')),
+	array(
+		'label' => Yii::t('app', 'Setting Panel'), 'url' => array('panel'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'panel')
+	),
+	array(
+		'label' => Yii::t('app', 'Manage Setting'), 'url' => array('admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
 );
 ?>
 
@@ -68,7 +74,7 @@ $this->menu = array(
 			<?php echo $form->bsBtnSubmit(Yii::t('core', 'Save')); ?>
 		</div>
 	</div>
-	
+
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->

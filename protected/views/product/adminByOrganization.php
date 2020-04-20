@@ -33,7 +33,7 @@ if ($realm == 'backend') {
  </div>
  <div id="content-services">
  <div class="header-org" class="margin-top-lg">
-		<?php 
+		<?php
 
 			$this->widget('zii.widgets.CMenu', array(
 			'items' => array(
@@ -64,7 +64,7 @@ if ($realm == 'backend') {
                 </ul>
             </div>
         </div>
-        
+
 </div> -->
 </div>
 </div>
@@ -84,8 +84,14 @@ if ($realm == 'backend') {
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
 			'buttons' => array(
-				'view' => array('url' => 'Yii::app()->controller->createUrl(\'product/view\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))'),
-				'update' => array('url' => 'Yii::app()->controller->createUrl(\'product/update\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))'),
+				'view' => array(
+					'url' => 'Yii::app()->controller->createUrl(\'product/view\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))',
+					'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'product','action'=>(object)['id'=>'view']]); }
+				),
+				'update' => array(
+					'url' => 'Yii::app()->controller->createUrl(\'product/update\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))',
+					'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'product','action'=>(object)['id'=>'update']]); }
+				),
 				'delete' => array('visible' => false)
 			),
 		),

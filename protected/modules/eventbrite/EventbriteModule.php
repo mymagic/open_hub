@@ -5,9 +5,10 @@ class EventbriteModule extends WebModule
 {
 	public $defaultController = 'frontend';
 	private $_assetsUrl;
-
+	public $oauthSecret;
 	public $var1;
 	public $var2;
+	public $organizationId;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module

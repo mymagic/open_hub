@@ -8,8 +8,12 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage OrganizationRevenue'), 'url' => array('/organizationRevenue/admin')),
-	array('label' => Yii::t('app', 'Create OrganizationRevenue'), 'url' => array('/organizationRevenue/create')),
+	array(
+		'label' => Yii::t('app', 'Manage OrganizationRevenue'), 'url' => array('organizationRevenue/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')),
+	array(
+		'label' => Yii::t('app', 'Create OrganizationRevenue'), 'url' => array('organizationRevenue/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -54,6 +58,11 @@ $('.search-form form').submit(function(){
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-					),
+			'buttons' => array(
+				'view' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+				'update' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update'); }),
+				'delete' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete'); })
+			),
+		),
 	),
 )); ?>

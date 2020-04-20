@@ -8,10 +8,22 @@ $this->breadcrumbs = [
 ];
 
 $this->menu = [
-	['label' => Yii::t('app', 'Manage EventGroup'), 'url' => ['/eventGroup/admin']],
-	['label' => Yii::t('app', 'Create EventGroup'), 'url' => ['/eventGroup/create']],
-	['label' => Yii::t('app', 'Update EventGroup'), 'url' => ['/eventGroup/update', 'id' => $model->id]],
-	['label' => Yii::t('app', 'Delete EventGroup'), 'url' => '#', 'linkOptions' => ['submit' => ['delete', 'id' => $model->id], 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')]],
+	[
+		'label' => Yii::t('app', 'Manage EventGroup'), 'url' => ['/eventGroup/admin'],
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	],
+	[
+		'label' => Yii::t('app', 'Create EventGroup'), 'url' => ['/eventGroup/create'],
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	],
+	[
+		'label' => Yii::t('app', 'Update EventGroup'), 'url' => ['/eventGroup/update', 'id' => $model->id],
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	],
+	[
+		'label' => Yii::t('app', 'Delete EventGroup'), 'url' => '#', 'linkOptions' => ['submit' => ['delete', 'id' => $model->id], 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')],
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'delete')
+	],
 ];
 ?>
 
@@ -44,9 +56,9 @@ $this->menu = [
 </div>
 
 
-<h3>Events 
+<h3>Events
 	<span class="">
-		<span class="label label-primary"><?php echo count($model->events); ?></span>		
+		<span class="label label-primary"><?php echo count($model->events); ?></span>
 	</span>
 </h3>
 
@@ -54,7 +66,7 @@ $this->menu = [
 
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist">
-	<li role="presentation" class="active"><a href="#tab-eventGroupActive" aria-controls="tab-eventGroupActive" role="tab" data-toggle="tab">Active 
+	<li role="presentation" class="active"><a href="#tab-eventGroupActive" aria-controls="tab-eventGroupActive" role="tab" data-toggle="tab">Active
 		<span class="label label-success"><?php echo count($model->eventsActive); ?></span></a></li>
 	<li role="presentation"><a href="#tab-eventGroupInactive" aria-controls="tab-eventGroupInactive" role="tab" data-toggle="tab">Draft/Cancelled <span class="label label-danger"><?php echo count($model->eventsInactive); ?></span></a></li>
 </ul>
@@ -101,12 +113,12 @@ $this->menu = [
 						'view' => [
 							'label' => 'View',
 							'url' => 'Yii::app()->createUrl("event/view", array("id"=>$data->id))',
-							'options' => ['class' => 'btn btn-xs btn-primary'],
+							'options' => ['class' => 'btn btn-xs btn-primary'],'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'view']]); }
 						],
 						'update' => [
 							'label' => 'Update',
 							'url' => 'Yii::app()->createUrl("event/update", array("id"=>$data->id))',
-							'options' => ['class' => 'btn btn-xs btn-default'],
+							'options' => ['class' => 'btn btn-xs btn-default'],'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'update']]); }
 						],
 					],
 				],
@@ -144,12 +156,12 @@ $this->menu = [
 						'view' => [
 							'label' => 'View',
 							'url' => 'Yii::app()->createUrl("event/view", array("id"=>$data->id))',
-							'options' => ['class' => 'btn btn-xs btn-primary'],
+							'options' => ['class' => 'btn btn-xs btn-primary'],'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'view']]); }
 						],
 						'update' => [
 							'label' => 'Update',
 							'url' => 'Yii::app()->createUrl("event/update", array("id"=>$data->id))',
-							'options' => ['class' => 'btn btn-xs btn-default'],
+							'options' => ['class' => 'btn btn-xs btn-default'],'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'update']]); }
 						],
 					],
 				],

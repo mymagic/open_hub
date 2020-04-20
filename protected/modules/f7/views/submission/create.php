@@ -8,7 +8,11 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Form'), 'url' => array('/f7/submission/admin'), 'visible' => Yii::app()->user->isDeveloper),
+	array(
+		'label' => Yii::t('app', 'Manage Form'), 'url' => array('/f7/submission/admin'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
 );
 ?>
 

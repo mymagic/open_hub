@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('backend', 'Manage Admin'), 'url' => array('/admin/admin')),
-	array('label' => Yii::t('backend', 'Create Admin'), 'url' => array('/admin/create')),
+	array(
+		'label' => Yii::t('backend', 'Manage Admin'), 'url' => Yii::app()->createUrl('admin/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('backend', 'Create Admin'), 'url' => Yii::app()->createUrl('admin/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -53,6 +59,9 @@ $('.search-form form').submit(function(){
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
 			'template' => '{view}',
+			'buttons' => array(
+				'view'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+			)
 		),
 	),
 )); ?>

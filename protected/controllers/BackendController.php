@@ -46,7 +46,8 @@ class BackendController extends Controller
 			array('allow', // allow admin user to sync local account to connect
 				'actions' => array('connect', 'connectConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true || $user->isSuperAdmin==true ',
+				// 'expression' => '$user->isDeveloper==true || $user->isSuperAdmin==true ',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow',
 				'actions' => array('index', 'login'),

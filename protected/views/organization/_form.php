@@ -139,8 +139,8 @@
 		</div>
 	</div>
 	<?php endif; ?>
-	
-	<?php 
+
+	<?php
 		/*
 		 * hide the section from view instead
 		 * or else the data will become null when update for those user that do not have role accessBackend
@@ -201,7 +201,8 @@
 	</div>
 	<?php endif; ?>
 
-	<?php if (Yii::app()->user->accessBackend && Yii::app()->user->isDeveloper):?>
+	<?php // if (Yii::app()->user->accessBackend && Yii::app()->user->isDeveloper):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])):?>
 	<?php echo Notice::inline(Yii::t('notice', 'Meta Data Only accessible by developer role'), Notice_WARNING) ?>
 	<?php $this->renderPartial('../../yeebase/views/metaStructure/_sharedForm', array('form' => $form, 'model' => $model)); ?>
 	<?php endif; ?>
@@ -217,7 +218,7 @@
 
 </div>
 
-<?php 
+<?php
 Yii::app()->clientScript->registerScript('formjs', "
 $(document).ready(function(){
 	$('#btn-rm-logo').on('click', function(){

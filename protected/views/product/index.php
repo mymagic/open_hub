@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Product'), 'url' => array('/product/admin')),
-	array('label' => Yii::t('app', 'Create Product'), 'url' => array('/product/create')),
+	array(
+		'label' => Yii::t('app', 'Manage Product'), 'url' => array('/product/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Product'), 'url' => array('/product/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 

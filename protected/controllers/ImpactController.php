@@ -49,7 +49,8 @@ class ImpactController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

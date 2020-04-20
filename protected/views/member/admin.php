@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('backend', 'Manage Member'), 'url' => array('/member/admin')),
-	array('label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create')),
+	array(
+		'label' => Yii::t('backend', 'Manage Member'), 'url' => array('/member/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -50,7 +56,10 @@ $('.search-form form').submit(function(){
 		//array('name'=>'date_joined', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_joined, \'medium\', \'short\')', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-			'template' => '{view}'
+			'template' => '{view}',
+			'buttons' => array(
+				'view' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); })
+			),
 		),
 	),
 )); ?>

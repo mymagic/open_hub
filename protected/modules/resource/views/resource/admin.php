@@ -50,6 +50,13 @@ $('.search-form form').submit(function(){
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-					),
+			/*
+			'buttons' => array(
+				'view'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+				'update'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update'); }),
+				'delete'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete'); })
+			),
+			*/
+		),
 	),
 )); ?>

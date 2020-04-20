@@ -48,7 +48,8 @@ class PageController extends Controller
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array('create', 'update', 'admin', 'delete', 'deleteConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isContentManager==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isContentManager==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

@@ -9,9 +9,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage StartupStage'), 'url' => array('/startupStage/admin')),
-	array('label' => Yii::t('app', 'Create StartupStage'), 'url' => array('/startupStage/create')),
-	array('label' => Yii::t('app', 'View StartupStage'), 'url' => array('/startupStage/view', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage StartupStage'), 'url' => array('/startupStage/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create StartupStage'), 'url' => array('/startupStage/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'View StartupStage'), 'url' => array('/startupStage/view', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'view')
+	),
 );
 ?>
 

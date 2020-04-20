@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage IndustryKeyword'), 'url' => array('/industryKeyword/admin')),
-	array('label' => Yii::t('app', 'Create IndustryKeyword'), 'url' => array('/industryKeyword/create')),
+	array(
+		'label' => Yii::t('app', 'Manage IndustryKeyword'), 'url' => array('/industryKeyword/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create IndustryKeyword'), 'url' => array('/industryKeyword/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 

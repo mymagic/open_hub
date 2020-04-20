@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage ResourceCategory'), 'url' => array('//resource/category/admin')),
-	array('label' => Yii::t('app', 'Create ResourceCategory'), 'url' => array('//resource/category/create')),
+	array(
+		'label' => Yii::t('app', 'Manage ResourceCategory'), 'url' => array('//resource/category/admin'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create ResourceCategory'), 'url' => array('//resource/category/create'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+	),
 );
 ?>
 

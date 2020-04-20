@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Form'), 'url' => array('/f7/form/admin')),
-	array('label' => Yii::t('app', 'Build Form'), 'url' => array('/f7/form/builder'), 'linkOptions' => array('target' => '_blank')),
+	array(
+		'label' => Yii::t('app', 'Manage Form'), 'url' => array('/f7/form/admin'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Build Form'), 'url' => array('/f7/form/builder'), 'linkOptions' => array('target' => '_blank'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'builder')
+	),
 );
 ?>
 

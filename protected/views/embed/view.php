@@ -8,10 +8,24 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Embed'), 'url' => array('admin')),
-	array('label' => Yii::t('app', 'Create Embed'), 'url' => array('create'), 'visible' => Yii::app()->user->isDeveloper),
-	array('label' => Yii::t('app', 'Update Embed'), 'url' => array('update', 'id' => $model->id)),
-	array('label' => Yii::t('app', 'Delete Embed'), 'url' => array('delete', 'id' => $model->id), 'visible' => Yii::app()->user->isDeveloper),
+	array(
+		'label' => Yii::t('app', 'Manage Embed'), 'url' => array('admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Embed'), 'url' => array('create'),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update Embed'), 'url' => array('update', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	),
+	array(
+		'label' => Yii::t('app', 'Delete Embed'), 'url' => array('delete', 'id' => $model->id),
+		// 'visible' => Yii::app()->user->isDeveloper,
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'delete')
+	),
 );
 ?>
 
@@ -40,10 +54,10 @@ $this->menu = array(
 		<?php if (array_key_exists('en', Yii::app()->params['languages'])): ?><li class="active"><a href="#pane-en" data-toggle="tab">English</a></li><?php endif; ?>
 		<?php if (array_key_exists('ms', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-ms" data-toggle="tab">Bahasa</a></li><?php endif; ?>
 		<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-zh" data-toggle="tab">中文</a></li><?php endif; ?>
-	
+
 </ul>
 <div class="tab-content">
-	
+
 	<?php if (array_key_exists('en', Yii::app()->params['languages'])): ?>
 	<!-- English -->
 	<div class="tab-pane active" id="pane-en">
@@ -57,11 +71,11 @@ $this->menu = array(
 		array('name' => 'image_main_en', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_main_en'))
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /English -->
 	<?php endif; ?>
-		
+
 	<?php if (array_key_exists('ms', Yii::app()->params['languages'])): ?>
 	<!-- Bahasa -->
 	<div class="tab-pane " id="pane-ms">
@@ -75,11 +89,11 @@ $this->menu = array(
 		array('name' => 'image_main_ms', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_main_ms'))
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /Bahasa -->
 	<?php endif; ?>
-		
+
 	<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?>
 	<!-- 中文 -->
 	<div class="tab-pane " id="pane-zh">
@@ -93,11 +107,11 @@ $this->menu = array(
 		array('name' => 'image_main_zh', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_main_zh'))
 	),
 )); ?>
-	
+
 	</div>
 	<!-- /中文 -->
 	<?php endif; ?>
-		
+
 
 </div>
 </div>

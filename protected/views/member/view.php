@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Member'), 'url' => array('/member/admin')),
-	array('label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create')),
+	array(
+		'label' => Yii::t('app', 'Manage Member'), 'url' => array('/member/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('backend', 'Create Member'), 'url' => array('/member/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 ?>
 
@@ -65,7 +71,7 @@ $this->menu = array(
 			)); ?>
 		</div>
 		<!-- /user -->
-		
+
 		<!-- login -->
 		<div class="panel panel-default ">
 			<!-- Default panel contents -->
@@ -80,11 +86,11 @@ $this->menu = array(
 			)); ?>
 		</div>
 		<!-- /login -->
-		
+
 	</div>
-	
+
 	<div class="col-lg-6">
-		
+
 		<!-- profile -->
 		<div class="panel panel-default ">
 			<!-- Default panel contents -->
@@ -99,10 +105,10 @@ $this->menu = array(
 			)); ?>
 		</div>
 		<!-- /profile -->
-		
-		
+
+
 	</div>
-	
+
 </div>
 
 <div class="px-8 py-6 shadow-panel mt-4">

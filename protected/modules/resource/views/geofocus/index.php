@@ -7,8 +7,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage ResourceGeofocus'), 'url' => array('//resource/geofocus/admin')),
-	array('label' => Yii::t('app', 'Create ResourceGeofocus'), 'url' => array('//resource/geofocus/create')),
+	array(
+		'label' => Yii::t('app', 'Manage ResourceGeofocus'), 'url' => array('//resource/geofocus/admin'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create ResourceGeofocus'), 'url' => array('//resource/geofocus/create'),
+		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+	),
 );
 ?>
 

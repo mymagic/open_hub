@@ -43,7 +43,8 @@ class LogController extends Controller
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array('index', 'view', 'admin'),
 				'users' => array('@'),
-				'expression' => "\$user->getState('isSuperAdmin') || \$user->getState('isDeveloper')",
+				// 'expression' => "\$user->getState('isSuperAdmin') || \$user->getState('isDeveloper')",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

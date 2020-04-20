@@ -8,7 +8,10 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage Log'), 'url' => array('index'))
+	array(
+		'label' => Yii::t('app', 'Manage Log'), 'url' => array('index'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'index')
+	)
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -51,7 +54,10 @@ $('.search-form form').submit(function(){
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-			'template' => '{view}'
+			'template' => '{view}',
+			'buttons' => array(
+				'view' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); })
+			),
 		),
 	),
 )); ?>

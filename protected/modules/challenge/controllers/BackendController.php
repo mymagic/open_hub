@@ -16,12 +16,10 @@ class BackendController extends Controller
 		return array(
 			array('allow',
 				'actions' => array('index'),
-				'users' => array('*'),
-			),
-			array('allow',
-				'actions' => array('admin'),
+				// 'users' => array('*'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

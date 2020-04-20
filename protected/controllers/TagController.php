@@ -40,7 +40,8 @@ class TagController extends Controller
 			array('allow',  // allow all users to perform 'index' and 'view' actions
 				'actions' => array('index', 'view', 'getProgramSkillsets'),
 				'users' => array('@'),
-				'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

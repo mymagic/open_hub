@@ -1,4 +1,4 @@
-<?php 
+<?php
 	// codemirror
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.js', CClientScript::POS_END);
 	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/edit/matchbrackets.js', CClientScript::POS_END);
@@ -21,9 +21,18 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage EventRegistration'), 'url' => array('/eventRegistration/admin')),
-	array('label' => Yii::t('app', 'Create EventRegistration'), 'url' => array('/eventRegistration/create')),
-	array('label' => Yii::t('app', 'Update EventRegistration'), 'url' => array('/eventRegistration/update', 'id' => $model->id)),
+	array(
+		'label' => Yii::t('app', 'Manage EventRegistration'), 'url' => array('/eventRegistration/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create EventRegistration'), 'url' => array('/eventRegistration/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Update EventRegistration'), 'url' => array('/eventRegistration/update', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+	),
 );
 ?>
 
@@ -57,7 +66,11 @@ $this->menu = array(
 		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 
 		// developer only
-		array('name' => 'json_original', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_original)), 'visible' => Yii::app()->user->isDeveloper),
+		array(
+			'name' => 'json_original', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_original)),
+			// 'visible' => Yii::app()->user->isDeveloper
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])
+		),
 	),
 )); ?>
 
@@ -94,7 +107,7 @@ document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(d
     indentWithTabs: true,
     lineWrapping: true,
     scrollbarStyle: 'simple',
-    theme:'midnight',   
+    theme:'midnight',
 });*/
 JS
 , CClientScript::POS_READY); ?>

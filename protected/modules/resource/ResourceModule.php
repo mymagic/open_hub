@@ -50,7 +50,7 @@ class ResourceModule extends WebModule
 		$now = HUB::now();
 
 		// find resources
-		$sql = sprintf('SELECT r.* FROM resource as r  
+		$sql = sprintf('SELECT r.* FROM resource as r
 			INNER JOIN 	resource2organization as r2o ON r2o.resource_id=r.id
 			WHERE r2o.organization_id=%s AND r.date_added >=%s AND r.date_added < %s AND
             (r.is_active = 1)', $organization->id, $timestampStart, $timestampEnd);
@@ -75,15 +75,37 @@ class ResourceModule extends WebModule
 					return array(
 						array(
 							'label' => Yii::t('backend', 'Resource Directory'), 'url' => '#',
-							'visible' => Yii::app()->user->getState('accessBackend') == true,
+							// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+							'visible' => Yii::app()->user->getState('accessBackend') == true && (
+								HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'backend','action'=>(object)['id'=>'overview'],'module'=>(object)['id'=>'resource']]) ||
+								HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'resource','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']]) ||
+								HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'category','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']]) ||
+								HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'geofocus','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']])
+							),
 							'active' => $controller->activeMenuMain == 'resource' ? true : false,
 							'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 							'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 							'items' => array(
-								array('label' => Yii::t('app', 'Overview'), 'url' => array('/resource/backend/overview'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								array('label' => Yii::t('app', 'Resources'), 'url' => array('/resource/resource/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								array('label' => Yii::t('app', 'Categories'), 'url' => array('/resource/category/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								array('label' => Yii::t('app', 'Geo Focus'), 'url' => array('/resource/geofocus/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true),
+								array(
+									'label' => Yii::t('app', 'Overview'), 'url' => array('/resource/backend/overview'),
+									// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+									'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'backend','action'=>(object)['id'=>'overview'],'module'=>(object)['id'=>'resource']])
+								),
+								array(
+									'label' => Yii::t('app', 'Resources'), 'url' => array('/resource/resource/admin'),
+									// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+									'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'resource','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']])
+								),
+								array(
+									'label' => Yii::t('app', 'Categories'), 'url' => array('/resource/category/admin'),
+									// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+									'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'category','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']])
+								),
+								array(
+									'label' => Yii::t('app', 'Geo Focus'), 'url' => array('/resource/geofocus/admin'),
+									// 'visible' => Yii::app()->user->getState('accessBackend') == true,
+									'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'geofocus','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'resource']])
+								),
 							),
 						),
 					);

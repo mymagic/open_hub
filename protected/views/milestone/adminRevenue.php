@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Manage All Milestone'), 'url' => array('/milestone/admin')),
-	array('label' => Yii::t('app', 'Create Milestone'), 'url' => array('/milestone/create', 'presetCode' => 'revenue')),
+	array(
+		'label' => Yii::t('app', 'Manage All Milestone'), 'url' => array('/milestone/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+	),
+	array(
+		'label' => Yii::t('app', 'Create Milestone'), 'url' => array('/milestone/create', 'presetCode' => 'revenue'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+	),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -52,7 +58,11 @@ $('.search-form form').submit(function(){
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-			'template' => '{view}{delete}'
-					),
+			'template' => '{view}{delete}',
+			'buttons' => array(
+				'view' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
+				'delete' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete'); })
+			),
+		),
 	),
 )); ?>

@@ -54,12 +54,14 @@ class SettingController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('panel'),
 				'users' => array('@'),
-				'expression' => "\$user->getState('isSuperAdmin')==true",
+				// 'expression' => "\$user->getState('isSuperAdmin')==true",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('view', 'create', 'update', 'admin', 'delete'),
 				'users' => array('@'),
-				'expression' => "\$user->getState('isDeveloper')==true",
+				// 'expression' => "\$user->getState('isDeveloper')==true",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
@@ -168,7 +170,7 @@ class SettingController extends Controller
 		$model['seo-meta-keywords'] = (!Setting::isCodeExists('seo-meta-keywords')) ? Setting::setSetting('seo-meta-keywords', '', 'text') : $this->loadModelByCode('seo-meta-keywords');
 
 		$model['seo-meta-description'] = (!Setting::isCodeExists('seo-meta-description')) ? Setting::setSetting('seo-meta-description', '', 'text') : $this->loadModelByCode('seo-meta-description');
-		
+
 		$model['organization-master-code'] = (!Setting::isCodeExists('organization-master-code')) ? Setting::setSetting('organization-master-code', '', 'string') : $this->loadModelByCode('organization-master-code');
 
 
