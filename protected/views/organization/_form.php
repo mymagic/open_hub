@@ -146,7 +146,7 @@
 		 * or else the data will become null when update for those user that do not have role accessBackend
 		 */
 	?>
-	<div class="<?php echo Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin ? '' : 'hide' ?>">
+	<div class="<?php echo Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"superAdmin"]]) ? '' : 'hide' ?>">
 
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
@@ -191,7 +191,7 @@
 		</div>
 	</div>
 
-	<?php if (Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"superAdmin"]])):?>
 	<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>
 		<div class="col-sm-10">
