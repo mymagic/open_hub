@@ -10,15 +10,15 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Create EventRegistration'), 'url' => array('/eventRegistration/create'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
 		'label' => Yii::t('app', 'Bulk Insert'), 'url' => array('/eventRegistration/bulkInsert'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'bulkInsert')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'bulkInsert')
 	),
 	array(
 		'label' => Yii::t('app', 'Housekeeping'), 'url' => array('/eventRegistration/housekeeping'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'housekeeping')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'housekeeping')
 	),
 );
 
@@ -63,8 +63,8 @@ $('.search-form form').submit(function(){
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
 			'buttons' => array(
-				'view'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); }),
-				'update'=>array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update'); }),
+				'view' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view'); }),
+				'update' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update'); }),
 				'delete' => array('visible' => false)
 			),
 		),

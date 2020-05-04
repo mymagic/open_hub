@@ -1,0 +1,41 @@
+swagger: '2.0'
+info:
+  description: Provides information of OpenHub.
+  version: "v1"
+  title: OpenHub
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getOpenHubLatestRelease:
+    post:
+      tags:
+      - public
+      summary: Get latest release info from OpenHub github repo
+      description: Get latest release info from OpenHub github repo
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

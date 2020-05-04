@@ -131,7 +131,7 @@
 	</div>
 
 	<?php // if (Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin):?>
-	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"superAdmin"]])):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']])):?>
 	<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>
 		<div class="col-sm-10">
@@ -142,7 +142,7 @@
 	<?php endif; ?>
 
 	<?php // if (Yii::app()->user->accessBackend && Yii::app()->user->isDeveloper):?>
-	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])):?>
 	<?php echo Notice::inline(Yii::t('notice', 'Meta Data Only accessible by developer role'), Notice_WARNING) ?>
 	<?php $this->renderPartial('../../yeebase/views/metaStructure/_sharedForm', ['form' => $form, 'model' => $model]); ?>
 	<?php endif; ?>

@@ -17,7 +17,7 @@
 			</div>
 		</div>
 
-		<a class="btn btn-primary btn-block margin-top-lg"  v-on:click="loadMore()" v-if="!allLoaded"><i class="fa fa-spinner fa-spin" v-if="loading"></i> Load 1000 More</a>
+		<a class="btn btn-primary btn-block margin-top-lg"  v-on:click="loadMore()" v-if="!allLoaded"><i class="fa fa-spinner fa-spin" v-if="loading"></i> Load More</a>
 
 	</template>
 </div>

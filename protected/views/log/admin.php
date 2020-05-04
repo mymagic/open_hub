@@ -10,7 +10,7 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage Log'), 'url' => array('index'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'index')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'index')
 	)
 );
 
@@ -56,7 +56,7 @@ $('.search-form form').submit(function(){
 			'class' => 'application.components.widgets.ButtonColumn',
 			'template' => '{view}',
 			'buttons' => array(
-				'view' => array('visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view'); })
+				'view' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view'); })
 			),
 		),
 	),

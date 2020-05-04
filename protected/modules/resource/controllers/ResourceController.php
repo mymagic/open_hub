@@ -49,7 +49,7 @@ class ResourceController extends Controller
 				'actions' => array('delete', 'admin', 'getTagsBackend'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
-				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
@@ -81,7 +81,7 @@ class ResourceController extends Controller
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
@@ -149,7 +149,7 @@ class ResourceController extends Controller
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
@@ -220,7 +220,7 @@ class ResourceController extends Controller
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
@@ -312,7 +312,7 @@ class ResourceController extends Controller
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
@@ -469,7 +469,7 @@ class ResourceController extends Controller
 		ksort($tabs);
 
 		// if (Yii::app()->user->isDeveloper) {
-		if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
 			$tabs['resource'][] = array(
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',

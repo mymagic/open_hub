@@ -9,11 +9,11 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage EventOwner'), 'url' => array('/eventOwner/admin'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
 		'label' => Yii::t('app', 'Create EventOwner'), 'url' => array('/eventOwner/create'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 );
 ?>

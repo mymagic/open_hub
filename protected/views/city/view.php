@@ -10,15 +10,15 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage City'), 'url' => array('/city/admin'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
 		'label' => Yii::t('app', 'Create City'), 'url' => array('/city/create'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
 		'label' => Yii::t('app', 'Update City'), 'url' => array('/city/update', 'id' => $model->id),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	),
 );
 ?>

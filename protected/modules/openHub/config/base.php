@@ -9,6 +9,8 @@ return array(
 		'openHub' => array(
 			'var1' => '',
 			'var2' => '',
+			'githubOrganization' => 'mymagic',
+			'githubRepoName' => 'open_hub',
 			'modelBehaviors' => array(
 			),
 		),

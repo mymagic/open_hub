@@ -123,7 +123,7 @@ class InterestModule extends WebModule
 	public function getNavItems($controller, $forInterface)
 	{
 		//for cpanel
-		//cpanelNavDashboard , cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
+		//cpanelNavDashboard , cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		switch ($forInterface) {
 			case 'backendNavService': {
 					/*return array(
@@ -156,10 +156,10 @@ class InterestModule extends WebModule
 					);
 					break;
 				}
-			case 'cpanelNavCompany': {
+			case 'cpanelNavOrganization': {
 			break;
 				}
-			case 'cpanelNavCompanyInformation': {
+			case 'cpanelNavOrganizationInformation': {
 			break;
 				}
 		}

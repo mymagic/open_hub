@@ -138,11 +138,11 @@ class UserIdentity extends CUserIdentity
 					//*/
 
 					$rolesAssigned[] = $role->code;
-					if($role->is_access_backend==1 && (!isset(Yii::app()->session['accessBackend']) || Yii::app()->session['accessBackend']===false)){
+					if ($role->is_access_backend == 1 && (!isset(Yii::app()->session['accessBackend']) || Yii::app()->session['accessBackend'] === false)) {
 						$this->setState('accessBackend', true);
 						Yii::app()->session['accessBackend'] = true;
 					}
-					if($role->is_access_sensitive_data==1 && (!isset(Yii::app()->session['accessSensitiveData']) || Yii::app()->session['accessSensitiveData']===false)){
+					if ($role->is_access_sensitive_data == 1 && (!isset(Yii::app()->session['accessSensitiveData']) || Yii::app()->session['accessSensitiveData'] === false)) {
 						$this->setState('accessSensitiveData', true);
 						Yii::app()->session['accessSensitiveData'] = true;
 					}
@@ -150,7 +150,7 @@ class UserIdentity extends CUserIdentity
 			}
 		}
 		$this->setState('roleLevelDisplay', substr($roleLevelDisplay, 0, -2));
-		$this->setState('rolesAssigned', implode(',',$rolesAssigned));
+		$this->setState('rolesAssigned', implode(',', $rolesAssigned));
 
 		// can access cpanel?
 		if ((!empty($user->member) && !empty($user->member->username))) {

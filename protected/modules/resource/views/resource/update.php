@@ -12,15 +12,15 @@ if ($realm == 'backend') {
 	$this->menu = array(
 		array(
 			'label' => Yii::t('app', 'Manage Resources'), 'url' => array('/resource/resource/admin'),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 		),
 		array(
 			'label' => Yii::t('app', 'Create Resource'), 'url' => array('/resource/resource/create'),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 		),
 		array(
 			'label' => Yii::t('app', 'View Resource'), 'url' => array('/resource/resource/view', 'id' => $model->id),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view')
 		),
 	);
 } elseif ($realm == 'cpanel') {

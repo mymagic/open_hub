@@ -16,8 +16,8 @@
             <?php echo Html::renderBoolean($data->is_active); ?>
             </small>
         </h4></a>
-        <?php // if (Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin): ?>
-        <?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'adminSensitiveData']]) || Yii::app()->user->getState('accessSensitiveData')): ?>
+        <?php // if (Yii::app()->user->isSuperAdmin || Yii::app()->user->isSensitiveDataAdmin):?>
+        <?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'adminSensitiveData']]) || Yii::app()->user->getState('accessSensitiveData')): ?>
             <?php if (!empty($data->ic_number)): ?><?php echo Html::faIcon('fa fa-id-card'); ?> <?php echo $data->ic_number; ?><?php endif; ?>
             <?php if (!empty($data->mobile_number)): ?>&nbsp;<?php echo Html::faIcon('fa fa-phone'); ?> <?php echo $data->mobile_number; ?><?php endif; ?>
         <?php endif; ?>

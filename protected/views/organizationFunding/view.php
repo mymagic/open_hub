@@ -10,19 +10,19 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage OrganizationFunding'), 'url' => array('organizationFunding/admin'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
 		'label' => Yii::t('app', 'Create OrganizationFunding'), 'url' => array('organizationFunding/create'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
 		'label' => Yii::t('app', 'Update OrganizationFunding'), 'url' => array('organizationFunding/update', 'id' => $model->id),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	),
 	array(
 		'label' => Yii::t('app', 'Delete OrganizationFunding'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'delete')),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')),
 );
 ?>
 
@@ -51,7 +51,7 @@ $this->menu = array(
 
 
 <h3>Proofs
-<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'proof','action'=>(object)['id'=>'create']])): ?>
+<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'proof', 'action' => (object)['id' => 'create']])): ?>
 	<a class="btn btn-xs btn-primary pull-right" href="<?php echo $this->createUrl('/proof/create', array('refTable' => 'organization_funding', 'refId' => $model->id)) ?>">Add</a>
 <?php endif; ?>
 </h3>
@@ -69,7 +69,7 @@ $this->menu = array(
 				'buttons' => array(
 					'view' => array(
 						'url' => '$data->getUrl("backendView")',
-						'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'proof','action'=>(object)['id'=>'view']]); }
+						'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'proof', 'action' => (object)['id' => 'view']]); }
 					),
 				),
 		),
@@ -77,7 +77,7 @@ $this->menu = array(
 )); ?>
 
 <h3>Linked Resources
-<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'resource2OrganizationFunding','action'=>(object)['id'=>'create']])): ?>
+<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'resource2OrganizationFunding', 'action' => (object)['id' => 'create']])): ?>
 	<a class="btn btn-xs btn-primary pull-right" href="<?php echo $this->createUrl('/resource2OrganizationFunding/create', array('organizationFundingId' => $model->id)) ?>">Add</a>
 <?php endif; ?>
 </h3>
@@ -96,11 +96,11 @@ $this->menu = array(
 				'buttons' => array(
 					'view' => array(
 						'url' => '$data->getUrl("backendView")',
-						'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'resource2OrganizationFunding','action'=>(object)['id'=>'view']]); }
+						'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'resource2OrganizationFunding', 'action' => (object)['id' => 'view']]); }
 					),
 					'delete' => array(
 						'url' => '$data->getUrl("backendDelete")',
-						'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'resource2OrganizationFunding','action'=>(object)['id'=>'delete']]); }
+						'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'resource2OrganizationFunding', 'action' => (object)['id' => 'delete']]); }
 					),
 				),
 		),

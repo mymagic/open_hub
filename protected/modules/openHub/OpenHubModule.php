@@ -9,11 +9,15 @@ class OpenHubModule extends WebModule
 	public $organizationId;
 	public $var1;
 	public $var2;
+	public $githubOrganization;
+	public $githubRepoName;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
 	public function init()
 	{
+		require_once dirname(__FILE__) . '/vendor/autoload.php';
+
 		$this->setComponents(array(
 			'request' => array(
 				'class' => 'HttpRequest',
@@ -119,7 +123,7 @@ class OpenHubModule extends WebModule
 	public function getNavItems($controller, $forInterface)
 	{
 		//for cpanel
-		//cpanelNavDashboard , cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
+		//cpanelNavDashboard , cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		switch ($forInterface) {
 			case 'cpanelNavDashboard': {
 					return array(
@@ -136,9 +140,9 @@ class OpenHubModule extends WebModule
 				}
 			case 'cpanelNavSetting': {
 				}
-			case 'cpanelNavCompany': {
+			case 'cpanelNavOrganization': {
 				}
-			case 'cpanelNavCompanyInformation': {
+			case 'cpanelNavOrganizationInformation': {
 				}
 		}
 	}

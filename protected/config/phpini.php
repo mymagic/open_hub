@@ -29,6 +29,11 @@ error_reporting(E_ERROR);
 //php_flag mbstring.encoding_translation on
 @ini_set('mbstring.encoding_translation', '1');
 
+@ini_set('max_execution_time', '120');
+@ini_set('max_input_time', '60');
+@ini_set('memory_limit', '1024M');
+@ini_set('max_input_vars', '10000');
+
 // enabled gzip output comrpession
 //@ini_set('output_handler', 'ob_gzhandler');
 //@ini_set('zlib.output_compression', '1');

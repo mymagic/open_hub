@@ -74,7 +74,7 @@ class JourneyModule extends WebModule
 				);
 			}
 			// if (Yii::app()->user->isSuperAdmin || (Yii::app()->user->isAdmin && Yii::app()->user->isSensitiveDataAdmin)) {
-			if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'admin']]) && Yii::app()->user->getState('accessSensitiveData')) {
+			if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'admin']]) && Yii::app()->user->getState('accessSensitiveData')) {
 				$tabs['journey'][] = array(
 					'key' => 'funding',
 					'title' => 'Funding',

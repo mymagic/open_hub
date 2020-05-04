@@ -59,12 +59,12 @@ $this->menu=array(
 			<li class="list-group-item">
 				<?php echo $s ?>&nbsp;
 
-				<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'editPredefined') || HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'translate')): ?>
+				<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'editPredefined') || HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'translate')): ?>
 					<div class="btn-group btn-group-xs pull-right">
-						<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'editPredefined')): ?>
+						<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'editPredefined')): ?>
 							<a href="<?php echo $this->createUrl('lingual/editPredefined', array('scope' => $s)) ?>" class="btn btn-default "><?php echo Yii::t('core', 'Edit Predefined') ?></a>
 						<?php endif; ?>
-						<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'translate')): ?>
+						<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'translate')): ?>
 							<a href="<?php echo $this->createUrl('lingual/translate', array('scope' => $s, 'lingual' => Yii::app()->language)) ?>" class="btn  btn-primary"><?php echo Yii::t('core', 'Translate') ?></a>
 						<?php endif; ?>
 					</div>

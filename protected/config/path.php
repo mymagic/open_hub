@@ -9,7 +9,7 @@ Yii::setPathOfAlias('static', dirname(__DIR__, 2) . '/public_html/static');
 Yii::setPathOfAlias('runtime', dirname(__DIR__) . '/runtime');
 Yii::setPathOfAlias('cronRoutine', dirname(__DIR__) . '/runtime/routine');
 Yii::setPathOfAlias('cronLog', dirname(__DIR__, 2) . '/_cron/runtime/log');
-Yii::setPathOfAlias('data',dirname(__DIR__) . '/data');
+Yii::setPathOfAlias('data', dirname(__DIR__) . '/data');
 
 Yii::setPathOfAlias('components', dirname(__DIR__) . '/components');
 Yii::setPathOfAlias('controllers', dirname(__DIR__) . '/controllers');

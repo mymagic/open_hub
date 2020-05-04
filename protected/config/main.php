@@ -145,7 +145,7 @@ $return = array(
 					'levels' => 'profile',
 					'report' => 'callstack',
 					'logFile' => 'db.log',
-				),		
+				),
 			),
 		),
 		'esLog' => array(

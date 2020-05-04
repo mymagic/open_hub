@@ -9,9 +9,9 @@ if ($realm == 'backend') {
 
 	$this->menu = array(
 		array(
-            'label' => Yii::t('app', 'Manage Organization'), 'url' => array('/organization/admin'),
-            'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
-        ),
+			'label' => Yii::t('app', 'Manage Organization'), 'url' => array('/organization/admin'),
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+		),
 	);
 } elseif ($realm == 'cpanel') {
 	$this->breadcrumbs = array(

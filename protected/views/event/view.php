@@ -10,23 +10,23 @@ $this->breadcrumbs = [
 $this->menu = [
 	[
 		'label' => Yii::t('app', 'Manage Event'), 'url' => ['/event/admin'],
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	],
 	[
 		'label' => Yii::t('app', 'Create Event'), 'url' => ['/event/create'],
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	],
 	[
 		'label' => Yii::t('app', 'Update Event'), 'url' => ['/event/update', 'id' => $model->id],
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	],
 	[
 		'label' => Yii::t('app', 'Bulk Insert Registration'), 'url' => ['/eventRegistration/bulkInsert', 'eventId' => $model->id],
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventRegistration','action'=>(object)['id'=>'bulkInsert']])
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'eventRegistration', 'action' => (object)['id' => 'bulkInsert']])
 	],
 	[
 		'label' => Yii::t('app', 'Bulk Insert Company'), 'url' => ['/eventOrganization/bulkInsert', 'eventId' => $model->id],
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'eventOrganization','action'=>(object)['id'=>'bulkInsert']])
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'eventOrganization', 'action' => (object)['id' => 'bulkInsert']])
 	],
 	//array('label'=>Yii::t('app','Delete Event'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id), 'csrf'=>Yii::app()->request->enableCsrfValidation, 'confirm'=>Yii::t('core', 'Are you sure you want to delete this item?'))),
 ];
@@ -120,7 +120,7 @@ $this->menu = [
 			<?php foreach ($model->eventOwners as $eventOwner):?>
 			<tr>
 				<td>
-					<a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a><?php if(!empty($eventOwner->department)): ?> \ <?php echo $eventOwner->department; ?><?php endif; ?>
+					<a href="<?php echo $this->createUrl('organization/view', ['id' => $eventOwner->organization->id]); ?>"><?php echo $eventOwner->organization->title; ?></a><?php if (!empty($eventOwner->department)): ?> \ <?php echo $eventOwner->department; ?><?php endif; ?>
 					<span class="label label-default label-sm">&nbsp;<?php echo $eventOwner->as_role_code ?></span>
 				</td>
 				<td class="width-lg text-center">

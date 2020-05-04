@@ -102,8 +102,7 @@ class HubEventbrite
 				$msg = sprintf('%s new/existing records updated', $count);
 
 				$event = Event::model()->findByPk(Yii::app()->db->lastInsertID);
-				if(!$event->hasEventOwner($webhook->organization_code, $webhook->as_role_code))
-				{
+				if (!$event->hasEventOwner($webhook->organization_code, $webhook->as_role_code)) {
 					// add event owner
 					$owner = new EventOwner;
 					$owner->event_code = $event->code;

@@ -173,7 +173,6 @@ class SettingController extends Controller
 
 		$model['organization-master-code'] = (!Setting::isCodeExists('organization-master-code')) ? Setting::setSetting('organization-master-code', '', 'string') : $this->loadModelByCode('organization-master-code');
 
-
 		if (isset($_POST['Setting'])) {
 			// seo
 			$model['seo-meta-title']->value = $_POST['Setting']['seo-meta-title'];

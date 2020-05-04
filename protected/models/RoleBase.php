@@ -63,7 +63,7 @@
  		// will receive user inputs.
  		return array(
 			array('code, title', 'required'),
-			array('is_access_backend, is_access_sensitive_data, is_active, date_added, date_modified', 'numerical', 'integerOnly'=>true),
+			array('is_access_backend, is_access_sensitive_data, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('code', 'length', 'max' => 64),
 			array('title', 'length', 'max' => 128),
 			// The following rule is used by search().
@@ -123,9 +123,9 @@
  		$criteria->compare('id', $this->id);
  		$criteria->compare('code', $this->code, true);
  		$criteria->compare('title', $this->title, true);
-		$criteria->compare('is_access_backend',$this->is_access_backend);
-		$criteria->compare('is_access_sensitive_data',$this->is_access_sensitive_data);
-		$criteria->compare('is_active',$this->is_active);
+ 		$criteria->compare('is_access_backend', $this->is_access_backend);
+ 		$criteria->compare('is_access_sensitive_data', $this->is_access_sensitive_data);
+ 		$criteria->compare('is_active', $this->is_active);
  		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
  			$sTimestamp = strtotime($this->sdate_added);
  			$eTimestamp = strtotime("{$this->edate_added} +1 day");
@@ -145,9 +145,9 @@
  	public function scopes()
  	{
  		return array(
-			'isActive'=>array('condition'=>"t.is_active = 1"),
-			'isAccessBackend'=>array('condition'=>"t.is_access_backend = 1"),
-			'isAccessSensitiveData'=>array('condition'=>"t.is_access_sensitive_data = 1"),
+			'isActive' => array('condition' => 't.is_active = 1'),
+			'isAccessBackend' => array('condition' => 't.is_access_backend = 1'),
+			'isAccessSensitiveData' => array('condition' => 't.is_access_sensitive_data = 1'),
 		);
  	}
 

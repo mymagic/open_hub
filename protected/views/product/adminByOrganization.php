@@ -86,11 +86,11 @@ if ($realm == 'backend') {
 			'buttons' => array(
 				'view' => array(
 					'url' => 'Yii::app()->controller->createUrl(\'product/view\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))',
-					'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'product','action'=>(object)['id'=>'view']]); }
+					'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'product', 'action' => (object)['id' => 'view']]); }
 				),
 				'update' => array(
 					'url' => 'Yii::app()->controller->createUrl(\'product/update\', array(\'id\'=>$data->id, \'realm\'=>$_GET[realm]))',
-					'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'product','action'=>(object)['id'=>'update']]); }
+					'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'product', 'action' => (object)['id' => 'update']]); }
 				),
 				'delete' => array('visible' => false)
 			),

@@ -11,19 +11,19 @@ if ($realm == 'backend') {
 	$this->menu = array(
 		array(
 			'label' => Yii::t('app', 'Manage Resources'), 'url' => array('/resource/resource/admin'),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 		),
 		array(
 			'label' => Yii::t('app', 'Create Resource'), 'url' => array('/resource/resource/create'),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 		),
 		array(
 			'label' => Yii::t('app', 'Update Resource'), 'url' => array('/resource/resource/update', 'id' => $model->id),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'update')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 		),
 		array(
 			'label' => Yii::t('app', 'Delete Resource'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
-			'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'delete')
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
 		),
 	);
 } elseif ($realm == 'cpanel') {

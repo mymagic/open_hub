@@ -10,13 +10,13 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage Form2Intake'), 'url' => array('/f7/form2Intake/admin'), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+		'label' => Yii::t('app', 'Manage Form2Intake'), 'url' => array('/f7/form2Intake/admin'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create Form2Intake'), 'url' => array('/f7/form2Intake/create'), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+		'label' => Yii::t('app', 'Create Form2Intake'), 'url' => array('/f7/form2Intake/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'View Form2Intake'), 'url' => array('/f7/form2Intake/view', 'id' => $model->id), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view')
+		'label' => Yii::t('app', 'View Form2Intake'), 'url' => array('/f7/form2Intake/view', 'id' => $model->id), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view')
 	),
 );
 ?>

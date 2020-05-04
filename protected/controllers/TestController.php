@@ -36,20 +36,41 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
-    public function actionOrganizationMeta($id)
-    {
+	public function actionOrganizationScore($id)
+	{
+		$organization = Organization::model()->findByPk($id);
+		$organization->save();
+		$score = $organization->calcProfileCompletenessScore();
+		print_r($organization->toApi());
+		print_r($score);
+	}
+
+	public function actionIndividualScore($id)
+	{
+		$individual = Individual::model()->findByPk($id);
+		$individual->save();
+		$score = $individual->calcProfileCompletenessScore();
+		print_r($individual->toApi());
+		print_r($score);
+	}
+
+	public function actionOrganizationMeta($id)
+	{
 		echo '<pre>';
-        $org = Organization::model()->findByPk($id);
-		echo 'When Loaded'; print_r($org->_dynamicData);
-        $org->_dynamicData['Organization-status-isBumi'] = 1;
+		$org = Organization::model()->findByPk($id);
+		echo 'When Loaded';
+		print_r($org->_dynamicData);
+		$org->_dynamicData['Organization-status-isBumi'] = 1;
 		$org->save();
-        echo 'After Saved'; print_r($org->_dynamicData);
-    }
+		echo 'After Saved';
+		print_r($org->_dynamicData);
+	}
 
 	public function actionActiveParsableModule()
 	{
 		$tmps = YeeModule::getActiveParsableModules();
-		echo '<pre>'; print_r($tmps);
+		echo '<pre>';
+		print_r($tmps);
 	}
 
 	public function actionAddressBreakdown()
@@ -158,9 +179,13 @@ class TestController extends Controller
 		$j->code = 'test-junkAfterSave-' . time();
 		$j->content = 'test-junkAfterSave-' . time();
 		// use the default event in model
-		$j->onAfterSave->add(function () {echo " onAftersave event raised, custom function 1 called\n";});
+		$j->onAfterSave->add(function () {
+			echo " onAftersave event raised, custom function 1 called\n";
+		});
 		// use the custom event in model
-		$j->onJunkCreated->add(function () {echo " onJunkCreated event raised, custom function 2 called\n";});
+		$j->onJunkCreated->add(function () {
+			echo " onJunkCreated event raised, custom function 2 called\n";
+		});
 		$j->save();
 		echo sprintf('<p>id: %s</p>', $j->id);
 	}
@@ -174,9 +199,13 @@ class TestController extends Controller
 		$j = Junk::model()->findByPk($id);
 		$j->content = 'changed on' . time();
 		// use the default event in model
-		$j->onAfterSave->add(function () {echo " onAftersave event raised, custom function 1 called\n";});
+		$j->onAfterSave->add(function () {
+			echo " onAftersave event raised, custom function 1 called\n";
+		});
 		// this event should not be triggered since it is an existing record
-		$j->onJunkCreated->add(function () {echo " onJunkCreated event raised, custom function 2 called\n";});
+		$j->onJunkCreated->add(function () {
+			echo " onJunkCreated event raised, custom function 2 called\n";
+		});
 		$j->save();
 	}
 
@@ -609,16 +638,16 @@ class TestController extends Controller
 	{
 		// get all event_organization with event which is active and not is cancelled ordered by oldest event first
 
-		$sql = sprintf("SELECT e.title as eventTitle, eg.title as eventGroupTitle, e.text_short_desc as eventShortDesc, e.url_website as eventUrl, e.date_started as eventDateStarted, e.date_ended as eventDateEnded, e.full_address as eventFullAddress, e.email_contact as eventEmailContact, o.title as orgTitle, o.text_oneliner as orgOneLiner, o.text_short_description as orgShortDesc, o.year_founded as orgYearFounded, c.printable_name as orgCountry, o.url_website as orgUrl, 
-		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title ASC LIMIT 0, 1) as orgIndustry1, 
-		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 1, 1) as orgIndustry2, 
+		$sql = sprintf("SELECT e.title as eventTitle, eg.title as eventGroupTitle, e.text_short_desc as eventShortDesc, e.url_website as eventUrl, e.date_started as eventDateStarted, e.date_ended as eventDateEnded, e.full_address as eventFullAddress, e.email_contact as eventEmailContact, o.title as orgTitle, o.text_oneliner as orgOneLiner, o.text_short_description as orgShortDesc, o.year_founded as orgYearFounded, c.printable_name as orgCountry, o.url_website as orgUrl,
+		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title ASC LIMIT 0, 1) as orgIndustry1,
+		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 1, 1) as orgIndustry2,
 		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 2, 1) as orgIndustry3,
 		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 3, 1) as orgIndustry4,
-		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 4, 1) as orgIndustry5 
-		FROM event_organization as eo 
-		LEFT JOIN event as e ON e.id=eo.event_id 
-		LEFT JOIN organization o ON o.id=eo.organization_id 
-		LEFT JOIN event_group as eg ON eg.code=e.event_group_code 
+		(SELECT i.title FROM industry as i RIGHT JOIN industry2organization as i2o ON i.id=i2o.industry_id WHERE i2o.organization_id=o.id ORDER BY i.title  ASC LIMIT 4, 1) as orgIndustry5
+		FROM event_organization as eo
+		LEFT JOIN event as e ON e.id=eo.event_id
+		LEFT JOIN organization o ON o.id=eo.organization_id
+		LEFT JOIN event_group as eg ON eg.code=e.event_group_code
 		LEFT JOIN country as c ON c.code=o.address_country_code
 		WHERE eo.as_role_code='selectedParticipant' AND e.is_active=1 AND e.is_cancelled!=1 AND o.is_active=1 ORDER BY eg.title ASC, e.date_started ASC, o.title ASC");
 
@@ -957,15 +986,15 @@ class TestController extends Controller
 		$bufferFilter = "persona.slug='startups' AND o.title LIKE 'emanyan%'";
 		$offset = 0;
 		$limitPerPage = 100;
-		$sql = sprintf('SELECT o.* FROM organization as `o` 
-			LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+		$sql = sprintf('SELECT o.* FROM organization as `o`
+			LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 			LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-			
-			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 			LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
 			LEFT JOIN event_organization as eo ON eo.organization_id=o.id
-		
+
 			WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ', $bufferFilter, $offset, $limitPerPage);
 
 		//echo $sql;exit;

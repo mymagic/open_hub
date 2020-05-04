@@ -69,8 +69,8 @@ if ($realm == 'backend') {
 	</div>
 
 
-	<?php // if (Yii::app()->user->isDeveloper) : ?>
-	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])) : ?>
+	<?php // if (Yii::app()->user->isDeveloper) :?>
+	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) : ?>
 		<div class="px-8 py-6 mt-4 shadow-panel">
 			<div class="crud-view">
 				<?php if (!empty($model->_metaStructures)) : ?>
@@ -113,8 +113,8 @@ if ($realm == 'backend') {
 				),
 			)); ?>
 
-		<?php // if (Yii::app()->user->isDeveloper) : ?>
-		<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])) : ?>
+		<?php // if (Yii::app()->user->isDeveloper) :?>
+		<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) : ?>
 			<div class="crud-view">
 				<?php if (!empty($model->_metaStructures)) : ?>
 					<h2><?php echo Yii::t('core', 'Meta Data') ?></h2>

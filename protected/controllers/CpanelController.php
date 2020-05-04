@@ -39,10 +39,10 @@ class CpanelController extends Controller
 			array(
 				'allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array(
-					'index', 'services', 'qa', 'guidelines', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
+					'index', 'services', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
-					'test', 'activity', 'getTimeline', 'profile',
+					'test', 'activity', 'getTimeline', 'profile', 'organization'
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
@@ -81,67 +81,19 @@ class CpanelController extends Controller
 		));
 	}
 
+	public function actionOrganization()
+	{
+		$this->redirect(array('organization/list', 'realm' => 'cpanel'));
+	}
+
 	public function actionIndex()
 	{
 		$this->redirect(['cpanel/services']);
-
-		// $listServices = HUB::listServiceBookmarkable();
-		$tmps = HUB::listServiceBookmarkable();
-		foreach ($tmps as $tmp) {
-			$result[] = $tmp->toApi();
-		}
-
-		$user = Yii::app()->user;
-		$selected_service_list = HUB::listServiceBookmarkByUser($user);
-		$is_popup_process_completed = false;
-		if (count($selected_service_list) > 0) {
-			$is_popup_process_completed = true;
-			$this->redirect(['cpanel/services']);
-			exit;
-		}
-
-		$this->render('index', array(
-			'listServices' => $result,
-			'is_popup_process_completed' => $is_popup_process_completed,
-		));
 	}
 
-	/*
-	id: "4",
-	slug: "activate",
-	title: "Activate",
-	textOneliner: "A collaborative platform to solve real life challenge",
-	isBookmarkable: 1,
-	isActive: 1,
-	dateAdded: "1513581492",
-	fDateAdded: "2017 Dec 18, 15:18 PM +08:00",
-	dateModified: "1515981400",
-	fDateModified: "2018 Jan 15, 09:56 AM +08:00"
-	*/
+
 	public function actionServices()
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		// $user = Yii::app()->user;
-		// $service_list = HUB::listServiceBookmarkable();
-
-		// //$selected_service_list = HUB::listServiceBookmarkByUser($user);
-		// foreach ($service_list as $service) {
-		// 	$selected_service_list[] = array(
-		// 		'serviceId' => $service->id,
-		// 		'userId' => 0,
-		// 		'service' => $service,
-		// 		'user' => null
-		// 	);
-		// }
-		// $data['selected_service_list'] = $selected_service_list;
-
-		// $this->activeSubMenuCpanel = 'services';
-
-		// $this->render('services', array('selected_service_list' => $selected_service_list, 'service_list' => $service_list, 'mentoringInfo' => $mentoringInfo));
-
-		// $this->render('services',$data, $list);
-
 		$this->redirect(array('activity'));
 	}
 
@@ -196,22 +148,6 @@ class CpanelController extends Controller
 		$this->render('profile', array(
 			'model' => $model,
 		));
-	}
-
-	public function actionQa()
-	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->activeSubMenuCpanel = 'qa';
-		$this->render('qa');
-	}
-
-	public function actionGuidelines()
-	{
-		$this->activeSubMenuCpanel = 'guide';
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('guidelines');
 	}
 
 	public function actionSetUserService()
@@ -530,31 +466,4 @@ class CpanelController extends Controller
 			$this->renderJson(array('status' => 'fail', 'msg' => 'Invalid Email Address'));
 		}
 	}
-
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-
-	public function actions()
-	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-	*/
 }

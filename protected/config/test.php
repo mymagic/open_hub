@@ -1,6 +1,6 @@
 <?php
 
-return CMap::mergeArray(
+$return = CMap::mergeArray(
 	require(dirname(__FILE__) . '/main.php'),
 	array(
 		'components' => array(
@@ -15,3 +15,8 @@ return CMap::mergeArray(
 		),
 	)
 );
+
+// $return['modules'] = array();
+// $return['components']['urlManager']['rules'] = array();
+
+return $return;

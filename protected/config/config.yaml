@@ -777,7 +777,7 @@ main:
                     varInstaller: googleMapApiKey
                     env: GOOGLE_API_KEY
                     title: Google API Key
-                    hint: Required, use to trasnlate address to lat long location etc.
+                    hint: Required, use to translate address to lat long location etc.
                     example: 
                     default: 
                     datatype: string

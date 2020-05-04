@@ -229,7 +229,7 @@
 	<!-- /many2many -->
 
 	<?php // if (Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin):?>
-	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"superAdmin"]])):?>
+	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']])):?>
 	<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>
 		<div class="col-sm-10">

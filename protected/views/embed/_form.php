@@ -40,15 +40,15 @@
 			<?php echo $form->bsTextArea($model, 'text_note', array(
 				'rows' => 2,
 				// 'disabled' => Yii::app()->user->isDeveloper ? false : true
-				'disabled' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]]) ? false : true
+				'disabled' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']]) ? false : true
 				)); ?>
 			<?php echo $form->bsError($model, 'text_note'); ?>
 		</div>
 	</div>
 
 
-	<?php // if (Yii::app()->user->isDeveloper): ?>
-	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])): ?>
+	<?php // if (Yii::app()->user->isDeveloper):?>
+	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])): ?>
 	<div class="form-group <?php echo $model->hasErrors('is_title_enabled') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_title_enabled'); ?>
 		<div class="col-sm-10">

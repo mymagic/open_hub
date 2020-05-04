@@ -348,7 +348,6 @@ class Form extends FormBase
 		$criteria2->compare('intakes.title', $this->title, true, 'OR');
 		$criteria->mergeWith($criteria2, 'OR');
 
-
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
 			'sort' => array('defaultOrder' => 't.id DESC'),
@@ -440,31 +439,32 @@ class Form extends FormBase
 	public function countDraftFormSubmissions()
 	{
 		// stat without primary key linkage is not working
-		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode'=>$this->code, ':status'=>'draft'));
+		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode' => $this->code, ':status' => 'draft'));
+
 		return $command->queryScalar();
 	}
 
 	public function countSubmittedFormSubmissions()
 	{
 		// stat without primary key linkage is not working
-		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode'=>$this->code, ':status'=>'submit'));
+		$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND status=:status', array(':formCode' => $this->code, ':status' => 'submit'));
+
 		return $command->queryScalar();
 	}
 
 	public function countWorkflowFormSubmissions()
 	{
 		$return = null;
-		
+
 		$stages = Yii::app()->db->createCommand()->select('DISTINCT(stage)')->from('form_submission')->where('form_code=:formCode', array(':formCode' => $this->code))->queryAll();
-		
-		foreach($stages as $stage)
-		{
+
+		foreach ($stages as $stage) {
 			$key = $stage['stage'];
 			if ($stage['stage'] == '') {
 				$key = 'EMPTY';
 			}
 			// stat without primary key linkage is not working
-			$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND stage=:stage', array(':formCode'=>$this->code, ':stage'=>$stage['stage']));
+			$command = Yii::app()->db->createCommand()->select('count(id)')->from('form_submission')->where('form_code=:formCode AND stage=:stage', array(':formCode' => $this->code, ':stage' => $stage['stage']));
 			$return[$key] = $command->queryScalar();
 		}
 

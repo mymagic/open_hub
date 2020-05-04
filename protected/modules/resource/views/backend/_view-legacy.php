@@ -1,5 +1,5 @@
-<?php // if (Yii::app()->user->getState('isDeveloper')): ?>
-<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])): ?>
+<?php // if (Yii::app()->user->getState('isDeveloper')):?>
+<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])): ?>
 
 <h3>Developer Only</h3>
 <?php $this->widget('application.components.widgets.DetailView', array(

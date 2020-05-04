@@ -12,16 +12,16 @@ $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage Submission'), 'url' => array('/f7/submission/admin'),
 		// 'visible' => Yii::app()->user->isDeveloper,
-		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
 		'label' => Yii::t('app', 'Create Submission'), 'url' => array('/f7/submission/create'),
 		// 'visible' => Yii::app()->user->isDeveloper,
-		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
 		'label' => Yii::t('app', 'View Submission'), 'url' => array('/f7/submission/view', 'id' => $model->id),
-		'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'view')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view')
 	),
 );
 ?>

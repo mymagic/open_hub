@@ -23,6 +23,8 @@ class Individual extends IndividualBase
 	public $searchBackendTags;
 	public $searchOrganization;
 
+	public $defaultPhoto = 'uploads/individual/photo.default.jpg';
+
 	public static function model($class = __CLASS__)
 	{
 		return parent::model($class);
@@ -412,6 +414,29 @@ class Individual extends IndividualBase
 		}
 
 		return $return;
+	}
+
+	public function calcProfileCompletenessScore()
+	{
+		$totalScore = 0;
+
+		//
+		$fields2Check = array('full_name', 'gender', 'image_photo', 'country_code', 'state_code', 'ic_number', 'text_address_residential', 'mobile_number', 'is_active');
+
+		foreach ($fields2Check as $field2Check) {
+			if (isset($this->$field2Check) && !empty($this->$field2Check)) {
+				$totalScore++;
+			}
+		}
+
+		if ($this->image_photo == $this->defaultPhoto) {
+			$totalScore = $totalScore - 1;
+		}
+		if ($this->is_active == 0) {
+			$totalScore = $totalScore - 1;
+		}
+
+		return ($totalScore / count($fields2Check)) * 100;
 	}
 
 	//

@@ -22,7 +22,7 @@ class BackendController extends Controller
 				'actions' => array('syncForm2Event', 'syncForm2EventConfirmed', 'getOpeningForms'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
-				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

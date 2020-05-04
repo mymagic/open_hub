@@ -14,7 +14,7 @@ $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Delete Page'), 'url' => array('delete', 'id' => $model->id),
 		// 'visible' => (Yii::app()->user->isDeveloper) ? true : false
-		'visible' => (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])) ? true : false
+		'visible' => (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) ? true : false
 	),
 );
 ?>

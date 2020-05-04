@@ -123,13 +123,12 @@ class F7Module extends WebModule
 						// 'visible' => Yii::app()->user->getState('accessBackend') == true && !Yii::app()->user->getState('isEcosystem'),
 						'visible' => (
 							Yii::app()->user->getState('accessBackend') == true &&
-							!HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'custom','action'=>(object)['id'=>'ecosystem'],'checkAccess'=>true])
+							!HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'ecosystem'], 'checkAccess' => true])
 							) && (
-							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'intake','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']]) ||
-							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'form','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']]) ||
-							HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'submission','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']])
-						)
-						,
+							HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'intake', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']]) ||
+							HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'form', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']]) ||
+							HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'submission', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']])
+						),
 						'active' => $controller->activeMenuMain == 'f7' ? true : false,
 						'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
@@ -138,17 +137,17 @@ class F7Module extends WebModule
 							array(
 								'label' => Yii::t('app', 'Intake'), 'url' => array('/f7/intake/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true,
-								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'intake','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']]),
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'intake', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']]),
 							),
 							array(
 								'label' => Yii::t('app', 'Form'), 'url' => array('/f7/form/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true,
-								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'form','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']])
+								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'form', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']])
 							),
 							array(
 								'label' => Yii::t('app', 'Submission') . ' <span class="label label-warning">dev</span>', 'url' => array('/f7/submission/admin'),
 								// 'visible' => Yii::app()->user->getState('isDeveloper'),
-								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'submission','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'f7']])
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'submission', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'f7']])
 							),
 						),
 					),

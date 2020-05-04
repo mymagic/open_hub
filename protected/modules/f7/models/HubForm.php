@@ -70,7 +70,7 @@ class HubForm
 		return $intake;
 	}
 
-	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm='frontend')
+	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm = 'frontend')
 	{
 		$htmlBody = '';
 		$decoded = json_decode($json, true);
@@ -753,23 +753,19 @@ class HubForm
 		$disable = $isEnabled ? '' : 'disabled';
 
 		if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
-
 			return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
 		}
 
-		if($realm == 'backend' && !$isEnabled && strtolower($dataClass) === 'organization')
-		{
+		if ($realm == 'backend' && !$isEnabled && strtolower($dataClass) === 'organization') {
 			$value = $decodedData[$params['name']];
 			$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
-		}
-		else
-		{
+		} else {
 			$selectedItem = empty($decodedData[$params['name']]) ? $params['selected'] : $decodedData[$params['name']];
 
 			$defaultItem = sprintf('<option value="">%s</option>', $params['text']);
-	
+
 			$options .= $defaultItem;
-	
+
 			if (empty($orgs) || count($orgs) === 0) {
 				foreach ($params['items'] as $item) {
 					if ($selectedItem === $item['text']) {
@@ -789,7 +785,7 @@ class HubForm
 				}
 			}
 			$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
-	
+
 			if (strtolower($dataClass) === 'organization') {
 				$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
 			}
@@ -1662,7 +1658,7 @@ class HubForm
 					(:timestampStart <= date_close AND :timestampEnd >= date_close) 
 					OR 
 					(:timestampStart <= date_open AND :timestampEnd >= date_close) 
-					)', 
+					)',
 				'params' => array(':timestampStart' => $timestampStart, ':timestampEnd' => $timestampEnd),
 				'offset' => ($page - 1) * $limit,
 				'limit' => $limit,

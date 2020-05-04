@@ -8,10 +8,10 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage Challenge'), 'url' => array('/challenge/challenge/admin'), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'admin')
+		'label' => Yii::t('app', 'Manage Challenge'), 'url' => array('/challenge/challenge/admin'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible'=>HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller,'create')
+		'label' => Yii::t('app', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 );
 ?>

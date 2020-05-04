@@ -28,21 +28,21 @@ class EventCommand extends ConsoleCommand
 
 	public function actionSetActiveEventOwner2MasterOrganization()
 	{
-        $masterOrganizationCode = Setting::code2value('organization-master-code');
-        if(!empty($masterOrganizationCode)) {
-            $masterOrganization = Organization::code2obj($masterOrganizationCode);
-        }
+		$masterOrganizationCode = Setting::code2value('organization-master-code');
+		if (!empty($masterOrganizationCode)) {
+			$masterOrganization = Organization::code2obj($masterOrganizationCode);
+		}
 
 		if (empty($masterOrganization)) {
 			throw new Exception('Failed to proceed as Master Organization is not set in setting');
-        }
+		}
 
-        // get all active events
+		// get all active events
 		$events = Event::model()->isActive()->findAll();
-        $count = 0;
-        $asRoleCode = 'owner';
+		$count = 0;
+		$asRoleCode = 'owner';
 
-        // loop thru each of the events
+		// loop thru each of the events
 		foreach ($events as $event) {
 			// if event don't have owner with the above role code, create and assign to it
 			echo $event->title . "\n";
@@ -57,8 +57,7 @@ class EventCommand extends ConsoleCommand
 				}
 			}
 		}
-        
-        Yii::app()->esLog->log(sprintf("called event\setActiveEventOwner2MasterOrganization"), 'command', array('trigger' => 'EventCommand::actionSetActiveEventOwner2MasterOrganization', 'model' => '', 'action' => '', 'id' => ''), '', array('countAssigned' => $count));
-		
+
+		Yii::app()->esLog->log(sprintf("called event\setActiveEventOwner2MasterOrganization"), 'command', array('trigger' => 'EventCommand::actionSetActiveEventOwner2MasterOrganization', 'model' => '', 'action' => '', 'id' => ''), '', array('countAssigned' => $count));
 	}
 }

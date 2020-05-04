@@ -25,6 +25,19 @@ class TestController extends Controller
 		);
 	}
 
+	public function actionGetLatestRelease()
+	{
+		$release = HubOpenHub::getLatestRelease();
+		print_r($release);
+	}
+
+	public function actionBSD3License()
+	{
+		$client = new \Github\Client();
+		$licenses = $client->api('licenses')->show('bsd-3-clause');
+		print_r($licenses);
+	}
+
 	public function actionBoilerplateStartOrganizationBehavior()
 	{
 		$organization = new Organization;

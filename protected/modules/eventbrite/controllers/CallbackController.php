@@ -59,8 +59,7 @@ class CallbackController extends Controller
 		$jsonArray_payload = json_decode($payload);
 
 		$actionKey = 'eventUpdate';
-		if($jsonArray_payload->config->action == 'event.created')
-		{
+		if ($jsonArray_payload->config->action == 'event.created') {
 			$actionKey = 'eventCreate';
 		}
 
@@ -68,7 +67,6 @@ class CallbackController extends Controller
 		$junk->code = sprintf('eventbrite-callback-%s-%s', $actionKey, rand(10000, 99999));
 		$junk->content = $payload;
 		$junk->save();
-
 
 		if (!empty($jsonArray_payload) && !empty($jsonArray_payload->api_url) && !empty($jsonArray_payload->config)) {
 			$webhook = HubEventbrite::getWebhookByAccountId($jsonArray_payload->config->user_id);

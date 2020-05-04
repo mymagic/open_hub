@@ -53,8 +53,8 @@
 	</div>
 
 
-	<?php // if (Yii::app()->user->isDeveloper): ?>
-	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])): ?>
+	<?php // if (Yii::app()->user->isDeveloper):?>
+	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])): ?>
 	<div class="form-group <?php echo $model->hasErrors('json_data') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'json_data'); ?>
 		<div class="col-sm-10">

@@ -13,10 +13,9 @@ class Role2AccessBase extends ActiveRecordBase
 {
 	public $uploadPath;
 
-
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'role2access';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'role2access';
 	}
 
 	/**
@@ -36,10 +35,10 @@ class Role2AccessBase extends ActiveRecordBase
 		// will receive user inputs.
 		return array(
 			array('role_id, access_id', 'required'),
-			array('role_id, access_id', 'numerical', 'integerOnly'=>true),
+			array('role_id, access_id', 'numerical', 'integerOnly' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('role_id, access_id', 'safe', 'on'=>'search'),
+			array('role_id, access_id', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -81,23 +80,22 @@ class Role2AccessBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('role_id',$this->role_id);
-		$criteria->compare('access_id',$this->access_id);
+		$criteria->compare('role_id', $this->role_id);
+		$criteria->compare('access_id', $this->access_id);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
 
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			//'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -105,7 +103,7 @@ class Role2AccessBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Role2Access the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}

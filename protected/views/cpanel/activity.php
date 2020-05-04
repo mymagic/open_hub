@@ -1,3 +1,7 @@
+<?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.min.css'); ?>
+<?php Yii::app()->ClientScript->registerScriptFile('https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js'); ?>
+
+
 <div id="v-timeline">
     <h2>Activity Feed</h2>
     <p>Keeping track of your milestones and news of your selected services</p>
@@ -52,10 +56,6 @@
 
 
 </div>
-
-<?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.min.css'); ?>
-<?php Yii::app()->ClientScript->registerScriptFile('https://cdn.jsdelivr.net/npm/@riophae/vue-treeselect@^0.4.0/dist/vue-treeselect.umd.min.js'); ?>
-
 
 <?php Yii::app()->clientScript->registerScript('v-timeline', "
 

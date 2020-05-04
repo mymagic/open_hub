@@ -2,7 +2,7 @@
 
 class FrontendController extends Controller
 {
-	// customParse is for cpanelNavCompanyInformation to pass in organization ID
+	// customParse is for cpanelNavOrganizationInformation to pass in organization ID
 	//public $customParse = '';
 
 	public function filters()
@@ -41,8 +41,8 @@ class FrontendController extends Controller
 		// for cpanel navigation
 		// $this->layout = 'cpanel'; //default layout for cpanel
 		// $this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		// $this->cpanelMenuInterface = 'cpanelNavDashboard'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
-		// $this->customParse = ''; //to pass in organization ID for cpanelNavCompanyInformation
+		// $this->cpanelMenuInterface = 'cpanelNavDashboard'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
+		// $this->customParse = ''; //to pass in organization ID for cpanelNavOrganizationInformation
 		// $this->activeMenuCpanel = ''; //active menu name based on NameModule.php getNavItems() active attribute
 	}
 

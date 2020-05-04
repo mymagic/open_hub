@@ -12,7 +12,7 @@
     <div class="media-body">
         <a href="<?php echo $this->createUrl('/f7/form/view', array('id' => $data->id)); ?>">
         <h4 class="media-heading">
-            <?php if(!empty($data->intakes[0])): ?><?php echo $data->intakes[0]->title; ?> \ <?php endif; ?><?php echo $data->title; ?>
+            <?php if (!empty($data->intakes[0])): ?><?php echo $data->intakes[0]->title; ?> \ <?php endif; ?><?php echo $data->title; ?>
             <small><span class="text-muted">
             </span>
             <?php echo Html::renderBoolean($data->is_active); ?>

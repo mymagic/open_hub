@@ -1992,20 +1992,21 @@ class HUB extends Component
 	 *
 	 * @return boolean
 	 **/
-	public function roleCheckerAction($role, $controller, $action = '') {
-		$roles = explode(',',$role);
+	public function roleCheckerAction($role, $controller, $action = '')
+	{
+		$roles = explode(',', $role);
 
 		/*
 		 * if user session is System Admin and role supplied
 		 */
-		if(in_array('superAdmin',$roles)){
+		if (in_array('superAdmin', $roles)) {
 			// this checkAccess is defined in _accessView & _accessForm to check the route is been set to that role. so if it has been set then do not return true
-			if(!isset($controller->checkAccess)){
+			if (!isset($controller->checkAccess)) {
 				return true;
 			}
 		}
 
-		if(is_numeric($role)){
+		if (is_numeric($role)) {
 			$column = 'roles.id';
 		} else {
 			$column = 'roles.code';
@@ -2014,20 +2015,20 @@ class HUB extends Component
 		$criteria = new CDbCriteria;
 		$criteria->with = ['roles'];
 
-		$condition = "t.module=:module AND t.controller=:controller AND t.action=:action";
+		$condition = 't.module=:module AND t.controller=:controller AND t.action=:action';
 		$params = array(
-            ':module' => !empty($controller->module->id) ? $controller->module->id : '',
-            ':controller' => $controller->id,
-            ':action' => !empty($action) ? $action : $controller->action->id,
+			':module' => !empty($controller->module->id) ? $controller->module->id : '',
+			':controller' => $controller->id,
+			':action' => !empty($action) ? $action : $controller->action->id,
 		);
-		if(isset($filter) && isset($value)){
+		if (isset($filter) && isset($value)) {
 			$condition .= " AND $filter";
 			$params[':role'] = $value;
 		}
 		$criteria->condition = $condition;
 		$criteria->params = $params;
 
-		$criteria->addInCondition($column,$roles);
+		$criteria->addInCondition($column, $roles);
 		//var_dump($column, $roles);
 
 		// $count = Access::model()->with('roles')->count($condition, $params);

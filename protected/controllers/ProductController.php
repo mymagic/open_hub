@@ -56,7 +56,7 @@ class ProductController extends Controller
 				'actions' => array('list', 'view', 'create', 'update', 'admin', 'adminByOrganization'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
-				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow',
@@ -96,7 +96,7 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $product->organization->id;
 		}
 		$this->pageTitle = Yii::t('app', 'View Product');
@@ -126,7 +126,7 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $organization_id;
 		}
 		$this->pageTitle = Yii::t('app', 'Create Product');
@@ -178,7 +178,7 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->organization->id;
 		}
 
@@ -239,7 +239,7 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->id;
 
 			$model = new Product('search');

@@ -70,8 +70,8 @@ if ($realm == 'backend') {
 						<div class="ml-4"><?php echo $model->email_contact ?></div>
 					</div>
 					<div class="inline-flex items-center mr-8 my-2">
-						<span class="label label-success">Active</span>
-						<div class="ml-4">Since <?php echo $model->year_founded ?></div>
+						<span class="label label-success"><?php echo $model->getPublicDisplayStatus('text') ?></span>
+						<?php if(!empty($model->year_founded)):  ?><div class="ml-4">Since <?php echo $model->year_founded ?></div><?php endif; ?>
 					</div>
 				</div>
 				<div class="mt-4">
@@ -110,6 +110,11 @@ if ($realm == 'backend') {
 				</div>
 			</div>
 		</div>
+	
+
+		<div class="mt-4 flex justify-end">
+			<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('/organization/update', array('id' => $model->id, 'realm' => $realm)); ?>">Edit Company Profile <i class="fa fa-arrow-right"></i></a>
+		</div>
 
 		<div class="px-8 py-6 shadow-panel mt-4">
 			<ul class="nav nav-tabs nav-new new-dash-tab" role="tablist">
@@ -127,11 +132,6 @@ if ($realm == 'backend') {
 			</div>
 		</div>
 
-
-
-		<div class="mt-4 flex justify-end">
-			<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('/organization/update', array('id' => $model->id, 'realm' => $realm)); ?>">Edit Company Profile <i class="fa fa-arrow-right"></i></a>
-		</div>
 
 	</section>
 

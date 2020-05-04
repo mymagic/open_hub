@@ -9,13 +9,13 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-        'label' => Yii::t('app', 'Manage Individuals'), 'url' => array('/individual/admin'),
-        'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
-    ),
+		'label' => Yii::t('app', 'Manage Individuals'), 'url' => array('/individual/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+	),
 	array(
-        'label' => Yii::t('app', 'Create Individual'), 'url' => array('/individual/create'),
-        'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
-    ),
+		'label' => Yii::t('app', 'Create Individual'), 'url' => array('/individual/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
+	),
 );
 ?>
 

@@ -10,17 +10,17 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Manage Individual'), 'url' => array('/individual/admin'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'admin')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
 		'label' => Yii::t('app', 'Create Individual'), 'url' => array('/individual/create'),
 		// 'visible' => Yii::app()->user->isAdmin,
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'create')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
 		'label' => Yii::t('app', 'Update Individual'), 'url' => array('/individual/update', 'id' => $model->id),
 		// 'visible' => Yii::app()->user->isAdmin,
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'update')),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')),
 );
 ?>
 
@@ -84,7 +84,7 @@ $this->menu = array(
 	<div class="panel panel-default new-panel">
 		<div class="panel-heading"><h3 class="panel-title">Insert New Email</h3></div>
 		<div class="panel-body">
-			<?php if(HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'addIndividual2Email')): ?>
+			<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'addIndividual2Email')): ?>
 				<div class="form"><?php $individual2Email = new Individual2Email; $form = $this->beginWidget('ActiveForm', array(
 						'action' => $this->createUrl('individual/addIndividual2Email', array('individualId' => $model->id, 'realm' => $realm)),
 						'method' => 'POST',

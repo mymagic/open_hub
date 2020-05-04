@@ -10,7 +10,7 @@ $this->breadcrumbs = array(
 $this->menu = array(
 	array(
 		'label' => Yii::t('app', 'Overview'), 'url' => array('/event/overview'),
-		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller, 'overview')
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'overview')
 	),
 );
 ?>
@@ -31,7 +31,7 @@ $this->menu = array(
 				'buttons' => array(
 					'view' => array(
 						'url' => 'Yii::app()->controller->createUrl("/event/view", array("id"=>$data[id]))',
-						'visible'=>function(){ return HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'event','action'=>(object)['id'=>'view']]); }
+						'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'event', 'action' => (object)['id' => 'view']]); }
 					),
 				),
 		)
