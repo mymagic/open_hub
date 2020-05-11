@@ -115,4 +115,6 @@ return array(
 	'layoutParams' => require(dirname(__FILE__) . '/layoutParams.php'),
 
 	'secureFiles' => require(dirname(__FILE__) . '/secureFiles.php'),
+
+	'moduleDisableNoneCore' => filter_var(getenv('MODULE_DISABLE_NONE_CORE', false), FILTER_VALIDATE_BOOLEAN),
 );

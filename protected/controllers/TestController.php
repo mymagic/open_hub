@@ -36,6 +36,23 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionGetVersion()
+	{
+		echo $this->getVersion();
+	}
+
+	public function actionOutputJson()
+	{
+		$meta['input']['var1FromPost'] = 'abc';
+		$meta['input']['var2FromPost'] = 'def';
+		$meta['input']['output']['total'] = 2;
+
+		$data[] = array('orderId' => '99', 'productTitle' => '4K LED TV', 'deliveryLocation' => 'Cyberjaya, Malaysia', 'buyerName' => 'Allen Tan');
+		$data[] = array('orderId' => '88', 'productTitle' => 'Playstation 4', 'deliveryLocation' => 'KLIA, Malaysia', 'buyerName' => 'Foo Bar');
+
+		$this->outputJson($data, 'Everything works fine', 'success', $meta);
+	}
+
 	public function actionOrganizationScore($id)
 	{
 		$organization = Organization::model()->findByPk($id);

@@ -1,5 +1,8 @@
 <?php
 
+// cr /var/www/open_hub/protected/tests
+// ../vendor/bin/phpunit unit/HUBTest.php
+
 // change the following paths if necessary
 $yiit = dirname(__FILE__) . '/../../framework/yiit.php';
 include_once dirname(__FILE__) . '/../config/phpini.php';

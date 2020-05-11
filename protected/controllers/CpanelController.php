@@ -66,21 +66,6 @@ class CpanelController extends Controller
 		$this->layoutParams['enableGlobalSearchBox'] = true;
 	}
 
-	public function actionTest()
-	{
-		$tmps = HUB::listServiceBookmarkable();
-		foreach ($tmps as $tmp) {
-			$result[] = $tmp->toApi();
-		}
-
-		$user = Yii::app()->user;
-		$selected_service_list = HUB::listServiceBookmarkByUser($user);
-
-		$this->render('index', array(
-			'listServices' => $result,
-		));
-	}
-
 	public function actionOrganization()
 	{
 		$this->redirect(array('organization/list', 'realm' => 'cpanel'));
@@ -90,7 +75,6 @@ class CpanelController extends Controller
 	{
 		$this->redirect(['cpanel/services']);
 	}
-
 
 	public function actionServices()
 	{

@@ -87,6 +87,15 @@ main:
                     default: //openhubd1.mymagic.my
                     datatype: string
                     getter: "Yii::app()->params['baseUrl'];"
+                -   var: params.moduleDisableNoneCore
+                    file: params.php
+                    env: MODULE_DISABLE_NONE_CORE
+                    title: Disable none core modules
+                    hint: Disable none core modules, including some of the default module.
+                    example:
+                    default: false
+                    datatype: boolean
+                    getter: "Yii::app()->params['moduleDisableNoneCore'];"
         -   key: i18n
             title: "Internationalization"
             items:

@@ -147,10 +147,7 @@
 		 */
 	?>
 	<div class="<?php echo Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']]) ? '' : 'hide' ?>">
-=======
-	<div class="<?php echo Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']]) ? '' : 'hide' ?>">
->>>>>>> e196e1901cdfa64137a0f954257dca15e5161bcc
-
+	
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
 		<div class="col-sm-10">
