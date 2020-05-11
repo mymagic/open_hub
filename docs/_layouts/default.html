@@ -1,49 +1,73 @@
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>{{ page.title }} - {{ site.title }}</title>
-    <link rel="stylesheet" href="{{site.url}}{{ "/assets/css/main.css" | relative_url }}">
-  </head>
-  <body data-spy="scroll" data-target="#navbar-main" data-offset="80" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <nav id="navbar-main" class="navbar navbar-expand-lg navbar-light bg-light fixed-top ">
-      <a class="navbar-brand" href="#">Open Hub</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link active" href="#section-features">Features</a>
-          <a class="nav-item nav-link" href="#section-modules">Modules</a>
-          <a class="nav-item nav-link" href="#section-resources">Resources</a>
-        </div>
+  <title>{{ page.title }} - {{ site.title }}</title>
+  <link rel="stylesheet" href="{{site.url}}{{ "/assets/css/main.css" | relative_url }}">
+</head>
+
+<body data-spy="scroll" data-target="#navbar-main" data-offset="80">
+
+  <nav id="navbar-main" class="navbar navbar-expand-lg navbar-light bg-light fixed-top ">
+    <a class="navbar-brand" href="#">Open Hub</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="#section-features">Features</a>
+        <a class="nav-item nav-link" href="#section-modules">Modules</a>
+        <a class="nav-item nav-link" href="#section-resources">Resources</a>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    {{ content}}
+  {{ content}}
 
-    <div id="footer">
-      <div><ul>
+  <div id="footer">
+    <div>
+      <ul>
         <li><a href="https://github.com/mymagic/open_hub">Github Project Repo</a></li>
         <li><a href="https://developer.mymagic.my">MaGIC Developer</a></li>
         <li><a href="https://github.com/mymagic/open_hub/blob/master/LICENSE">BSD 3-Clause License</a></li>
-      </ul></div>
+      </ul>
     </div>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
 
-    <!-- fontawesome -->
-    <script src="https://kit.fontawesome.com/8a68ad6199.js" crossorigin="anonymous"></script>
-  
-  </body>
+  <!-- fontawesome -->
+  <script src="https://kit.fontawesome.com/8a68ad6199.js" crossorigin="anonymous"></script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-166010151-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-166010151-1');
+  </script>
+
+
+</body>
+
 </html>
