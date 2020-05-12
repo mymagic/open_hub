@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use \DrewM\MailChimp\MailChimp;
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
+use Intervention\HttpAuth\HttpAuth;
 
 class TestController extends Controller
 {
@@ -34,6 +35,33 @@ class TestController extends Controller
 		Yii::t('test', 'Testing 2 in controller');
 
 		$this->render('index', array('actions' => $actions));
+	}
+
+	public function actionPhpHttpAuth()
+	{
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+			header('WWW-Authenticate: Basic realm="My Realm"');
+			header('HTTP/1.0 401 Unauthorized');
+			echo 'Text to send if user hits Cancel button';
+			exit;
+		} else {
+			echo "<p>Hello {$_SERVER['PHP_AUTH_USER']}.</p>";
+			echo "<p>You entered {$_SERVER['PHP_AUTH_PW']} as your password.</p>";
+		}
+	}
+
+	public function actionHttpAuth()
+	{
+		$config = array(
+			'type' => 'basic',
+			'realm' => 'test',
+			'username' => 'admin',
+			'password' => '123456',
+		);
+		$httpauth = HttpAuth::make($config);
+		$httpauth->secure();
+
+		echo 'Access Granted';
 	}
 
 	public function actionGetVersion()

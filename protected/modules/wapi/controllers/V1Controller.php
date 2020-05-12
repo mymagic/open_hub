@@ -15,7 +15,7 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-use Intervention\Httpauth\Httpauth;
+use Intervention\HttpAuth\HttpAuth;
 use Firebase\JWT\JWT;
 
 class V1Controller extends Controller
@@ -52,11 +52,12 @@ class V1Controller extends Controller
 
 		if (Yii::app()->params['enableApiAuth']) {
 			$config = array(
+				'type' => 'basic',
 				'realm' => 'v1',
 				'username' => Yii::app()->params['apiUsername'],
 				'password' => Yii::app()->params['apiPassword'],
 			);
-			$httpauth = Httpauth::make($config);
+			$httpauth = HttpAuth::make($config);
 			$httpauth->secure();
 		}
 

@@ -36,7 +36,8 @@
         "graphaware/neo4j-php-ogm": "@rc",
         "vlucas/phpdotenv": "^4.1",
         "josegonzalez/dotenv": "^3.2",
-        "michelf/php-markdown": "^1.9"
+        "michelf/php-markdown": "^1.9",
+        "intervention/httpauth": "^3.0"
     },
     "require-dev": {
         "nette/php-generator": "^3.3"
