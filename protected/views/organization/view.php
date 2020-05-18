@@ -80,7 +80,7 @@ if ($realm == 'backend') {
 				</div>
 				<div class="mt-4">
 					<h5 class="muted">COMPANY DESCRIPTION</h5>
-					<p class="break-all"><?php echo $model->text_short_description ?></p>
+					<p class="break-all"><?php echo Html::encodeDisplay($model->text_short_description) ?></p>
 				</div>
 			</div>
 		</div>
