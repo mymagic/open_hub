@@ -42,7 +42,7 @@ $this->menu = array(
                     <p>If your company is not exists in our system yet, please create a company profile here</p>
                 </div>
                 <div class="col-md-4 flex md:justify-end">
-                    <a class="btn btn-outline btn-default btn-lg" style="color: #333; line-height: 1.3333333;">Create Company <i class="fa fa-arrow-right"></i></a>
+                    <a class="btn btn-outline btn-default btn-lg" style="color: #333; line-height: 1.3333333;" href="<?php echo $this->createUrl('/organization/create/', array('realm' => $realm)) ?>">Create Company <i class="fa fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
