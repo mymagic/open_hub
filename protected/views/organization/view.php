@@ -71,7 +71,7 @@ if ($realm == 'backend') {
 					</div>
 					<div class="inline-flex items-center mr-8 my-2">
 						<span class="label label-success"><?php echo $model->getPublicDisplayStatus('text') ?></span>
-						<?php if(!empty($model->year_founded)):  ?><div class="ml-4">Since <?php echo $model->year_founded ?></div><?php endif; ?>
+						<?php if (!empty($model->year_founded)):  ?><div class="ml-4">Since <?php echo $model->year_founded ?></div><?php endif; ?>
 					</div>
 				</div>
 				<div class="mt-4">
