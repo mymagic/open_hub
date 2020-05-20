@@ -105,7 +105,7 @@ class DefaultController extends CController
 			$parsedDomainName = parse_url('https://' . $model->domainName);
 			$model->envs['CSRF_COOKIE'] = '.' . $parsedDomainName['host'];
 			$model->envs['REQUEST_HOST_INFO'] = 'https://' . $model->domainName;
-			$model->envs['BASE_API_URL'] = 'https://api-' . $model->domainName;
+			$model->envs['BASE_API_URL'] = 'https://api-' . $model->domainName . '/v1';
 
 			// connect
 			$model->envs['CONNECT_SECRET_KEY_API'] = 'b6YDWvZFvFW4leBap9GiiTBq4VRmfzznLJAekcCr';

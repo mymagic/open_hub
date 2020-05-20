@@ -9,7 +9,7 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Create EventRegistration'), 'url' => array('/eventRegistration/create'),
+		'label' => Yii::t('app', 'Create Event Registration'), 'url' => array('/eventRegistration/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
@@ -53,7 +53,7 @@ $('.search-form form').submit(function(){
 	'dataProvider' => $model->search(),
 	'filter' => $model,
 	'columns' => array(
-		// array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'registration_code',
 		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->event->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true)),
 		'email',

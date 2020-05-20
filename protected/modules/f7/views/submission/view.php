@@ -90,17 +90,21 @@ $this->menu = array(
 
 <?php Yii::app()->clientScript->registerScript('js-f7-update', <<<JS
 
-document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
-/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
-    htmlMode: true,
-    lineNumbers: true,
-    matchBrackets: true,
-    mode: "application/json",
-    indentUnit: 4,
-    indentWithTabs: true,
-    lineWrapping: true,
-    scrollbarStyle: 'simple',
-    theme:'midnight',
-});*/
+
+if(document.getElementById('textarea-jsonData').value != '')
+{
+	document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
+	/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
+		htmlMode: true,
+		lineNumbers: true,
+		matchBrackets: true,
+		mode: "application/json",
+		indentUnit: 4,
+		indentWithTabs: true,
+		lineWrapping: true,
+		scrollbarStyle: 'simple',
+		theme:'midnight',
+	});*/
+}
 JS
 , CClientScript::POS_READY); ?>

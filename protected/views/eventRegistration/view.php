@@ -22,16 +22,20 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage EventRegistration'), 'url' => array('/eventRegistration/admin'),
+		'label' => Yii::t('app', 'Manage Event Registration'), 'url' => array('/eventRegistration/admin'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create EventRegistration'), 'url' => array('/eventRegistration/create'),
+		'label' => Yii::t('app', 'Create Event Registration'), 'url' => array('/eventRegistration/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'Update EventRegistration'), 'url' => array('/eventRegistration/update', 'id' => $model->id),
+		'label' => Yii::t('app', 'Update Event Registration'), 'url' => array('/eventRegistration/update', 'id' => $model->id),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
+	),
+	array(
+		'label' => Yii::t('app', 'Delete Event Registration'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id, 'returnUrl' => $this->createAbsoluteUrl('/event/view', array('id' => $model->event->id))), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
 	),
 );
 ?>
@@ -95,19 +99,23 @@ $this->menu = array(
 </div>
 
 
+
 <?php Yii::app()->clientScript->registerScript('js-f7-update', <<<JS
 
-document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
-/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
-    htmlMode: true,
-    lineNumbers: true,
-    matchBrackets: true,
-    mode: "application/json",
-    indentUnit: 4,
-    indentWithTabs: true,
-    lineWrapping: true,
-    scrollbarStyle: 'simple',
-    theme:'midnight',
-});*/
+if(document.getElementById('textarea-jsonData').value != '')
+{
+	document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
+	/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
+		htmlMode: true,
+		lineNumbers: true,
+		matchBrackets: true,
+		mode: "application/json",
+		indentUnit: 4,
+		indentWithTabs: true,
+		lineWrapping: true,
+		scrollbarStyle: 'simple',
+		theme:'midnight',
+	});*/
+}
 JS
 , CClientScript::POS_READY); ?>
