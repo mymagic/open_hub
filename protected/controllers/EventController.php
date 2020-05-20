@@ -150,18 +150,18 @@ class EventController extends Controller
 		$actions = [];
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$activeServices = HUB::getAllActiveServices();
-		foreach ($activeServices as $service) {
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getEventActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getEventActions($model, 'backend'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getEventActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getEventActions($model, 'cpanel'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventActions($model, 'cpanel'));
 				}
 			}
 		}
@@ -459,10 +459,10 @@ class EventController extends Controller
 	{
 		$tabs = [];
 
-		$services = HUB::getAllActiveServices();
-		foreach ($services as $service) {
-			if (method_exists(Yii::app()->getModule($service->slug), 'getEventViewTabs')) {
-				$tabs = array_merge($tabs, (array) Yii::app()->getModule($service->slug)->getEventViewTabs($model, $realm));
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getEventViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getEventViewTabs($model, $realm));
 			}
 		}
 

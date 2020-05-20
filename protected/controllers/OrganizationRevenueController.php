@@ -83,18 +83,18 @@ class OrganizationRevenueController extends Controller
 		$actions = [];
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$activeServices = HUB::getAllActiveServices();
-		foreach ($activeServices as $service) {
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getOrganizationRevenueActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getOrganizationRevenueActions($model, 'backend'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationRevenueActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationRevenueActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getOrganizationRevenueActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getOrganizationRevenueActions($model, 'cpanel'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationRevenueActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationRevenueActions($model, 'cpanel'));
 				}
 			}
 		}
