@@ -204,11 +204,11 @@ class Controller extends BaseController
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true
 								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'event', 'action' => (object)['id' => 'admin']])
 							),
-							array(
+							/*array(
 								'label' => Yii::t('app', 'Event Registration'), 'url' => array('/eventRegistration/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true
 								'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'eventRegistration', 'action' => (object)['id' => 'admin']])
-							),
+							),*/
 						),
 					),
 				),
