@@ -32,9 +32,33 @@ class TestController extends Controller
 			}
 		}
 
-		Yii::t('test', 'Testing 2 in controller');
-
 		$this->render('index', array('actions' => $actions));
+	}
+
+	public function actionUi()
+	{
+		$this->render('ui');
+	}
+
+	public function actionGetIndividualsByEmail()
+	{
+		print_r(HubIndividual::getIndividualsByEmail('erlich@piedpiper.com'));
+		exit;
+	}
+
+	public function actionGetRelatedEmailIndividual()
+	{
+		$organization = HubOrganization::getOrCreateOrganization('Pied Piper');
+		$result = HubIndividual::getRelatedEmailIndividual($organization);
+		foreach ($result as $email => $individuals) {
+			echo '<h3>' . $email . '</h3>';
+			echo '<ol>';
+			foreach ($individuals as $individual) {
+				echo sprintf('<li>%s</li>', $individual->full_name) ;
+			}
+			echo '</ol>';
+		}
+		exit;
 	}
 
 	public function actionPhpHttpAuth()

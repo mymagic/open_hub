@@ -214,4 +214,39 @@ class HubIndividual
 
 		return $model;
 	}
+
+	// return a link of related individual matched by emails and is not currently linked to the organization
+	public static function getRelatedEmailIndividual($organization)
+	{
+		// get all organization2email from organization
+		foreach ($organization->organization2Emails as $organization2Email) {
+			// find individual that matching these emails
+			$individuals = self::getIndividualsByEmail($organization2Email->user_email);
+			if (!empty($individuals)) {
+				$result[$organization2Email->user_email] = $individuals;
+			}
+		}
+
+		// exclude those that linked
+		foreach ($organization->individuals as $individual) {
+			foreach ($individual->verifiedIndividual2Emails as $individual2Email) {
+				$linkedEmails[] = $individual2Email->user_email;
+			}
+		}
+
+		$return = array_diff_key($result, array_flip($linkedEmails));
+
+		return $return;
+	}
+
+	public static function getIndividualsByEmail($userEmail)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->select = 't.*';
+		$criteria->join = 'LEFT JOIN `individual2email` AS `i2e` ON t.id = i2e.individual_id';
+		$criteria->addCondition('i2e.user_email LIKE :userEmail AND i2e.is_verify=1');
+		$criteria->params[':userEmail'] = $userEmail;
+
+		return Individual::model()->findAll($criteria);
+	}
 }
