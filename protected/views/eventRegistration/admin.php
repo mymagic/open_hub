@@ -55,7 +55,7 @@ $('.search-form form').submit(function(){
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'registration_code',
-		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->event->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true)),
+		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->event->title, Yii::app()->createUrl("/event/view", array("id"=>$data->event->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true)),
 		'email',
 		'full_name',
 		array('name' => 'is_attended', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_attended)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),

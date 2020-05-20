@@ -51,7 +51,7 @@ class EventOrganizationController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'bulkInsert'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'bulkInsert', 'delete'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -372,6 +372,24 @@ class EventOrganizationController extends Controller
 		}
 
 		$this->render('bulkInsert', array('model' => $model, 'events' => $events, 'settingTemplateFile' => $settingTemplateFile));
+	}
+
+	public function actionDelete($id, $returnUrl = '')
+	{
+		$this->loadModel($id)->delete();
+
+		if (empty($returnUrl) && !empty($_POST['returnUrl'])) {
+			$returnUrl = $_POST['returnUrl'];
+		}
+
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if (!isset($_GET['ajax'])) {
+			$this->redirect(isset($returnUrl) ? $returnUrl : array('admin'));
+		}
+
+		if (!empty($returnUrl)) {
+			$this->redirect($returnUrl);
+		}
 	}
 
 	/**

@@ -9,7 +9,7 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage EventGroup'), 'url' => array('/eventGroup/admin'),
+		'label' => Yii::t('app', 'Manage Event Group'), 'url' => array('/eventGroup/admin'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 );

@@ -8,11 +8,11 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage EventOrganization'), 'url' => array('/eventOrganization/admin'),
+		'label' => Yii::t('app', 'Manage Event Organization'), 'url' => array('/eventOrganization/admin'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create EventOrganization'), 'url' => array('/eventOrganization/create'),
+		'label' => Yii::t('app', 'Create Event Organization'), 'url' => array('/eventOrganization/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 );

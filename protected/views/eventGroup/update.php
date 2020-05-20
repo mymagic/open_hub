@@ -10,15 +10,15 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage EventGroup'), 'url' => array('/eventGroup/admin'),
+		'label' => Yii::t('app', 'Manage Event Group'), 'url' => array('/eventGroup/admin'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create EventGroup'), 'url' => array('/eventGroup/create'),
+		'label' => Yii::t('app', 'Create Event Group'), 'url' => array('/eventGroup/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'View EventGroup'), 'url' => array('/eventGroup/view', 'id' => $model->id),
+		'label' => Yii::t('app', 'View Event Group'), 'url' => array('/eventGroup/view', 'id' => $model->id),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view')
 	),
 );

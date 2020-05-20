@@ -9,11 +9,11 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Create EventOrganization'), 'url' => array('/eventOrganization/create'),
+		'label' => Yii::t('app', 'Create Event Organization'), 'url' => array('/eventOrganization/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'Bulk Insert EventOrganization'), 'url' => array('/eventOrganization/bulkInsert'),
+		'label' => Yii::t('app', 'Bulk Insert Event Organization'), 'url' => array('/eventOrganization/bulkInsert'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'bulkInsert')
 	),
 );
@@ -50,8 +50,8 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		array('name' => 'event_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->event->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true, array('params' => array('mode' => 'idAsKey')))),
-		array('name' => 'organization_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->organization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Organization::model()->getForeignReferList(false, true)),
+		array('name' => 'event_id', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->event->title, Yii::app()->createUrl("/event/view", array("id"=>$data->event->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true, array('params' => array('mode' => 'idAsKey')))),
+		array('name' => 'organization_id', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->organization->title, Yii::app()->createUrl("/organization/view", array("id"=>$data->organization->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Organization::model()->getForeignReferList(false, true)),
 		array('name' => 'as_role_code', 'cssClassExpression' => '', 'value' => '$data->as_role_code'),
 		array('name' => 'event_vendor_code', 'cssClassExpression' => '', 'value' => '$data->event_vendor_code'),
 

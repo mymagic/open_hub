@@ -9,19 +9,19 @@ $this->breadcrumbs = [
 
 $this->menu = [
 	[
-		'label' => Yii::t('app', 'Manage EventGroup'), 'url' => ['/eventGroup/admin'],
+		'label' => Yii::t('app', 'Manage Event Group'), 'url' => ['/eventGroup/admin'],
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	],
 	[
-		'label' => Yii::t('app', 'Create EventGroup'), 'url' => ['/eventGroup/create'],
+		'label' => Yii::t('app', 'Create Event Group'), 'url' => ['/eventGroup/create'],
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	],
 	[
-		'label' => Yii::t('app', 'Update EventGroup'), 'url' => ['/eventGroup/update', 'id' => $model->id],
+		'label' => Yii::t('app', 'Update Event Group'), 'url' => ['/eventGroup/update', 'id' => $model->id],
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	],
 	[
-		'label' => Yii::t('app', 'Delete EventGroup'), 'url' => '#', 'linkOptions' => ['submit' => ['delete', 'id' => $model->id], 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')],
+		'label' => Yii::t('app', 'Delete Event Group'), 'url' => '#', 'linkOptions' => ['submit' => ['delete', 'id' => $model->id], 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')],
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
 	],
 ];

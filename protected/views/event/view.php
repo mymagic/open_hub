@@ -293,7 +293,7 @@ $this->menu = [
 	?>
 
 	<div class="row"><div class="col col-xs-12 margin-top-lg">
-		<h3><?php echo Html::faIcon('fa fa-briefcase'); ?> Company Participants</h3>
+		<h3><?php echo Html::faIcon('fa fa-briefcase'); ?> <?php echo Yii::t('backend', 'Company Participants') ?></h3>
 
 		<ul class="nav nav-tabs">
 		<?php $j = 0; foreach (array_keys($buffers) as $key): ?>
@@ -323,7 +323,7 @@ $this->menu = [
 					'columns' => [
 						['name' => 'id', 'value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
 						['header' => 'Name', 'type' => 'raw', 'value' => 'Html::activeThumb($data->organization, \'image_logo\', [\'width\' => 32])', 'headerHtmlOptions' => array('colspan' => '2'), 'htmlOptions' => ['class' => 'text-center']],
-						['header' => '', 'value' => '$data->organization_name', 'headerHtmlOptions' => array('style' => 'display:none')],
+						['header' => '', 'value' => 'Html::link($data->organization_name, Yii::app()->createUrl("/organization/view", array("id"=>$data->organization->id)))', 'type' => 'html', 'headerHtmlOptions' => array('style' => 'display:none')],
 						['header' => 'Join As', 'value' => '$data->renderAsRoleCode()'],
 						['header' => 'Active', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->organization->is_active)', 'htmlOptions' => ['class' => 'text-center']],
 						[
@@ -335,7 +335,7 @@ $this->menu = [
 							'buttons' => [
 								'view' => [
 									'label' => 'View',
-									'url' => 'Yii::app()->createUrl("organization/view", array("id"=>$data->organization_id))',
+									'url' => 'Yii::app()->createUrl("eventOrganization/view", array("id"=>$data->id))',
 									'options' => ['class' => 'btn btn-xs btn-primary'],
 								],
 							],

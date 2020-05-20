@@ -9,18 +9,21 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage EventOrganization'), 'url' => array('/eventOrganization/admin'),
+		'label' => Yii::t('app', 'Manage Event Organization'), 'url' => array('/eventOrganization/admin'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create EventOrganization'), 'url' => array('/eventOrganization/create'),
+		'label' => Yii::t('app', 'Create Event Organization'), 'url' => array('/eventOrganization/create'),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'Update EventOrganization'), 'url' => array('/eventOrganization/update', 'id' => $model->id),
+		'label' => Yii::t('app', 'Update Event Organization'), 'url' => array('/eventOrganization/update', 'id' => $model->id),
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	),
-	// array('label'=>Yii::t('app','Delete EventOrganization'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id), 'csrf'=>Yii::app()->request->enableCsrfValidation, 'confirm'=>Yii::t('core', 'Are you sure you want to delete this item?'))),
+	array(
+		'label' => Yii::t('app', 'Delete Event Organization'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id, 'returnUrl' => $this->createAbsoluteUrl('/event/view', array('id' => $model->event->id))), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
+	),
 );
 ?>
 
@@ -32,8 +35,8 @@ $this->menu = array(
 	'data' => $model,
 	'attributes' => array(
 		'id',
-		array('name' => 'event_code', 'value' => $model->event->title),
-		array('name' => 'organization_id', 'value' => $model->organization->title),
+		array('name' => 'event_code', 'value' => Html::link($model->event->title, $this->createUrl('/event/view', array('id' => $model->event->id))), 'type' => 'html'),
+		array('name' => 'organization_id', 'value' => Html::link($model->organization->title, $this->createUrl('/organization/view', array('id' => $model->organization->id))), 'type' => 'html'),
 		array('name' => 'as_role_code', 'value' => $model->as_role_code),
 
 		array('name' => 'registration_code', 'value' => $model->registration_code),
