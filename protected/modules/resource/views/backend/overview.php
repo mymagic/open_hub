@@ -30,7 +30,7 @@
             <tr>
                 <td>
                     <button type="button" class="btn btn-info btn-sm m-r-sm"><?php echo $stat['general']['totalOrganizations'] ?></button>
-                    Companies involved
+                    Organizations involved
                 </td>
             </tr>
             </tbody>

@@ -13,7 +13,7 @@
 
 <div class="row">
     <div class="col col-md-12">
-        <h3>Companies Involved</h3>
+        <h3><?php echo Yii::('backend', 'Organizations Involved') ?></h3>
         <?php if (!empty($model->individualOrganizations)): ?>
         <?php foreach ($model->individualOrganizations as $individualOrganization):?>
             <?php if (!$individualOrganization->individual->is_active) {

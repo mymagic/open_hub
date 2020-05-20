@@ -98,6 +98,13 @@ class JourneyModule extends WebModule
 
 	public function getOrganizationActions($model, $realm = 'backend')
 	{
+		$actions['individual'][] = array(
+			'visual' => 'primary',
+			'label' => 'Add New',
+			'title' => 'Add a new individual to this company.',
+			'url' => Yii::app()->controller->createUrl('/individualOrganization/create', array('organizationCode' => $model->code, 'realm' => $realm)),
+		);
+
 		$actions['funding'][] = array(
 			'visual' => 'primary',
 			'label' => 'Add New',

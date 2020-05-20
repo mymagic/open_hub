@@ -3,7 +3,7 @@
     <div class="col col-md-12">
     <div class="well text-center">
     <?php foreach ($actions['revenue'] as $action): ?>
-        <a class="margin-bottom-sm btn btn-<?php echo $action['visual']?>" href="<?php echo $action[url] ?>" title="<?php echo $action['title'] ?>"><?php echo $action[label] ?></a>
+        <a class="margin-bottom-sm btn btn-<?php echo $action['visual']?>" href="<?php echo $action['url'] ?>" title="<?php echo $action['title'] ?>"><?php echo $action['label'] ?></a>
     <?php endforeach; ?>
     </div>
     </div>

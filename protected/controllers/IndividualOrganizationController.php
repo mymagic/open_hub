@@ -80,7 +80,7 @@ class IndividualOrganizationController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate($individualId = '')
+	public function actionCreate($individualId = '', $organizationCode = '')
 	{
 		$this->pageTitle = Yii::t('backend', 'Link Individual to Organization');
 		$model = new IndividualOrganization();
@@ -89,6 +89,9 @@ class IndividualOrganizationController extends Controller
 		// $this->performAjaxValidation($model);
 		if (!empty($individualId)) {
 			$model->individual_id = $individualId;
+		}
+		if (!empty($organizationCode)) {
+			$model->organization_code = $organizationCode;
 		}
 
 		if (isset($_POST['IndividualOrganization'])) {
