@@ -234,7 +234,10 @@ class HubIndividual
 			}
 		}
 
-		$return = array_diff_key($result, array_flip($linkedEmails));
+		$return = $result;
+		if (!empty($linkedEmails)) {
+			$return = array_diff_key($result, array_flip($linkedEmails));
+		}
 
 		return $return;
 	}

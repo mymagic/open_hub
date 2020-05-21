@@ -1493,6 +1493,80 @@ CREATE TABLE IF NOT EXISTS `intake` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `interest`
+--
+
+CREATE TABLE IF NOT EXISTS `interest` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `json_extra` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `date_added` int(11) DEFAULT NULL,
+  `date_modified` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  KEY `is_active` (`is_active`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=40 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interest_user2cluster`
+--
+
+CREATE TABLE IF NOT EXISTS `interest_user2cluster` (
+  `cluster_id` int(11) DEFAULT NULL,
+  `interest_id` int(11) DEFAULT NULL,
+  UNIQUE KEY `interest_user2cluster` (`interest_id`,`cluster_id`),
+  KEY `fk_interest_user2cluster-cluster_id` (`cluster_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interest_user2industry`
+--
+
+CREATE TABLE IF NOT EXISTS `interest_user2industry` (
+  `industry_id` int(11) DEFAULT NULL,
+  `interest_id` int(11) DEFAULT NULL,
+  UNIQUE KEY `interest_user2industry` (`interest_id`,`industry_id`),
+  KEY `fk_interest_user2industry-industry_id` (`industry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interest_user2sdg`
+--
+
+CREATE TABLE IF NOT EXISTS `interest_user2sdg` (
+  `sdg_id` int(11) DEFAULT NULL,
+  `interest_id` int(11) DEFAULT NULL,
+  UNIQUE KEY `interest_user2sdg` (`interest_id`,`sdg_id`),
+  KEY `fk_interest_user2sdg-sdg_id` (`sdg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `interest_user2startup_stage`
+--
+
+CREATE TABLE IF NOT EXISTS `interest_user2startup_stage` (
+  `startup_stage_id` int(11) DEFAULT NULL,
+  `interest_id` int(11) DEFAULT NULL,
+  UNIQUE KEY `interest_user2startup_stage` (`interest_id`,`startup_stage_id`),
+  KEY `fk_interest_user2startup_stage-cluster_id` (`startup_stage_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `junk`
 --
 
@@ -8002,6 +8076,40 @@ ALTER TABLE `industry2organization`
 --
 ALTER TABLE `industry_keyword`
   ADD CONSTRAINT `industry_keyword_ibfk_1` FOREIGN KEY (`industry_code`) REFERENCES `industry` (`code`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interest`
+--
+ALTER TABLE `interest`
+  ADD CONSTRAINT `fk_interest-user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interest_user2cluster`
+--
+ALTER TABLE `interest_user2cluster`
+  ADD CONSTRAINT `fk_interest_user2cluster-cluster_id` FOREIGN KEY (`cluster_id`) REFERENCES `cluster` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_interest_user2cluster-interest_id` FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interest_user2industry`
+--
+ALTER TABLE `interest_user2industry`
+  ADD CONSTRAINT `fk_interest_user2industry-industry_id` FOREIGN KEY (`industry_id`) REFERENCES `industry` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_interest_user2industry-interest_id` FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interest_user2sdg`
+--
+ALTER TABLE `interest_user2sdg`
+  ADD CONSTRAINT `fk_interest_user2sdg-interest_id` FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_interest_user2sdg-sdg_id` FOREIGN KEY (`sdg_id`) REFERENCES `sdg` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interest_user2startup_stage`
+--
+ALTER TABLE `interest_user2startup_stage`
+  ADD CONSTRAINT `fk_interest_user2startup_stage-cluster_id` FOREIGN KEY (`startup_stage_id`) REFERENCES `startup_stage` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_interest_user2startup_stage-interest_id` FOREIGN KEY (`interest_id`) REFERENCES `interest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `legalform`
