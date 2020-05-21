@@ -78,8 +78,8 @@ $return = array(
 			'noValidationRoutes' => require(dirname(__FILE__) . '/csrfExcludeRegular.php'),
 			// using fnmatch
 			'noValidationRegex' => require(dirname(__FILE__) . '/csrfExcludeRegex.php'),
-			'enableCsrfValidation' => true,
-			'enableCookieValidation' => true,
+			'enableCsrfValidation' => filter_var(getenv('ENABLE_CSRF_VALIDATION', true), FILTER_VALIDATE_BOOLEAN),
+			'enableCookieValidation' => filter_var(getenv('ENABLE_COOKIE_VALIDATION', true), FILTER_VALIDATE_BOOLEAN),
 			'csrfCookie' => array(
 				'domain' => getenv('CSRF_COOKIE', '.mymagic.my'),
 			),
