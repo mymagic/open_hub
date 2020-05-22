@@ -252,6 +252,6 @@ label{
 }
 .grid-view th
 {
-	background-color:#ededed;
+	background-color:#ededed !important;
 }
 .grid-view th a{color:#353535;}
