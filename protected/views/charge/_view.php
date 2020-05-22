@@ -6,7 +6,7 @@
 <div class="view panel panel-default">
 <div class="panel-heading">
 	<b><?php echo Html::encode($data->getAttributeLabel('code')); ?>:</b>
-	#<?php echo Html::link(Html::encode($data->code), array('view', 'id'=>$data->code)); ?>
+	#<?php echo Html::link(Html::encode($data->code), array('view', 'id' => $data->code)); ?>
 	<br />
 
 </div>
@@ -25,7 +25,7 @@
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('currency_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->currency_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('text_description')); ?>:</b>
@@ -53,7 +53,7 @@
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('charge_to_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->charge_to_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('json_extra')); ?>:</b>

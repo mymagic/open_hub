@@ -6,7 +6,7 @@
 <div class="view panel panel-default">
 <div class="panel-heading">
 	<b><?php echo Html::encode($data->getAttributeLabel('id')); ?>:</b>
-	#<?php echo Html::link(Html::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	#<?php echo Html::link(Html::encode($data->id), array('view', 'id' => $data->id)); ?>
 	<br />
 
 </div>
@@ -24,11 +24,11 @@
 	<?php echo Html::activeThumb($data, 'image_photo'); ?><br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('country_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->country_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('state_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->state_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('ic_number')); ?>:</b>
@@ -40,7 +40,7 @@
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('can_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->can_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('is_active')); ?>:</b>

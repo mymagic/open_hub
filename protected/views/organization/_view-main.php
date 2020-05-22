@@ -7,7 +7,7 @@
 		<div class="panel-heading"><?php echo Yii::t('backend', 'Profile Completeness Score') ?></div>
 		<div class="panel-body">
 			<div class="progress-bar-container">
-					<div style="width: <?php echo $model->score_completeness ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $model->score_completeness ?>" role="progressbar" class="progress-bar progress-bar-<?php echo ($model->score_completeness == 100) ? 'primary' : 'warning' ?>">
+					<div style="width:<?php echo $model->score_completeness ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $model->score_completeness ?>" role="progressbar" class="progress-bar progress-bar-<?php echo ($model->score_completeness == 100) ? 'primary' : 'warning' ?>">
 						<?php echo $model->score_completeness ?>% 
 						<span class="sr-only"><?php echo $model->score_completeness ?>% Completed</span>
 					</div>
@@ -195,7 +195,6 @@
   </h2>
   
 </div></div>
-<!-- <span class="label label-primary pull-left noborder-status <?php echo empty($organization->url_website) ? 'disabled' : '' ?>"><a href="<?php echo $organization->url_website ?>" class=" <?php echo empty($organization->url_website) ? 'disabled' : '' ?>" target="_blank">Visit</a></span> -->
 <div class="row">
 <div class="col col-md-12 margin-bottom-lg">
 
@@ -203,7 +202,7 @@
 		<div class="panel-heading"><?php echo Yii::t('cpanel', 'Your profile strength') ?></div>
 		<div class="panel-body">
 			<div class="progress-bar-container">
-					<div style="width: <?php echo $model->score_completeness ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $model->score_completeness ?>" role="progressbar" class="progress-bar progress-bar-<?php echo ($model->score_completeness == 100) ? 'primary' : 'warning' ?>">
+					<div style="width:<?php echo $model->score_completeness ?>%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $model->score_completeness ?>" role="progressbar" class="progress-bar progress-bar-<?php echo ($model->score_completeness == 100) ? 'primary' : 'warning' ?>">
 						<?php echo $model->score_completeness ?>% 
 						<span class="sr-only"><?php echo $model->score_completeness ?>% Completed</span>
 					</div>

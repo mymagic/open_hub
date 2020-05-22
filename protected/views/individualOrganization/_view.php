@@ -6,7 +6,7 @@
 <div class="view panel panel-default">
 <div class="panel-heading">
 	<b><?php echo Html::encode($data->getAttributeLabel('id')); ?>:</b>
-	#<?php echo Html::link(Html::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	#<?php echo Html::link(Html::encode($data->id), array('view', 'id' => $data->id)); ?>
 	<br />
 
 </div>
@@ -21,7 +21,7 @@
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('as_role_code')); ?>:</b>
-	<?php echo Html::encode($data->->); ?>
+	<?php echo Html::encode($data->as_role_code); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('job_position')); ?>:</b>

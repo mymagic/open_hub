@@ -39,7 +39,7 @@ $this->breadcrumbs = array(
 		
 	</div>	
 
-	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> <?php echo Yii::t('backend', 'Need Help?'?></a>
+	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> <?php echo Yii::t('backend', 'Need Help?') ?></a>
 	
 	<div class="margin-bottom-lg">&nbsp;</div>
 </div>
