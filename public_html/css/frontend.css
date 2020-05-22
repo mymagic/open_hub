@@ -250,3 +250,8 @@ label{
 {
 	text-decoration:none !important;
 }
+.grid-view th
+{
+	background-color:#ededed;
+}
+.grid-view th a{color:#353535;}
