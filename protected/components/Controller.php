@@ -138,7 +138,7 @@ class Controller extends BaseController
 				'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 				'items' => array(
 					array(
-						'label' => Yii::t('backend', 'Company'), 'url' => '#',
+						'label' => Yii::t('backend', 'Organization'), 'url' => '#',
 						'visible' => Yii::app()->user->getState('accessBackend') == true,
 						'active' => $this->activeMenuMain == 'organization' ? true : false,
 						'itemOptions' => array('class' => 'dropdown-submenu'), 'submenuOptions' => array('class' => 'dropdown-menu'),

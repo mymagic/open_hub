@@ -4,10 +4,10 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 
 ?>
 
-<section id="company-search">
-	<h2>Join Existing Company</h2>
+<section id="organization-search">
+	<h2><?php echo Yii::t('app', 'Join Existing Organization') ?></h2>
 
-	<input class="shadow-panel appearance-none border w-full my-4 py-6 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-panel" v-model="keyword" id="username" type="text" placeholder="To request access and manage a company">
+	<input class="shadow-panel appearance-none border w-full my-4 py-6 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-panel" v-model="keyword" id="username" type="text" placeholder="To request access and manage an organization">
 
 	<div class="list_content my-3" v-if="!loading && companies.length > 0">
 
@@ -21,7 +21,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 			</div>
 			<div class="col-sm-5 col-md-4 col-lg-4">
 				<div class="col-xs-12 text-center">
-					<a class="btn btn-sd btn-sd-green" :href="baseUrl + '/organization/requestJoinEmail?organizationId=' + data.id + '&email=' + username">Request Access</a>
+					<a class="btn btn-sd btn-sd-green" :href="baseUrl + '/organization/requestJoinEmail?organizationId=' + data.id + '&email=' + username"><?php echo Yii::t('app', 'Request Access') ?></a>
 				</div>
 			</div>
 			<div class="col-xs-12">
@@ -41,11 +41,11 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 	<div class="px-8 py-6 nav-select shadow-panel">
 		<div class="row md:flex md:items-center">
 			<div class="col-md-8">
-				<h3>Don’t have a company yet?</h3>
-				<p>If your company is not exists in our system yet, please create a company profile here</p>
+				<h3><?php echo Yii::t('app', "Don't have an organization yet") ?>?</h3>
+				<p><?php echo Yii::t('app', 'If your organization is not exists in our system yet, please create an organization profile here')?></p>
 			</div>
 			<div class="col-md-4 flex md:justify-end">
-				<a class="btn btn-outline btn-default btn-lg" style="color: #333; line-height: 1.3333333;" href="<?php echo $this->createUrl('/organization/create', array('realm' => 'cpanel')); ?>">Create Company <i class="fa fa-arrow-right"></i></a>
+				<a class="btn btn-outline btn-default btn-lg" style="color: #333; line-height: 1.3333333;" href="<?php echo $this->createUrl('/organization/create', array('realm' => 'cpanel')); ?>"><?php echo Yii::t('app', 'Create Organization')?> <i class="fa fa-arrow-right"></i></a>
 			</div>
 		</div>
 	</div>
@@ -55,7 +55,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 
 
 	<?php if (!empty($model)) : ?>
-		<h2 class="mb-2" >Waiting For Approval...</h2>
+		<h2 class="mb-2" ><?php echo Yii::t('app', 'Waiting for Approval...') ?></h2>
 
 		<div class="list_content my-3">
 			<?php foreach ($model as $data) : ?>
@@ -74,8 +74,8 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
                         <?php endforeach; ?> -->
 					</div>
 					<div class="col-sm-5 col-md-4 col-lg-4 md:flex md:items-center">
-						<div class="col-xs-6 text-center"><span class="label label-warning">Pending</span></div>
-						<div class="col-xs-6 text-center"><a type="button" class="btn btn-w-m btn-danger" href="<?php echo Yii::app()->params['baseUrl'] ?>/organization/deleteUserOrganization2Email?organizationID=<?php echo $data['id'] ?>&userEmail=<?php echo Yii::app()->user->username ?>">Remove</a></div>
+						<div class="col-xs-6 text-center"><span class="label label-warning"><?php echo Yii::t('app', 'Pending')?></span></div>
+						<div class="col-xs-6 text-center"><a type="button" class="btn btn-w-m btn-danger" href="<?php echo Yii::app()->params['baseUrl'] ?>/organization/deleteUserOrganization2Email?organizationID=<?php echo $data['id'] ?>&userEmail=<?php echo Yii::app()->user->username ?>"><?php echo Yii::t('app', 'Remove')?></a></div>
 					</div>
 					<div class="col-xs-12">
 
@@ -92,7 +92,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 
 <?php Yii::app()->clientScript->registerScript('organization-search', "
 new Vue({
-    el: '#company-search',
+    el: '#organizatio-search',
     data: () => ({
         keyword: '',
         companies: [],
@@ -102,11 +102,11 @@ new Vue({
     }),
     watch: {
         keyword: _.debounce(function (val) {
-			this . getCompany(val);
+			this . getOrganization(val);
         }, 2000)
     },
     methods: {
-        getCompany (val) {
+        getOrganization (val) {
             this.loading = true;
             let me = this;
             $.get('" . Yii::app()->params['baseUrl'] . "/api/getUserOrganizationsCanJoin', { keyword: val} )

@@ -6,7 +6,7 @@
         <div class="col-md-3">
             <h2 style="margin: 0;" class="break-word"><?php echo HUB::cpanelNavItems($this, ($this->cpanelMenuInterface === 'cpanelNavOrganizationInformation') ? 'company-information' : 'default')[0]['label'] ?></h2>
             <a href="<?php echo $this->createUrl('/cpanel/organization'); ?>">
-                <p>Back to company list</p>
+                <p><?php echo Yii::t('app', 'Back to Organization List') ?></p>
             </a>
         </div>
     <?php

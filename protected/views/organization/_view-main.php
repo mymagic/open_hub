@@ -161,7 +161,7 @@
 		                </a></span>
 		    </h3>
 		 	<a href="<?php echo Yii::app()->createUrl('/organization/select') ?>">
-				<h4 class="change-org">Change Company</h4>
+				<h4 class="change-org"><?php echo Yii::t('app', 'Change Organization')?></h4>
 			</a>
 		 </div>
         <div id="content-services">

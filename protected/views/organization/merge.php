@@ -33,7 +33,7 @@ $this->menu = array(
 <div class="row" id="vue-mergeOrganization">
     <div class="col-sm-6">
         <div class="well">
-        <h3>Merge This <span class="pull-right" id="switch" style="cursor:pointer"><?php echo Html::faIcon('fa fa-exchange') ?></span></h3>
+        <h3><?php echo Yii::t('backend', 'Merge this')?> <span class="pull-right" id="switch" style="cursor:pointer"><?php echo Html::faIcon('fa fa-exchange') ?></span></h3>
 
         <?php echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class' => 'form-control ', 'v-model' => 'sourceKeyword', 'nullable' => true)); ?>
 
@@ -43,7 +43,7 @@ $this->menu = array(
 
     <div class="col-sm-6">
         <div class="well">
-        <h3>Into This</h3>
+        <h3><?php echo Yii::t('backend', 'Into this')?></h3>
         <?php echo Html::foreignKeyDropDownList('targetKeyword', 'Organization', $targetKeyword, array('class' => 'form-control ', 'v-model' => 'targetKeyword', 'nullable' => true)); ?>
         <div class="margin-top-lg" v-html="previewTarget"></div>
         </div>
@@ -52,7 +52,7 @@ $this->menu = array(
 <?php $this->endWidget(); ?>
 
 <div>
-<h2>Auto Detection</h2>
+<h2><?php echo Yii::t('backend', 'Auto Detection')?></h2>
 <table class="table table-borderd">
 <?php $i = 1; foreach ($suggestions as $suggestion): ?>
     <tr>
@@ -62,7 +62,7 @@ $this->menu = array(
             <?php $sql = 'SELECT * FROM organization WHERE title LIKE :title';
 			$tmps = Yii::app()->db->createCommand($sql)->bindValues(array(':title' => substr($suggestion['title'], 0, 10) . '%%'))->queryAll(); ?>
             <?php foreach ($tmps as $tmp):?>
-                <div class="label label-default" style="margin:2px; display:inline-block">#<?php echo $tmp[id] ?>| <?php echo $tmp['title'] ?></div>
+                <div class="label label-default" style="margin:2px; display:inline-block">#<?php echo $tmp['id'] ?>| <?php echo $tmp['title'] ?></div>
             <?php endforeach; ?>
         </td>
         <td><span class="badge badge-danger"><?php echo $suggestion['total'] ?></span></td>

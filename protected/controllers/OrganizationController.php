@@ -183,10 +183,10 @@ class OrganizationController extends Controller
 		if ($realm == 'cpanel') {
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->pageTitle = 'Create Company';
+			$this->pageTitle = Yii::t('app', 'Create Organization');
 			$this->cpanelMenuInterface = 'cpanelNavOrganization';
 			$this->activeMenuCpanel = 'create';
-			$this->pageTitle = Yii::t('app', 'Create Company');
+			$this->pageTitle = Yii::t('app', 'Create Organization');
 		}
 
 		$model = new Organization;
@@ -231,7 +231,7 @@ class OrganizationController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'information';
-			$this->pageTitle = Yii::t('app', 'Update Company');
+			$this->pageTitle = Yii::t('app', 'Update Organization');
 			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->id;
 		}
@@ -322,7 +322,7 @@ class OrganizationController extends Controller
 		if ($realm === 'cpanel') {
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->pageTitle = 'Company List';
+			$this->pageTitle = Yii::t('app', 'Organization List');
 			$this->cpanelMenuInterface = 'cpanelNavOrganization';
 			$this->activeMenuCpanel = 'list';
 
@@ -339,7 +339,7 @@ class OrganizationController extends Controller
 		$model = $this->loadModel($id);
 
 		if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
-			$this->redirect(array('/company/list'));
+			$this->redirect(array('/organization/list'));
 		}
 
 		$this->layout = 'cpanel';
@@ -422,7 +422,7 @@ class OrganizationController extends Controller
 	{
 		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Join Company';
+		$this->pageTitle = Yii::t('app', 'Join Organization');
 		$this->cpanelMenuInterface = 'cpanelNavOrganization';
 		$this->activeMenuCpanel = 'join';
 		$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'pending');

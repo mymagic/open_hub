@@ -14,14 +14,14 @@ $this->breadcrumbs = array(
 		 	<div class="row">
 			<div class="col-sm-6">
 				<div class="widget style1 navy-bg padding-md">
-					<a href="<?php echo $this->createUrl('organization/overview'); ?>" class="text-white"><span><i class="fa fa-briefcase"></i> Company</span>
+					<a href="<?php echo $this->createUrl('organization/overview'); ?>" class="text-white"><span><i class="fa fa-briefcase"></i> <?php echo Yii::t('backend', 'Organization')?></span>
 					<h3 class="font-bold"><?php echo $stat['totalOrganizations']; ?></h3>
 					</a>
 				</div>
 			</div>
 			<div class="col-sm-6">
 				<div class="widget style1 padding-md">
-					<a href="<?php echo $this->createUrl('individual/admin'); ?>" class=""><span><i class="fa fa-user"></i> Individual</span>
+					<a href="<?php echo $this->createUrl('individual/admin'); ?>" class=""><span><i class="fa fa-user"></i> <?php echo Yii::t('backend', 'Individual')?></span>
 					<h3 class="font-bold"><?php echo $stat['totalIndividuals']; ?></h3>
 					</a>
 				</div>
@@ -39,7 +39,7 @@ $this->breadcrumbs = array(
 		
 	</div>	
 
-	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> Need Help?</a>
+	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> <?php echo Yii::t('backend', 'Need Help?'?></a>
 	
 	<div class="margin-bottom-lg">&nbsp;</div>
 </div>

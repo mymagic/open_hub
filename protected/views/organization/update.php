@@ -20,8 +20,8 @@ if ($realm == 'backend') {
 <?php if ($realm == 'cpanel') : ?>
 	<section>
 		<div class="px-8 py-6 shadow-panel">
-			<h2>Update Company Information</h2>
-			<p>People on entrepreneur ecosystem will get to know you with this information</p>
+			<h2><?php echo Yii::t('app', 'Update Organization Information') ?></h2>
+			<p><?php echo Yii::t('app', 'People on entrepreneur ecosystem will get to know you with this information') ?></p>
 			<div>
 				<?php $this->renderPartial('_formCpanel', array('model' => $model)); ?>
 			</div>

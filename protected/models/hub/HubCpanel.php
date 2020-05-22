@@ -147,11 +147,11 @@ class HubCpanel
 					break;
 				}
 			case 'cpanelNavOrganization': {
-					return Yii::t('app', 'Company');
+					return Yii::t('app', 'Organization');
 					break;
 				}
 			case 'cpanelNavOrganizationInformation': {
-					return Yii::t('app', 'Company');
+					return Yii::t('app', 'Organization');
 					break;
 				}
 		}

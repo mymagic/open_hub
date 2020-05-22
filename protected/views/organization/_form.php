@@ -64,7 +64,7 @@
 		<?php echo $form->bsLabelEx2($model, 'legal_name'); ?>
 		<div class="col-sm-10">
 			<?php echo $form->bsTextField($model, 'legal_name'); ?>
-			<p class="help-block">How should we address your company legally for purposes like invoice and etc</p>
+			<p class="help-block"><?php echo Yii::t('app', 'How should we address your company/organization legally for purposes like invoice and etc')?></p>
 			<?php echo $form->bsError($model, 'legal_name'); ?>
 		</div>
 	</div>
@@ -211,7 +211,7 @@
 
 	<div class="form-group">
 		<div class="pull-right margin-top-lg">
-			<?php echo $form->bsBtnSubmit($model->isNewRecord ? Yii::t('core', 'Create Company') : Yii::t('core', 'Save')); ?>
+			<?php echo $form->bsBtnSubmit($model->isNewRecord ? Yii::t('core', 'Create Organization') : Yii::t('core', 'Save')); ?>
 		</div>
 	</div>
 

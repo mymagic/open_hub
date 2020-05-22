@@ -282,7 +282,7 @@ class Resource extends ResourceBase
 		// custom code here
 		$return['is_active'] = Yii::t('app', 'Published?');
 		$return['is_blocked'] = Yii::t('app', 'Blocked By Admin?');
-		$return['organization'] = Yii::t('app', 'Company');
+		$return['organization'] = Yii::t('app', 'Organization');
 		$return['organizations'] = Yii::t('app', 'Companies');
 		$return['latlong_address'] = Yii::t('app', 'Exact Location');
 		$return['html_content'] = Yii::t('app', 'Content');

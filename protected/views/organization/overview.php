@@ -1,6 +1,6 @@
 
 <h1>
-    <?php echo Yii::t('backend', 'Company Overview'); ?>
+    <?php echo Yii::t('backend', 'Organization Overview'); ?>
 </h1>
 
 <div class="row">
@@ -8,13 +8,13 @@
 
 <div class="col col-sm-3 item-flex">
     <div class="contact-box full-width">
-        <h3>General</h3>
+        <h3><?php echo Yii::t('app', 'General') ?></h3>
         <table class="table">
             <tbody>
             <tr>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm m-r-sm"><?php echo $stat['general']['totalOrganizations'] ?></button>
-                    Total Organisations
+                    <?php echo Yii::t('app', 'Total Organizations') ?>
                 </td>
             </tr>
             </tbody>
@@ -33,7 +33,7 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p class="text-muted">Note: A company can have multiple personas</p>
+        <p class="text-muted"><?php echo Yii::t('backend', 'Note: An organization can have multiple personas') ?></p>
     </div>
 </div>
 
@@ -52,7 +52,7 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p class="text-muted">Note: A company can have multiple industries</p>
+        <p class="text-muted"><?php echo Yii::t('backend', 'Note: An organization can have multiple industries') ?></p>
     </div>
 </div>
 
@@ -71,13 +71,13 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p class="text-muted">Note: A company can have multiple industries</p>
+        <p class="text-muted"><?php echo Yii::t('backend', 'Note: An organization can have multiple industries')?></p>
     </div>
 </div>
 
 <div class="col col-sm-3 item-flex">
     <div class="contact-box full-width">
-        <h3>Impact</h3>
+        <h3><?php echo Yii::t('backend', 'Impact')?></h3>
         <table class="table">
         <tbody>
         <?php foreach ($stat['impact'] as $impactTitle => $impactCount): ?>
@@ -90,13 +90,13 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p class="text-muted">Note: A company can have multiple impacts</p>
+        <p class="text-muted"><?php echo Yii::t('backend', 'Note: An organzization can have multiple impacts') ?></p>
     </div>
 </div>
 
 <div class="col col-sm-3 item-flex">
     <div class="contact-box full-width">
-        <h3>SDG</h3>
+        <h3><?php echo Yii::t('backend', 'SDG')?></h3>
         <table class="table">
         <tbody>
         <?php foreach ($stat['sdg'] as $sdgTitle => $sdgCount): ?>
@@ -109,55 +109,55 @@
             <?php endforeach; ?>
             </tbody>
         </table>
-        <p class="text-muted">Note: A company can have multiple sdgs</p>
+        <p class="text-muted"><?php echo Yii::t('backend', 'Note: An organization can have multiple SDGs') ?></p>
     </div>
 </div>
 
 <div class="col col-sm-3 item-flex">
     <div class="contact-box full-width">
-        <h3>Data Quality</h3>
+        <h3><?php echo Yii::t('backend', 'Data Quality')?></h3>
         <table class="table">
             <tbody>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noOneLiner'] ?></button>
-                    Without One Liner
+                    <?php echo Yii::t('backend', 'Without One Liner')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noLogo'] ?></button>
-                    Without Logo
+                    <?php echo Yii::t('backend', 'Without Logo')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noAddressCountryCode'] ?></button>
-                    Without Country
+                    <?php echo Yii::t('backend', 'Without Country')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noEmailAccess'] ?></button>
-                    Without Email Access
+                    <?php echo Yii::t('backend', 'Without Email Access')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noPersona'] ?></button>
-                    Without Persona
+                    <?php echo Yii::t('backend', 'Without Persona')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noIndustry'] ?></button>
-                    Without Industry
+                    <?php echo Yii::t('backend', 'Without Industry')?>
                 </td>
             </tr>
             <tr>
                 <td>
                     <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noImpact'] ?></button>
-                    Without Impact
+                    <?php echo Yii::t('backend', 'Without Impact')?>
                 </td>
             </tr>
             </tbody>

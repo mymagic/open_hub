@@ -28,7 +28,7 @@ if ($realm == 'backend') {
                     <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>
                 </a></span></h3>
  	<a href="<?php echo Yii::app()->createUrl('/organization/select') ?>">
-		<h4 class="change-org">Change Company</h4>
+		<h4 class="change-org"><?php echo Yii::t('app', 'Change Organization') ?></h4>
 	</a>
  </div>
  <div id="content-services">
@@ -46,26 +46,6 @@ if ($realm == 'backend') {
 		));
 		 ?>
  </div>
-<!-- <div id="content-services">
-        <div class="get-started">
-            <h3>Getting Started</h3>
-            <div class="guide-link">
-                <ul>
-                    <li><a id="abt-ctrl" href="#">About MaGIC Central</a></li>
-                    <li><a id="abt-dash" href="#">About MaGIC Central Dashboard</a></li>
-                    <li><a id="create-acc" href="#">Creating and Manage Account</a></li>
-                    <li><a id="what-org" href="#">What is a Company?</a></li>
-                    <li><a id="create-org" href="#">Creating and Manage Company</a></li>
-                    <li><a href="#">Join Existing Company</a></li>
-                    <li><a href="#">What is Product?</a></li>
-                    <li><a href="#">What is Services?</a></li>
-                    <li><a href="#">What is Activity Feed?</a></li>
-                    <li><a href="#">Manage Activity History</a></li>
-                </ul>
-            </div>
-        </div>
-
-</div> -->
 </div>
 </div>
 <div class="wrapper wrapper-content content-bg content-left-padding">

@@ -178,14 +178,14 @@ class Organization extends OrganizationBase
 	public function attributeLabels()
 	{
 		$return = parent::attributeLabels();
-		$return['title'] = Yii::t('app', 'Company Name');
+		$return['title'] = Yii::t('app', 'Organization Name');
 		$return['company_number'] = Yii::t('app', 'Company Reg. No');
 		$return['text_oneliner'] = Yii::t('app', 'One Liner');
-		$return['text_short_description'] = Yii::t('app', 'Company Description');
+		$return['text_short_description'] = Yii::t('app', 'Organization Description');
 		$return['image_logo'] = Yii::t('app', 'Logo Image');
 		$return['url_website'] = Yii::t('app', 'Website URL');
-		$return['email_contact'] = Yii::t('app', 'Company Email');
-		$return['legalform_id'] = Yii::t('app', 'Type of Company');
+		$return['email_contact'] = Yii::t('app', 'Organization Email');
+		$return['legalform_id'] = Yii::t('app', 'Type of Organization');
 		$return['inputImpacts'] = Yii::t('app', 'Impacts');
 		$return['inputSdgs'] = Yii::t('app', 'Sdgs');
 		$return['inputPersonas'] = Yii::t('app', 'Personas');
@@ -1185,7 +1185,7 @@ class Organization extends OrganizationBase
 		if (!empty($this->title)) {
 			$score += 20;
 		} else {
-			$result['check']['title'] = Yii::t('app', 'Company Name');
+			$result['check']['title'] = Yii::t('app', 'Organization Name');
 		}
 
 		if (!empty($this->text_oneliner)) {
@@ -1209,13 +1209,13 @@ class Organization extends OrganizationBase
 		if (!empty($this->email_contact)) {
 			$score += 15;
 		} else {
-			$result['check']['email_contact'] = Yii::t('app', 'Company Email');
+			$result['check']['email_contact'] = Yii::t('app', 'Organization Email');
 		}
 
 		if (!empty($this->text_short_description)) {
 			$score += 15;
 		} else {
-			$result['check']['text_short_description'] = Yii::t('app', 'Company Description');
+			$result['check']['text_short_description'] = Yii::t('app', 'Organization Description');
 		}
 
 		// industries

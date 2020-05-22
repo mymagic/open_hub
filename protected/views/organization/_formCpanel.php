@@ -3,33 +3,7 @@
 /* @var $model Organization */
 /* @var $form CActiveForm */
 ?>
-<!-- <div class="sidebard-panel left-bar">
-	 <div class="my-org-active">
-	 	<h3 class="my-org-name"><?php echo $model->title ?></h3>
-	 	<a href="<?php echo Yii::app()->createUrl('/organization/select') ?>">
-			<h4 class="change-org">Change Company</h4>
-		</a>
-	 </div>
-    <div id="content-services">
-         <div class="header-org" class="margin-top-lg">
 
-         	<?php
-				$this->widget('zii.widgets.CMenu', array(
-				'items' => array(
-					array('label' => sprintf('%s', Yii::t('app', 'Overview')), 'url' => array('/organization/view', 'id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'view') ? true : null),
-					array('label' => sprintf('%s', Yii::t('app', 'Update')), 'url' => array('/organization/update', 'id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'update') ? true : null),
-					array('label' => sprintf('%s', Yii::t('app', 'Manage Products')), 'url' => array('/product/adminByOrganization', 'organization_id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'product-adminByOrganization') ? true : null),
-					array('label' => sprintf('%s', Yii::t('app', 'Create Product')), 'url' => array('/product/create', 'organization_id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'product-create') ? true : null),
-					array('label' => sprintf('%s', Yii::t('app', 'Manage Resources')), 'url' => array('/resource/resource/adminByOrganization', 'organization_id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'resource-adminByOrganization') ? true : null),
-					array('label' => sprintf('%s', Yii::t('app', 'Create Resource')), 'url' => array('/resource/resource/create', 'organization_id' => $model->id, 'realm' => 'cpanel'), 'active' => ($this->activeSubMenuCpanel == 'resource-create') ? true : null)
-				),
-			));
-		?>
- </div>
-    </div>
-</div> -->
-<!-- <div class="wrapper wrapper-content content-bg content-left-padding">
- -->
 <div class="form-new org-padding">
 
 	<?php $form = $this->beginWidget('ActiveForm', array(
@@ -95,7 +69,7 @@
 		<?php echo $form->bsLabelEx3($model, 'email_contact'); ?>
 		<div class="col-sm-9">
 			<?php echo $form->bsTextField($model, 'email_contact'); ?>
-			<p class="help-block"><?php echo Yii::t('app', 'Who should we notify for activities happens to this company in the system') ?></p>
+			<p class="help-block"><?php echo Yii::t('app', 'Who should we notify for activities happens to this organization in the system') ?></p>
 			<?php echo $form->bsError($model, 'email_contact'); ?>
 		</div>
 	</div>
@@ -122,7 +96,7 @@
 		<?php echo $form->bsLabelEx3($model, 'legal_name'); ?>
 		<div class="col-sm-9">
 			<?php echo $form->bsTextField($model, 'legal_name'); ?>
-			<p class="help-block"><?php echo Yii::t('app', 'How should we address your company legally for purposes like invoice and etc') ?></p>
+			<p class="help-block"><?php echo Yii::t('app', 'How should we address your company/organization legally for purposes like invoice and etc') ?></p>
 			<?php echo $form->bsError($model, 'legal_name'); ?>
 		</div>
 	</div>
@@ -182,7 +156,7 @@
 	<div class="form-group">
 		<div class="col-sm-12">
 			<div class="pull-right margin-top-lg">
-				<?php echo $form->bsBtnSubmit($model->isNewRecord ? Yii::t('core', 'Create Company') : Yii::t('core', 'Save'), array('class' => 'btn btn-sd btn-sd-pad btn-sd-green')); ?>
+				<?php echo $form->bsBtnSubmit($model->isNewRecord ? Yii::t('core', 'Create Organization') : Yii::t('core', 'Save'), array('class' => 'btn btn-sd btn-sd-pad btn-sd-green')); ?>
 			</div>
 		</div>
 	</div>

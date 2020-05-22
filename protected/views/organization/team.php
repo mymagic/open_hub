@@ -3,7 +3,7 @@
 $this->breadcrumbs = array(
 	'Organization' => array('index'),
 	$model->title,
-	'Team',
+	Yii::t('app', 'Team'),
 );
 
 ?>
@@ -11,8 +11,8 @@ $this->breadcrumbs = array(
 <div class="px-8 py-6 nav-select shadow-panel">
     <div class="row">
         <div class="col-md-12">
-            <h3>Invite New User</h3>
-            <p>You can add new user to manage this organisation along with you by insert their email address here. If this belongs to not registed user, they will automatically grant access after signup.</p>
+            <h3><?php echo Yii::t('app', 'Invite New User') ?></h3>
+            <p><?php echo Yii::t('app', 'You can add new user to manage this organisation along with you by insert their email address here. If this belongs to not registed user, they will automatically grant access after signup.') ?></p>
         </div>
         <div class="col-md-12">
             <?php $organization2Email = new Organization2Email;
@@ -25,7 +25,7 @@ $this->breadcrumbs = array(
             <div class="input-group">
                 <?php echo $form->bsTextField($organization2Email, 'user_email', array('placeholder' => 'Email')) ?>
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary">Invite Member</button>
+                    <button type="submit" class="btn btn-primary"><?php echo Yii::t('app', 'Invite Member') ?></button>
                 </span>
             </div>
 
@@ -36,7 +36,7 @@ $this->breadcrumbs = array(
 
 <?php if (!empty($emails['approve'])) : ?>
     <div class="my-4">
-        <h2>Team Members</h2>
+        <h2><?php echo Yii::t('app', 'Team Members') ?></h2>
         <div class="list_content my-3">
             <?php foreach ($emails['approve'] as $email) : ?>
                 <div class="row">
@@ -46,7 +46,7 @@ $this->breadcrumbs = array(
                     </div>
                     <div class="col-sm-6 col-md-5">
                         <div class="col-xs-6 text-center"></div>
-                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm">Remove</a></div>
+                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a></div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -55,7 +55,7 @@ $this->breadcrumbs = array(
 <?php endif; ?>
 <?php if (!empty($emails['pending'])) : ?>
     <div class="my-4">
-        <h2>Member Request</h2>
+        <h2><?php echo Yii::t('app', 'Member Request') ?></h2>
         <div class="list_content my-3">
             <?php foreach ($emails['pending'] as $email) : ?>
                 <div class="row">
@@ -66,8 +66,8 @@ $this->breadcrumbs = array(
                     <div class="col-sm-6 col-md-5">
                         <div class="col-xs-6 text-center"></div>
                         <div class="col-xs-6 text-center inline-block">
-                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatus', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-primary btn-sm">Approve</a>
-                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatusReject', array('id' => $email->id)) ?>" class="btn btn-warning btn-sm">Reject</a>
+                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatus', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-primary btn-sm"><?php echo Yii::t('app', 'Approve') ?></a>
+                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatusReject', array('id' => $email->id)) ?>" class="btn btn-warning btn-sm"><?php echo Yii::t('app', 'Reject') ?></a>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ $this->breadcrumbs = array(
 <?php endif; ?>
 <?php if (!empty($emails['reject'])) : ?>
     <div class="my-4">
-        <h2>Rejected Request</h2>
+        <h2><?php echo Yii::t('app', 'Rejected Request') ?></h2>
         <div class="list_content my-3">
             <?php foreach ($emails['reject'] as $email) : ?>
                 <div class="row">
@@ -87,7 +87,7 @@ $this->breadcrumbs = array(
                     </div>
                     <div class="col-sm-6 col-md-5">
                         <div class="col-xs-6 text-center"></div>
-                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm">Remove</a></div>
+                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a></div>
                     </div>
                 </div>
             <?php endforeach; ?>

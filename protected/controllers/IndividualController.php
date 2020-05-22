@@ -500,7 +500,7 @@ class IndividualController extends Controller
 		if ($realm == 'backend') {
 			$tabs['individual'][] = array(
 				'key' => 'organization',
-				'title' => 'Company',
+				'title' => Yii::t('backend', 'Organization'),
 				'viewPath' => 'views.individualOrganization.backend._view-individual-organization'
 			);
 		}

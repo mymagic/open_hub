@@ -25,7 +25,7 @@ $this->menu = [
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'eventRegistration', 'action' => (object)['id' => 'bulkInsert']])
 	],
 	[
-		'label' => Yii::t('app', 'Bulk Insert Company'), 'url' => ['/eventOrganization/bulkInsert', 'eventId' => $model->id],
+		'label' => Yii::t('app', 'Bulk Insert Organization'), 'url' => ['/eventOrganization/bulkInsert', 'eventId' => $model->id],
 		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'eventOrganization', 'action' => (object)['id' => 'bulkInsert']])
 	],
 	//array('label'=>Yii::t('app','Delete Event'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id), 'csrf'=>Yii::app()->request->enableCsrfValidation, 'confirm'=>Yii::t('core', 'Are you sure you want to delete this item?'))),
@@ -293,7 +293,7 @@ $this->menu = [
 	?>
 
 	<div class="row"><div class="col col-xs-12 margin-top-lg">
-		<h3><?php echo Html::faIcon('fa fa-briefcase'); ?> <?php echo Yii::t('backend', 'Company Participants') ?></h3>
+		<h3><?php echo Html::faIcon('fa fa-briefcase'); ?> <?php echo Yii::t('backend', 'Organization Participants') ?></h3>
 
 		<ul class="nav nav-tabs">
 		<?php $j = 0; foreach (array_keys($buffers) as $key): ?>

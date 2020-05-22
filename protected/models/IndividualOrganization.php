@@ -105,7 +105,7 @@ class IndividualOrganization extends IndividualOrganizationBase
 		// custom code here
 		// $return['title'] = Yii::t('app', 'Custom Name');
 
-		$return['organization_code'] = Yii::t('app', 'Company');
+		$return['organization_code'] = Yii::t('app', 'Organization');
 
 		return $return;
 	}
