@@ -5,6 +5,11 @@ main:
         -   key: general
             title: "General"
             items:
+                -   var: Yii::app()->controller->getVersion()
+                    title: Running Version
+                    example: 
+                    datatype: string
+                    getter: 'Yii::app()->controller->getVersion()'
                 -   var: name
                     varInstaller: appName
                     file: main.php
