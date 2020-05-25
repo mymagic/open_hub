@@ -55,7 +55,13 @@ $this->breadcrumbs = array(
 <!-- Tab panes -->
 <div class="tab-content">
 	<div role="tabpanel" class="tab-pane white-bg padding-md" id="welcome" data-url-view="">
+		<div class="flashNotices">
+		<?php foreach ($notices as $notice):?>
+			<?php echo Notice::inline($notice['message'], !empty($notice['type']) ? $notice['type'] : Notice_INFO, true, false, true); ?>
+		<?php endforeach; ?>
+		</div>
 		<p class="margin-top-lg margin-bottom-3x">Welcome to <?php echo Yii::app()->name ?> Backend</p>
+		
 	</div>
 <?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
     <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath' => $tabModule['viewPath'])) ?>">

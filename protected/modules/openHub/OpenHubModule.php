@@ -202,6 +202,16 @@ class OpenHubModule extends WebModule
 	{
 	}
 
+	public function getDashboardNotices($model, $realm = 'backend')
+	{
+		$updateInfo = HubOpenHub::getUpdateInfo();
+		if ($updateInfo['canUpdate']) {
+			$notices[] = array('message' => Yii::t('openHub', 'System update: latest release  {versionReleased} is available', array('{versionReleased}' => $updateInfo['latestRelease']['tag_name'])), 'type' => Notice_WARNING);
+		}
+
+		return $notices;
+	}
+
 	public function doOrganizationsMerge($source, $target)
 	{
 		$transaction = Yii::app()->db->beginTransaction();

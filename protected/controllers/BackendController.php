@@ -137,18 +137,21 @@ class BackendController extends Controller
 		// todo: select total registration base on active and not cancelled events
 		$stat['totalEventRegistrations'] = Yii::app()->db->createCommand('SELECT COUNT(er.id) FROM event_registration as er LEFT JOIN event as e ON er.event_code=e.code WHERE e.is_active=1')->queryScalar();
 
-		$tabs = array();
+		$notices = $tabs = array();
 		$model = null;
 		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getDashboardViewTabs')) {
 				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getDashboardViewTabs($model, $realm));
 			}
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getDashboardNotices')) {
+				$notices = array_merge($notices, (array) Yii::app()->getModule($moduleKey)->getDashboardNotices($model, $realm));
+			}
 		}
 
 		ksort($tabs);
 
-		$this->render('dashboard', array('model' => $model, 'tabs' => $tabs, 'stat' => $stat));
+		$this->render('dashboard', array('model' => $model, 'tabs' => $tabs, 'stat' => $stat, 'notices' => $notices));
 	}
 
 	public function actionRenderDashboardViewTab($viewPath)
