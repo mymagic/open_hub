@@ -177,6 +177,8 @@ class DefaultController extends CController
 	// load database sql
 	public function actionSetupDb()
 	{
+		set_time_limit(0);
+
 		$envs = array();
 		// load existing .envs into array
 		if (file_exists($this->envFilePath)) {
@@ -217,6 +219,8 @@ class DefaultController extends CController
 	// create admin account if not exists
 	public function actionDone()
 	{
+		set_time_limit(0);
+
 		$envs = array();
 		// load existing .envs into array
 		if (file_exists($this->envFilePath)) {
