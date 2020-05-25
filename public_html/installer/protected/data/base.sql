@@ -7794,7 +7794,10 @@ INSERT INTO `tbl_migration` (`version`, `apply_time`) VALUES
 ('m191209_063937_secured_file_at_sample_table', 1575944580),
 ('m200205_093513_survey_organization_job', 1580895994),
 ('m200206_032717_organization_revenue_funding_addTextNote', 1580959725),
-('m200209_032417_password_hash', 1581218717);
+('m200209_032417_password_hash', 1581218717),
+('m200324_011353_event_survey_enabled', 1585013262),
+('m200324_062436_event_address_breakdown', 1585033364),
+('m200402_083859_event_owner_role', 1585822985);
 
 -- --------------------------------------------------------
 
