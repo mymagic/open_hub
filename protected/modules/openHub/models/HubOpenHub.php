@@ -34,14 +34,14 @@ class HubOpenHub
 		[tag_name] => v0.5.213
 		[target_commitish] => master
 		[name] => Version 0.5.213
-		[draft] => 
+		[draft] =>
 		[author] => Array
 			(
 				[login] => exiang
 				[id] => 5336690
 				[node_id] => MDQ6VXNlcjUzMzY2OTA=
 				[avatar_url] => https://avatars2.githubusercontent.com/u/5336690?v=4
-				[gravatar_id] => 
+				[gravatar_id] =>
 				[url] => https://api.github.com/users/exiang
 				[html_url] => https://github.com/exiang
 				[followers_url] => https://api.github.com/users/exiang/followers
@@ -54,10 +54,10 @@ class HubOpenHub
 				[events_url] => https://api.github.com/users/exiang/events{/privacy}
 				[received_events_url] => https://api.github.com/users/exiang/received_events
 				[type] => User
-				[site_admin] => 
+				[site_admin] =>
 			)
 
-		[prerelease] => 
+		[prerelease] =>
 		[created_at] => 2020-05-22T15:30:50Z
 		[published_at] => 2020-05-22T15:33:20Z
 		[assets] => Array
@@ -82,5 +82,10 @@ class HubOpenHub
 			'canUpdate' => $canUpdate,
 			'latestRelease' => self::getLatestRelease()
 		);
+	}
+
+	public static function getUrlLatestRelease()
+	{
+		return sprintf('%s/release/openhub-latest.zip', Yii::app()->getModule('openHub')->githubReleaseUrl);
 	}
 }

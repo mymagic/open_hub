@@ -11,6 +11,7 @@ class OpenHubModule extends WebModule
 	public $var2;
 	public $githubOrganization;
 	public $githubRepoName;
+	public $githubReleaseUrl;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
@@ -206,7 +207,7 @@ class OpenHubModule extends WebModule
 	{
 		$updateInfo = HubOpenHub::getUpdateInfo();
 		if ($updateInfo['canUpdate']) {
-			$notices[] = array('message' => Yii::t('openHub', 'System update: latest release  {versionReleased} is available', array('{versionReleased}' => $updateInfo['latestRelease']['tag_name'])), 'type' => Notice_WARNING);
+			$notices[] = array('message' => Yii::t('openHub', 'System update: latest release  {versionReleased} is available. <a href="{urlDownload}" class="btn btn-xs btn-primary">Download</a>', array('{versionReleased}' => $updateInfo['latestRelease']['tag_name'], '{urlDownload}' => HubOpenHub::getUrlLatestRelease())), 'type' => Notice_WARNING);
 		}
 
 		return $notices;
