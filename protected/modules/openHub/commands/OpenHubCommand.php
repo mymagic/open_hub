@@ -7,18 +7,22 @@ class OpenHubCommand extends ConsoleCommand
 	public function actionIndex()
 	{
 		echo "Available command:\n";
-		echo "downloadLatestRelease - download latest release package\n";
-		echo "upgrade - upgrade to latest release package\n";
+		echo "downloadLatestRelease --saveAs=/var/www/procted/runtime/download/key.openhub-latest.zip - download latest release package\n";
+		echo "upgrade --key=UUID - upgrade to latest release package\n";
 		echo "\n";
 	}
 
-	public function actionDownloadLatestRelease()
+	public function actionDownloadLatestRelease($saveAs)
 	{
 		$filename = 'openhub-latest.zip';
 		// download from
 		$downloadFilePath = sprintf('%s/release/%s', Yii::app()->getModule('openHub')->githubReleaseUrl, $filename);
 		// save to
-		$pathZipFile = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'download' . DIRECTORY_SEPARATOR . $filename;
+		if (empty($saveAs)) {
+			$pathZipFile = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'download' . DIRECTORY_SEPARATOR . $filename;
+		} else {
+			$pathZipFile = $saveAs;
+		}
 
 		echo sprintf("Downloading latest release from '%s'...\n", $downloadFilePath);
 
@@ -32,7 +36,7 @@ class OpenHubCommand extends ConsoleCommand
 
 		while (!feof($handle)) {
 			$contents .= fread($handle, 8192);
-			echo ysUtil::formatByte(strlen($contents)) . "\n";
+			echo YsUtil::formatByte(strlen($contents)) . "\n";
 		}
 		fclose($handle);
 
@@ -41,20 +45,23 @@ class OpenHubCommand extends ConsoleCommand
 		}
 	}
 
-	public function actionUpgrade()
+	public function actionUpgrade($key)
 	{
-		$filename = 'openhub-latest.zip';
 		$buffer = '';
+		$filename = 'openhub-latest.zip';
+		if (empty($key)) {
+			$key = YsUtil::generateUUID();
+		}
 
 		// protected path to execute yiic
 		$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
-		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . 'OpenHubCommand-actionUpgrade.txt';
+		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key  . '.OpenHubCommand-actionUpgrade.txt';
 
 		// path to extrac zip package to
 		$pathBase = dirname($pathProtected, 1);
 
 		// path to download zip package to
-		$pathZipFile = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'download' . DIRECTORY_SEPARATOR . $filename;
+		$pathZipFile = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'download' . DIRECTORY_SEPARATOR . $key . '.' . $filename;
 
 		// check directory path is default and not modified
 		if (is_dir($pathBase . DIRECTORY_SEPARATOR . 'protected') && is_dir($pathBase . DIRECTORY_SEPARATOR . 'public_html') && is_dir($pathBase . DIRECTORY_SEPARATOR . 'framework')) {
@@ -63,7 +70,7 @@ class OpenHubCommand extends ConsoleCommand
 
 			// download zip and place in runtime/download
 			file_put_contents($pathOutput, "\n\nDownload package\n", FILE_APPEND);
-			$command = sprintf('php %s/yiic openhub downloadLatestRelease', $pathProtected);
+			$command = sprintf('php %s/yiic openhub downloadLatestRelease --saveAs=%s', $pathProtected, $pathZipFile);
 			$result = YeeBase::runPOpen($command, $pathOutput, false);
 
 			if ($result['status'] == 'success') {
@@ -83,8 +90,8 @@ class OpenHubCommand extends ConsoleCommand
 					$command = sprintf('php %s/yiic migrate up', $pathProtected);
 					$result = YeeBase::runPOpen($command, $pathOutput, false);
 
-					// run languages message scan
-					file_put_contents($pathOutput, "\n\nRun Language Message Scan\n", FILE_APPEND);
+					// run languages scan to refresh translation message
+					file_put_contents($pathOutput, "\n\nRun Language Scan to refresh translation message\n", FILE_APPEND);
 					$command = sprintf('php %s/yiic message %s/config/message.php', $pathProtected, $pathProtected);
 					$result = YeeBase::runPOpen($command, $pathOutput, false);
 
