@@ -42,7 +42,7 @@ class BackendController extends Controller
 
 	public function actionUpgrade($confirm = 0)
 	{
-		set_timeout_limit(0);
+		set_time_limit(0);
 
 		$key = YsUtil::generateUUID();
 		Yii::app()->user->setState('keyUpgrade', $key);

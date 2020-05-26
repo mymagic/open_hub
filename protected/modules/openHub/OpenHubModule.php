@@ -207,7 +207,7 @@ class OpenHubModule extends WebModule
 	{
 		$upgradeInfo = HubOpenHub::getUpgradeInfo();
 		if ($upgradeInfo['canUpgrade']) {
-			$notices[] = array('message' => Yii::t('openHub', 'System upgrade: latest release  {versionReleased} is available. <a href="{urlDownload}" class="btn btn-xs btn-primary">Download</a>', array('{versionReleased}' => $upgradeInfo['latestRelease']['tag_name'], '{urlDownload}' => HubOpenHub::getUrlLatestRelease())), 'type' => Notice_WARNING);
+			$notices[] = array('message' => Yii::t('openHub', 'System upgrade: latest release  {versionReleased} is available. <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>', array('{versionReleased}' => $upgradeInfo['latestRelease']['tag_name'], '{url}' => Yii::app()->createUrl('//openHub/backend/upgrade'))), 'type' => Notice_WARNING);
 		}
 
 		return $notices;
