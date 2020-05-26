@@ -15,13 +15,21 @@
     <p><?php echo(nl2br($latestRelease['body'])) ?></p>
 </div>
 <div class="col col-sm-8">
-    <div id="box-output" class="border" style="min-height:30em" data-url="<?php echo $this->createUrl('backend/outputUpgrade', array('key' => Yii::app()->user->getState('keyUpgrade'))) ?>"></div>
+    <div id="box-output" class="border" style="min-height:30em; overflow-7: scroll;" data-url="<?php echo $this->createUrl('backend/outputUpgrade', array('key' => Yii::app()->user->getState('keyUpgrade'), 'rand' => '1')) ?>"></div>
 </div>
 
 
 <?php Yii::app()->clientScript->registerScript('openHub-backend-upgrade', "
-setInterval('outputUpgrade();',5000); 
 function outputUpgrade(){
-    $('#box-output').load($('#box-output').data('url'));
+    $.ajax({
+        url: $('#box-output').data('url')+Math.random(),
+        cache: false,
+        dataType: 'html',
+        success: function(data) {
+            $('#box-output').html(data);
+        }
+    });
 }
+setInterval(outputUpgrade, 5000); 
+outputUpgrade();
 ") ?>
