@@ -62,10 +62,11 @@ class BackendController extends Controller
 		YeeBase::runPOpen($command, $pathOutput, false);
 	}
 
-	public function actionOutputUpgrade($key, $rand)
+	public function actionOutputUpgrade($key, $rand = '')
 	{
 		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHubCommand-actionUpgrade.txt';
-
-		echo(file_get_contents($pathOutput));
+		if (file_exists($pathOutput)) {
+			echo(@file_get_contents($pathOutput));
+		}
 	}
 }

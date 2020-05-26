@@ -25,17 +25,17 @@ var previousData = '';
 var intervalId = '';
 
 $('#btn-confirmUpgrade').click(function(e){
+    intervalId = setInterval(outputUpgrade, 5000); 
+    outputUpgrade();
+
 	$.ajax({
         url: $('#btn-confirmUpgrade').data('url'),
         cache: false,
         dataType: 'html',
         success: function(data) {
-            
         },
         beforeSend: function(){
             $('#btn-confirmUpgrade').removeClass('btn-primary').addClass('disabled btn-default');
-            intervalId = setInterval(outputUpgrade, 5000); 
-            outputUpgrade();
         },
         complete: function(){
             $('#btn-confirmUpgrade').removeClass('disabled btn-default').addClass('btn-primary');
