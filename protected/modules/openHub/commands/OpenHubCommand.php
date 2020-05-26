@@ -8,7 +8,7 @@ class OpenHubCommand extends ConsoleCommand
 	{
 		echo "Available command:\n";
 		echo "downloadLatestRelease --saveAs=/var/www/procted/runtime/download/key.openhub-latest.zip - download latest release package\n";
-		echo "upgrade --key=UUID - upgrade to latest release package\n";
+		echo "upgrade --key=UUID --force=true - upgrade to latest release package\n";
 		echo "\n";
 	}
 
@@ -45,7 +45,7 @@ class OpenHubCommand extends ConsoleCommand
 		}
 	}
 
-	public function actionUpgrade($key)
+	public function actionUpgrade($key = '', $force = false)
 	{
 		$buffer = '';
 		$filename = 'openhub-latest.zip';
@@ -53,9 +53,16 @@ class OpenHubCommand extends ConsoleCommand
 			$key = YsUtil::generateUUID();
 		}
 
+		// check latest release version, stop if
+		$updateInfo = HubOpenHub::getUpdateInfo();
+		if (!$updateInfo['canUpdate'] && $force == false) {
+			echo "\nYour current installation is the latest\n";
+			exit;
+		}
+
 		// protected path to execute yiic
 		$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
-		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key  . '.OpenHubCommand-actionUpgrade.txt';
+		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHubCommand-actionUpgrade.txt';
 
 		// path to extrac zip package to
 		$pathBase = dirname($pathProtected, 1);
@@ -96,6 +103,7 @@ class OpenHubCommand extends ConsoleCommand
 					$result = YeeBase::runPOpen($command, $pathOutput, false);
 
 					// finally, output everything
+					file_put_contents($pathOutput, "\n\nSYSTEM UPGRADED SUCCESSFULLY\n", FILE_APPEND);
 					$buffer = file_get_contents($pathOutput);
 				} else {
 					$buffer = sprintf("Failed, code:\n", $res);

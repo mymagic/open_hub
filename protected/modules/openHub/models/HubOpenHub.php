@@ -72,7 +72,7 @@ class HubOpenHub
 	*/
 	public static function getUpdateInfo()
 	{
-		$versionRunning = Yii::app()->controller->getVersionWithoutBuild();
+		$versionRunning = YeeBase::getVersionWithoutBuild();
 		$versionReleased = HubOpenHub::getLatestReleaseVersion();
 		$canUpdate = Comparator::greaterThan($versionReleased, $versionRunning);
 
