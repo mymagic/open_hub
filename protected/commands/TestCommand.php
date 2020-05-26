@@ -27,6 +27,7 @@ class TestCommand extends ConsoleCommand
 		echo "  * guzzle\nconnect to futurelab and list all program using guzzle to check is guzzle working or not\n";
 		echo "  * yiiPath\nto check yii path is correct or not\n";
 		echo "  * getPath\nget path from alias\n";
+		echo "  * outputInterval --limit=30\noutput random number by interval\n";
 		echo "\n";
 	}
 
@@ -145,5 +146,15 @@ class TestCommand extends ConsoleCommand
 		// try delete the created item
 		$response = Yii::app()->esLog->getClient()->delete($params);
 		var_dump($response);
+	}
+
+	public function actionOutputInterval($limit = 30)
+	{
+		for ($i = 1; $i <= $limit; $i++) {
+			echo $i . ': ';
+			echo rand(0, ($i + rand()) * 100000);
+			echo "\n";
+			sleep(1);
+		}
 	}
 }

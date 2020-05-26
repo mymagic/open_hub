@@ -35,6 +35,29 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionOpenHubUpgrade()
+	{
+		$basePath = dirname(Yii::getPathOfAlias('runtime'), 1);
+		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . 'TestController-actionOpenHubUpgrade.txt';
+		$command = sprintf('php %s/yiic openhub upgrade', $basePath);
+		$result = YeeBase::runPOpen($command, $pathOutput, true);
+		echo $result['data'];
+	}
+
+	public function actionPOpen()
+	{
+		$command = 'php /var/www/open_hub/protected/yiic test outputInterval --limit=5';
+		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . 'test-popen.txt';
+
+		$result = YeeBase::runPOpen($command, $pathOutput, $forceRewrite);
+
+		// command executed successfully
+		if ($result['status'] == 'success') {
+			echo "Completed Successfully\n";
+			echo $result['data'];
+		}
+	}
+
 	public function actionUi()
 	{
 		$this->render('ui');

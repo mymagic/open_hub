@@ -17,7 +17,7 @@ class BackendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index', 'checkUpdate'),
+				'actions' => array('index', 'checkUpdate', 'deployUpdate'),
 				'users' => array('@'),
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
@@ -46,5 +46,10 @@ class BackendController extends Controller
 			'checkUpdate',
 			HubOpenHub::getUpdateInfo()
 		);
+	}
+
+	public function actionDeployUpdate($filename)
+	{
+		set_timeout_limit(0);
 	}
 }
