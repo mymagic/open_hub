@@ -86,7 +86,7 @@ class OpenHubCommand extends ConsoleCommand
 				if ($res === true) {
 					// extract zip
 					file_put_contents($pathOutput, "\n\nExtracting package\n", FILE_APPEND);
-					//$zip->extractTo($pathBase);
+					$zip->extractTo($pathBase);
 					$zip->close();
 
 					// deleted downloaded files

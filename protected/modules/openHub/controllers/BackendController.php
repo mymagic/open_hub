@@ -66,6 +66,6 @@ class BackendController extends Controller
 	{
 		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHubCommand-actionUpgrade.txt';
 
-		echo nl2br(file_get_contents($pathOutput));
+		echo(file_get_contents($pathOutput));
 	}
 }
