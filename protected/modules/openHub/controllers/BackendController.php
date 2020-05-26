@@ -17,7 +17,7 @@ class BackendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index', 'checkUpdate', 'deployUpdate'),
+				'actions' => array('index', 'upgrade', 'outputUpgrade'),
 				'users' => array('@'),
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
@@ -40,16 +40,32 @@ class BackendController extends Controller
 		$this->render('index');
 	}
 
-	public function actionCheckUpdate()
+	public function actionUpgrade($confirm = 0)
 	{
+		set_timeout_limit(0);
+
+		$key = YsUtil::generateUUID();
+		Yii::app()->user->setState('keyUpgrade', $key);
+
+		$upgradeInfo = HubOpenHub::getUpgradeInfo();
+
+		if ($confirm) {
+			$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
+			$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHub-BackendController-actionUpgrade.txt';
+			$command = sprintf('php %s/yiic openhub upgrade --key=%s', $pathProtected, $key);
+			YeeBase::runPOpen($command, $pathOutput, false);
+		}
+
 		$this->render(
-			'checkUpdate',
-			HubOpenHub::getUpdateInfo()
+			'upgrade',
+			$upgradeInfo
 		);
 	}
 
-	public function actionDeployUpdate($filename)
+	public function actionOutputUpgrade($key)
 	{
-		set_timeout_limit(0);
+		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHubCommand-actionUpgrade.txt';
+
+		echo file_get_contents($pathOutput);
 	}
 }

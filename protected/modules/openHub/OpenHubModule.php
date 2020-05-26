@@ -205,9 +205,9 @@ class OpenHubModule extends WebModule
 
 	public function getDashboardNotices($model, $realm = 'backend')
 	{
-		$updateInfo = HubOpenHub::getUpdateInfo();
-		if ($updateInfo['canUpdate']) {
-			$notices[] = array('message' => Yii::t('openHub', 'System update: latest release  {versionReleased} is available. <a href="{urlDownload}" class="btn btn-xs btn-primary">Download</a>', array('{versionReleased}' => $updateInfo['latestRelease']['tag_name'], '{urlDownload}' => HubOpenHub::getUrlLatestRelease())), 'type' => Notice_WARNING);
+		$upgradeInfo = HubOpenHub::getUpgradeInfo();
+		if ($upgradeInfo['canUpgrade']) {
+			$notices[] = array('message' => Yii::t('openHub', 'System upgrade: latest release  {versionReleased} is available. <a href="{urlDownload}" class="btn btn-xs btn-primary">Download</a>', array('{versionReleased}' => $upgradeInfo['latestRelease']['tag_name'], '{urlDownload}' => HubOpenHub::getUrlLatestRelease())), 'type' => Notice_WARNING);
 		}
 
 		return $notices;

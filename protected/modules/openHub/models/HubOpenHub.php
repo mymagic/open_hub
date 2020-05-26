@@ -70,16 +70,16 @@ class HubOpenHub
 	- added package intervention/httpauth from [composer] to safeguard WAPI with basic auth
 	)
 	*/
-	public static function getUpdateInfo()
+	public static function getUpgradeInfo()
 	{
 		$versionRunning = YeeBase::getVersionWithoutBuild();
 		$versionReleased = HubOpenHub::getLatestReleaseVersion();
-		$canUpdate = Comparator::greaterThan($versionReleased, $versionRunning);
+		$canUpgrade = Comparator::greaterThan($versionReleased, $versionRunning);
 
 		return array(
 			'versionRunning' => $versionRunning,
 			'versionReleased' => $versionReleased,
-			'canUpdate' => $canUpdate,
+			'canUpgrade' => $canUpgrade,
 			'latestRelease' => self::getLatestRelease()
 		);
 	}

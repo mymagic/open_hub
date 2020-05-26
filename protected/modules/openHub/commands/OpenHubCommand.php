@@ -54,8 +54,8 @@ class OpenHubCommand extends ConsoleCommand
 		}
 
 		// check latest release version, stop if
-		$updateInfo = HubOpenHub::getUpdateInfo();
-		if (!$updateInfo['canUpdate'] && $force == false) {
+		$upgradeInfo = HubOpenHub::getUpgradeInfo();
+		if (!$upgradeInfo['canUpgrade'] && $force == false) {
 			echo "\nYour current installation is the latest\n";
 			exit;
 		}
@@ -86,11 +86,11 @@ class OpenHubCommand extends ConsoleCommand
 				if ($res === true) {
 					// extract zip
 					file_put_contents($pathOutput, "\n\nExtracting package\n", FILE_APPEND);
-					$zip->extractTo($pathBase);
+					//$zip->extractTo($pathBase);
 					$zip->close();
 
 					// deleted downloaded files
-					unlink($pathZipFile);
+					//unlink($pathZipFile);
 
 					// run system migration
 					file_put_contents($pathOutput, "\n\nRun System Migration\n", FILE_APPEND);
