@@ -51,6 +51,6 @@ $this->breadcrumbs = array(
         </div>
     </div>
     <div class="mt-4 md:flex md:justify-end">
-        <a href="<?php echo $this->createUrl('deleteUserAccount') ?>">Deactivate Account</a>
+        <a href="<?php echo $this->createUrl('deleteUserAccount') ?>"><?php echo Yii::t('cpanel', 'Terminate Account'); ?></a>
     </div>
 </section>

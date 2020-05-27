@@ -35,6 +35,27 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionDeleteEmbed()
+	{
+		echo Embed::deleteEmbed('test-deactivateAccountMessage');
+	}
+
+	public function actionSetEmbed()
+	{
+		$embed = Embed::setEmbed('test-deactivateAccountMessage', array(
+			'is_title_enabled' => true,
+			'is_text_description_enabled' => false,
+			'is_html_content_enabled' => true,
+			'is_image_main_enabled' => false,
+			'is_default' => true,
+			'title_en' => 'Deactivate Account',
+			'html_content_en' => '<b>Hello</b> World',
+		));
+		//$embed->validate();
+		print_r($embed->getErrors());
+		print_r($embed);
+	}
+
 	public function actionOpenHubUpgrade()
 	{
 		$basePath = dirname(Yii::getPathOfAlias('runtime'), 1);

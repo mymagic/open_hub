@@ -294,7 +294,7 @@ class CpanelController extends Controller
 	public function actionDeleteUserAccount()
 	{
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Deactivate Account';
+		$this->pageTitle = Yii::t('cpanel', 'Terminate Account');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 		// renders the view file 'protected/views/site/index.php'
@@ -304,8 +304,9 @@ class CpanelController extends Controller
 
 	public function actionTerminateAccount()
 	{
+		$this->layout = 'layouts.plain';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Deactivate Account';
+		$this->pageTitle = Yii::t('cpanel', 'Terminate Account');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 
@@ -325,7 +326,7 @@ class CpanelController extends Controller
 		$email = $userObj->username;
 
 		if ($userObj->is_active == 1) {
-			$this->render('_confirmAccountDeletion', array('model' => $userObj));
+			$this->render('confirmAccountDeletion', array('model' => $userObj));
 			// Notice::page(Yii::t('notice', "Are you sure?
 			// Once you confirm, your account ({$email}) will be permanently deactivated and you no longer can use this account."), Notice_WARNING,
 			// array('url'=>$this->createUrl('terminateConfirmed'), 'cancelUrl'=>$this->createUrl('deleteUserAccount')));
