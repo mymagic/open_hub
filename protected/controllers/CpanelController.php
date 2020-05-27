@@ -58,7 +58,7 @@ class CpanelController extends Controller
 	{
 		parent::init();
 		$this->layout = 'layouts.cpanel';
-		$this->pageTitle = 'Activity Feed';
+		$this->pageTitle = Yii::t('cpanel', 'Activity Feed');
 		$this->cpanelMenuInterface = 'cpanelNavDashboard';
 		$this->activeMenuCpanel = 'activity';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
@@ -84,7 +84,7 @@ class CpanelController extends Controller
 	public function actionProfile()
 	{
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Profile Settings';
+		$this->pageTitle = Yii::t('cpanel', 'Profile Settings');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 
@@ -248,7 +248,7 @@ class CpanelController extends Controller
 	public function actionDownload()
 	{
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Download Account Information';
+		$this->pageTitle = Yii::t('cpanel', 'Download Account Information');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'download';
 
@@ -408,7 +408,7 @@ class CpanelController extends Controller
 	public function actionNotification()
 	{
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Notification Settings';
+		$this->pageTitle = Yii::t('cpanel', 'Notification Settings');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'notification';
 
