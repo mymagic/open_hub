@@ -15,6 +15,8 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
+use Exiang\YsUtil\YsUtil;
+
 class TestCommand extends ConsoleCommand
 {
 	public $verbose = false;
