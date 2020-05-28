@@ -64,12 +64,12 @@ class TestController extends Controller
 		$this->echoEvent('Finish!');
 	}
 
-	public function actionPing()
+	public function actionEventStreamPing()
 	{
-		$this->render('ping');
+		$this->render('eventStreamPing');
 	}
 
-	public function actionDoPing()
+	public function actionDoEventStreamPing()
 	{
 		ob_end_flush();
 		ini_set('output_buffering', '0');

@@ -7,7 +7,7 @@
     <script type="text/javascript">
     function eventsourcetest() {
         var ta = document.getElementById('output');
-        var source = new EventSource('<?php echo $this->createUrl('test/doPing') ?>');
+        var source = new EventSource('<?php echo $this->createUrl('test/doEventStreamPing') ?>');
         source.addEventListener('message', function(e) {
             if (e.data !== '') {
                ta.value += e.data + '\n';
@@ -18,6 +18,7 @@
         }, false);
     }
     </script>
+    <p>Output may be empty running in docker environment.</p>
     <p>Output:<br/><textarea id="output" style="width: 80%; height: 25em;"></textarea></p>
     <p><button type="button" onclick="eventsourcetest();">ping google.com</button>
 </html>
