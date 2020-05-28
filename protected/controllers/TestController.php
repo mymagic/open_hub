@@ -47,6 +47,8 @@ class TestController extends Controller
 			exit("That's why!" . ob_get_level());
 		}
 
+		ini_set('output_buffering', '0');
+		ob_implicit_flush(true);
 		header('Content-Type: text/event-stream');
 		header('Cache-Control: no-cache');
 
@@ -57,7 +59,6 @@ class TestController extends Controller
 		}
 		pclose($proc);
 		$this->echoEvent('Finish!');
-		flush();
 	}
 
 	public function echoEvent($datatext)
