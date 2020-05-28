@@ -1,5 +1,7 @@
 <?php
 
+use Exiang\YsUtil\YsUtil;
+
 class OpenHubCommand extends ConsoleCommand
 {
 	public $verbose = false;
