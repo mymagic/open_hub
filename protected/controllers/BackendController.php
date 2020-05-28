@@ -121,12 +121,6 @@ class BackendController extends Controller
 	{
 		$realm = 'backend';
 
-		// check list of module required upgrade
-		$countModule2Upgrade = YeeModule::countModuleCanUpgrade();
-		if ($countModule2Upgrade > 0) {
-			Notice::flash(Yii::t('backend', '<a href="{url}">{n} module needs to upgrade now!</a>|<a href="{url}">{n} modules need to upgrade now!</a>', array($countModule2Upgrade, '{url}' => $this->createUrl('/sys/module/admin'))), Notice_INFO);
-		}
-
 		$stat['totalUsers'] = User::model()->countByAttributes(array('is_active' => 1));
 		$stat['totalLogins'] = Yii::app()->db->createCommand('SELECT SUM(stat_login_success_count) FROM user WHERE is_active=1')->queryScalar();
 		$stat['totalOrganizations'] = Organization::model()->countByAttributes(array('is_active' => 1));
