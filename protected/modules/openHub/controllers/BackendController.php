@@ -17,7 +17,7 @@ class BackendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index', 'upgrade', 'outputUpgrade', 'doUpgrade'),
+				'actions' => array('index', 'upgrade', 'doUpgrade'),
 				'users' => array('@'),
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
@@ -55,19 +55,31 @@ class BackendController extends Controller
 	{
 		$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
 		// $pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHub-BackendController-actionUpgrade.txt';
-		//$command = sprintf('php %s/yiic openhub upgrade --key=%s', $pathProtected, $key);
-		$command = sprintf('php %s/yiic openhub downloadLatestRelease', $pathProtected);
+		$command = sprintf('php %s/yiic openhub upgrade --key=%s', $pathProtected, $key);
+		//$command = sprintf('php %s/yiic openhub downloadLatestRelease', $pathProtected);
+
+		ob_end_clean();
+		if (ob_get_level() > 0) {
+			exit("That's why!" . ob_get_level());
+		}
 
 		ob_end_flush();
 		ini_set('output_buffering', '0');
 		ob_implicit_flush(true);
 		header('Content-Type: text/event-stream');
 		header('Cache-Control: no-cache');
+
+		$this->echoEvent('Start!');
 		$proc = popen($command, 'r');
 		while (!feof($proc)) {
-			echo 'data: ' . implode("\ndata: ", explode("\n", fread($proc, 4096))) . "\n";
+			$this->echoEvent(fread($proc, 4096));
 		}
 		pclose($proc);
-		exit;
+		$this->echoEvent('Finish!');
+	}
+
+	public function echoEvent($string)
+	{
+		echo 'data: ' . implode("\ndata: ", explode("\n", $string)) . "\n\n";
 	}
 }
