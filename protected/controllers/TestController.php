@@ -35,6 +35,35 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionCheckOutputBufferLevel()
+	{
+		if (ob_get_level() > 0) {
+			exit("That's why!" . ob_get_level());
+		}
+	}
+
+	public function actionEventStreamTime()
+	{
+		$this->render('eventStreamTime');
+	}
+
+	public function actionDoEventStreamTime()
+	{
+		ob_end_flush();
+		ini_set('output_buffering', '0');
+		ob_implicit_flush(true);
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+
+		$this->echoEvent('Start!');
+		$proc = popen('date', 'r');
+		while (!feof($proc)) {
+			$this->echoEvent(fread($proc, 4096));
+		}
+		pclose($proc);
+		$this->echoEvent('Finish!');
+	}
+
 	public function actionPing()
 	{
 		$this->render('ping');
@@ -43,10 +72,6 @@ class TestController extends Controller
 	public function actionDoPing()
 	{
 		ob_end_flush();
-		if (ob_get_level() > 0) {
-			exit("That's why!" . ob_get_level());
-		}
-
 		ini_set('output_buffering', '0');
 		ob_implicit_flush(true);
 		header('Content-Type: text/event-stream');
@@ -61,9 +86,9 @@ class TestController extends Controller
 		$this->echoEvent('Finish!');
 	}
 
-	public function echoEvent($datatext)
+	public function echoEvent($string)
 	{
-		echo 'data: ' . implode("\ndata: ", explode("\n", $datatext)) . "\n\n";
+		echo 'data: ' . implode("\ndata: ", explode("\n", $string)) . "\n\n";
 	}
 
 	public function actionDeleteEmbed()

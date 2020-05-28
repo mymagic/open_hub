@@ -15,9 +15,10 @@ $return = array(
 
 	'localeDataPath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'i18n/data',
 
+	// ys: disable this as it will caused issue in event stream cli to web browser
 	// enable gzip output content
-	'onBeginRequest' => create_function('$event', 'return ob_start("ob_gzhandler");'),
-	'onEndRequest' => create_function('$event', 'return ob_end_flush();'),
+	//'onBeginRequest' => create_function('$event', 'return ob_start("ob_gzhandler");'),
+	//'onEndRequest' => create_function('$event', 'return ob_end_flush();'),
 
 	// autoloading model and component classes
 	'import' => array(
