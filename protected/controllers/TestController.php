@@ -35,6 +35,36 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionPing()
+	{
+		$this->render('ping');
+	}
+
+	public function actionDoPing()
+	{
+		ob_end_flush();
+		if (ob_get_level() > 0) {
+			exit("That's why!" . ob_get_level());
+		}
+
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+
+		$this->echoEvent('Start!');
+		$proc = popen('ping -c 5 google.com', 'r');
+		while (!feof($proc)) {
+			$this->echoEvent(fread($proc, 4096));
+		}
+		pclose($proc);
+		$this->echoEvent('Finish!');
+		flush();
+	}
+
+	public function echoEvent($datatext)
+	{
+		echo 'data: ' . implode("\ndata: ", explode("\n", $datatext)) . "\n\n";
+	}
+
 	public function actionDeleteEmbed()
 	{
 		echo Embed::deleteEmbed('test-deactivateAccountMessage');
