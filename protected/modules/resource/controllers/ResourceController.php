@@ -86,7 +86,7 @@ class ResourceController extends Controller
 			$this->activeMenuCpanel = 'resource';
 		}
 		$this->pageTitle = Yii::t('app', 'View Resource');
-		$model = $this->loadModel($id);
+		$model = $this->loadModel($id, $organizationId);
 		$this->activeSubMenuCpanel = 'resource-adminByOrganization';
 
 		// check for member access, not admin
@@ -226,7 +226,7 @@ class ResourceController extends Controller
 		}
 		$this->pageTitle = Yii::t('app', 'Update Resource');
 
-		$model = $this->loadModel($id);
+		$model = $this->loadModel($id, $organization_id);
 		if (!empty($organization_id)) {
 			$organization = Organization::model()->findByPk($organization_id);
 		}
@@ -413,9 +413,22 @@ class ResourceController extends Controller
 	 * @return Resource the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadModel($id, $organization_id = '')
 	{
-		$model = Resource::model()->findByPk($id);
+		if(!empty($organization_id)){
+			$criteria = new CDbCriteria;
+			$criteria->with = [
+				'organizations' => [
+					'condition' => 'organizations.id = :organization_id',
+					'params' => [':organization_id' => $organization_id]
+				]
+			];
+			$criteria->compare('t.id',$id);
+			$model = Resource::model()->find($criteria);
+		} else {
+			$model = Resource::model()->findByPk($id);
+		}
+		
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
