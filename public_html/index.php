@@ -35,7 +35,7 @@ require_once dirname(__FILE__) . '/../protected/components/WebApplication.php';
 
 //$app = Yii::createWebApplication($config);
 $app = new WebApplication($config);
-$app->attachBehavior('WebBehavior', 'application.yeebase.components.behaviors.WebBehavior');
+//$app->attachBehavior('WebBehavior', 'application.yeebase.components.behaviors.WebBehavior');
 $app->run();
 
 function envKeySplit($array)
