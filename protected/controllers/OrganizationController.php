@@ -460,7 +460,7 @@ class OrganizationController extends Controller
 		$model = HUB::getOrganization2Email($id);
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$model->organization->hasUserEmail(Yii::app()->user->username)) {
 				Notice::page(Yii::t('notice', 'Invalid Access'));
 			}
 		}

@@ -363,7 +363,8 @@ class HubOrganization
 			return null;
 		}
 
-		$sql = sprintf("SELECT o.* FROM organization as o LEFT JOIN organization2email as oe ON oe.organization_id=o.id WHERE o.is_active=1 AND o.title LIKE '%s%%' AND oe.user_email!='%s' GROUP BY o.id ORDER BY title ASC LIMIT 0, 10", $keyword, $email);
+		$sql = sprintf("SELECT o.* FROM organization as o WHERE o.is_active=1 AND o.title LIKE '%s%%' AND o.id NOT IN 
+		(SELECT oe.organization_id FROM organization2email as oe WHERE oe.user_email LIKE '%s') GROUP BY o.id ORDER BY title ASC LIMIT 0, 10", $keyword, $email);
 
 		$return = Organization::model()->findAllBySql($sql);
 

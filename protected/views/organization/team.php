@@ -40,13 +40,12 @@ $this->breadcrumbs = array(
         <div class="list_content my-3">
             <?php foreach ($emails['approve'] as $email) : ?>
                 <div class="row">
-                    <div class="col-sm-6 col-md-7">
+                    <div class="col-xs-7 col-sm-6 col-md-7">
                         <h4><?php echo $email['user_email']; ?></h4>
                         <p class="text-muted"></p>
                     </div>
-                    <div class="col-sm-6 col-md-5">
-                        <div class="col-xs-6 text-center"></div>
-                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a></div>
+                    <div class="col-xs-5 col-sm-6 col-md-5 text-right">
+                        <a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -59,16 +58,15 @@ $this->breadcrumbs = array(
         <div class="list_content my-3">
             <?php foreach ($emails['pending'] as $email) : ?>
                 <div class="row">
-                    <div class="col-sm-6 col-md-7">
+                    <div class="col-xs-7 col-sm-6 col-md-7">
                         <h4><?php echo $email['user_email']; ?></h4>
                         <p class="text-muted"></p>
                     </div>
-                    <div class="col-sm-6 col-md-5">
-                        <div class="col-xs-6 text-center"></div>
-                        <div class="col-xs-6 text-center inline-block">
-                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatus', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-primary btn-sm"><?php echo Yii::t('app', 'Approve') ?></a>
-                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatusReject', array('id' => $email->id)) ?>" class="btn btn-warning btn-sm"><?php echo Yii::t('app', 'Reject') ?></a>
-                        </div>
+                    <div class="col-xs-5 col-sm-6 col-md-5 text-right">
+                        <span class="btn-group btn-group-sm">
+                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatus', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-primary"><?php echo Yii::t('app', 'Approve') ?></a>
+                            <a href="<?php echo $this->createUrl('/organization/toggleOrganization2EmailStatusReject', array('id' => $email->id)) ?>" class="btn btn-warning"><?php echo Yii::t('app', 'Reject') ?></a>
+                        </span>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -81,13 +79,13 @@ $this->breadcrumbs = array(
         <div class="list_content my-3">
             <?php foreach ($emails['reject'] as $email) : ?>
                 <div class="row">
-                    <div class="col-sm-6 col-md-7">
+                    <div class="col-xs-7 col-sm-6 col-md-7">
                         <h4><?php echo $email['user_email']; ?></h4>
                         <p class="text-muted"></p>
                     </div>
-                    <div class="col-sm-6 col-md-5">
-                        <div class="col-xs-6 text-center"></div>
-                        <div class="col-xs-6 text-center"><a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a></div>
+                    <div class="col-xs-5 col-sm-6 col-md-5 text-right">
+                        <a href="<?php echo $this->createUrl('/organization/deleteOrganization2Email/', array('id' => $email->id, 'realm' => 'cpanel', 'scenario' => 'team')) ?>" class="btn btn-danger btn-sm"><?php echo Yii::t('app', 'Remove') ?></a>
+                     
                     </div>
                 </div>
             <?php endforeach; ?>

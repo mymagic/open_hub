@@ -7,7 +7,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 <section id="organization-search">
 	<h2><?php echo Yii::t('app', 'Join Existing Organization') ?></h2>
 
-	<input class="shadow-panel appearance-none border w-full my-4 py-6 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-panel" v-model="keyword" id="username" type="text" placeholder="To request access and manage an organization">
+	<input class="shadow-panel appearance-none border w-full my-4 py-6 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-panel" v-model="keyword" id="username" type="text" placeholder="<?php echo Yii::t('cpanel', 'To request access and manage an organization') ?>">
 
 	<div class="list_content my-3" v-if="!loading && companies.length > 0">
 
@@ -20,7 +20,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 				<p class="text-muted">{{data.textOneliner}}</p>
 			</div>
 			<div class="col-sm-5 col-md-4 col-lg-4">
-				<div class="col-xs-12 text-center">
+				<div class="col-xs-12 text-right">
 					<a class="btn btn-sd btn-sd-green" :href="baseUrl + '/organization/requestJoinEmail?organizationId=' + data.id + '&email=' + username"><?php echo Yii::t('app', 'Request Access') ?></a>
 				</div>
 			</div>
@@ -38,7 +38,7 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 		</div>
 	</div>
 
-	<div class="px-8 py-6 nav-select shadow-panel">
+	<div class="px-8 py-6 nav-select shadow-panel" v-show="!loading && companies.length <1">
 		<div class="row md:flex md:items-center">
 			<div class="col-md-8">
 				<h3><?php echo Yii::t('app', "Don't have an organization yet") ?>?</h3>
@@ -50,39 +50,38 @@ $this->breadcrumbs = array('Organization' => array('join'), 'Join Exisiting');
 		</div>
 	</div>
 
-
-	<hr>
-
-
 	<?php if (!empty($model)) : ?>
-		<h2 class="mb-2" ><?php echo Yii::t('app', 'Waiting for Approval...') ?></h2>
+	
+	<hr />
 
-		<div class="list_content my-3">
-			<?php foreach ($model as $data) : ?>
-				<div class="row">
-					<div class="col-sm-2 col-md-1 col-lg-1">
-						<img src="<?php echo $data['imageLogoThumbUrl'] ?>" class="img-responsive" />
-					</div>
-					<div class="col-sm-5 col-md-7 col-lg-7">
-						<h3><?php echo $data['title'] ?></h3>
-						<p class="text-muted"><?php echo $data['text_oneliner'] ?></p>
-						<!-- <?php foreach ($data['industries'] as $industry) : ?>
-                            <span class="label label-default"><?php echo $industry['title'] ?></span>
-                        <?php endforeach; ?>
-                        <?php foreach ($data['sdgs'] as $sdg) : ?>
-                            <span class="label label-default"><?php echo $sdg['title'] ?></span>
-                        <?php endforeach; ?> -->
-					</div>
-					<div class="col-sm-5 col-md-4 col-lg-4 md:flex md:items-center">
-						<div class="col-xs-6 text-center"><span class="label label-warning"><?php echo Yii::t('app', 'Pending')?></span></div>
-						<div class="col-xs-6 text-center"><a type="button" class="btn btn-w-m btn-danger" href="<?php echo Yii::app()->params['baseUrl'] ?>/organization/deleteUserOrganization2Email?organizationID=<?php echo $data['id'] ?>&userEmail=<?php echo Yii::app()->user->username ?>"><?php echo Yii::t('app', 'Remove')?></a></div>
-					</div>
-					<div class="col-xs-12">
+	<h3 class="mb-2" ><?php echo Yii::t('app', 'Waiting for Approval...') ?></h3>
 
-					</div>
+	<div class="list_content my-3">
+		<?php foreach ($model as $data) : ?>
+			<div class="row">
+				<div class="col-sm-2 col-md-1 col-lg-1">
+					<img src="<?php echo $data['imageLogoThumbUrl'] ?>" class="img-responsive" />
 				</div>
-			<?php endforeach; ?>
-		</div>
+				<div class="col-sm-5 col-md-7 col-lg-7">
+					<h3><?php echo $data['title'] ?></h3>
+					<p class="text-muted"><?php echo $data['text_oneliner'] ?></p>
+					<!-- <?php foreach ($data['industries'] as $industry) : ?>
+						<span class="label label-default"><?php echo $industry['title'] ?></span>
+					<?php endforeach; ?>
+					<?php foreach ($data['sdgs'] as $sdg) : ?>
+						<span class="label label-default"><?php echo $sdg['title'] ?></span>
+					<?php endforeach; ?> -->
+				</div>
+				<div class="col-sm-5 col-md-4 col-lg-4 md:flex md:items-center">
+					<div class="col-xs-5 text-center"><span class="label label-warning"><?php echo Yii::t('app', 'Pending')?></span></div>
+					<div class="col-xs-7 text-center"><a type="button" class="btn btn-w-m btn-danger" href="<?php echo Yii::app()->params['baseUrl'] ?>/organization/deleteUserOrganization2Email?organizationID=<?php echo $data['id'] ?>&userEmail=<?php echo Yii::app()->user->username ?>"><?php echo Yii::t('app', 'Cancel Request')?></a></div>
+				</div>
+				<div class="col-xs-12">
+
+				</div>
+			</div>
+		<?php endforeach; ?>
+	</div>
 
 	<?php endif; ?>
 
