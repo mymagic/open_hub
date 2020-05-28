@@ -15,7 +15,7 @@
     <p><?php echo(nl2br($latestRelease['body'])) ?></p>
 </div>
 <div class="col col-sm-8">
-    <textarea id="textarea-output" class="border full-width" readonly style="min-height:30em; overflow-y: scroll;" data-url="<?php echo $this->createUrl('backend/doUpgrade', array('key' => Yii::app()->user->getState('keyUpgrade'), 'rand' => '1')) ?>"></textarea>
+    <textarea id="textarea-output" class="border full-width" readonly style="min-height:30em; overflow-y: scroll;" data-url="<?php echo $this->createAbsoluteUrl('backend/doUpgrade', array('key' => Yii::app()->user->getState('keyUpgrade'), 'rand' => '1')) ?>"></textarea>
 </div>
 
 <?php Yii::app()->clientScript->registerScript('openHub-backend-upgrade', '') ?>
