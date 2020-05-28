@@ -96,11 +96,13 @@ class OpenHubCommand extends ConsoleCommand
 					// extract zip
 					echo "\n\nExtracting package\n";
 					file_put_contents($pathOutput, "\n\nExtracting package\n", FILE_APPEND);
-					// $zip->extractTo($pathBase);
+					if (!Yii::app()->getModule('openHub')->isMockUpgrade) {
+						$zip->extractTo($pathBase);
+					}
 					$zip->close();
 
 					// deleted downloaded files
-					//unlink($pathZipFile);
+					unlink($pathZipFile);
 
 					// run system migration
 					echo "\n\nRun System Migration\n";

@@ -1,5 +1,7 @@
 <?php
 
+use Exiang\YsUtil\YsUtil;
+
 class BackendController extends Controller
 {
 	// customParse is for cpanelNavOrganizationInformation to pass in organization ID
@@ -44,6 +46,7 @@ class BackendController extends Controller
 	{
 		set_time_limit(0);
 
+		Yii::app()->user->setState('keyUpgrade', YsUtil::generateUUID());
 		$upgradeInfo = HubOpenHub::getUpgradeInfo();
 		$this->render(
 			'upgrade',
@@ -53,6 +56,8 @@ class BackendController extends Controller
 
 	public function actionDoUpgrade($key)
 	{
+		set_time_limit(0);
+
 		$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
 		// $pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHub-BackendController-actionUpgrade.txt';
 		$command = sprintf('php %s/yiic openhub upgrade --key=%s', $pathProtected, $key);
@@ -69,13 +74,11 @@ class BackendController extends Controller
 		header('Content-Type: text/event-stream');
 		header('Cache-Control: no-cache');
 
-		$this->echoEvent('Start!');
 		$proc = popen($command, 'r');
 		while (!feof($proc)) {
 			$this->echoEvent(fread($proc, 4096));
 		}
 		pclose($proc);
-		$this->echoEvent('Finish!');
 	}
 
 	public function echoEvent($string)

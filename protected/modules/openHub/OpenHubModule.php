@@ -12,6 +12,7 @@ class OpenHubModule extends WebModule
 	public $githubOrganization;
 	public $githubRepoName;
 	public $githubReleaseUrl;
+	public $isMockUpgrade = false;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
