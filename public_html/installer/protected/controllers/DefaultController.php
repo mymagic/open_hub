@@ -309,11 +309,6 @@ class DefaultController extends CController
 					'role_id' => '5',
 					'user_id' => $userId,
 				));
-				// sensitiveDataAdmin
-				$dbConnection->createCommand()->insert('role2user', array(
-					'role_id' => '11',
-					'user_id' => $userId,
-				));
 
 				$transaction->commit();
 			} catch (Exception $e) {
