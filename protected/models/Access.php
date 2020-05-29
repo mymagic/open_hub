@@ -76,4 +76,73 @@ class Access extends AccessBase
 			$this->addError($attributes, $errorMessage);
 		}
 	}
+
+	/**
+	 * @param string $module
+	 * @param string $controler controller file name
+	 * @param array $actions array of action
+	 * @param array $roles array of role (available roles: superAdmin, developer, admin, roleManager, adminManager, contentManager, memberManager, reportManager, ecosystem)
+	 * 
+	 * @return boolean
+	 **/ 
+	public function setAccessRole($module, $controller, $actions, $roles)
+	{
+		if(empty($controller)){
+			return false;
+		}
+
+		if(!is_array($actions)){
+			$actions = [$actions];
+		}
+
+		if(!is_array($roles)){
+			$roles = [$roles];
+		}
+
+		$controller_id = preg_replace('/controller/i', '', $controller, 1);
+		$controller_id = lcfirst($controller_id);
+
+		$actions = array_filter($actions);
+		$roles = array_filter($roles);
+
+		if(!empty($actions)){
+			foreach($actions as $action)
+			{
+				$route = [$module, $controller_id, $action];
+				$route = array_filter($route);
+				$route = implode('/', $route);
+				
+				$access_id = self::isCodeExists($route, '');
+				if($access_id===false){
+					$mAccess = new Access;
+					$mAccess->code = $route;
+					$mAccess->title = $route;
+					$mAccess->module = !empty($module) ? $module : null;
+					$mAccess->controller = $controller_id;
+					$mAccess->action = $action;
+					$mAccess->is_active = 1;
+					$mAccess->save();
+
+					$access_id = $mAccess->id;
+				}
+				
+				if(!empty($access_id) && !empty($roles)){
+					foreach($roles as $role)
+					{
+						$role_id = Role::code2id($role);
+						if(!empty($role_id)){
+							$mRole2Access = new Role2Access;
+							$mRole2Access->role_id = $role_id;
+							$mRole2Access->access_id = $access_id;
+							$mRole2Access->save();
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
