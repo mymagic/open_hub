@@ -181,7 +181,7 @@
     <div class="row">
         <div class="col-6">
         <div class="form-group">
-            <?php echo CHtml::activeLabel($model, 's3Region'); ?>
+            <?php echo CHtml::activeLabel($model, 's3Region'); ?> (<a href="https://docs.aws.amazon.com/general/latest/gr/rande.html" target="_blank">Refer list in new window</a>)
             <?php echo CHtml::activeTextField($model, 's3Region', array('class' => 'form-control', 'placeholder' => 'ap-southeast-1', 'required' => 'required')) ?>
         </div>
         </div>
