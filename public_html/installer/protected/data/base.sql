@@ -3104,7 +3104,6 @@ INSERT INTO `role` (`id`, `code`, `title`, `is_access_backend`, `is_access_sensi
 (6, 'contentManager', 'Content Manager', 1, 0, 1, 1416471576, 1416471576),
 (9, 'memberManager', 'Member Manager', 1, 0, 1, 1426070424, 1426070424),
 (10, 'reportManager', 'Report Manager', 1, 0, 1, 1428548869, 1428548869),
-(11, 'sensitiveDataAdmin', 'Sensitive Data Admin', 1, 1, 1, 1523352211, 1523352211),
 (12, 'ecosystem', 'Ecosystem', 1, 0, 1, 1538448702, 1538448702);
 
 -- --------------------------------------------------------
