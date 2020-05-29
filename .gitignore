@@ -23,3 +23,4 @@ protected/modules/twitter/vendor
 
 docs/.jekyll-cache
 _release
+protected/views/test

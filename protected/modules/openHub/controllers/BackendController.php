@@ -1,5 +1,7 @@
 <?php
 
+use Exiang\YsUtil\YsUtil;
+
 class BackendController extends Controller
 {
 	// customParse is for cpanelNavOrganizationInformation to pass in organization ID
@@ -17,7 +19,7 @@ class BackendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index', 'upgrade', 'outputUpgrade', 'doUpgrade'),
+				'actions' => array('index', 'upgrade', 'doUpgrade'),
 				'users' => array('@'),
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
@@ -43,10 +45,8 @@ class BackendController extends Controller
 	public function actionUpgrade()
 	{
 		set_time_limit(0);
-		//$key = YsUtil::generateUUID();
-		$key = '123456';
-		Yii::app()->user->setState('keyUpgrade', $key);
 
+		Yii::app()->user->setState('keyUpgrade', YsUtil::generateUUID());
 		$upgradeInfo = HubOpenHub::getUpgradeInfo();
 		$this->render(
 			'upgrade',
@@ -56,17 +56,33 @@ class BackendController extends Controller
 
 	public function actionDoUpgrade($key)
 	{
+		set_time_limit(0);
+
 		$pathProtected = dirname(Yii::getPathOfAlias('runtime'), 1);
-		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHub-BackendController-actionUpgrade.txt';
+		// $pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHub-BackendController-actionUpgrade.txt';
 		$command = sprintf('php %s/yiic openhub upgrade --key=%s', $pathProtected, $key);
-		YeeBase::runPOpen($command, $pathOutput, false);
+		//$command = sprintf('php %s/yiic openhub downloadLatestRelease', $pathProtected);
+
+		ob_end_clean();
+		if (ob_get_level() > 0) {
+			exit("That's why!" . ob_get_level());
+		}
+
+		ob_end_flush();
+		ini_set('output_buffering', '0');
+		ob_implicit_flush(true);
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+
+		$proc = popen($command, 'r');
+		while (!feof($proc)) {
+			$this->echoEvent(fread($proc, 4096));
+		}
+		pclose($proc);
 	}
 
-	public function actionOutputUpgrade($key, $rand = '')
+	public function echoEvent($string)
 	{
-		$pathOutput = Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . 'exec' . DIRECTORY_SEPARATOR . $key . '.OpenHubCommand-actionUpgrade.txt';
-		if (file_exists($pathOutput)) {
-			echo(@file_get_contents($pathOutput));
-		}
+		echo 'data: ' . implode("\ndata: ", explode("\n", $string)) . "\n\n";
 	}
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Exiang\YsUtil\YsUtil;
+
 class OpenHubCommand extends ConsoleCommand
 {
 	public $verbose = false;
@@ -7,14 +9,15 @@ class OpenHubCommand extends ConsoleCommand
 	public function actionIndex()
 	{
 		echo "Available command:\n";
-		echo "downloadLatestRelease --saveAs=/var/www/procted/runtime/download/key.openhub-latest.zip - download latest release package\n";
+		echo "downloadLatestRelease --saveAs=/var/www/open_hub/protected/runtime/download/key.openhub-latest.zip - download latest release package\n";
 		echo "upgrade --key=UUID --force=true - upgrade to latest release package\n";
 		echo "\n";
 	}
 
-	public function actionDownloadLatestRelease($saveAs)
+	public function actionDownloadLatestRelease($saveAs = '')
 	{
 		$filename = 'openhub-latest.zip';
+
 		// download from
 		$downloadFilePath = sprintf('%s/release/%s', Yii::app()->getModule('openHub')->githubReleaseUrl, $filename);
 		// save to
@@ -36,10 +39,16 @@ class OpenHubCommand extends ConsoleCommand
 
 		while (!feof($handle)) {
 			$contents .= fread($handle, 8192);
-			echo YsUtil::formatByte(strlen($contents)) . "\n";
+			$length = strlen($contents);
+			if ($length - $downloaded > 1024 * 1024) {
+				$downloaded = $length;
+				echo YsUtil::formatByte($length) . '... ';
+			}
 		}
 		fclose($handle);
 
+		echo YsUtil::formatByte($length) . "\n";
+		echo sprintf("\nWriting to '%s'...\n", $pathZipFile);
 		if (file_put_contents($pathZipFile, $contents)) {
 			echo "Download completed\n";
 		}
@@ -47,7 +56,6 @@ class OpenHubCommand extends ConsoleCommand
 
 	public function actionUpgrade($key = '', $force = false)
 	{
-		$buffer = '';
 		$filename = 'openhub-latest.zip';
 		if (empty($key)) {
 			$key = YsUtil::generateUUID();
@@ -76,44 +84,48 @@ class OpenHubCommand extends ConsoleCommand
 			file_put_contents($pathOutput, '');
 
 			// download zip and place in runtime/download
+			echo "\n\nDownload package\n";
 			file_put_contents($pathOutput, "\n\nDownload package\n", FILE_APPEND);
 			$command = sprintf('php %s/yiic openhub downloadLatestRelease --saveAs=%s', $pathProtected, $pathZipFile);
-			$result = YeeBase::runPOpen($command, $pathOutput, false);
+			$result = YeeBase::runPOpen($command, $pathOutput, false, true);
 
 			if ($result['status'] == 'success') {
 				$zip = new ZipArchive;
 				$res = $zip->open($pathZipFile);
 				if ($res === true) {
 					// extract zip
+					echo "\n\nExtracting package\n";
 					file_put_contents($pathOutput, "\n\nExtracting package\n", FILE_APPEND);
-					// $zip->extractTo($pathBase);
+					if (!Yii::app()->getModule('openHub')->isMockUpgrade) {
+						$zip->extractTo($pathBase);
+					}
 					$zip->close();
 
 					// deleted downloaded files
-					//unlink($pathZipFile);
+					unlink($pathZipFile);
 
 					// run system migration
+					echo "\n\nRun System Migration\n";
 					file_put_contents($pathOutput, "\n\nRun System Migration\n", FILE_APPEND);
 					$command = sprintf('php %s/yiic migrate up', $pathProtected);
-					$result = YeeBase::runPOpen($command, $pathOutput, false);
+					$result = YeeBase::runPOpen($command, $pathOutput, false, true);
 
 					// run languages scan to refresh translation message
+					echo "\n\nRun Language Scan to refresh translation message\n";
 					file_put_contents($pathOutput, "\n\nRun Language Scan to refresh translation message\n", FILE_APPEND);
 					$command = sprintf('php %s/yiic message %s/config/message.php', $pathProtected, $pathProtected);
-					$result = YeeBase::runPOpen($command, $pathOutput, false);
+					$result = YeeBase::runPOpen($command, $pathOutput, false, true);
 
 					// finally, output everything
+					echo "\n\nSYSTEM UPGRADED SUCCESSFULLY\n";
 					file_put_contents($pathOutput, "\n\nSYSTEM UPGRADED SUCCESSFULLY\n", FILE_APPEND);
-					$buffer = file_get_contents($pathOutput);
+					//echo file_get_contents($pathOutput);
 				} else {
-					$buffer = sprintf("Failed, code:\n", $res);
+					echo sprintf("Failed, code:\n", $res);
 				}
 			}
 		} else {
-			$buffer = 'Failed, auto update can not proceed as you had modified default directory path';
+			echo 'Failed, auto update can not proceed as you had modified default directory path';
 		}
-
-		echo $buffer;
-		exit;
 	}
 }

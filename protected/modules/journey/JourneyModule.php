@@ -296,4 +296,15 @@ class JourneyModule extends WebModule
 			),
 		);
 	}
+
+	public function getDashboardNotices($model, $realm = 'backend')
+	{
+		// check list of module required upgrade
+		$countModule2Upgrade = YeeModule::countModuleCanUpgrade();
+		if ($countModule2Upgrade > 0) {
+			$notices[] = array('message' => Yii::t('journey', '{n} module needs to upgrade now! <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>|{n} modules need to upgrade now! <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>', array($countModule2Upgrade, '{url}' => Yii::app()->createUrl('//sys/module/admin'))), 'type' => Notice_WARNING);
+		}
+
+		return $notices;
+	}
 }
