@@ -20,7 +20,7 @@ class BackendController extends Controller
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array(
-					'overview', 'syncToResource', 'syncToResourceConfirmed',
+					'overview', 'syncToEvent', 'syncToEventConfirmed',
 				),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
