@@ -96,7 +96,7 @@ class ResourceController extends Controller
 			}
 		}
 
-		if (!empty($organization_id)) {
+		if (!empty($organizationId)) {
 			$organization = Organization::model()->findByPk($organizationId);
 		}
 
@@ -185,7 +185,7 @@ class ResourceController extends Controller
 
 				$log = Yii::app()->esLog->log(sprintf("created resource '%s'", $model->title), 'resource', array('trigger' => 'ResourceController::actionCreate', 'model' => 'Resource', 'action' => 'create', 'id' => $model->id));
 
-				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organization_id' => $organization_id));
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organizationId' => $organization_id));
 			}
 
 			// clear unwanted error messages
@@ -260,7 +260,7 @@ class ResourceController extends Controller
 
 				$log = Yii::app()->esLog->log(sprintf("updated resource '%s'", $model->title), 'resource', array('trigger' => 'ResourceController::actionUpdate', 'model' => 'Resource', 'action' => 'update', 'id' => $model->id));
 
-				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organization_id' => $organization_id));
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organizationId' => $organization_id));
 			}
 		}
 
