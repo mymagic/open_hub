@@ -1,8 +1,10 @@
 {
-    "authors": [{
-        "name": "Tan Yee Siang",
-        "email": "yee.siang@mymagic.my"
-    }],
+    "authors": [
+        {
+            "name": "Tan Yee Siang",
+            "email": "yee.siang@mymagic.my"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "config": "./"
@@ -23,7 +25,8 @@
         "mixpanel/mixpanel-php": "2.*",
         "phpoffice/phpspreadsheet": "^1.2",
         "drewm/mailchimp-api": "^2.5",
-        "phpunit/phpunit-selenium": "^3",
+        "phpunit/phpunit": "~5",
+        "phpunit/phpunit-selenium": "~3",
         "willdurand/geocoder": "^3.3",
         "geoip2/geoip2": "^2.9",
         "symfony/yaml": "^3.4",
@@ -40,6 +43,7 @@
         "intervention/httpauth": "^3.0"
     },
     "require-dev": {
-        "nette/php-generator": "^3.3"
+        "nette/php-generator": "^3.3",
+        "phpunit/phpunit": "~5"
     }
 }

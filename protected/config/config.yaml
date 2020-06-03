@@ -978,6 +978,66 @@ console:
                     datatype: url
                     getter: "getenv('REQUEST_HOST_INFO')"
 
+test: 
+    title: "Test Specific"
+    groups:
+        -   key: testDatabase
+            title: "Database"
+            items:
+                -   var: test.components.db.host
+                    file: "test.php"
+                    env: TEST_DB_HOST
+                    title: Database Host
+                    hint: 
+                    example: hub.c6uoyjxtba8q.ap-southeast-1.rds.amazonaws.com
+                    default: default
+                    datatype: string
+                    datatype_value:
+                    getter:
+                -   var: test.components.db.name
+                    file: "test.php"
+                    env: TEST_DB_DATABASE
+                    title: Database Name
+                    hint: 
+                    example: open_hub
+                    default: default
+                    datatype: string
+                    datatype_value:
+                    getter:
+                -   var: test.components.db.port
+                    varInstaller: 
+                    file: test.php
+                    env: TEST_DB_PORT
+                    title: Database Port
+                    hint: 
+                    example: 3306
+                    default: 3306
+                    datatype:
+                    datatype_value:
+                    getter:
+                -   var: test.components.db.username
+                    varInstaller: 
+                    file: test.php
+                    env: TEST_DB_USERNAME
+                    title: Database Username
+                    hint: 
+                    example: user1
+                    default: default
+                    datatype: string
+                    datatype_value:
+                    getter:
+                -   var: test.components.db.password
+                    varInstaller: dbPassword
+                    file: main.php
+                    env: TEST_DB_PASSWORD
+                    title: Database Password
+                    hint: 
+                    example: 
+                    default: secret
+                    datatype: password
+                    datatype_value:
+                    getter:
+
 defaultModules: 
     title: "Default Modules"
     groups: 

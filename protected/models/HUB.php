@@ -1807,7 +1807,7 @@ class HUB extends Component
 		return Yii::app()->db->createCommand($sql)->queryScalar();
 	}
 
-	public function Encrypt($string)
+	public static function Encrypt($string)
 	{
 		try {
 			$salt = Yii::app()->params['encryptionSalt'];

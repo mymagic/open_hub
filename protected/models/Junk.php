@@ -36,13 +36,17 @@ class Junk extends JunkBase
 		);
 	}
 
-	public function createNew($code, $content = '')
+	public static function createNew($code, $content = '')
 	{
 		$junk = new Self;
 		$junk->code = $code;
 		$junk->content = $content;
 
-		return $junk->save();
+		if ($junk->save(false)) {
+			return $junk;
+		}
+
+		return false;
 	}
 
 	public function search()
