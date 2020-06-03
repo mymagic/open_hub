@@ -18,6 +18,12 @@ class JunkTest extends CDbTestCase
 		$this->assertEquals('unittest-1', $junk1->code);
 	}
 
+	public function testRenderContent()
+	{
+		$junk1 = $this->junk('junk1');
+		$this->assertNotNull($junk1->renderContent());
+	}
+
 	public function testCreate()
 	{
 		$junk = new Junk;

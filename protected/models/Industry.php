@@ -145,7 +145,7 @@ class Industry extends IndustryBase
 
 	// find a matching industry record from industry and industry_keyword table
 	// return the industry object or null if not found
-	public function searchByKeyword($keyword)
+	public static function searchByKeyword($keyword)
 	{
 		$industry = Industry::model()->find('t.title=:title AND is_active=1', array(':title' => trim($keyword)));
 		if (empty($industry)) {
