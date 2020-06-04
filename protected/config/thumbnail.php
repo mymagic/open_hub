@@ -22,6 +22,9 @@ $return = array(
 	'individual' => array(
 		'photo' => array('32x32', '80x80', '320x320'),
 	),
+	'profile' => array(
+		'avatar' => array('32x32', '80x80', '320x320'),
+	),
 	'proof' => array(
 		'value' => array('32x32', '80x80', '320x320'),
 		'datatype_value' => array('32x32', '80x80', '320x320'),

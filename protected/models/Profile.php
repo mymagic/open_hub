@@ -97,4 +97,37 @@ class Profile extends ProfileBase
 
 		return $lastname;
 	}
+
+	public function getAvatarLogoUrl()
+	{
+		return StorageHelper::getUrl($this->image_avatar);
+	}
+
+	public function getImageAvatarThumbUrl($width = 100, $height = 100)
+	{
+		return StorageHelper::getUrl(ImageHelper::thumb($width, $height, $this->image_avatar));
+	}
+
+	public function getDefaultImageAvatar()
+	{
+		return 'uploads/profile/avatar.default.jpg';
+	}
+
+	public function isDefaultImageAvatar()
+	{
+		if ($this->image_avatar == $this->getDefaultImageAvatar()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function afterFind()
+	{
+		if (empty($this->image_avatar)) {
+			$this->image_avatar = $this->getDefaultImageAvatar();
+		}
+
+		parent::afterFind();
+	}
 }
