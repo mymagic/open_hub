@@ -1,0 +1,5 @@
+<?php
+
+return array(
+	array('code' => '9990', 'event_group_code' => 'ced07464-d9c5-4981-8865-bca511e0d409', 'title' => 'Test Grill or Chill 201811', 'text_short_desc' => 'Practive your pitching at Grill or Chill 2020 Nov Edition', 'url_website' => 'http://www.mymagic.my', 'date_started' => '1541088000', 'date_ended' => '1541091600', 'is_paid_event' => false, 'genre' => null, 'funnel' => null, 'vendor' => 'manual', 'vendor_code' => '', 'at' => 'Malaysian Global Innovation & Creativity Centre (MaGIC) Persiaran Apec Cyberjaya Selangor Malaysia', 'address_country_code' => 'MY', 'address_state_code' => 'my-sgr', 'full_address' => 'Malaysian Global Innovation & Creativity Centre (MaGIC) Persiaran Apec Cyberjaya Selangor Malaysia', 'latlong_address' => '', 'email_contact' => 'community@mymagic.my', 'is_cancelled' => '0', 'is_active' => '1', 'json_original' => null, 'json_extra' => null, 'date_added' => time(), 'date_modified' => time(), 'is_survey_enabled' => '1', 'address_line1' => '3730 Persiaran Apec', 'address_line2' => 'Cyberjaya', 'address_zip' => '63000', 'address_city' => 'Cyberjaya', 'address_state' => 'Selangor'),
+);
