@@ -1,0 +1,9 @@
+code: "oS4Growth"
+version: "1.1"
+title: "OS4Growth"
+oneliner: "Serve as a template for new module to guide developer"
+lastUpdate: "2020-03-12"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"
