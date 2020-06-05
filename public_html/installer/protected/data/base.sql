@@ -97,10 +97,7 @@ VALUES
 	(50,'member/permitConfirmed','member/permitConfirmed','','member','permitConfirmed',1,1586418235,1586611228),
 	(51,'member/index','member/index','','member','index',1,1586418235,1586611228),
 	(52,'member/admin','member/admin','','member','admin',1,1586418235,1586611228),
-	(53,'sys/role/view','sys/role/view','sys','role','view',1,1586421765,1586915173);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(53,'sys/role/view','sys/role/view','sys','role','view',1,1586421765,1586915173),
 	(54,'sys/role/create','sys/role/create','sys','role','create',1,1586421765,1586915295),
 	(55,'sys/role/update','sys/role/update','sys','role','update',1,1586421765,1586915268),
 	(56,'sys/role/delete','sys/role/delete','sys','role','delete',1,1586421766,1586915180),
@@ -150,10 +147,7 @@ VALUES
 	(100,'organizationFunding/delete','organizationFunding/delete','','organizationFunding','delete',1,1586596576,1586611230),
 	(101,'organizationFunding/index','organizationFunding/index','','organizationFunding','index',1,1586596576,1586611230),
 	(102,'organizationFunding/list','organizationFunding/list','','organizationFunding','list',1,1586596576,1586611230),
-	(103,'organizationFunding/admin','organizationFunding/admin','','organizationFunding','admin',1,1586596576,1586611230);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(103,'organizationFunding/admin','organizationFunding/admin','','organizationFunding','admin',1,1586596576,1586611230),
 	(104,'organizationRevenue/view','organizationRevenue/view','','organizationRevenue','view',1,1586598180,1586611230),
 	(105,'organizationRevenue/create','organizationRevenue/create','','organizationRevenue','create',1,1586598180,1586611231),
 	(106,'organizationRevenue/update','organizationRevenue/update','','organizationRevenue','update',1,1586598180,1586611231),
@@ -203,10 +197,7 @@ VALUES
 	(150,'event/create','event/create','','event','create',1,1586614657,1586614657),
 	(151,'event/update','event/update','','event','update',1,1586614657,1586614657),
 	(152,'event/list','event/list','','event','list',1,1586614658,1586614658),
-	(153,'event/admin','event/admin','','event','admin',1,1586614658,1586614658);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(153,'event/admin','event/admin','','event','admin',1,1586614658,1586614658),
 	(154,'event/adminNoRegistration','event/adminNoRegistration','','event','adminNoRegistration',1,1586614658,1586614658),
 	(155,'event/overview','event/overview','','event','overview',1,1586614658,1586614658),
 	(156,'event/timeline','event/timeline','','event','timeline',1,1586614658,1586614658),
@@ -227,7 +218,7 @@ VALUES
 	(171,'eventRegistration/housekeeping','eventRegistration/housekeeping','','eventRegistration','housekeeping',1,1586616962,1586616962),
 	(172,'eventRegistration/housekeepingConfirmed','eventRegistration/housekeepingConfirmed','','eventRegistration','housekeepingConfirmed',1,1586616962,1586616962),
 	(173,'eventRegistration/bulkInsert','eventRegistration/bulkInsert','','eventRegistration','bulkInsert',1,1586616962,1586616962),
-	(174,'eventRegistration/bulkInsertConfirmed','eventRegistration/bulkInsertConfirmed','','eventRegistration','bulkInsertConfirmed',1,1586616962,1586616962),
+	(174,'eventRegistration/delete','eventRegistration/delete','','eventRegistration','delete',1,1586616962,1586616962),
 	(175,'eventOrganization/view','eventOrganization/view','','eventOrganization','view',1,1586617788,1586617788),
 	(176,'eventOrganization/create','eventOrganization/create','','eventOrganization','create',1,1586617788,1586617788),
 	(177,'eventOrganization/update','eventOrganization/update','','eventOrganization','update',1,1586617788,1586617788),
@@ -256,10 +247,7 @@ VALUES
 	(200,'productCategory/create','productCategory/create','','productCategory','create',1,1586619562,1586619562),
 	(201,'productCategory/update','productCategory/update','','productCategory','update',1,1586619562,1586619562),
 	(202,'productCategory/list','productCategory/list','','productCategory','list',1,1586619562,1586619562),
-	(203,'productCategory/admin','productCategory/admin','','productCategory','admin',1,1586619562,1586619562);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(203,'productCategory/admin','productCategory/admin','','productCategory','admin',1,1586619562,1586619562),
 	(204,'impact/view','impact/view','','impact','view',1,1586621133,1586621133),
 	(205,'impact/create','impact/create','','impact','create',1,1586621133,1586621133),
 	(206,'impact/update','impact/update','','impact','update',1,1586621133,1586621133),
@@ -362,10 +350,7 @@ VALUES
 	(300,'junk/index','junk/index','','junk','index',1,1586629869,1586629869),
 	(301,'junk/clear','junk/clear','','junk','clear',1,1586629869,1586629869),
 	(302,'junk/clearConfirmed','junk/clearConfirmed','','junk','clearConfirmed',1,1586629869,1586629869),
-	(303,'junk/view','junk/view','','junk','view',1,1586629869,1586629869);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(303,'junk/view','junk/view','','junk','view',1,1586629869,1586629869),
 	(304,'junk/create','junk/create','','junk','create',1,1586629869,1586629869),
 	(305,'junk/update','junk/update','','junk','update',1,1586629869,1586629869),
 	(306,'junk/delete','junk/delete','','junk','delete',1,1586629869,1586629869),
@@ -415,10 +400,7 @@ VALUES
 	(350,'f7/form/export','f7/form/export','f7','form','export',1,1586667815,1586667815),
 	(351,'f7/form/import','f7/form/import','f7','form','import',1,1586667815,1586667815),
 	(352,'f7/form/importConfirmed','f7/form/importConfirmed','f7','form','importConfirmed',1,1586667815,1586667815),
-	(353,'f7/form/builder','f7/form/builder','f7','form','builder',1,1586667815,1586667815);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(353,'f7/form/builder','f7/form/builder','f7','form','builder',1,1586667815,1586667815),
 	(354,'f7/intake/view','f7/intake/view','f7','intake','view',1,1586667815,1586667815),
 	(355,'f7/intake/create','f7/intake/create','f7','intake','create',1,1586667815,1586667815),
 	(356,'f7/intake/update','f7/intake/update','f7','intake','update',1,1586667815,1586667815),
@@ -468,10 +450,7 @@ VALUES
 	(400,'resource/geofocus/delete','resource/geofocus/delete','resource','geofocus','delete',1,1586671393,1586671393),
 	(401,'resource/geofocus/list','resource/geofocus/list','resource','geofocus','list',1,1586671393,1586671393),
 	(402,'resource/geofocus/admin','resource/geofocus/admin','resource','geofocus','admin',1,1586671393,1586671393),
-	(403,'ideabank/ideabankCampaign/view','ideabank/ideabankCampaign/view','ideabank','ideabankCampaign','view',1,1586673412,1586673412);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(403,'ideabank/ideabankCampaign/view','ideabank/ideabankCampaign/view','ideabank','ideabankCampaign','view',1,1586673412,1586673412),
 	(404,'ideabank/ideabankCampaign/create','ideabank/ideabankCampaign/create','ideabank','ideabankCampaign','create',1,1586673412,1586673412),
 	(405,'ideabank/ideabankCampaign/update','ideabank/ideabankCampaign/update','ideabank','ideabankCampaign','update',1,1586673412,1586673412),
 	(406,'ideabank/ideabankCampaign/delete','ideabank/ideabankCampaign/delete','ideabank','ideabankCampaign','delete',1,1586673412,1586673412),
@@ -521,10 +500,7 @@ VALUES
 	(450,'custom/ecosystem','Ecosystem','','custom','ecosystem',1,1586830447,1586830447),
 	(451,'journey/backend/admin','journey/backend/admin','journey','backend','admin',1,1586830926,1586830926),
 	(452,'journey/backend/search','journey/backend/search','journey','backend','search',1,1586830952,1586830952),
-	(453,'journey/backend/searchJourney','journey/backend/searchJourney','journey','backend','searchJourney',1,1586830973,1586830973);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(453,'journey/backend/searchJourney','journey/backend/searchJourney','journey','backend','searchJourney',1,1586830973,1586830973),
 	(454,'journey/backend/getEventSystemActFeed','journey/backend/getEventSystemActFeed','journey','backend','getEventSystemActFeed',1,1586830993,1586830993),
 	(455,'journey/backend/getOrganizationSystemActFeed','journey/backend/getOrganizationSystemActFeed','journey','backend','getOrganizationSystemActFeed',1,1586831013,1586831013),
 	(456,'journey/backend/getOrganizationEmailRequestSystemActFeed','journey/backend/getOrganizationEmailRequestSystemActFeed','journey','backend','getOrganizationEmailRequestSystemActFeed',1,1586831030,1586831786),
@@ -627,10 +603,7 @@ VALUES
 	(550,'idea/backend/manageEnterprise','idea/backend/manageEnterprise','idea','backend','manageEnterprise',1,1586927580,1586927580),
 	(551,'idea/backend/manageEnterpriseApplication','idea/backend/manageEnterpriseApplication','idea','backend','manageEnterpriseApplication',1,1586927635,1586927635),
 	(552,'idea/backend/manageEnterpriseAccredited','idea/backend/manageEnterpriseAccredited','idea','backend','manageEnterpriseAccredited',1,1586927662,1586927662),
-	(553,'idea/backend/upgradeEnterpriseMembership','idea/backend/upgradeEnterpriseMembership','idea','backend','upgradeEnterpriseMembership',1,1586927680,1586927680);
-
-INSERT INTO `access` (`id`, `code`, `title`, `module`, `controller`, `action`, `is_active`, `date_added`, `date_modified`)
-VALUES
+	(553,'idea/backend/upgradeEnterpriseMembership','idea/backend/upgradeEnterpriseMembership','idea','backend','upgradeEnterpriseMembership',1,1586927680,1586927680),
 	(554,'idea/backend/downgradeEnterpriseMembership','idea/backend/downgradeEnterpriseMembership','idea','backend','downgradeEnterpriseMembership',1,1586927697,1586927697),
 	(555,'idea/backend/chargeEnterpriseMembership','idea/backend/chargeEnterpriseMembership','idea','backend','chargeEnterpriseMembership',1,1586927762,1586927762),
 	(556,'idea/backend/toggleHighlightEnterprise','idea/backend/toggleHighlightEnterprise','idea','backend','toggleHighlightEnterprise',1,1586927782,1586927782),
@@ -663,7 +636,19 @@ VALUES
 	(585,'sample/sampleGroup/list','sample/sampleGroup/list','sample','sampleGroup','list',1,1586935406,1586935406),
 	(586,'sample/sampleGroup/admin','sample/sampleGroup/admin','sample','sampleGroup','admin',1,1586935406,1586935406),
 	(587,'resource/backend/overview','resource/backend/overview','resource','backend','overview',1,1587005864,1587005864),
-	(588,'insight/backend/admin','insight/backend/admin','insight','backend','admin',1,1587006855,1587006855);
+	(588,'insight/backend/admin','insight/backend/admin','insight','backend','admin',1,1587006855,1587006855),
+	(589,'sample/sample/index','sample/sample/index','sample','sample','index',1,1590726503,1590726503),
+	(590,'sample/sampleGroup/index','sample/sampleGroup/index','sample','sampleGroup','index',1,1590726504,1590726504),
+	(591,'eventOrganization/delete','eventOrganization/delete','','eventOrganization','delete',1,1591326036,1591326036),
+	(592,'collection/me/addItem2Collection','collection/me/addItem2Collection','collection','me','addItem2Collection',1,1591331774,1591331774),
+	(593,'collection/me/getCollections','collection/me/getCollections','collection','me','getCollections',1,1591331774,1591331774),
+	(594,'collection/me/deleteCollection','collection/me/deleteCollection','collection','me','deleteCollection',1,1591331774,1591331774),
+	(595,'news/backend/getNews','news/backend/getNews','news','backend','getNews',1,1591345628,1591345628),
+	(596,'sea/backend/bulkSyncIndividual','sea/backend/bulkSyncIndividual','sea','backend','bulkSyncIndividual',1,1591345970,1591345970),
+	(597,'sea/backend/bulkSyncIndividualConfirmed','sea/backend/bulkSyncIndividualConfirmed','sea','backend','bulkSyncIndividualConfirmed',1,1591345970,1591345970),
+	(598,'openHub/backend/index','openHub/backend/index','openHub','backend','index',1,1591346490,1591346490),
+	(599,'openHub/backend/upgrade','openHub/backend/upgrade','openHub','backend','upgrade',1,1591346490,1591346490),
+	(600,'openHub/backend/doUpgrade','openHub/backend/doUpgrade','openHub','backend','doUpgrade',1,1591346490,1591346490);
 
 -- --------------------------------------------------------
 
@@ -3166,19 +3151,12 @@ VALUES
 	(2,347),
 	(2,348),
 	(2,349),
-	(2,355),
-	(2,357),
-	(2,358),
-	(2,359),
 	(2,364),
 	(2,366),
 	(2,367),
 	(2,368),
 	(2,369),
-	(2,462);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(2,462),
 	(2,484),
 	(2,485),
 	(2,486),
@@ -3188,13 +3166,10 @@ VALUES
 	(2,490),
 	(2,491),
 	(2,492),
-	(3,1),
-	(3,2),
+	(2,598),
+	(2,599),
+	(2,600),
 	(3,5),
-	(3,6),
-	(3,7),
-	(3,8),
-	(3,9),
 	(3,10),
 	(3,11),
 	(3,12),
@@ -3207,11 +3182,9 @@ VALUES
 	(3,19),
 	(3,20),
 	(3,21),
-	(3,27),
-	(3,28),
-	(3,29),
-	(3,30),
-	(3,35),
+	(3,22),
+	(3,23),
+	(3,24),
 	(3,66),
 	(3,67),
 	(3,68),
@@ -3228,10 +3201,7 @@ VALUES
 	(3,79),
 	(3,80),
 	(3,81),
-	(3,82);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,82),
 	(3,83),
 	(3,85),
 	(3,86),
@@ -3252,6 +3222,12 @@ VALUES
 	(3,122),
 	(3,123),
 	(3,124),
+	(3,125),
+	(3,126),
+	(3,127),
+	(3,128),
+	(3,130),
+	(3,131),
 	(3,132),
 	(3,133),
 	(3,134),
@@ -3281,10 +3257,7 @@ VALUES
 	(3,158),
 	(3,159),
 	(3,160),
-	(3,164);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,164),
 	(3,165),
 	(3,166),
 	(3,167),
@@ -3307,6 +3280,30 @@ VALUES
 	(3,184),
 	(3,185),
 	(3,186),
+	(3,209),
+	(3,210),
+	(3,211),
+	(3,212),
+	(3,213),
+	(3,219),
+	(3,277),
+	(3,278),
+	(3,279),
+	(3,280),
+	(3,281),
+	(3,282),
+	(3,283),
+	(3,284),
+	(3,285),
+	(3,286),
+	(3,287),
+	(3,288),
+	(3,289),
+	(3,290),
+	(3,291),
+	(3,292),
+	(3,293),
+	(3,294),
 	(3,295),
 	(3,296),
 	(3,297),
@@ -3334,10 +3331,7 @@ VALUES
 	(3,337),
 	(3,338),
 	(3,339),
-	(3,340);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,340),
 	(3,341),
 	(3,342),
 	(3,343),
@@ -3364,7 +3358,10 @@ VALUES
 	(3,372),
 	(3,373),
 	(3,374),
-	(3,375),
+	(3,375);
+
+INSERT INTO `role2access` (`role_id`, `access_id`)
+VALUES
 	(3,376),
 	(3,377),
 	(3,378),
@@ -3387,10 +3384,7 @@ VALUES
 	(3,395),
 	(3,396),
 	(3,397),
-	(3,398);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,398),
 	(3,399),
 	(3,400),
 	(3,401),
@@ -3440,10 +3434,7 @@ VALUES
 	(3,445),
 	(3,446),
 	(3,447),
-	(3,448);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,448),
 	(3,451),
 	(3,452),
 	(3,453),
@@ -3493,10 +3484,7 @@ VALUES
 	(3,534),
 	(3,535),
 	(3,536),
-	(3,543);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(3,543),
 	(3,544),
 	(3,545),
 	(3,546),
@@ -3538,6 +3526,14 @@ VALUES
 	(3,586),
 	(3,587),
 	(3,588),
+	(3,589),
+	(3,591),
+	(3,592),
+	(3,593),
+	(3,594),
+	(3,595),
+	(3,596),
+	(3,597),
 	(4,31),
 	(4,32),
 	(4,33),
@@ -3546,10 +3542,7 @@ VALUES
 	(5,1),
 	(5,2),
 	(5,6),
-	(5,7);
-
-INSERT INTO `role2access` (`role_id`, `access_id`)
-VALUES
+	(5,7),
 	(5,8),
 	(5,9),
 	(5,27),
@@ -3590,7 +3583,10 @@ VALUES
 	(9,49),
 	(9,50),
 	(9,51),
-	(9,52),
+	(9,52);
+
+INSERT INTO `role2access` (`role_id`, `access_id`)
+VALUES
 	(12,15),
 	(12,66),
 	(12,71),
