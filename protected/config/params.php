@@ -7,7 +7,7 @@ return array(
 	'environment' => getenv('ENVIRONMENT', 'development'), // development|staging|production
 	'sourceCurrency' => getenv('SOURCE_CURRENCY', 'MYR'),
 	'currency' => getenv('CURRENCY', 'MYR'),
-	'languages' => envKeySplit(getenv('LANGUAGES', 'en:English;ms:Bahasa Melayu;zh:中文')),
+	'languages' => envKeySplit(getenv('LANGUAGES', 'en:English;ms:Bahasa Melayu')),
 	'frontendLanguages' => envKeySplit(getenv('FRONTEND_LANGUAGES', 'en:English;ms:Bahasa Melayu')),
 	'backendLanguages' => envKeySplit(getenv('BACKEND_LANGUAGES', 'en:English;ms:Bahasa Melayu')),
 	'autoLanguageLink' => filter_var(getenv('LANGUAGE_AUTO_LINK', false), FILTER_VALIDATE_BOOLEAN),

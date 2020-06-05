@@ -1226,6 +1226,46 @@ class HUB extends Component
 		return HubMaster::getAllActivePersonas();
 	}
 
+	public static function getOrCreatePersona($title, $params = array())
+	{
+		try {
+			$persona = Persona::getByTitle($title);
+		} catch (Exception $e) {
+			$persona = null;
+		}
+
+		if ($persona === null) {
+			$persona = self::createPersona($title, $params);
+		}
+
+		return $persona;
+	}
+
+	public static function createPersona($title, $params = array())
+	{
+		$persona = new Persona();
+		$params['title'] = $title;
+		$persona->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $persona->hasAttribute($var)) {
+				$persona->$var = $params['title'];
+			}
+			$var = 'text_short_description' . $languageKey;
+			if (empty($params[$var]) && $persona->hasAttribute($var)) {
+				$persona->$var = $params['text_short_description'];
+			}
+		}
+		if ($persona->validate() && $persona->save(false)) {
+			return $persona;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($persona->getErrors()));
+		}
+
+		return null;
+	}
+
 	public static function getAllActiveStartupStages()
 	{
 		return HubMaster::getAllActiveStartupStages();

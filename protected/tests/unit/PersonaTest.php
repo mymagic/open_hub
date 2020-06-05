@@ -40,6 +40,7 @@ class PersonaTest extends CDbTestCase
 		$retrievedRecord = Persona::model()->findByPk($persona->id);
 		$this->assertTrue($retrievedRecord instanceof Persona);
 		$this->assertEquals('Test Persona', $retrievedRecord->title);
+		$this->assertEquals('Test Persona (EN)', $retrievedRecord->title_en);
 	}
 
 	public function testUpdate()

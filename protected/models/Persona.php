@@ -99,8 +99,13 @@ class Persona extends PersonaBase
 		return $return;
 	}
 
-	public function slug2obj($slug)
+	public static function slug2obj($slug)
 	{
 		return Persona::model()->find('t.slug=:slug', array(':slug' => $slug));
+	}
+
+	public static function getByTitle($title)
+	{
+		return Persona::model()->find('t.title=:title', array(':title' => $title));
 	}
 }
