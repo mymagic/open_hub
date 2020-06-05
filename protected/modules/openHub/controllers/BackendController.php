@@ -19,7 +19,7 @@ class BackendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index', 'upgrade', 'doUpgrade'),
+				'actions' => array('index', 'upgrade', 'doUpgrade', 'loadDemoDataConfirmed'),
 				'users' => array('@'),
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
@@ -84,5 +84,18 @@ class BackendController extends Controller
 	public function echoEvent($string)
 	{
 		echo 'data: ' . implode("\ndata: ", explode("\n", $string)) . "\n\n";
+	}
+
+	public function actionLoadDemoDataConfirmed()
+	{
+		$personaCorperate = Hub::getOrCreatePersona('Corporate', array('slug' => 'corporate'));
+		$personaStartup = Hub::getOrCreatePersona('Startups', array('slug' => 'startups'));
+		$personaInvestor = Hub::getOrCreatePersona('Investor / VC', array('slug' => 'investor'));
+
+		// create organization 'TechCrunch'
+		$paramsTechcrunch['organization']['url_website'] = 'https://techcrunch.com/';
+		$paramsTechcrunch['organization']['text_short_description'] = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
+		$paramsTechcrunch['organization']['inputPersonas'] = array($personaCorperate);
+		$techcrunch = HubOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
 	}
 }

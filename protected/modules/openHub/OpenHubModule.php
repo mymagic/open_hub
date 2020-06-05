@@ -18,8 +18,6 @@ class OpenHubModule extends WebModule
 	// you may place code here to customize the module
 	public function init()
 	{
-		require_once dirname(__FILE__) . '/vendor/autoload.php';
-
 		$this->setComponents(array(
 			'request' => array(
 				'class' => 'HttpRequest',
@@ -207,7 +205,7 @@ class OpenHubModule extends WebModule
 	public function getDashboardNotices($model, $realm = 'backend')
 	{
 		$upgradeInfo = HubOpenHub::getUpgradeInfo();
-		if ($upgradeInfo['canUpgrade'] && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'backend','action'=>(object)['id'=>'upgrade'],'module'=>(object)['id'=>'openHub']])) {
+		if ($upgradeInfo['canUpgrade'] && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'upgrade'], 'module' => (object)['id' => 'openHub']])) {
 			$notices[] = array('message' => Yii::t('openHub', 'System upgrade: latest release  {versionReleased} is available. <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>', array('{versionReleased}' => $upgradeInfo['latestRelease']['tag_name'], '{url}' => Yii::app()->createUrl('//openHub/backend/upgrade'))), 'type' => Notice_WARNING);
 		}
 
