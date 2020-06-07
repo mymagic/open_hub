@@ -98,6 +98,20 @@ class BackendController extends Controller
 		$paramsTechcrunch['organization']['text_short_description'] = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
 		$paramsTechcrunch['organization']['inputPersonas'] = array($personaCorperate->id);
 		$techcrunch = HubOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
+		// resource
+		// Techcrunch Disrupt
+		//-- techcrunch-disrupt, https://techcrunch.com/events/disrupt-sf-2020/, Award, TechCrunch Disrupt is five days of non-stop online programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It's where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It's the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.
+		//-- Aspiring Entrepreneurs, Startups, Investor / VC
+		//-- Discovery, Validation, Development, Efficiency, Growth, Mature
+		//-- Competition
+		//-- Malaysia, Global
+
+		// Techcrunch
+		//-- techcrunch, 	https://techcrunch.com/, Media,TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.
+		//-- Aspiring Entrepreneurs, Startups, Investor / VC
+		//-- Discovery, Validation, Development, Efficiency, Growth, Mature
+		//-- Media
+		//-- Malaysia, Global
 
 		//
 		// create organization 'Pied Piper'
@@ -114,7 +128,7 @@ class BackendController extends Controller
 		// user access
 		$piedPiper->setOrganizationEmail('richard@piedpiper.com');
 		$piedPiper->setOrganizationEmail('dinesh@piedpiper.com');
-		$piedPiper->setOrganizationEmail('erlich@piedpiper.com');
+		$piedPiper->setOrganizationEmail('erlich@piedpiper.com', 'reject');
 		$piedPiper->setOrganizationEmail('gilfoyle@piedpiper.com', 'pending');
 		$piedPiper->setOrganizationEmail('jared@piedpiper.com', 'pending');
 		// individual
@@ -128,6 +142,15 @@ class BackendController extends Controller
 		$piedPiper->addIndividualOrganization($jared, 'cofounder', array('job_position' => 'COO'));
 		$piedPiper->addIndividualOrganization($dinesh, 'cofounder', array('job_position' => 'Lead Engineer'));
 		$piedPiper->addIndividualOrganization($erlich, 'founder', array('job_position' => 'Chief PR Officer & Chief Evangelism Officer'));
+		// product
+		// -- Pied Piper Music APP, A super app to compress music to save your cloud storage cost
+		// tags
+		//-- compression, saas
+		// fundings
+		//-- Peter Gregory Venture, 200000.00, Seed, Crunchbase, 2014 Apr 06, 24:00 AM +08:00
+		//-- Russ Hanneman, 5000000.00, Series A, crunchbase, 2015 Apr 27, 24:00 AM +08:00
+		// revenue
+		//-- 2017, 500000.00, crunchbase
 
 		//
 		// create organization 'Aviato'
@@ -160,5 +183,23 @@ class BackendController extends Controller
 		$piedPiperInc = HubOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
 		// user access
 		$piedPiperInc->setOrganizationEmail('richard@piedpiper.com');
+
+		//
+		// events
+		// TechCrunch Disrupt Hackathon
+		//-- https://techcrunch.com/events/disrupt-sf-2020/, TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It's where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It's the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.,2015 Apr 10, 24:00 AM +08:00 - 2015 Apr 10, 24:00 AM +08:00, is paid, 	San Francisco
+		//-- owner: TechCrunch (owner), Bizzabo (sponsor)
+		//-- dinesh@piedpiper.com, erlich@piedpiper.com, gilfoyle@piedpiper.com, 	richard@piedpiper.com
+		//-- Discovery, Validation, Development
+		//-- Aspiring Entrepreneurs, Startups
+		//--tags: hackathon
+
+		// RussFest
+		//-- Area 51, Nevada, This is gonna be the mother of all festivals!, https://www.russfest.net/, 2020 May 20, 24:00 AM +08:00 - 	2020 May 22, 24:00 AM +08:00, manual
+		//-- E-Commerce, Automotive, Engineering & Construction, Information & Communication
+		//-- Aspiring Entrepreneurs, Startups
+		//-- Discovery, Validation, Development, Efficiency, Growth
+		//-- dinesh@piedpiper.com, gilfoyle@piedpiper.com, jared@piedpiper.com, 	richard@piedpiper.com
+		//-- Pied Piper
 	}
 }
