@@ -4,6 +4,8 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\GraphQL;
+use GraphQL\Error\FormattedError;
+use GraphQL\Error\Debug;
 
 class TestController extends Controller
 {
@@ -25,13 +27,77 @@ class TestController extends Controller
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])',
 			),
 			array('allow',  // deny all users
-				'actions' => array('helloWorld'),
+				'actions' => array('helloWorld', 'event', 'yiiEvent'),
 				'users' => array('*'),
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
 			),
 		);
+	}
+
+	public function actionYiiEvent()
+	{
+		$tmps = Event::model()->findAllByAttributes(
+			array(
+				'is_active' => 1,
+			),
+			array(
+				'order' => 'date_started desc'
+			)
+		);
+
+		$result = array();
+		foreach ($tmps as $tmp) {
+			$result[] = $tmp->toApi();
+		}
+
+		print_r($result);
+	}
+
+	public function actionEvent()
+	{
+		$debug = false;
+		/*set_error_handler(function ($severity, $message, $file, $line) use (&$phpErrors) {
+			throw new ErrorException($message, 0, $severity, $file, $line);
+		});
+		$debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE;*/
+
+		try {
+			if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+				$raw = file_get_contents('php://input') ?: '';
+				$data = json_decode($raw, true) ?: [];
+			} else {
+				$data = $_REQUEST;
+			}
+
+			$data += ['query' => null, 'variables' => null];
+
+			if (null === $data['query']) {
+				$data['query'] = '{hello}';
+			}
+
+			$schema = new Schema([
+				'query' => Types::query()
+			]);
+
+			$result = GraphQL::executeQuery(
+				$schema,
+				$data['query'],
+				null,
+				null,
+				(array) $data['variables']
+			);
+			$output = $result->toArray($debug);
+		} catch (\Exception $e) {
+			$output = [
+				'error' => [
+					'message' => $e->getMessage()
+				]
+			];
+		}
+		header('Content-Type: application/json; charset=UTF-8');
+		echo json_encode($output);
 	}
 
 	/*
