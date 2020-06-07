@@ -281,6 +281,20 @@ class Individual extends IndividualBase
 		return false;
 	}
 
+	public function setIndividualEmail($userEmail, $isVerified = '1')
+	{
+		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+			$i2e = new Individual2Email;
+			$i2e->individual_id = $this->id;
+			$i2e->user_email = $userEmail;
+			$i2e->is_verify = $isVerified;
+
+			return $i2e->save();
+		}
+
+		return false;
+	}
+
 	//
 	public function getDefaultImagePhoto()
 	{

@@ -312,6 +312,20 @@ class Organization extends OrganizationBase
 		return false;
 	}
 
+	public function setOrganizationEmail($userEmail, $status = 'approve')
+	{
+		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+			$o2e = new Organization2Email;
+			$o2e->organization_id = $this->id;
+			$o2e->user_email = $userEmail;
+			$o2e->status = $status;
+
+			return $o2e->save();
+		}
+
+		return false;
+	}
+
 	public function code2obj($code)
 	{
 		$obj = self::model()->find('t.code=:code', array(':code' => $code));
@@ -1087,22 +1101,22 @@ class Organization extends OrganizationBase
 		return false;
 	}
 
-	public function addIndividualOrganization($individualId, $asRoleCode, $extra = '')
+	public function addIndividualOrganization($individual, $asRoleCode, $extra = '')
 	{
-		if ($this->hasNoIndividualOrganization($individualId, $asRoleCode)) {
+		if ($this->hasNoIndividualOrganization($individual->id, $asRoleCode)) {
 			$eo = new IndividualOrganization;
 			$eo->organization_code = $this->code;
 			$eo->as_role_code = $asRoleCode;
-			$eo->individual_id = $individualId;
+			$eo->individual_id = $individual->id;
 
-			if (!empty($extra) && !empty($extra['jobPosition'])) {
-				$eo->job_position = $extra['jobPosition'];
+			if (!empty($extra) && !empty($extra['job_position'])) {
+				$eo->job_position = $extra['job_position'];
 			}
-			if (!empty($extra) && !empty($extra['dateStarted'])) {
-				$eo->date_started = $extra['dateStarted'];
+			if (!empty($extra) && !empty($extra['date_started'])) {
+				$eo->date_started = $extra['date_started'];
 			}
-			if (!empty($extra) && !empty($extra['dateEnded'])) {
-				$eo->date_ended = $extra['dateEnded'];
+			if (!empty($extra) && !empty($extra['date_ended'])) {
+				$eo->date_ended = $extra['date_ended'];
 			}
 
 			return $eo->validate() && $eo->save();

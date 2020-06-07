@@ -17,6 +17,66 @@
 
 class HubIndividual
 {
+	// title is not unique
+	public static function getOrCreateIndividual($fullname, $params = array())
+	{
+		try {
+			$individual = self::getIndividualByFullname($fullname);
+		} catch (Exception $e) {
+			$individual = null;
+		}
+
+		if ($individual === null) {
+			$individual = self::createIndividual($fullname, $params);
+		} else {
+			// add individual2email
+			if (!empty($params['userEmail'])) {
+				$i2e = $individual->setIndividualEmail($params['userEmail']);
+			}
+		}
+
+		return $individual;
+	}
+
+	public static function createIndividual($fullname, $params = array())
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$individual = new Individual();
+			$individual->scenario = 'createIndividual';
+
+			$params['individual']['full_name'] = $fullname;
+			$individual->attributes = $params['individual'];
+
+			if (!empty(UploadedFile::getInstance($individual, 'imageFile_photo'))) {
+				$individual->imageFile_photo = UploadedFile::getInstance($individual, 'imageFile_photo');
+			} else {
+				$individual->image_photo = 'uploads/individual/photo.default.jpg';
+			}
+
+			if ($individual->save()) {
+				UploadManager::storeImage($individual, 'photo', $individual->tableName());
+
+				// add individual2email
+				if (!empty($params['userEmail'])) {
+					$i2e = $individual->setIndividualEmail($params['userEmail']);
+				}
+
+				$log = Yii::app()->esLog->log(sprintf("created '%s'", $individual->full_name), 'individual', array('trigger' => 'HUB::createIndividual', 'model' => 'Individual', 'action' => 'create', 'id' => $individual->id, 'individualId' => $individual->id), '', array('userEmail' => $params['userEmail']));
+
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($individual->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
+
+		return $individual;
+	}
+
 	public static function getIndividual($id)
 	{
 		$model = Individual::model()->findByPk($id);
@@ -142,13 +202,13 @@ class HubIndividual
 				}
 			}
 
-			// process individualOrganizations
-			if (!empty($source->individualOrganizations)) {
-				foreach ($source->individualOrganizations as $individualOrganization) {
+			// process individualIndividuals
+			if (!empty($source->individualIndividuals)) {
+				foreach ($source->individualIndividuals as $individualIndividual) {
 					// if no duplicate
-					if (!$individualOrganization->organization->hasIndividualOrganization($target->id, $individualOrganization->as_role_code)) {
-						$individualOrganization->individual_id = $target->id;
-						$individualOrganization->save();
+					if (!$individualIndividual->individual->hasIndividualIndividual($target->id, $individualIndividual->as_role_code)) {
+						$individualIndividual->individual_id = $target->id;
+						$individualIndividual->save();
 					}
 				}
 			}
@@ -215,20 +275,20 @@ class HubIndividual
 		return $model;
 	}
 
-	// return a link of related individual matched by emails and is not currently linked to the organization
-	public static function getRelatedEmailIndividual($organization)
+	// return a link of related individual matched by emails and is not currently linked to the individual
+	public static function getRelatedEmailIndividual($individual)
 	{
-		// get all organization2email from organization
-		foreach ($organization->organization2Emails as $organization2Email) {
+		// get all individual2email from individual
+		foreach ($individual->individual2Emails as $individual2Email) {
 			// find individual that matching these emails
-			$individuals = self::getIndividualsByEmail($organization2Email->user_email);
+			$individuals = self::getIndividualsByEmail($individual2Email->user_email);
 			if (!empty($individuals)) {
-				$result[$organization2Email->user_email] = $individuals;
+				$result[$individual2Email->user_email] = $individuals;
 			}
 		}
 
 		// exclude those that linked
-		foreach ($organization->individuals as $individual) {
+		foreach ($individual->individuals as $individual) {
 			foreach ($individual->verifiedIndividual2Emails as $individual2Email) {
 				$linkedEmails[] = $individual2Email->user_email;
 			}
@@ -251,5 +311,15 @@ class HubIndividual
 		$criteria->params[':userEmail'] = $userEmail;
 
 		return Individual::model()->findAll($criteria);
+	}
+
+	public static function getIndividualByFullname($fullname)
+	{
+		$model = Individual::model()->fullname2obj($fullname);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested individual does not exist.');
+		}
+
+		return $model;
 	}
 }
