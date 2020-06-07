@@ -29,6 +29,11 @@ class HubIndividual
 		if ($individual === null) {
 			$individual = self::createIndividual($fullname, $params);
 		} else {
+			// update attributes
+			$params['individual']['full_name'] = $fullname;
+			$individual->attributes = $params['individual'];
+			$individual->save();
+
 			// add individual2email
 			if (!empty($params['userEmail'])) {
 				$i2e = $individual->setIndividualEmail($params['userEmail']);

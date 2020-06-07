@@ -240,13 +240,13 @@ class Organization extends OrganizationBase
 		return parent::beforeSave();
 	}
 
-	public function title2obj($title)
+	public static function title2obj($title)
 	{
 		// exiang: spent 3 hrs on the single quote around title. it's important if you passing data from different collation db table columns and do compare with = (equal). Changed to LIKE for safer comparison
 		return Organization::model()->find('t.title=:title', array(':title' => trim($title)));
 	}
 
-	public function isTitleExists($title)
+	public static function isTitleExists($title)
 	{
 		$exists = self::title2obj($title);
 		if ($exists === null) {
@@ -270,11 +270,16 @@ class Organization extends OrganizationBase
 	}
 
 	// case insensitive
-	public function hasUserEmail($email)
+	// status is optional, pass in to check with percision
+	public function hasUserEmail($email, $status = '')
 	{
 		foreach ($this->organization2Emails as $item) {
 			if (strtolower($email) == strtolower($item->user_email)) {
-				return true;
+				if ($status == '') {
+					return true;
+				} elseif ($status == $item->status) {
+					return true;
+				}
 			}
 		}
 
@@ -312,6 +317,18 @@ class Organization extends OrganizationBase
 		return false;
 	}
 
+	public function getOrganizationEmail($userEmail)
+	{
+		foreach ($this->organization2Emails as $item) {
+			if ($userEmail == $item->user_email) {
+				return $item;
+			}
+		}
+
+		return false;
+	}
+
+	// pass even if the the email is not valid
 	public function setOrganizationEmail($userEmail, $status = 'approve')
 	{
 		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
@@ -320,7 +337,12 @@ class Organization extends OrganizationBase
 			$o2e->user_email = $userEmail;
 			$o2e->status = $status;
 
-			return $o2e->save();
+			return $o2e->save(false);
+		} else {
+			$o2e = $this->getOrganizationEmail($userEmail);
+			$o2e->status = $status;
+
+			return $o2e->save(false);
 		}
 
 		return false;
@@ -853,6 +875,7 @@ class Organization extends OrganizationBase
 
 	//
 	// persona
+	// persona key is id
 	public function getAllPersonasKey()
 	{
 		$return = array();

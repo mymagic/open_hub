@@ -29,6 +29,11 @@ class HubOrganization
 		if ($organization === null) {
 			$organization = self::createOrganization($title, $params);
 		} else {
+			// update attributes
+			$params['organization']['title'] = $title;
+			$organization->attributes = $params['organization'];
+			$organization->save();
+
 			// add orgnization2email
 			if (!empty($params['userEmail'])) {
 				$o2e = $organization->setIndividualEmail($params['userEmail']);

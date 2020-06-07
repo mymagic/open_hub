@@ -111,7 +111,7 @@ class Individual extends IndividualBase
 			array('image_photo', 'length', 'max' => 255),
 			array('country_code', 'length', 'max' => 2),
 			array('ic_number', 'length', 'max' => 64),
-			array('text_address_residential, tag_backend, inputPersonas', 'safe'),
+			array('text_address_residential, country_code, tag_backend, inputPersonas', 'safe'),
 			array('imageFile_photo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
