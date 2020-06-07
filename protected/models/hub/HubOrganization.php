@@ -29,7 +29,7 @@ class HubOrganization
 		if ($organization === null) {
 			$organization = self::createOrganization($title, $params);
 		} else {
-			// add individual2email
+			// add orgnization2email
 			if (!empty($params['userEmail'])) {
 				$o2e = $organization->setIndividualEmail($params['userEmail']);
 			}
@@ -63,7 +63,7 @@ class HubOrganization
 
 				// add organization2email
 				if (!empty($params['userEmail'])) {
-					$o2e = $organization->setOrganizationEmailEmail($params['userEmail']);
+					$o2e = $organization->setOrganizationEmail($params['userEmail']);
 				}
 
 				$log = Yii::app()->esLog->log(sprintf("created '%s'", $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));

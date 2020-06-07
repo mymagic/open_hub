@@ -190,14 +190,13 @@ class HubIndividual
 			}
 			$target->save();
 
-			// process individual2Emails
-			// will not merge to target if same email address already exists
-			if (!empty($source->individual2Emails)) {
-				foreach ($source->individual2Emails as $individual2Email) {
+			// process individualOrganizations
+			if (!empty($source->individualOrganizations)) {
+				foreach ($source->individualOrganizations as $individualOrganization) {
 					// if no duplicate
-					if (!$target->hasUserEmail($individual2Email->user_email)) {
-						$individual2Email->individual_id = $target->id;
-						$individual2Email->save();
+					if (!$individualOrganization->organization->hasIndividualOrganization($target->id, $individualOrganization->as_role_code)) {
+						$individualOrganization->individual_id = $target->id;
+						$individualOrganization->save();
 					}
 				}
 			}
@@ -275,20 +274,20 @@ class HubIndividual
 		return $model;
 	}
 
-	// return a link of related individual matched by emails and is not currently linked to the individual
-	public static function getRelatedEmailIndividual($individual)
+	// return a link of related individual matched by emails and is not currently linked to the organization
+	public static function getRelatedEmailIndividual($organization)
 	{
-		// get all individual2email from individual
-		foreach ($individual->individual2Emails as $individual2Email) {
+		// get all organization2email from organization
+		foreach ($organization->organization2Emails as $organization2Email) {
 			// find individual that matching these emails
-			$individuals = self::getIndividualsByEmail($individual2Email->user_email);
+			$individuals = self::getIndividualsByEmail($organization2Email->user_email);
 			if (!empty($individuals)) {
-				$result[$individual2Email->user_email] = $individuals;
+				$result[$organization2Email->user_email] = $individuals;
 			}
 		}
 
 		// exclude those that linked
-		foreach ($individual->individuals as $individual) {
+		foreach ($organization->individuals as $individual) {
 			foreach ($individual->verifiedIndividual2Emails as $individual2Email) {
 				$linkedEmails[] = $individual2Email->user_email;
 			}
