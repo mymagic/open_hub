@@ -3,17 +3,17 @@
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 
-class HUBOpenHUB
+class HubOpenHub
 {
 	public static function getLatestRelease()
 	{
 		$client = new \Github\Client();
 
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUBOpenHUB', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHUB')->githubOrganization, Yii::app()->getModule('openHUB')->githubRepoName))));
+		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHUB')->githubOrganization, Yii::app()->getModule('openHUB')->githubRepoName);
+			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
 
 			// cache for 5min
 			Yii::app()->cache->set($cacheId, $return, 300);
@@ -80,7 +80,7 @@ class HUBOpenHUB
 	public static function getUpgradeInfo()
 	{
 		$versionRunning = YeeBase::getVersionWithoutBuild();
-		$versionReleased = HUBOpenHUB::getLatestReleaseVersion();
+		$versionReleased = self::getLatestReleaseVersion();
 		$canUpgrade = Comparator::greaterThan($versionReleased, $versionRunning);
 
 		return array(
@@ -93,7 +93,7 @@ class HUBOpenHUB
 
 	public static function getUrlLatestRelease()
 	{
-		return sprintf('%s/release/openhub-latest.zip', Yii::app()->getModule('openHUB')->githubReleaseUrl);
+		return sprintf('%s/release/openhub-latest.zip', Yii::app()->getModule('openHub')->githubReleaseUrl);
 	}
 
 	public static function loadDemoData()
