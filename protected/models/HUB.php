@@ -1226,25 +1226,39 @@ class HUB extends Component
 		return HubMaster::getAllActivePersonas();
 	}
 
-	public static function getOrCreatePersona($title, $params = array())
+	public static function getOrCreatePersona($slug, $params = array())
 	{
 		try {
-			$persona = Persona::getByTitle($title);
+			$persona = Persona::getBySlug($slug);
 		} catch (Exception $e) {
 			$persona = null;
 		}
 
 		if ($persona === null) {
-			$persona = self::createPersona($title, $params);
+			$persona = self::createPersona($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$persona->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['text_short_description'];
+				}
+			}
+			$persona->save(false);
 		}
 
 		return $persona;
 	}
 
-	public static function createPersona($title, $params = array())
+	public static function createPersona($slug, $params = array())
 	{
 		$persona = new Persona();
-		$params['title'] = $title;
+		$params['slug'] = $slug;
 		$persona->setAttributes($params);
 
 		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
@@ -1269,6 +1283,60 @@ class HUB extends Component
 	public static function getAllActiveStartupStages()
 	{
 		return HubMaster::getAllActiveStartupStages();
+	}
+
+	public static function getOrCreateStartupStage($slug, $params = array())
+	{
+		try {
+			$stage = StartupStage::getBySlug($slug);
+		} catch (Exception $e) {
+			$stage = null;
+		}
+
+		if ($stage === null) {
+			$stage = self::createStartupStage($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$stage->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['text_short_description'];
+				}
+			}
+			$stage->save(false);
+		}
+
+		return $stage;
+	}
+
+	public static function createStartupStage($slug, $params = array())
+	{
+		$stage = new StartupStage();
+		$params['slug'] = $slug;
+		$stage->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['title'];
+			}
+			$var = 'text_short_description' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['text_short_description'];
+			}
+		}
+		if ($stage->validate() && $stage->save(false)) {
+			return $stage;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($stage->getErrors()));
+		}
+
+		return null;
 	}
 
 	public static function getAllActiveSdgs()

@@ -32,7 +32,7 @@ class HubOrganization
 			// update attributes
 			$params['organization']['title'] = $title;
 			$organization->attributes = $params['organization'];
-			$organization->save();
+			$organization->save(false);
 
 			// add orgnization2email
 			if (!empty($params['userEmail'])) {

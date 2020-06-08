@@ -40,6 +40,18 @@ class Event extends EventBase
 	{
 		// custom code here
 		// ...
+		if (isset($this->is_paid_event)) {
+			$this->is_paid_event = intval($this->is_paid_event);
+		}
+		if (isset($this->is_cancelled)) {
+			$this->is_cancelled = intval($this->is_cancelled);
+		}
+		if (isset($this->is_active)) {
+			$this->is_active = intval($this->is_active);
+		}
+		if (isset($this->is_survey_enabled)) {
+			$this->is_survey_enabled = intval($this->is_survey_enabled);
+		}
 
 		return parent::beforeValidate();
 	}

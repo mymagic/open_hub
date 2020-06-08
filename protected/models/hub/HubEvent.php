@@ -26,6 +26,11 @@ class HubEvent
 
 		if ($event === null) {
 			$event = self::createEvent($title, $params);
+		} else {
+			// update attributes
+			$params['event']['title'] = $title;
+			$event->attributes = $params['event'];
+			$event->save(false);
 		}
 
 		return $event;

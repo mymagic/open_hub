@@ -3,17 +3,17 @@
 use Composer\Semver\Comparator;
 use Composer\Semver\Semver;
 
-class HubOpenHub
+class HUBOpenHUB
 {
 	public static function getLatestRelease()
 	{
 		$client = new \Github\Client();
 
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
+		$cacheId = sprintf('%s::%s-%s', 'HUBOpenHUB', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHUB')->githubOrganization, Yii::app()->getModule('openHUB')->githubRepoName))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
+			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHUB')->githubOrganization, Yii::app()->getModule('openHUB')->githubRepoName);
 
 			// cache for 5min
 			Yii::app()->cache->set($cacheId, $return, 300);
@@ -80,7 +80,7 @@ class HubOpenHub
 	public static function getUpgradeInfo()
 	{
 		$versionRunning = YeeBase::getVersionWithoutBuild();
-		$versionReleased = HubOpenHub::getLatestReleaseVersion();
+		$versionReleased = HUBOpenHUB::getLatestReleaseVersion();
 		$canUpgrade = Comparator::greaterThan($versionReleased, $versionRunning);
 
 		return array(
@@ -93,21 +93,35 @@ class HubOpenHub
 
 	public static function getUrlLatestRelease()
 	{
-		return sprintf('%s/release/openhub-latest.zip', Yii::app()->getModule('openHub')->githubReleaseUrl);
+		return sprintf('%s/release/openhub-latest.zip', Yii::app()->getModule('openHUB')->githubReleaseUrl);
 	}
 
 	public static function loadDemoData()
 	{
-		$personaCorperate = Hub::getOrCreatePersona('Corporate', array('slug' => 'corporate'));
-		$personaStartup = Hub::getOrCreatePersona('Startups', array('slug' => 'startups'));
-		$personaInvestor = Hub::getOrCreatePersona('Investor / VC', array('slug' => 'investor'));
+		//
+		// persona
+		$personaAspiring = HUB::getOrCreatePersona('student', array('title' => 'Aspiring Entrepreneurs'));
+		$personaStartup = HUB::getOrCreatePersona('startups', array('title' => 'Startups'));
+		$personaSe = HUB::getOrCreatePersona('se', array('title' => 'Social Enterprise'));
+		$personaCorperate = HUB::getOrCreatePersona('corporate', array('title' => 'Corporate'));
+		$personaGovernment = HUB::getOrCreatePersona('government', array('title' => 'Government Ministry / Agencies'));
+		$personaInvestor = HUB::getOrCreatePersona('investor', array('title' => 'Investor / VC'));
+
+		//
+		// startup stages
+		$stageDiscovery = HUB::getOrCreateStartupStage('discovery', array('title' => 'Discovery', 'text_short_description' => 'At Discovery Stage, you learn about ideating your startup. You mostly spent time educating about startup and attending related events.', 'ordering' => '1'));
+		$stageValidation = HUB::getOrCreateStartupStage('validation', array('title' => 'Validation', 'text_short_description' => 'At Validation Stage, you learn about Minimum Viable Product & Prototype. You also learn about early customers & iteration.', 'ordering' => '2'));
+		$stageProductDevelopment = HUB::getOrCreateStartupStage('product_development', array('title' => 'Product Development', 'text_short_description' => 'At Product Development Stage, you works on developing the product and acquiring early user.', 'ordering' => '3'));
+		$stageEfficiency = HUB::getOrCreateStartupStage('efficiency', array('title' => 'Efficiency', 'text_short_description' => 'At Efficiency Stage, you would achieve Product / Market Fit and monetization. You focus on product marketing and user acquisition.', 'ordering' => '4'));
+		$stageGrowth = HUB::getOrCreateStartupStage('growth', array('title' => 'Growth', 'text_short_description' => 'At Growth Stage, you are expanding your market or introducing new product lines. You also focus in achieving exponential user growth.', 'ordering' => '5'));
+		$stageMature = HUB::getOrCreateStartupStage('mature', array('title' => 'Mature', 'text_short_description' => 'At Mature Stage, you achieve significant revenue and scale to global markets. You also plan for exit strategy and future growth.', 'ordering' => '6'));
 
 		//
 		// create organization 'TechCrunch'
 		$paramsTechcrunch['organization']['url_website'] = 'https://techcrunch.com/';
 		$paramsTechcrunch['organization']['text_short_description'] = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
 		$paramsTechcrunch['organization']['inputPersonas'] = array($personaCorperate->id);
-		$techcrunch = HubOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
+		$techcrunch = HUBOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
 		// resource
 		// Techcrunch Disrupt
 		//-- techcrunch-disrupt, https://techcrunch.com/events/disrupt-sf-2020/, Award, TechCrunch Disrupt is five days of non-stop online programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It's where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It's the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.
@@ -135,7 +149,7 @@ class HubOpenHub
 		But it is safe to say, we intend to deploy an integrated, multi-platform functionality of all conceivable applications of the algorithm, that we hope will make the world abetter place through compression services across diversified market segment.";
 		$paramsPiedPiper['organization']['tag_backend'] = 'compression, saas';
 		$paramsPiedPiper['organization']['inputPersonas'] = array($personaStartup->id);
-		$piedPiper = HubOrganization::getOrCreateOrganization('Pied Piper', $paramsPiedPiper);
+		$piedPiper = HUBOrganization::getOrCreateOrganization('Pied Piper', $paramsPiedPiper);
 		// user access
 		$piedPiper->setOrganizationEmail('richard@piedpiper.com');
 		$piedPiper->setOrganizationEmail('dinesh@piedpiper.com');
@@ -143,12 +157,12 @@ class HubOpenHub
 		$piedPiper->setOrganizationEmail('gilfoyle@piedpiper.com', 'pending');
 		$piedPiper->setOrganizationEmail('jared@piedpiper.com', 'pending');
 		// individual
-		$richard = HubIndividual::getOrCreateIndividual('Richard Hendricks', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'richard@piedpiper.com'));
-		$dinesh = HubIndividual::getOrCreateIndividual('Dinesh Chugtai', array('individual' => array('gender' => 'male'), 'userEmail' => 'dinesh@piedpiper.com'));
-		$jared = HubIndividual::getOrCreateIndividual('Jared Donald Dunn', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'jared@piedpiper.com'));
-		$gilfoyle = HubIndividual::getOrCreateIndividual('Bertram Gilfoyle', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
-		$erlich = HubIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@piedpiper.com'));
-		$anton = HubIndividual::getOrCreateIndividual('Son of Anton', array('individual' => array('country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
+		$richard = HUBIndividual::getOrCreateIndividual('Richard Hendricks', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'richard@piedpiper.com'));
+		$dinesh = HUBIndividual::getOrCreateIndividual('Dinesh Chugtai', array('individual' => array('gender' => 'male'), 'userEmail' => 'dinesh@piedpiper.com'));
+		$jared = HUBIndividual::getOrCreateIndividual('Jared Donald Dunn', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'jared@piedpiper.com'));
+		$gilfoyle = HUBIndividual::getOrCreateIndividual('Bertram Gilfoyle', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
+		$erlich = HUBIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@piedpiper.com'));
+		$anton = HUBIndividual::getOrCreateIndividual('Son of Anton', array('individual' => array('country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
 		$piedPiper->addIndividualOrganization($richard, 'founder', array('job_position' => 'CEO'));
 		$piedPiper->addIndividualOrganization($jared, 'cofounder', array('job_position' => 'COO'));
 		$piedPiper->addIndividualOrganization($dinesh, 'cofounder', array('job_position' => 'Lead Engineer'));
@@ -167,47 +181,46 @@ class HubOpenHub
 		$paramsAviato['organization']['url_website'] = 'http://www.aviato.com';
 		$paramsAviato['organization']['year_founded'] = '2012';
 		$paramsAviato['organization']['text_oneliner'] = 'Aviato is a software aggregation program that takes all the information from social media.';
-		$aviato = HubOrganization::getOrCreateOrganization('Aviato', $paramsAviato);
+		$aviato = HUBOrganization::getOrCreateOrganization('Aviato', $paramsAviato);
 		// user access
 		$aviato->setOrganizationEmail('erlich@piedpiper.com');
 		// individual
-		$erlich = HubIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@aviato.com'));
+		$erlich = HUBIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@aviato.com'));
 		$aviato->addIndividualOrganization($erlich, 'founder');
 
 		//
 		// create organization 'Peter Geogory Venture'
 		$paramsPeterGregoryVenture['organization']['inputPersonas'] = array($personaInvestor->id);
-		$peterGregoryVenture = HubOrganization::getOrCreateOrganization('Peter Gregory Venture', $paramsPeterGregoryVenture);
+		$peterGregoryVenture = HUBOrganization::getOrCreateOrganization('Peter Gregory Venture', $paramsPeterGregoryVenture);
 
 		//
 		// create organization 'Bizzabo'
 		$paramsBizzabo['organization']['inputPersonas'] = array($personaStartup->id);
 		$paramsBizzabo['organization']['url_website'] = 'http://www.bizzabo.com';
-		$bizzabo = HubOrganization::getOrCreateOrganization('Bizzabo', $paramsBizzabo);
+		$bizzabo = HUBOrganization::getOrCreateOrganization('Bizzabo', $paramsBizzabo);
 
 		//
 		// create organization 'Pied Piper Inc'
 		$paramsPiedPiperInc['organization']['inputPersonas'] = array($personaStartup->id);
 		$paramsPiedPiperInc['organization']['url_website'] = 'http://www.piedpiper.com/';
-		$piedPiperInc = HubOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
+		$piedPiperInc = HUBOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
 		// user access
 		$piedPiperInc->setOrganizationEmail('richard@piedpiper.com');
 
 		//
 		// events
 		// TechCrunch Disrupt Hackathon
-		//-- https://techcrunch.com/events/disrupt-sf-2020/, TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It's where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It's the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.,2015 Apr 10, 24:00 AM +08:00 - 2015 Apr 10, 24:00 AM +08:00, is paid, 	San Francisco
+		$techCrunchHackathon = HUBEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'), 'tag_backend' => 'hackathon, disrupt',
+		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
+		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id))));
 		//-- owner: TechCrunch (owner), Bizzabo (sponsor)
 		//-- dinesh@piedpiper.com, erlich@piedpiper.com, gilfoyle@piedpiper.com, 	richard@piedpiper.com
-		//-- Discovery, Validation, Development
-		//-- Aspiring Entrepreneurs, Startups
-		//--tags: hackathon
 
 		// RussFest
-		//-- Area 51, Nevada, This is gonna be the mother of all festivals!, https://www.russfest.net/, 2020 May 20, 24:00 AM +08:00 - 	2020 May 22, 24:00 AM +08:00, manual
+		$russFest = HUBEvent::getOrCreateEvent('RussFest', array('event' => array('url_website' => 'https://www.russfest.net/', 'text_short_desc' => 'This is gonna be the mother of all festivals!', 'is_paid_event' => true, 'at' => 'Area 51, Nevada', 'full_address' => '2711 US-95, Amargosa Valley, NV 89020, United States', 'date_started' => strtotime('20 May 2020 08:00:00 PDT'), 'date_ended' => strtotime('22 May 2020 00:00:00 PDT'), 'tag_backend' => 'festival, party',
+		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
+		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id))));
 		//-- E-Commerce, Automotive, Engineering & Construction, Information & Communication
-		//-- Aspiring Entrepreneurs, Startups
-		//-- Discovery, Validation, Development, Efficiency, Growth
 		//-- dinesh@piedpiper.com, gilfoyle@piedpiper.com, jared@piedpiper.com, 	richard@piedpiper.com
 		//-- Pied Piper
 	}

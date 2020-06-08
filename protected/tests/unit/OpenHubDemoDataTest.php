@@ -10,12 +10,12 @@ class OpenHubDemoDataTest extends CDbTestCase
 
 	public function testPersona()
 	{
-		// corporate
-		$personaCorperate = Persona::model()->findByAttributes(array('slug' => 'corporate'));
-		$this->assertTrue($personaCorperate instanceof Persona);
-		$this->assertEquals('Corporate', $personaCorperate->title);
-		$this->assertEquals('Corporate', $personaCorperate->title_en);
-		$this->assertEquals('1', $personaCorperate->is_active);
+		// aspiring
+		$personaAspiring = Persona::model()->findByAttributes(array('slug' => 'student'));
+		$this->assertTrue($personaAspiring instanceof Persona);
+		$this->assertEquals('Aspiring Entrepreneurs', $personaAspiring->title);
+		$this->assertEquals('Aspiring Entrepreneurs', $personaAspiring->title_en);
+		$this->assertEquals('1', $personaAspiring->is_active);
 
 		// startup
 		$personaStartup = Persona::model()->findByAttributes(array('slug' => 'startups'));
@@ -23,6 +23,27 @@ class OpenHubDemoDataTest extends CDbTestCase
 		$this->assertEquals('Startups', $personaStartup->title);
 		$this->assertEquals('Startups', $personaStartup->title_en);
 		$this->assertEquals('1', $personaStartup->is_active);
+
+		// se
+		$personaSe = Persona::model()->findByAttributes(array('slug' => 'se'));
+		$this->assertTrue($personaSe instanceof Persona);
+		$this->assertEquals('Social Enterprise', $personaSe->title);
+		$this->assertEquals('Social Enterprise', $personaSe->title_en);
+		$this->assertEquals('1', $personaSe->is_active);
+
+		// corporate
+		$personaCorperate = Persona::model()->findByAttributes(array('slug' => 'corporate'));
+		$this->assertTrue($personaCorperate instanceof Persona);
+		$this->assertEquals('Corporate', $personaCorperate->title);
+		$this->assertEquals('Corporate', $personaCorperate->title_en);
+		$this->assertEquals('1', $personaCorperate->is_active);
+
+		// government
+		$personaGovernment = Persona::model()->findByAttributes(array('slug' => 'government'));
+		$this->assertTrue($personaGovernment instanceof Persona);
+		$this->assertEquals('Government Ministry / Agencies', $personaGovernment->title);
+		$this->assertEquals('Government Ministry / Agencies', $personaGovernment->title_en);
+		$this->assertEquals('1', $personaGovernment->is_active);
 
 		// investor
 		$personaInvestor = Persona::model()->findByAttributes(array('slug' => 'investor'));

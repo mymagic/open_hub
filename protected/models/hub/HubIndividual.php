@@ -32,7 +32,7 @@ class HubIndividual
 			// update attributes
 			$params['individual']['full_name'] = $fullname;
 			$individual->attributes = $params['individual'];
-			$individual->save();
+			$individual->save(false);
 
 			// add individual2email
 			if (!empty($params['userEmail'])) {
