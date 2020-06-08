@@ -98,6 +98,8 @@ class HUBOpenHUB
 
 	public static function loadDemoData()
 	{
+		set_time_limit(0);
+
 		//
 		// persona
 		$personaAspiring = HUB::getOrCreatePersona('student', array('title' => 'Aspiring Entrepreneurs'));
@@ -117,25 +119,74 @@ class HUBOpenHUB
 		$stageMature = HUB::getOrCreateStartupStage('mature', array('title' => 'Mature', 'text_short_description' => 'At Mature Stage, you achieve significant revenue and scale to global markets. You also plan for exit strategy and future growth.', 'ordering' => '6'));
 
 		//
+		// resource master data
+		$resourceCompetition = ResourceCategory::model()->findByAttributes(array('slug' => 'award.competition'));
+		$resourceGeoFocusGlobal = ResourceGeofocus::model()->findByAttributes(array('slug' => 'global'));
+		$resourceMedia = ResourceCategory::model()->findByAttributes(array('slug' => 'media.media'));
+
+		//
 		// create organization 'TechCrunch'
 		$paramsTechcrunch['organization']['url_website'] = 'https://techcrunch.com/';
 		$paramsTechcrunch['organization']['text_short_description'] = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
 		$paramsTechcrunch['organization']['inputPersonas'] = array($personaCorperate->id);
 		$techcrunch = HUBOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
 		// resource
-		// Techcrunch Disrupt
-		//-- techcrunch-disrupt, https://techcrunch.com/events/disrupt-sf-2020/, Award, TechCrunch Disrupt is five days of non-stop online programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It's where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It's the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.
-		//-- Aspiring Entrepreneurs, Startups, Investor / VC
-		//-- Discovery, Validation, Development, Efficiency, Growth, Mature
-		//-- Competition
-		//-- Malaysia, Global
+		$techCrunchDisrupt = Resource::model()->findByAttributes(array('slug' => 'techcrunch-disrupt'));
+		if ($techCrunchDisrupt == null) {
+			$techCrunchDisrupt = new Resource;
+			$techCrunchDisrupt->slug = 'techcrunch-disrupt';
+		}
+		$techCrunchDisrupt->title = 'Techcrunch Disrupt';
+		$techCrunchDisrupt->url_website = 'https://techcrunch.com/events/disrupt-sf-2020/';
+		$techCrunchDisrupt->typefor = 'award';
+		$techCrunchDisrupt->is_active = 1;
+		$techCrunchDisrupt->html_content = 'TechCrunch Disrupt is five days of non-stop online programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.';
+		$techCrunchDisrupt->tag_backend = 'Competition';
+		$techCrunchDisrupt->inputPersonas = array($personaAspiring->id, $personaStartup->id, $personaInvestor->id);
+		$techCrunchDisrupt->inputStartupStages = array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id, $stageMature->id);
+		$techCrunchDisrupt->inputResourceCategories = array($resourceCompetition->id);
+		$techCrunchDisrupt->inputResourceGeofocuses = array($resourceGeoFocusGlobal->id);
+		$techCrunchDisrupt->inputOrganizations = array($techcrunch->id);
+		$techCrunchDisrupt->save(false);
 
 		// Techcrunch
-		//-- techcrunch, 	https://techcrunch.com/, Media,TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.
-		//-- Aspiring Entrepreneurs, Startups, Investor / VC
-		//-- Discovery, Validation, Development, Efficiency, Growth, Mature
-		//-- Media
-		//-- Malaysia, Global
+		$techCrunchMedia = Resource::model()->findByAttributes(array('slug' => 'techcrunch'));
+		if ($techCrunchMedia == null) {
+			$techCrunchMedia = new Resource;
+			$techCrunchMedia->slug = 'techcrunch';
+		}
+		$techCrunchMedia->title = 'Techcrunch Media';
+		$techCrunchMedia->url_website = 'https://techcrunch.com/';
+		$techCrunchMedia->typefor = 'media';
+		$techCrunchMedia->is_active = 1;
+		$techCrunchMedia->html_content = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
+		$techCrunchMedia->tag_backend = 'Online Media';
+		$techCrunchMedia->inputPersonas = array($personaAspiring->id, $personaStartup->id, $personaInvestor->id);
+		$techCrunchMedia->inputStartupStages = array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id, $stageMature->id);
+		$techCrunchMedia->inputResourceCategories = array($resourceMedia->id);
+		$techCrunchMedia->inputResourceGeofocuses = array($resourceGeoFocusGlobal->id);
+		$techCrunchMedia->inputOrganizations = array($techcrunch->id);
+		$techCrunchMedia->save(false);
+
+		//
+		// create organization 'Peter Gregory Venture'
+		$peterGregoryVenture = HUBOrganization::getOrCreateOrganization('Peter Gregory Venture', array('organization' => array(
+			'is_active' => 1
+		)));
+
+		//
+		// create organization 'Bizzabo'
+		$bizzabo = HUBOrganization::getOrCreateOrganization('Bizzabo', array('organization' => array(
+			'is_active' => 1,
+			'url_website' => 'http://www.bizzabo.com'
+		)));
+
+		//
+		// create organization 'Pied Piper Inc'
+		$piedPiperInc = HUBOrganization::getOrCreateOrganization('Pied Piper Inc', array('organization' => array(
+			'is_active' => 1,
+			'url_website' => 'http://www.piedpiper.com/'
+		)));
 
 		//
 		// create organization 'Pied Piper'
@@ -168,12 +219,55 @@ class HUBOpenHUB
 		$piedPiper->addIndividualOrganization($dinesh, 'cofounder', array('job_position' => 'Lead Engineer'));
 		$piedPiper->addIndividualOrganization($erlich, 'founder', array('job_position' => 'Chief PR Officer & Chief Evangelism Officer'));
 		// product
-		// -- Pied Piper Music APP, A super app to compress music to save your cloud storage cost
-		// fundings
-		//-- Peter Gregory Venture, 200000.00, Seed, Crunchbase, 2014 Apr 06, 24:00 AM +08:00
-		//-- Russ Hanneman, 5000000.00, Series A, crunchbase, 2015 Apr 27, 24:00 AM +08:00
+		$musicApp = Product::model()->findByAttributes(array('title' => 'Pied Piper Music APP', 'organization_id' => $piedPiper->id));
+		if ($musicApp == null) {
+			$musicApp = new Product;
+			$musicApp->origanization_id = $piedPiper->id;
+			$musicApp->title = 'Pied Piper Music APP';
+		}
+		$musicApp->typeof = 'product';
+		$musicApp->text_short_description = 'A super app to compress music to save your cloud storage cost';
+		$musicApp->is_active = 1;
+		$musicApp->save(false);
 		// revenue
-		//-- 2017, 500000.00, crunchbase
+		$revenue2017 = OrganizationRevenue::model()->findByAttributes(array('organization_id' => $piedPiper->id, 'year_reported' => '2017', 'amount' => '500000.00'));
+		if ($revenue2017 == null) {
+			$revenue2017 = new Product;
+			$revenue2017->origanization_id = $piedPiper->id;
+			$revenue2017->year_reported = '2017';
+			$revenue2017->amount = '500000.00';
+		}
+		$revenue2017->source = 'crunchbase';
+		$revenue2017->is_active = 1;
+		$revenue2017->save(false);
+
+		// fundings
+		$fundingRuss = OrganizationFunding::model()->findByAttributes(array('organization_id' => $piedPiper->id, 'amount' => '5000000.00', 'round_type_code' => 'seriesA'));
+		if ($fundingRuss == null) {
+			$fundingRuss = new OrganizationFunding;
+			$fundingRuss->origanization_id = $piedPiper->id;
+			$fundingRuss->amount = '500000.00';
+			$fundingRuss->round_type_code = 'seriesA';
+		}
+		$fundingRuss->vc_name = 'Russ Hanneman';
+		$fundingRuss->source = 'crunchbase';
+		$fundingRuss->date_raised = strtotime('27 April 2015');
+		$fundingRuss->is_publicized = 1;
+		$fundingRuss->save(false);
+
+		//-- Peter Gregory Venture, 200000.00, Seed, Crunchbase, 2014 Apr 06, 24:00 AM +08:00
+		$fundingPeter = OrganizationFunding::model()->findByAttributes(array('organization_id' => $piedPiper->id, 'amount' => '200000.00', 'round_type_code' => 'seed'));
+		if ($fundingPeter == null) {
+			$fundingPeter = new OrganizationFunding;
+			$fundingPeter->origanization_id = $piedPiper->id;
+			$fundingPeter->amount = '200000.00';
+			$fundingPeter->round_type_code = 'seriesA';
+		}
+		$fundingPeter->vc_organization_id = $peterGregoryVenture->id;
+		$fundingPeter->source = 'crunchbase';
+		$fundingPeter->date_raised = strtotime('06 April 2014');
+		$fundingPeter->is_publicized = 0;
+		$fundingPeter->save(false);
 
 		//
 		// create organization 'Aviato'
@@ -213,8 +307,31 @@ class HUBOpenHUB
 		$techCrunchHackathon = HUBEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'), 'tag_backend' => 'hackathon, disrupt',
 		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
 		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id))));
-		//-- owner: TechCrunch (owner), Bizzabo (sponsor)
-		//-- dinesh@piedpiper.com, erlich@piedpiper.com, gilfoyle@piedpiper.com, 	richard@piedpiper.com
+		// event_owner
+		$eoTechCrunch = EventOwner::model()->findByAttributes(array('organization_code' => $techcrunch->code, 'event_code' => $techCrunchHackathon->code, 'as_role_code' => 'owner'));
+		if ($eoTechCrunch == null) {
+			$eoTechCrunch = new EventOwner;
+			$eoTechCrunch->organization_code = $techcrunch->code;
+			$eoTechCrunch->event_code = $techCrunchHackathon->code;
+			$eoTechCrunch->as_role_code = 'owner';
+		}
+		$eoTechCrunch->save(false);
+		$eoBizzabo = EventOwner::model()->findByAttributes(array('organization_code' => $bizzabo->code, 'event_code' => $techCrunchHackathon->code, 'as_role_code' => 'sponsor'));
+		if ($eoBizzabo == null) {
+			$eoBizzabo = new EventOwner;
+			$eoBizzabo->organization_code = $techcrunch->code;
+			$eoBizzabo->event_code = $techCrunchHackathon->code;
+			$eoBizzabo->as_role_code = 'sponsor';
+		}
+		$eoBizzabo->save(false);
+		// event_registration
+		HUB::getOrCreateEventRegistration($techCrunchHackathon, 'cg36', array('email' => 'dinesh@piedpiper.com',
+		'full_name' => $dinesh->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $dinesh->country_code, 'date_registered' => strtotime('01 March 2015 09:00 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($techCrunchHackathon, 'cg34', array('email' => 'richard@piedpiper.com',
+		'full_name' => $richard->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $richard->country_code, 'date_registered' => strtotime('01 March 2015 09:00 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($techCrunchHackathon, 'cg48', array('email' => 'gilfoyle@piedpiper.com',
+		'full_name' => $gilfoyle->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $gilfoyle->country_code, 'date_registered' => strtotime('01 March 2015 09:20 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($techCrunchHackathon, 'cg49', array('email' => 'erlich@piedpiper.com', 'full_name' => $erlich->full_name, 'organization' => $piedPiper->title, 'persona' => $personaInvestor->title, 'paid_fee' => 120, 'nationality' => $erlich->country_code, 'date_registered' => strtotime('01 March 2015 09:30 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
 
 		// RussFest
 		$russFest = HUBEvent::getOrCreateEvent('RussFest', array('event' => array('url_website' => 'https://www.russfest.net/', 'text_short_desc' => 'This is gonna be the mother of all festivals!', 'is_paid_event' => true, 'at' => 'Area 51, Nevada', 'full_address' => '2711 US-95, Amargosa Valley, NV 89020, United States', 'date_started' => strtotime('20 May 2020 08:00:00 PDT'), 'date_ended' => strtotime('22 May 2020 00:00:00 PDT'), 'tag_backend' => 'festival, party',
@@ -222,6 +339,24 @@ class HUBOpenHUB
 		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id))));
 		//-- E-Commerce, Automotive, Engineering & Construction, Information & Communication
 		//-- dinesh@piedpiper.com, gilfoyle@piedpiper.com, jared@piedpiper.com, 	richard@piedpiper.com
-		//-- Pied Piper
+		// event_registration
+		HUB::getOrCreateEventRegistration($russFest, 'yt4t36', array('email' => 'dinesh@piedpiper.com',
+		'full_name' => $dinesh->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $dinesh->country_code, 'date_registered' => strtotime('02 April 2020 09:00 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($russFest, 'yt4t33', array('email' => 'richard@piedpiper.com',
+		'full_name' => $richard->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $richard->country_code, 'date_registered' => strtotime('03 April 2020 09:00 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($russFest, 'yt4t35', array('email' => 'gilfoyle@piedpiper.com',
+		'full_name' => $gilfoyle->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $gilfoyle->country_code, 'date_registered' => strtotime('04 April 2020 09:20 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		HUB::getOrCreateEventRegistration($russFest, 'yt4t34', array('email' => 'jared@piedpiper.com',
+		'full_name' => $jared->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $jared->country_code, 'date_registered' => strtotime('04 April 2020 09:30 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
+		// event_organization
+		$eorgPiedPiper = EventOrganization::model()->findByAttributes(array('organization_id' => $piedPiper->id, 'event_code' => $russFest->code, 'as_role_code' => 'provider'));
+		if ($eorgPiedPiper == null) {
+			$eorgPiedPiper = new EventOrganization;
+			$eorgPiedPiper->organization_id = $piedPiper->id;
+			$eorgPiedPiper->event_code = $russFest->code;
+			$eorgPiedPiper->as_role_code = 'provider';
+		}
+		$eorgPiedPiper->save(false);
+		// event_registration
 	}
 }

@@ -38,6 +38,10 @@ class EventRegistration extends EventRegistrationBase
 	{
 		// custom code here
 		// ...
+		if (!empty($this->event_id) && empty($this->event_code)) {
+			$event = Event::model()->findByPk($this->event_id);
+			$this->event_code = $event->code;
+		}
 
 		return parent::beforeValidate();
 	}

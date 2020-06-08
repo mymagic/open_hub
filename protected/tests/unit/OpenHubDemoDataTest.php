@@ -8,7 +8,58 @@ class OpenHubDemoDataTest extends CDbTestCase
 		parent::setUp();
 	}
 
-	public function testPersona()
+	public function testStartupStages()
+	{
+		// discovery
+		$stageDiscovery = StartupStage::model()->findByAttributes(array('slug' => 'discovery'));
+		$this->assertTrue($stageDiscovery instanceof StartupStage);
+		$this->assertEquals('Discovery', $stageDiscovery->title);
+		$this->assertEquals('Discovery', $stageDiscovery->title_en);
+		$this->assertEquals('1', $stageDiscovery->ordering);
+		$this->assertEquals('1', $stageDiscovery->is_active);
+
+		// validation
+		$stageValidation = StartupStage::model()->findByAttributes(array('slug' => 'validation'));
+		$this->assertTrue($stageValidation instanceof StartupStage);
+		$this->assertEquals('Validation', $stageValidation->title);
+		$this->assertEquals('Validation', $stageValidation->title_en);
+		$this->assertEquals('2', $stageValidation->ordering);
+		$this->assertEquals('1', $stageValidation->is_active);
+
+		// product_development
+		$stageProductDevelopment = StartupStage::model()->findByAttributes(array('slug' => 'product_development'));
+		$this->assertTrue($stageProductDevelopment instanceof StartupStage);
+		$this->assertEquals('Product Development', $stageProductDevelopment->title);
+		$this->assertEquals('Product Development', $stageProductDevelopment->title_en);
+		$this->assertEquals('3', $stageProductDevelopment->ordering);
+		$this->assertEquals('1', $stageProductDevelopment->is_active);
+
+		// efficiency
+		$stageEfficiency = StartupStage::model()->findByAttributes(array('slug' => 'efficiency'));
+		$this->assertTrue($stageEfficiency instanceof StartupStage);
+		$this->assertEquals('Efficiency', $stageEfficiency->title);
+		$this->assertEquals('Efficiency', $stageEfficiency->title_en);
+		$this->assertEquals('4', $stageEfficiency->ordering);
+		$this->assertEquals('1', $stageEfficiency->is_active);
+
+		// growth
+		$stageGrowth = StartupStage::model()->findByAttributes(array('slug' => 'growth'));
+		$this->assertTrue($stageGrowth instanceof StartupStage);
+		$this->assertEquals('Growth', $stageGrowth->title);
+		$this->assertEquals('Growth', $stageGrowth->title_en);
+		$this->assertEquals('5', $stageGrowth->ordering);
+		$this->assertEquals('1', $stageGrowth->is_active);
+
+		// mature
+		$stageMature = StartupStage::model()->findByAttributes(array('slug' => 'mature'));
+		$this->assertTrue($stageMature instanceof StartupStage);
+		$this->assertEquals('Mature', $stageMature->title);
+		$this->assertEquals('Mature', $stageMature->title_en);
+		$this->assertEquals('6', $stageMature->ordering);
+		$this->assertEquals('1', $stageMature->is_active);
+	}
+
+	public function testPersonas()
 	{
 		// aspiring
 		$personaAspiring = Persona::model()->findByAttributes(array('slug' => 'student'));
@@ -121,7 +172,16 @@ class OpenHubDemoDataTest extends CDbTestCase
 		$this->assertTrue($anton->hasUserEmail('gilfoyle@piedpiper.com'));
 
 		// product
-		// funding
+		$musicApp = Product::model()->findByAttributes(array('title' => 'Pied Piper Music APP', 'organization_id' => $piedPiper->id));
+		$this->assertTrue($musicApp instanceof Product);
+		$this->assertEquals('product', $musicApp->typeof);
+		$this->assertEquals('1', $musicApp->is_active);
+
 		// revenue
+		$revenue2017 = OrganizationRevenue::model()->findByAttributes(array('organization_id' => $piedPiper->id, 'year_reported' => '2017', 'amount' => '500000.00'));
+		$this->assertTrue($revenue2017 instanceof OrganizationRevenue);
+		$this->assertEquals('crunchbase', $revenue2017->source);
+
+		// funding
 	}
 }

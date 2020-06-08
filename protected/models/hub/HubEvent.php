@@ -14,7 +14,7 @@
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-class HubEvent
+class HubEvent extends Component
 {
 	public static function getOrCreateEvent($title, $params = array())
 	{
@@ -98,6 +98,29 @@ class HubEvent
 	public static function getEventRegistrationByID($registration_code)
 	{
 		return EventRegistration::model()->findByAttributes(array('registration_code' => $registration_code));
+	}
+
+	public static function createEventRegistration($event, $registrationCode, $params = array())
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$eventRegistration = new EventRegistration();
+			$eventRegistration->registration_code = $registrationCode;
+			$eventRegistration->event_id = $event->id;
+			$eventRegistration->attributes = $params;
+
+			if ($eventRegistration->save()) {
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($eventRegistration->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
+
+		return $eventRegistration;
 	}
 
 	public function syncEventToResource($dateStart = '', $dateEnd = '', $limit = 1000000)

@@ -80,7 +80,7 @@ class Product extends ProductBase
 		parent::afterFind();
 	}
 
-	public function toApi($params = '')
+	public function toApi($params = array())
 	{
 		$return = array(
 			'id' => $this->id,
@@ -120,7 +120,7 @@ class Product extends ProductBase
 		return StorageHelper::getUrl(ImageHelper::thumb($width, $height, $this->image_cover));
 	}
 
-	public function belongs2IdeaActiveAccreditedEnterprise()
+	/*public function belongs2IdeaActiveAccreditedEnterprise()
 	{
 		if (!$this->organization->isIdeaEnterprise()) {
 			return false;
@@ -130,7 +130,7 @@ class Product extends ProductBase
 		}
 
 		return true;
-	}
+	}*/
 
 	public function renderPrice()
 	{

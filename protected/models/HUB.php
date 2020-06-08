@@ -678,6 +678,7 @@ class HUB extends Component
 		// todo: implement cache
 		$bufferFilter = 'o.is_active=1';
 		$filters = array();
+		$tempSql = '';
 
 		$slugTitleArray = [
 			'personas' => self::getOrganizationPersonas(true),
@@ -1507,7 +1508,7 @@ class HUB extends Component
 	{
 	}
 
-	public static function sendEmail($email, $name, $title, $content, $options = '')
+	public static function sendEmail($email, $name, $title, $content, $options = array())
 	{
 		$receivers[] = array('email' => $email, 'name' => $name);
 
@@ -1549,6 +1550,27 @@ class HUB extends Component
 		$eventRegistrations = EventRegistration::model()->findAllBySql($sql);
 
 		return $eventRegistrations;
+	}
+
+	// ys: no idea why this function cant be place in HubEvent, it will output error: Call to undefined method HubEvent::getOrCreateEventRegistration()
+	public static function getOrCreateEventRegistration($event, $registrationCode, $params = array())
+	{
+		try {
+			$eventRegistration = EventRegistration::model()->findByAttributes(array('event_id' => $event->id, 'registration_code' => $registrationCode));
+		} catch (Exception $e) {
+			$eventRegistration = null;
+		}
+
+		if ($eventRegistration === null) {
+			$eventRegistration = HubEvent::createEventRegistration($event, $registrationCode, $params);
+		} else {
+			// update attributes
+			$params['registration_code'] = $registrationCode;
+			$eventRegistration->attributes = $params;
+			$eventRegistration->save(false);
+		}
+
+		return $eventRegistration;
 	}
 
 	//
