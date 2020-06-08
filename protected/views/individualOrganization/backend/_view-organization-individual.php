@@ -32,6 +32,10 @@
                 </div>
 
                 <p class="font-bold"><?php echo ucwords($individualOrganization->as_role_code) ?></p>
+
+                <?php if(!empty($individualOrganization->getDateServed())): ?>
+                <p><small><?php echo "(". $individualOrganization->getDateServed() .")"; ?></small></p>
+                <?php endif; ?>
             </div>
             <div class="ibox-content border text-center gray-bg">
                 <a class="btn btn-xs btn-primary" target="_blank" href="<?php echo $this->createUrl('individual/view', array('id' => $individualOrganization->individual->id)) ?>"><i class="fa fa-search"></i> View</a>

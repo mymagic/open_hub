@@ -156,4 +156,21 @@ class IndividualOrganization extends IndividualOrganizationBase
 
 		return $return;
 	}
+
+	public function getDateServed()
+	{
+		$return = '';
+		if(!empty($this->date_ended)){
+			$date_served = [];
+			if(!empty($this->date_started))
+			{
+				$date_served[] = Html::formatDateTime($this->date_started, 'medium', '', '');
+			}
+			$date_served[] = ucwords(Yii::t('app', 'until'));
+			$date_served[] = Html::formatDateTime($this->date_ended, 'medium', '', '');
+
+			$return = implode(' ', $date_served);
+		}
+		return $return;
+	}
 }

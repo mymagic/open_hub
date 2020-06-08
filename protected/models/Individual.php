@@ -89,6 +89,9 @@ class Individual extends IndividualBase
 			'envoyVisitors' => array(self::HAS_MANY, 'EnvoyVisitor', array('user_email' => 'visitor_email'), 'through' => 'verifiedIndividual2Emails',  'order' => 'date_signed_in DESC'),
 			'mentorSessions' => array(self::HAS_MANY, 'MentorSession', array('user_email' => 'mentee_email'), 'through' => 'verifiedIndividual2Emails',  'order' => 'mentorSessions.id DESC'),
 
+			'individualMergeSource' => array(self::HAS_ONE, 'IndividualMergeHistory', 'src_individual_id'),
+			'individualMergeDestination' => array(self::HAS_MANY, 'IndividualMergeHistory', 'dest_individual_id'),
+
 			// tags
 			'tag2Individuals' => array(self::HAS_MANY, 'Tag2Individual', 'individual_id'),
 			'tags' => array(self::HAS_MANY, 'Tag', array('tag_id' => 'id'), 'through' => 'tag2Individuals'),
@@ -463,5 +466,15 @@ class Individual extends IndividualBase
 	public function getActiveComments($limit = 100)
 	{
 		return HubComment::getActiveIndividualComments($this, $limit);
+	}
+
+	public function getHasMergeTo()
+	{
+		return !empty($this->individualMergeSource) ? true : false;
+	}
+
+	public function getBeenMergeWith()
+	{
+		return !empty($this->individualMergeDestination) ? true : false;
 	}
 }
