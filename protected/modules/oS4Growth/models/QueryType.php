@@ -82,7 +82,8 @@ class QueryType extends ObjectType
 				),
 				array(
 					'order' => 'date_started desc',
-					'offset' => $args['after']
+					'offset' => $args['after'],
+					'limit' => 100
 				)
 			);
 		} else {
@@ -91,14 +92,16 @@ class QueryType extends ObjectType
 					'is_active' => 1,
 				),
 				array(
-					'order' => 'date_started desc'
+					'order' => 'date_started desc',
+					'limit' => 100
 				)
 			);
 		}
 
 		$result = array();
+		$params['config']['mode'] = 'public';
 		foreach ($tmps as $tmp) {
-			$result[] = $tmp->toApi();
+			$result[] = $tmp->toApi($params);
 		}
 
 		return $result;

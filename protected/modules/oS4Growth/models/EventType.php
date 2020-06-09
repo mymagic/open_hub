@@ -15,7 +15,11 @@ class EventType extends ObjectType
 				return [
 					'id' => Types::id(),
 					'title' => Types::string(),
-					Types::htmlField('textShortDesc'),
+					'fDateStarted' => Types::string(),
+					'fDateEnded' => Types::string(),
+					'at' => Types::string(),
+					'urlWebsite' => Types::string(),
+					//Types::htmlField('textShortDesc'),
 					'isActive' => Types::boolean(),
 				];
 			},
