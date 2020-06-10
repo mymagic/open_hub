@@ -175,7 +175,7 @@ class ApiController extends Controller
 					'pings' => explode(',', $comment->csv_ping),
 					'creator' => $comment->creator_user_id,
 					'fullname' => $comment->creator_fullname,
-					'profile_picture_url' => $comment->url_creator_profile,
+					'profile_picture_url' => StorageHelper::getUrl($comment->url_creator_profile),
 					'created_by_admin' => self::isCreatedByAdmin($comment),
 					'created_by_current_user' => self::isCreatedByCurrentUser($comment),
 					'upvote_count' => $comment->countCommentUpvotes,

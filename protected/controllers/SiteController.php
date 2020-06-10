@@ -140,9 +140,15 @@ class SiteController extends Controller
 
 		// update connect avatar
 		if (UrlHelper::isAbsoluteUrl($userdata['avatar'])) {
-			$this->user->profile->image_avatar = $userdata['avatar'];
+			$imageAvatar = $userdata['avatar'];
 		} else {
-			$this->user->profile->image_avatar = $this->magicConnect->getConnectUrl() . '/' . $userdata['avatar'];
+			$imageAvatar = $this->magicConnect->getConnectUrl() . '/' . $userdata['avatar'];
+		}
+		
+		// if image avatar has been updated, then do not need save the avatar
+		preg_match('/uploads\/profile\/avatar.[0-9]+.jpg/',$this->user->profile->image_avatar,$matches);
+		if(empty($matches)) {
+			$this->user->profile->image_avatar = $imageAvatar;
 		}
 
 		if (!empty($this->user)) {

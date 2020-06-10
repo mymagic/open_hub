@@ -88,9 +88,10 @@ class CpanelController extends Controller
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 
-		$model = Individual::getIndividualByEmail(Yii::app()->user->username);
+		$model = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
 
-		if ($model === null) {
+		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
+		if ($modelIndividual === null) {
 			$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 			$gender = null;
 			if ($account->gender === 'M') {
@@ -99,38 +100,51 @@ class CpanelController extends Controller
 				$gender = 'female';
 			}
 			$fullname = $account->firstname . ' ' . $account->lastname;
-			$model = new Individual();
-			$model->full_name = $fullname;
-			$model->image_photo = Individual::getDefaultImagePhoto();
-			$model->gender = $gender;
-			$model->country_code = ($account->country) ? $account->country : 'null';
-			$model->save();
+			$modelIndividual = new Individual();
+			$modelIndividual->full_name = $fullname;
+			$modelIndividual->image_photo = Individual::getDefaultImagePhoto();
+			$modelIndividual->gender = $gender;
+			$modelIndividual->country_code = ($account->country) ? $account->country : NULL;
+			$modelIndividual->save();
 		}
-		if (!$model->hasUserEmail(Yii::app()->user->username)) {
+		if (!$modelIndividual->hasUserEmail(Yii::app()->user->username)) {
 			$i2o = new Individual2Email();
-			$i2o->individual_id = $model->id;
+			$i2o->individual_id = $modelIndividual->id;
 			$i2o->user_email = Yii::app()->user->username;
 			$i2o->is_verify = 1;
 			$i2o->save();
 		}
 
-		if (isset($_POST['Individual'])) {
-			$model->attributes = $_POST['Individual'];
+		if (isset($_POST['Profile'])) {
+			$model->profile->attributes = $_POST['Profile'];
 
-			if (empty($_POST['Individual']['inputPersonas'])) {
-				$model->inputPersonas = null;
+			$modelIndividual->inputPersonas = empty($_POST['Individual']['inputPersonas']) ? null : $_POST['Individual']['inputPersonas'];
+
+			$modelIndividual->full_name = $model->profile->full_name;
+			if(!empty($model->profile->gender)) { 
+				$modelIndividual->gender = $model->profile->gender; 
+			}
+			if(!empty($model->profile->country_code)) { 
+				$modelIndividual->country_code = $model->profile->country_code; 
 			}
 
-			$model->imageFile_photo = UploadedFile::getInstance($model, 'imageFile_photo');
+			$model->profile->imageFile_avatar = UploadedFile::getInstance($model->profile, 'imageFile_avatar');
+			$modelIndividual->imageFile_photo = $model->profile->imageFile_avatar;
 
-			if ($model->save()) {
-				UploadManager::storeImage($model, 'photo', $model->tableName());
-				Yii::app()->esLog->log(sprintf("updated individual '%s'", $model->full_name), 'individual', array('trigger' => 'IndividualController::actionUpdate', 'model' => 'Individual', 'action' => 'update', 'id' => $model->id, 'individualId' => $model->id));
+			if ($model->profile->save()) {
+				UploadManager::storeImage($model->profile, 'avatar', $model->profile->tableName(), '', $model->profile->user_id);
+
+				if($modelIndividual->save()) {
+					UploadManager::storeImage($modelIndividual, 'photo', $modelIndividual->tableName());
+				}
+
+				Yii::app()->esLog->log(sprintf("updated profile '%s'", $model->profile->full_name), 'profile', array('trigger' => 'CpanelController::actionProfile', 'model' => 'Profile', 'action' => 'profile', 'id' => $model->profile->user_id, 'userId' => $model->profile->user_id));
 			}
 		}
 
 		$this->render('profile', array(
 			'model' => $model,
+			'modelIndividual' => $modelIndividual
 		));
 	}
 

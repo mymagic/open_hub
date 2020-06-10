@@ -25,7 +25,7 @@ $(function() {
         return data;
     }
     $(commentContainerId).comments({
-        profilePictureURL: '<?php echo $user->profile->image_avatar ?>',
+        profilePictureURL: '<?php echo StorageHelper::getUrl($user->profile->image_avatar) ?>',
         currentUserId: <?php echo $user->id ?>,
         roundProfilePictures: true,
         textareaRows: 1,
