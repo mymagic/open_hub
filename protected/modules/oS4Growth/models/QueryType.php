@@ -79,6 +79,7 @@ class QueryType extends ObjectType
 			$tmps = Event::model()->findAllByAttributes(
 				array(
 					'is_active' => 1,
+					'is_cancelled' => 0,
 				),
 				array(
 					'order' => 'date_started desc',
@@ -90,6 +91,7 @@ class QueryType extends ObjectType
 			$tmps = Event::model()->findAllByAttributes(
 				array(
 					'is_active' => 1,
+					'is_cancelled' => 0,
 				),
 				array(
 					'order' => 'date_started desc',
