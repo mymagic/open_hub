@@ -119,6 +119,15 @@ class HubOpenHub
 		$stageMature = HUB::getOrCreateStartupStage('mature', array('title' => 'Mature', 'text_short_description' => 'At Mature Stage, you achieve significant revenue and scale to global markets. You also plan for exit strategy and future growth.', 'ordering' => '6'));
 
 		//
+		// industry
+		// E-Commerce, Automotive, Engineering & Construction, Information & Communication
+		$industryEcommerce = HUB::getOrCreateIndustry('ecommerce', array('title' => 'E-Commerce'));
+		$industryMedia = HUB::getOrCreateIndustry('media-entertainment', array('title' => 'Media and Entertainment'));
+		$industryEntertainment = HUB::getOrCreateIndustry('entertainment', array('title' => 'Entertainment'));
+		$industryAutomotive = HUB::getOrCreateIndustry('automotive', array('title' => 'Automotive'));
+		$industryIT = HUB::getOrCreateIndustry('information-communication', array('title' => 'Information & Communication'));
+
+		//
 		// resource master data
 		$resourceCompetition = ResourceCategory::model()->findByAttributes(array('slug' => 'award.competition'));
 		$resourceGeoFocusGlobal = ResourceGeofocus::model()->findByAttributes(array('slug' => 'global'));
@@ -304,9 +313,11 @@ class HubOpenHub
 		//
 		// events
 		// TechCrunch Disrupt Hackathon
-		$techCrunchHackathon = HUBEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'), 'tag_backend' => 'hackathon, disrupt',
+		$techCrunchHackathon = HUBEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'),
+		'tag_backend' => 'hackathon, disrupt',
 		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
-		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id))));
+		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id),
+		'inputIndustries' => array($industryIT->id))));
 		// event_owner
 		$eoTechCrunch = EventOwner::model()->findByAttributes(array('organization_code' => $techcrunch->code, 'event_code' => $techCrunchHackathon->code, 'as_role_code' => 'owner'));
 		if ($eoTechCrunch == null) {
@@ -336,9 +347,8 @@ class HubOpenHub
 		// RussFest
 		$russFest = HUBEvent::getOrCreateEvent('RussFest', array('event' => array('url_website' => 'https://www.russfest.net/', 'text_short_desc' => 'This is gonna be the mother of all festivals!', 'is_paid_event' => true, 'at' => 'Area 51, Nevada', 'full_address' => '2711 US-95, Amargosa Valley, NV 89020, United States', 'date_started' => strtotime('20 May 2020 08:00:00 PDT'), 'date_ended' => strtotime('22 May 2020 00:00:00 PDT'), 'tag_backend' => 'festival, party',
 		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
-		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id))));
-		//-- E-Commerce, Automotive, Engineering & Construction, Information & Communication
-		//-- dinesh@piedpiper.com, gilfoyle@piedpiper.com, jared@piedpiper.com, 	richard@piedpiper.com
+		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id),
+		'inputIndustries' => array($industryIT->id, $industryEcommerce->id, $industryAutomotive->id))));
 		// event_registration
 		HUB::getOrCreateEventRegistration($russFest, 'yt4t36', array('email' => 'dinesh@piedpiper.com',
 		'full_name' => $dinesh->full_name, 'organization' => $piedPiper->title, 'persona' => $personaAspiring->title, 'paid_fee' => 120, 'nationality' => $dinesh->country_code, 'date_registered' => strtotime('02 April 2020 09:00 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));

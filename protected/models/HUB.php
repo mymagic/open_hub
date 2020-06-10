@@ -1207,6 +1207,56 @@ class HUB extends Component
 		return HubMaster::getAllActiveIndustries();
 	}
 
+	public static function getOrCreateIndustry($slug, $params = array())
+	{
+		try {
+			$industry = Industry::getBySlug($slug);
+		} catch (Exception $e) {
+			$industry = null;
+		}
+
+		if ($industry === null) {
+			$industry = self::createIndustry($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$industry->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['text_short_description'];
+				}
+			}
+			$industry->save(false);
+		}
+
+		return $industry;
+	}
+
+	public static function createIndustry($slug, $params = array())
+	{
+		$industry = new Industry();
+		$params['slug'] = $slug;
+		$industry->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $industry->hasAttribute($var)) {
+				$industry->$var = $params['title'];
+			}
+		}
+		if ($industry->validate() && $industry->save(false)) {
+			return $industry;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($industry->getErrors()));
+		}
+
+		return null;
+	}
+
 	public static function getAllActiveProductCategories()
 	{
 		return HubMaster::getAllActiveProductCategories();
