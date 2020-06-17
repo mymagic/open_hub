@@ -88,6 +88,11 @@ class BackendController extends Controller
 
 	public function actionLoadDemoDataConfirmed()
 	{
-		HubOpenHub::loadDemoData();
+		$result = HubOpenHub::loadDemoData();
+		if ($result['status'] == 'success') {
+			Notice::page($result['msg'], Notice_SUCCESS);
+		} else {
+			Notice::page($result['msg'], Notice_ERROR);
+		}
 	}
 }

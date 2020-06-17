@@ -306,6 +306,7 @@ class HubOpenHub
 		// create organization 'Pied Piper Inc'
 		$paramsPiedPiperInc['organization']['inputPersonas'] = array($personaStartup->id);
 		$paramsPiedPiperInc['organization']['url_website'] = 'http://www.piedpiper.com/';
+		$paramsPiedPiperInc['organization']['is_active'] = true;
 		$piedPiperInc = HUBOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
 		// user access
 		$piedPiperInc->setOrganizationEmail('richard@piedpiper.com');
@@ -368,5 +369,7 @@ class HubOpenHub
 		}
 		$eorgPiedPiper->save(false);
 		// event_registration
+
+		return array('status' => 'success', 'msg' => Yii::t('openHub', 'Successfully loaded Demo data into this installation'), 'data' => array());
 	}
 }
