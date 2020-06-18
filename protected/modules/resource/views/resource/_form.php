@@ -97,7 +97,7 @@
 		</div>
 	</div>
 
-	<?php if ($realm == 'backend') : ?>
+	<?php // if ($realm == 'backend') : ?>
 		<div class="form-group <?php echo $model->hasErrors('image_logo') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelEx2($model, 'image_logo'); ?>
 			<div class="col-sm-10">
@@ -129,7 +129,7 @@
 				<?php echo $form->bsError($model, 'latlong_address'); ?>
 			</div>
 		</div>
-	<?php endif; ?>
+	<?php // endif; ?>
 
 	<div class="margin-bottom-2x">
 		<ul class="nav nav-tabs">
