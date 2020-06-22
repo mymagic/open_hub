@@ -34,7 +34,7 @@ main:
                     title: Application theme
                     example: inspinia
                     datatype: enum
-                    datatype_value: "inspinia|bootstrap3"
+                    datatype_value: "inspinia"
                     default: inspinia
                     getter: 'Yii::app()->theme->name;'
                 -   var: params.maintenance

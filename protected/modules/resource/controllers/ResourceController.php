@@ -178,7 +178,7 @@ class ResourceController extends Controller
 
 			$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
-			$model->latlong_address = null;
+			// $model->latlong_address = null;
 			// var_dump($model->validate(), $model->getErrors());
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'logo', $model->tableName());

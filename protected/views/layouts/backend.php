@@ -22,8 +22,20 @@ foreach ($modules as $moduleKey => $moduleParams) {
 ?>
 <?php Yii::app()->getClientScript()->registerCssFile('https://fonts.googleapis.com/css?family=Montserrat'); ?>
 </head>
+
+<!-- flashes -->
+<?php if (!$this->layoutParams['hideFlashes'] && Notice::hasFlashes()) : ?>
+<div class="row">
+    <div id="layout-flashNotice">
+        <?php echo Notice::renderFlashes(); ?>
+    </div>
+</div>
+<?php endif; ?>
+<!-- /flashes -->
+
 <!-- nav-main -->
-<div class="<?php echo (Yii::app()->theme->name == 'inspinia') ? 'row border-bottom white-bg' : 'container'; ?>">
+<div class="row border-bottom white-bg">
+
 	<nav class="navbar navbar-default" id="nav-main" role="navigation">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">

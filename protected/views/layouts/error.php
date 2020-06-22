@@ -5,7 +5,7 @@
 
 <?php $this->layoutParams['hideFlashes'] = false; ?>
 
-<?php if (Notice::hasFlashes()) :?>
+<?php if (!$this->layoutParams['hideFlashes'] && Notice::hasFlashes()) : ?>
 <div id="layout-flashNotice">
 	<?php echo Notice::renderFlashes() ?>
 </div>

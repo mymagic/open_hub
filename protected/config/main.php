@@ -248,7 +248,7 @@ if ($return['components']['cache']['class'] == 'CRedisCache') {
 // override
 $overrideMainFilePath = sprintf('%s/config/main.php', Yii::getPathOfAlias('overrides'));
 if (file_exists($overrideMainFilePath)) {
-	$overrideMain = include $overrideMainFilePath;
+	$overrideMain = include_once $overrideMainFilePath;
 	$return = CMap::mergeArray($return, $overrideMain);
 }
 
