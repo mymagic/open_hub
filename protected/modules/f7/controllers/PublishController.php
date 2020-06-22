@@ -76,7 +76,7 @@ class PublishController extends Controller
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 	}
 
-	public function actionIndex($slug, $eid = '')
+	public function actionIndex($slug, $eid = '', $sid = '')
 	{
 		if (empty($slug)) {
 			throw new Exception('Request is not correct');
@@ -132,6 +132,10 @@ class PublishController extends Controller
 		foreach ($uploadControls as $uploadControl => $value) {
 			$awsPath = $uploadControl . '.aws_path';
 			$session['uploadfiles'] = array($awsPath => $value);
+		}
+
+		if (!empty($model->intakes) && !empty($model->intakes[0]) && !empty($model->intakes[0]->brandCode)) {
+			$this->layoutParams['brand'] = $model->intakes[0]->brandCode;
 		}
 
 		$this->render('index', array('model' => $model, 'form' => $form));

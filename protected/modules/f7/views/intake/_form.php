@@ -114,7 +114,13 @@
 		</div>
 	</div>
 
-
+	<div class="form-group <?php echo $model->hasErrors('brandCode') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'brandCode'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextField($model, 'brandCode'); ?>
+			<?php echo $form->bsError($model, 'brandCode'); ?>
+		</div>
+	</div>
 
 
 

@@ -1,3 +1,7 @@
+## 1.3
+Added
+  - added brandCode to json_extra for Intake model
+
 ## 1.2
 Added
   - added json_event_mapping to form table to allow storing of sync instruction

@@ -7,6 +7,9 @@ class Intake extends IntakeBase
 	public $inputBackendTags;
 	public $searchBackendTags;
 
+	// json_extra
+	public $brandCode;
+
 	public static function model($class = __CLASS__)
 	{
 		return parent::model($class);
@@ -42,6 +45,7 @@ class Intake extends IntakeBase
 	{
 		// custom code here
 		// ...
+		$this->jsonArray_extra->brandCode = $this->brandCode;
 
 		return parent::beforeSave();
 	}
@@ -70,6 +74,8 @@ class Intake extends IntakeBase
 		// ...
 
 		parent::afterFind();
+
+		$this->brandCode = $this->jsonArray_extra->brandCode;
 
 		// return void
 	}
@@ -131,6 +137,8 @@ class Intake extends IntakeBase
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, code, slug, title, text_oneliner, text_short_description, image_logo, date_started, date_ended, is_active, is_highlight, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'),
+			// json_extra
+			array('brandCode', 'safe'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
