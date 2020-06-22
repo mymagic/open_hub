@@ -109,9 +109,11 @@ $this->breadcrumbs = array(
 </div>
 <?php endif; ?>
 
+<?php if (Yii::app()->getModule('resource')->allowUserAddResource): ?>
 <div class="pull-right">
   <a class="btn btn-white" href="<?php echo $this->createUrl('add')?>" target="_blank"><?php echo Yii::t('resource', 'Add New Resource') ?></a>
 </div>
+<?php endif; ?>
 
 <?php endif; ?>
                         

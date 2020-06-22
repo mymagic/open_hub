@@ -232,7 +232,9 @@ class FrontendController extends Controller
 
 	public function actionAdd($keyword = '')
 	{
-		$keyword = $_GET['keyword'];
+		if (!Yii::app()->getModule('resource')->allowUserAddResource) {
+			Notice::page(Yii::t('resource', 'User is not allow to add new resources as per setting'), Notice_INFO);
+		}
 
 		$tmps = HUB::getUserOrganizationsCanJoin($keyword, Yii::app()->user->username);
 

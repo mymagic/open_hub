@@ -87,7 +87,7 @@ $this->breadcrumbs = array(
 <?php else: ?>
 <div class="jumbotron">
   <h1><?php echo $hero->getAttrData('title'); ?></h1>
-  <img src="<?php echo $this->module->getAssetsUrl() ?>/images/med/logo-psk.png" alt="PSK" align="right" style="margin-left:1em; height:150px"/>  
+  <img src="<?php echo Yii::app()->baseUrl?>/local/brands/psk/logo-psk.png" alt="PSK" align="right" style="margin-left:1em; height:150px"/>  
   <?php echo $hero->getAttrData('html_content'); ?>
 </div>
 

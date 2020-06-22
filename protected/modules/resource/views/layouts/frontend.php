@@ -1,4 +1,4 @@
-<?php $this->layoutParams['brand'] == 'psk' ? $this->beginContent('modules.resource.views.layouts.frontend-psk') : $this->beginContent('modules.resource.views.layouts.frontend-default'); ?>
+<?php $this->beginContent('layouts.frontend'); ?>
 
 <div class="col col-lg-3 col-md-4 col-sm-5">
   <div class="content-main-left">

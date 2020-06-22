@@ -70,6 +70,7 @@ class Controller extends BaseController
 
 		$this->layoutParams['bodyClass'] = 'gray-bg';
 		$this->layoutParams['hideFlashes'] = false;
+		$this->layoutParams['brand'] = Yii::app()->params['brand'];
 
 		if (Yii::app()->params['environment'] == 'staging') {
 			// Notice::flash('This is a staging environment for testing purposes only. Data you inserted here is not persistent!', Notice_WARNING);
