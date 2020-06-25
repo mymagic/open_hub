@@ -11,7 +11,7 @@ $this->breadcrumbs = array(
 	<div class="col col-sm-9 margin-top-lg">
 		<h2><?php echo Yii::t('frontend', 'Create New Resource'); ?></h2>
 
-		<?php $this->renderPartial('application.modules.resource.views.resource._form', array('model' => $model, 'realm' => 'cpanel', 'organization' => $organization)); ?>
+		<?php $this->renderPartial('application.modules.resource.views.resource._form', array('model' => $model, 'realm' => 'cpanel', 'organization' => $organization, 'frontend' => true)); ?>
 	</div>
 
 </section>
