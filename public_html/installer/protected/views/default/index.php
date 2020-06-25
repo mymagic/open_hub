@@ -305,13 +305,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cacheHostname'); ?>
-            <?php echo CHtml::activeTextField($model, 'cacheHostname', array('class' => 'form-control', 'placeholder' => 'localhost', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'cacheHostname', array('class' => 'form-control', 'placeholder' => 'localhost')) ?>
         </div>
     </div>
     <div class="col-2">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'cachePort'); ?>
-            <?php echo CHtml::activeTextField($model, 'cachePort', array('class' => 'form-control', 'placeholder' => '6379', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'cachePort', array('class' => 'form-control', 'placeholder' => '6379')) ?>
         </div>
     </div>
     </div>
@@ -348,13 +348,13 @@
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esEndpoint'); ?>
-            <?php echo CHtml::activeTextField($model, 'esEndpoint', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esEndpoint', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esRegion'); ?>
-            <?php echo CHtml::activeTextField($model, 'esRegion', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esRegion', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     </div>
@@ -363,13 +363,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esKey'); ?>
-            <?php echo CHtml::activeTextField($model, 'esKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esKey', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'esSecret'); ?>
-            <?php echo CHtml::activeTextField($model, 'esSecret', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'esSecret', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     </div>
@@ -402,7 +402,7 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jProtocol'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jProtocol', array('class' => 'form-control', 'placeholder' => 'bolt', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jProtocol', array('class' => 'form-control', 'placeholder' => 'bolt')) ?>
         </div>
     </div>
     </div>
@@ -410,13 +410,13 @@
     <div class="col-10">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jHost'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jHost', array('class' => 'form-control', 'placeholder' => 'localhost', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jHost', array('class' => 'form-control', 'placeholder' => 'localhost')) ?>
         </div>
     </div>
     <div class="col-2">
     <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jPort'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jPort', array('class' => 'form-control', 'placeholder' => '7687', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jPort', array('class' => 'form-control', 'placeholder' => '7687')) ?>
         </div>
     </div>
     </div>
@@ -425,13 +425,13 @@
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jUsername'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jUsername', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jUsername', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 'neo4jPassword'); ?>
-            <?php echo CHtml::activeTextField($model, 'neo4jPassword', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 'neo4jPassword', array('class' => 'form-control', 'placeholder' => '')) ?>
         </div>
     </div>
     </div>
@@ -482,3 +482,19 @@
 <?php echo CHtml::endForm(); ?>
 
 <?php
+Yii::app()->clientScript->registerScript('check-form', "
+$(document).ready(function(){
+    $('[id$=_cacheEnabled]').on('change', function(){
+        $('[id$=_cacheHostname],[id$=_cachePort]').attr('required', ($(this).val()=='false' ? false : true));
+    }).trigger('change');
+
+    $('[id$=_esEnabled]').on('change', function(){
+        $('[id$=_esEndpoint],[id$=_esRegion],[id$=_esKey],[id$=_esSecret]').attr('required', ($(this).val()=='false' ? false : true));
+    }).trigger('change');
+
+    $('[id$=_neo4jEnabled]').on('change', function(){
+        $('[id$=_neo4jProtocol],[id$=_neo4jHost],[id$=_neo4jPort],[id$=_neo4jUsername],[id$=_neo4jPassword]').attr('required', ($(this).val()=='false' ? false : true));
+    }).trigger('change');
+});
+", CClientScript::POS_END);
+?>
