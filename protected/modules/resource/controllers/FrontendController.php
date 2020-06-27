@@ -393,8 +393,8 @@ class FrontendController extends Controller
 			 * since _en & _ms dont appear in the form, assigned the value from title & html_content
 			 * it is because beforeValidate assign the title with title_en and html_content with html_content_en
 			 */
-			$model->title_en = $model->title_ms = $model->title;
-			$model->html_content_en = $model->html_content_ms = $model->html_content;
+			// $model->title_en = $model->title_ms = $model->title;
+			// $model->html_content_en = $model->html_content_ms = $model->html_content;
 
 			if (!empty($organization->id)) {
 				$model->inputOrganizations = array($organization->id);

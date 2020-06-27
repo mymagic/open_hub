@@ -137,7 +137,7 @@ $return['modules'] = require dirname(__FILE__) . '/module.php';
 $modules_dir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR;
 $handle = opendir($modules_dir);
 while (false !== ($file = readdir($handle))) {
-	if ($file != '.' && $file != '..' && is_dir($modules_dir . $file)) {
+	if ($file != '.' && $file != '..' && is_dir($modules_dir . $file) && file_exists($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.php')) {
 		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'base.php'));
 		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.base.php'));
 		$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.php'));

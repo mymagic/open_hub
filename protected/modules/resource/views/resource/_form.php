@@ -131,7 +131,6 @@
 		</div>
 	<?php // endif; ?>
 
-	<?php if(!isset($frontend)): ?>
 	<div class="margin-bottom-2x">
 		<ul class="nav nav-tabs">
 
@@ -207,23 +206,6 @@
 		</div>
 		<hr />
 	</div>
-	<?php else: ?>
-	<div class="form-group <?php echo $model->hasErrors('title') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'title'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'title'); ?>
-			<?php echo $form->bsError($model, 'title'); ?>
-		</div>
-	</div>
-
-	<div class="form-group <?php echo $model->hasErrors('html_content') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'html_content'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsHtmlMiniEditor($model, 'html_content'); ?>
-			<?php echo $form->bsError($model, 'html_content'); ?>
-		</div>
-	</div>
-	<?php endif; ?>
 
 
 
@@ -292,7 +274,6 @@
 		</div>
 	<?php endif; ?>
 
-	<?php if(!isset($frontend)): ?>
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
 		<div class="col-sm-10">
@@ -300,7 +281,6 @@
 			<?php echo $form->bsError($model, 'is_active'); ?>
 		</div>
 	</div>
-	<?php endif; ?>
 
 
 	<div class="form-group">
