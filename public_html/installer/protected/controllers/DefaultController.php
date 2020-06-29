@@ -9,6 +9,8 @@ class DefaultController extends CController
 	protected $envDistFilePath;
 	protected $envFilePath;
 	protected $baseSqlFilePath;
+	protected $uploadInstallerPath;
+	protected $uploadAppPath;
 	protected $yamlParsed;
 
 	public function init()
@@ -16,6 +18,9 @@ class DefaultController extends CController
 		$this->envDistFilePath = dirname(__DIR__, 1) . '/../../../protected/dist.env';
 		$this->envFilePath = dirname(__DIR__, 1) . '/../../../protected/.env';
 		$this->baseSqlFilePath = dirname(__DIR__, 1) . '/data/base.sql';
+
+		$this->uploadInstallerPath = dirname(__DIR__, 1) . '/data/public_html/uploads/';
+		$this->uploadAppPath = dirname(__DIR__, 3) . '/uploads/';
 
 		$configYamlFilePath = dirname(__DIR__, 1) . '/../../../protected/config/config.yaml';
 		$this->yamlParsed = (extension_loaded('yaml')) ? yaml_parse_file($configYamlFilePath) : Yaml::parseFile($configYamlFilePath);
@@ -123,7 +128,7 @@ class DefaultController extends CController
 			$model->envs['ENFORCE_API_SSL'] = var_export(true, true);
 			$model->envs['JWT_SECRET'] = YsUtil::generateRandomPassword(64, 32);
 			$model->envs['SALT_SECRET'] = YsUtil::generateRandomPassword(64, 32);
-			$model->envs['STORAGE_MODE'] = 's3';
+			// $model->envs['STORAGE_MODE'] = ''; // 's3';
 			$model->envs['THUMB_MODE'] = 'pre';
 			$model->envs['S3_VERSION'] = '2006-03-01';
 			$model->envs['S3_URL_SECURE_EXPIRY_TIME'] = '+30 minutes';
@@ -317,6 +322,11 @@ class DefaultController extends CController
 			}
 		}
 
+		// if storage mode is local, copy folder with default images from folder uploads in installer to local uploads folder
+		if($envs['STORAGE_MODE']=='local'){
+			$this->copyDefaultImages();
+		}
+
 		$this->render('done', array(
 			'appName' => $envs['HUB_NAME'],
 			'adminUsername' => $envs['ADMIN_EMAIL'],
@@ -461,4 +471,60 @@ class DefaultController extends CController
 			throw new Exception("Cannot execute request to the database {$sql}: " . $mysqli->error);
 		}
 	}
+
+	/**
+	 * If STORAGE_MODE local then this function will be triggered
+	 * This function copy default images (for individual, organization, product & profile) into local uploads storage
+	 */
+	public function copyDefaultImages()
+	{
+		$folders = ['individual', 'organization', 'product', 'profile'];
+
+		$src = $this->uploadInstallerPath;
+		$dest = $this->uploadAppPath;
+
+		if(!is_dir($dest))
+		{
+			mkdir($dest, 0777, true);
+		}
+
+		foreach($folders as $folder)
+		{
+			if(file_exists($src . $folder))
+			{
+				$this->copy_directory( $src . $folder, $dest . $folder );
+
+				// create folder thumbnail
+				if(!is_dir($dest . $folder . '/thumbnail'))
+				{
+					mkdir($dest . $folder . '/thumbnail', 0777, true);
+				}
+			}
+		}
+	}
+
+	/**
+	 * copy directory recursively and items inside it
+	 */
+	public function copy_directory( $source, $destination ) {
+        if ( is_dir( $source ) ) {
+			@mkdir( $destination );
+			$directory = dir( $source );
+			while ( FALSE !== ( $readdirectory = $directory->read() ) ) {
+				if ( $readdirectory == '.' || $readdirectory == '..' ) {
+					continue;
+				}
+				$PathDir = $source . '/' . $readdirectory; 
+				if ( is_dir( $PathDir ) ) {
+					copy_directory( $PathDir, $destination . '/' . $readdirectory );
+					continue;
+				}
+				copy( $PathDir, $destination . '/' . $readdirectory );
+			}
+
+			$directory->close();
+        } else {
+        	copy( $source, $destination );
+        }
+    }
 }
