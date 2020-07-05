@@ -29,7 +29,7 @@ class Embed extends EmbedBase
 
 	public function getByCode($code, $attribute = '', $exceptionIfNotFound = false)
 	{
-		$cacheId = sprintf('setting.getByCode%s', $code);
+		$cacheId = sprintf('embed.getByCode%s', $code);
 		$model = Yii::app()->cache->get($cacheId);
 		if ($model === false) {
 			$model = Embed::model()->find('t.code=:code', array(':code' => $code));

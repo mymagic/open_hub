@@ -153,5 +153,5 @@ endif; ?>
 		<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('update', array('id' => $model->id, 'organization_id' => $organization->id, 'realm' => $realm)); ?>">Edit Resource Information <i class="fa fa-arrow-right"></i></a>
 	</div>
 <?php elseif ($realm == 'backend') : ?>
-	<?php echo $this->renderPartial('_viewBackend', array('model' => $model, 'user' => $user, 'tabs' => $tabs, 'tab' => $tab, 'organization' => $organization, 'inputOrganizations' => $inputOrganizations, 'inputIndustries' => $inputIndustries, 'inputPersonas' => $inputPersonas, 'inputStartupStages' => $inputStartupStages, 'inputResourceCategories' => $inputResourceCategories, 'inputResourceGeofocuses' => $inputResourceGeofocuses)) ?>
+	<?php echo $this->renderPartial('_viewBackend', array('model' => $model, 'user' => $user, 'tabs' => $tabs, 'tab' => $tab, 'organization' => $organization, 'actions' => $actions, 'inputOrganizations' => $inputOrganizations, 'inputIndustries' => $inputIndustries, 'inputPersonas' => $inputPersonas, 'inputStartupStages' => $inputStartupStages, 'inputResourceCategories' => $inputResourceCategories, 'inputResourceGeofocuses' => $inputResourceGeofocuses)) ?>
 <?php endif; ?>
