@@ -295,6 +295,7 @@ main:
             title: "File Storage"
             items:
                 -   var: params.storageMode
+                    varInstaller: storageMode
                     file: 
                     env: STORAGE_MODE
                     title: File Storage Mode

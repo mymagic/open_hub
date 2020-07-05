@@ -21,6 +21,7 @@ class SetupForm extends CFormModel
 	public $dbUsername;
 	public $dbPassword;
 
+	public $storageMode;
 	public $s3AccessKey;
 	public $s3SecretKey;
 	public $s3Region;
@@ -63,7 +64,7 @@ class SetupForm extends CFormModel
 	{
 		return array(
 			// name, email, subject and body are required
-			array('appName, environment, domainName, publicEmail, connectUrl, connectClientId, connectSecretKey, adminUsername, dbName, dbHost, dbPort, dbUsername, dbPassword, s3AccessKey, s3SecretKey, s3Region, s3PublicBucketName, s3PublicBucketUrl, s3SecureBucketName, s3SecureBucketUrl, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpOutgoingEmail, cacheEnabled, esEnabled, neo4jEnabled, googleMapApiKey, openExchangeRatesAppId', 'required'),
+			array('appName, environment, domainName, publicEmail, connectUrl, connectClientId, connectSecretKey, adminUsername, dbName, dbHost, dbPort, dbUsername, dbPassword, storageMode, s3AccessKey, s3SecretKey, s3Region, s3PublicBucketName, s3PublicBucketUrl, s3SecureBucketName, s3SecureBucketUrl, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpOutgoingEmail, cacheEnabled, esEnabled, neo4jEnabled, googleMapApiKey, openExchangeRatesAppId', 'required'),
 			array('connectClientId, dbPort, smtpPort', 'numerical', 'integerOnly' => true),
 			// email has to be a valid email address
 			array('publicEmail, adminUsername, smtpOutgoingEmail', 'email'),
@@ -89,6 +90,7 @@ class SetupForm extends CFormModel
 			'dbPort' => Yii::t('installer', 'Port'),
 			'dbUsername' => Yii::t('installer', 'Username'),
 			'dbPassword' => Yii::t('installer', 'Password'),
+			'storageMode' => Yii::t('installer', 'Storage Mode'),
 			's3AccessKey' => Yii::t('installer', 'Access Key'),
 			's3SecretKey' => Yii::t('installer', 'Secret Key'),
 			's3Region' => Yii::t('installer', 'S3 Region'),

@@ -11,7 +11,7 @@ class NeoEntity extends CApplicationComponent
 	public function init()
 	{
 		parent::init();
-		$this->neoClient = EntityManager::create($this->neoConnectionString);
+		$this->neoClient = ($this->getStatus()) ? EntityManager::create($this->neoConnectionString) : false;
 	}
 
 	public function getClient()

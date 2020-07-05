@@ -151,12 +151,12 @@ $return = array(
 		),
 		'esLog' => array(
 			'class' => 'application.yeebase.components.EsLog',
-			'esLogRegion' => '',
-			'enableEsLog' => true,
-			'esLogIndexCode' => 'log-default',
-			'esLogEndpoint' => '',
-			'esLogKey' => '',
-			'esLogSecret' => '',
+			'esLogRegion' => getenv('ESLOG_REGION', ''),
+			'enableEsLog' => filter_var(getenv('ESLOG_ENABLE', false), FILTER_VALIDATE_BOOLEAN),
+			'esLogIndexCode' => getenv('ESLOG_INDEX_CODE', 'log-default'),
+			'esLogEndpoint' => getenv('ESLOG_ENDPOINT', ''),
+			'esLogKey' => getenv('ESLOG_KEY', ''),
+			'esLogSecret' => getenv('ESLOG_SECRET', ''),
 			'esTestVar' => '123',
 		),
 		'neo4j' => array(

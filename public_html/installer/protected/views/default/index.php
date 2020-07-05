@@ -163,18 +163,40 @@
 
 <div class="row">
 <div class="col-8">
+    <h4>File Storage</h4>
+    <div class="row">
+    <div class="col">
+        <div class="form-group">
+            <?php echo CHtml::activeLabel($model, 'storageMode'); ?>
+            <?php echo CHtml::activeDropDownList($model, 'storageMode', array(
+				'local' => Yii::t('installer', 'Local'),
+				's3' => Yii::t('installer', 'S3'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="col-4">
+    <small class="form-text text-muted">
+        <p>We strongly recommend using AWS S3 for File Storage.</p>
+    </small>
+</div>
+</div>
+
+<div class="row" id="s3StorageDetails">
+<div class="col-8">
     <h4>S3 File Storage</h4>
     <div class="row">
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3AccessKey'); ?>
-            <?php echo CHtml::activeTextField($model, 's3AccessKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3AccessKey', array('class' => 'form-control', 'placeholder' => '', 'required' => false)) ?>
         </div>
     </div>
     <div class="col">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecretKey'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecretKey', array('class' => 'form-control', 'placeholder' => '', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecretKey', array('class' => 'form-control', 'placeholder' => '', 'required' => false)) ?>
         </div>
     </div>
     </div>
@@ -182,7 +204,7 @@
         <div class="col-6">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3Region'); ?> (<a href="https://docs.aws.amazon.com/general/latest/gr/rande.html" target="_blank">Refer list in new window</a>)
-            <?php echo CHtml::activeTextField($model, 's3Region', array('class' => 'form-control', 'placeholder' => 'ap-southeast-1', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3Region', array('class' => 'form-control', 'placeholder' => 'ap-southeast-1', 'required' => false)) ?>
         </div>
         </div>
     </div>
@@ -190,13 +212,13 @@
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3PublicBucketName'); ?>
-            <?php echo CHtml::activeTextField($model, 's3PublicBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3PublicBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub', 'required' => false)) ?>
         </div>
     </div>
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3PublicBucketUrl'); ?>
-            <?php echo CHtml::activeTextField($model, 's3PublicBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub.s3.amazonaws.com', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3PublicBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub.s3.amazonaws.com', 'required' => false)) ?>
         </div>
     </div>
     </div>
@@ -204,13 +226,13 @@
     <div class="col-4">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecureBucketName'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecureBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub-secure', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecureBucketName', array('class' => 'form-control', 'placeholder' => 'myhub-hub-secure', 'required' => false)) ?>
         </div>
     </div>
     <div class="col-8">
         <div class="form-group">
             <?php echo CHtml::activeLabel($model, 's3SecureBucketUrl'); ?>
-            <?php echo CHtml::activeTextField($model, 's3SecureBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub-secure.s3.amazonaws.com', 'required' => 'required')) ?>
+            <?php echo CHtml::activeTextField($model, 's3SecureBucketUrl', array('class' => 'form-control', 'placeholder' => 'https://myhub-hub-secure.s3.amazonaws.com', 'required' => false)) ?>
         </div>
     </div>
     </div>
@@ -218,7 +240,6 @@
 </div>
 <div class="col-4">
     <small class="form-text text-muted">
-        <p>Open Hub used AWS S3 for file storage.</p>
         <p>Base on module requirement, some user uploaded file will be store securely.</p>
     </small>
 </div>
@@ -484,16 +505,41 @@
 <?php
 Yii::app()->clientScript->registerScript('check-form', "
 $(document).ready(function(){
-    $('[id$=_cacheEnabled]').on('change', function(){
-        $('[id$=_cacheHostname],[id$=_cachePort]').attr('required', ($(this).val()=='false' ? false : true));
+    $('[id$=_storageMode]').on('change', function(){
+        if($(this).val()=='local')
+        {
+            $('#s3StorageDetails').addClass('d-none');
+            $('#s3StorageDetails').find('[id^=SetupForm_]').attr('required',false).val('');
+        }
+        else if($(this).val()=='s3')
+        {
+            $('#s3StorageDetails').removeClass('d-none');
+            $('#s3StorageDetails').find('[id^=SetupForm_]').attr('required',true);
+        }
+    }).trigger('change');
+
+    $('[id$=_cacheDriver]').on('change', function(){
+        $('[id$=_cacheHostname],[id$=_cachePort]').attr('required', ($(this).val()=='CRedisCache' ? true : false));
+        if($(this).val()!='CRedisCache')
+        {
+            $('[id$=_cacheHostname],[id$=_cachePort]').val('');
+        }
     }).trigger('change');
 
     $('[id$=_esEnabled]').on('change', function(){
-        $('[id$=_esEndpoint],[id$=_esRegion],[id$=_esKey],[id$=_esSecret]').attr('required', ($(this).val()=='false' ? false : true));
+        $('[id$=_esEndpoint], [id$=_esRegion], [id$=_esKey], [id$=_esSecret]').attr('required', ($(this).val()=='false' ? false : true));
+        if($(this).val()=='false')
+        {
+            $('[id$=_esEndpoint], [id$=_esRegion], [id$=_esKey], [id$=_esSecret]').val('');
+        }
     }).trigger('change');
 
     $('[id$=_neo4jEnabled]').on('change', function(){
-        $('[id$=_neo4jProtocol],[id$=_neo4jHost],[id$=_neo4jPort],[id$=_neo4jUsername],[id$=_neo4jPassword]').attr('required', ($(this).val()=='false' ? false : true));
+        $('[id$=_neo4jProtocol], [id$=_neo4jHost], [id$=_neo4jPort], [id$=_neo4jUsername], [id$=_neo4jPassword]').attr('required', ($(this).val()=='false' ? false : true));
+        if($(this).val()=='false')
+        {
+            $('[id$=_neo4jProtocol], [id$=_neo4jHost], [id$=_neo4jPort], [id$=_neo4jUsername], [id$=_neo4jPassword]').val('');
+        }
     }).trigger('change');
 });
 ", CClientScript::POS_END);
