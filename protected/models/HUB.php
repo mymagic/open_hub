@@ -1527,6 +1527,8 @@ class HUB extends Component
 		$notify->message = $jsonPayload->msg;
 		$notify->jsonArray_payload = $jsonPayload;
 
+		// sendBehalfName and sendBehalfEmail
+
 		// send sms
 		if ($notify->hasSms) {
 			$tmp = self::sendSms($notify->receiverMobileNo, $jsonPayload->msg);
@@ -1568,7 +1570,7 @@ class HUB extends Component
 			}
 		}
 
-		return ysUtil::sendMail($receivers, $title, $content);
+		return ysUtil::sendMail($receivers, $title, $content, $options);
 	}
 
 	//

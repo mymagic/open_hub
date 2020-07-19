@@ -77,7 +77,7 @@
  		return array(
 			array('code, is_title_enabled, is_text_description_enabled, is_html_content_enabled, is_image_main_enabled, is_default', 'required'),
 			array('is_title_enabled, is_text_description_enabled, is_html_content_enabled, is_image_main_enabled, is_default, date_added, date_modified', 'numerical', 'integerOnly' => true),
-			array('code', 'length', 'max' => 32),
+			array('code', 'length', 'max' => 128),
 			array('title_en, title_ms, title_zh, image_main_en, image_main_ms, image_main_zh', 'length', 'max' => 255),
 			array('text_description_en, text_description_ms, text_description_zh, html_content_en, html_content_ms, html_content_zh, text_note', 'safe'),
 			array('imageFile_main_en, imageFile_main_ms, imageFile_main_zh', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),

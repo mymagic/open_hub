@@ -22,7 +22,7 @@ class Embed extends EmbedBase
 		return parent::model($class);
 	}
 
-	public function code2value($code, $attribute = '', $exceptionIfNotFound = false)
+	public static function code2value($code, $attribute = '', $exceptionIfNotFound = false)
 	{
 		return self::getByCode($code, $attribute, $exceptionIfNotFound);
 	}

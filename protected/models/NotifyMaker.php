@@ -586,4 +586,39 @@ class NotifyMaker
 
 		return $return;
 	}
+
+	// This function is to replace placeholders in the views with variables
+	public static function organization_submitNtisForm($organization, $ntisFormSolution, $userEmail, $scoring=99)
+	{
+		// Declare contents
+		$S1CapacityProgrammes="MaGIC Bootcamp, MaGIC workshop, MaGIC Grill & Chill and etc ";
+		$S1Agency="Malaysian Global Innovation & Creativity Centre";
+		$S2CapacityProgrammes="TPM Innovation Incubation Centre";
+		$S2Agency="Technology Park Malaysia(TPM)";
+
+		$return['title'] = $return['message'] = Yii::t('notify', "Thanks for your submission", array('{title}' => $organization->title));
+
+		// variables in the email to be declared and passed here. Check Yuan's document.
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['userEmail'] = $userEmail;
+		
+		// REJECTED
+		if($scoring==1){
+			$params['capacityProgrammes'] = $S1CapacityProgrammes;
+			$params['agency'] = $S1Agency;
+			$return['title'] = "NTIS Application Status Result";
+			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_rejectNtisFormSolution', $params, true);
+		// REJECTED
+		}elseif($scoring==2){
+			$params['capacityProgrammes'] = $S2CapacityProgrammes;
+			$params['agency'] = $S2Agency;
+			$return['title'] = "NTIS Application Status Result";
+			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_rejectNtisFormSolution', $params, true);
+		}else{
+			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_approveNtisFormSolution', $params, true);
+		}		
+
+		return $return;
+	}
 }

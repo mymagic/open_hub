@@ -223,7 +223,7 @@ class JourneyModule extends WebModule
 
 				return array(
 					array(
-						'label' => Yii::t('app', 'Journey'), 'url' => array('/journey/backend/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true,
+						'label' => Yii::t('app', 'Journey'), 'url' => array('/journey/backend/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'journey']]),
 						'active' => $controller->activeMenuMain == 'journey' ? true : false,
 					),
 				);
