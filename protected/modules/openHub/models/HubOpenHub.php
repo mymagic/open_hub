@@ -10,10 +10,10 @@ class HubOpenHub
 		$client = new \Github\Client();
 
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
+		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->gitHubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
+			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->gitHubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
 
 			// cache for 5min
 			Yii::app()->cache->set($cacheId, $return, 300);
@@ -138,7 +138,7 @@ class HubOpenHub
 		$paramsTechcrunch['organization']['url_website'] = 'https://techcrunch.com/';
 		$paramsTechcrunch['organization']['text_short_description'] = 'TechCrunch is an American online publisher focusing on the tech industry. The company specifically reports on the business related to tech, technology news, analysis of emerging trends in tech, and profiling of new tech businesses and products.';
 		$paramsTechcrunch['organization']['inputPersonas'] = array($personaCorperate->id);
-		$techcrunch = HUBOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
+		$techcrunch = HubOrganization::getOrCreateOrganization('TechCrunch', $paramsTechcrunch);
 		// resource
 		$techCrunchDisrupt = Resource::model()->findByAttributes(array('slug' => 'techcrunch-disrupt'));
 		if ($techCrunchDisrupt == null) {
@@ -179,20 +179,20 @@ class HubOpenHub
 
 		//
 		// create organization 'Peter Gregory Venture'
-		$peterGregoryVenture = HUBOrganization::getOrCreateOrganization('Peter Gregory Venture', array('organization' => array(
+		$peterGregoryVenture = HubOrganization::getOrCreateOrganization('Peter Gregory Venture', array('organization' => array(
 			'is_active' => 1
 		)));
 
 		//
 		// create organization 'Bizzabo'
-		$bizzabo = HUBOrganization::getOrCreateOrganization('Bizzabo', array('organization' => array(
+		$bizzabo = HubOrganization::getOrCreateOrganization('Bizzabo', array('organization' => array(
 			'is_active' => 1,
 			'url_website' => 'http://www.bizzabo.com'
 		)));
 
 		//
 		// create organization 'Pied Piper Inc'
-		$piedPiperInc = HUBOrganization::getOrCreateOrganization('Pied Piper Inc', array('organization' => array(
+		$piedPiperInc = HubOrganization::getOrCreateOrganization('Pied Piper Inc', array('organization' => array(
 			'is_active' => 1,
 			'url_website' => 'http://www.piedpiper.com/'
 		)));
@@ -209,7 +209,7 @@ class HubOpenHub
 		But it is safe to say, we intend to deploy an integrated, multi-platform functionality of all conceivable applications of the algorithm, that we hope will make the world abetter place through compression services across diversified market segment.";
 		$paramsPiedPiper['organization']['tag_backend'] = 'compression, saas';
 		$paramsPiedPiper['organization']['inputPersonas'] = array($personaStartup->id);
-		$piedPiper = HUBOrganization::getOrCreateOrganization('Pied Piper', $paramsPiedPiper);
+		$piedPiper = HubOrganization::getOrCreateOrganization('Pied Piper', $paramsPiedPiper);
 		// user access
 		$piedPiper->setOrganizationEmail('richard@piedpiper.com');
 		$piedPiper->setOrganizationEmail('dinesh@piedpiper.com');
@@ -217,12 +217,12 @@ class HubOpenHub
 		$piedPiper->setOrganizationEmail('gilfoyle@piedpiper.com', 'pending');
 		$piedPiper->setOrganizationEmail('jared@piedpiper.com', 'pending');
 		// individual
-		$richard = HUBIndividual::getOrCreateIndividual('Richard Hendricks', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'richard@piedpiper.com'));
-		$dinesh = HUBIndividual::getOrCreateIndividual('Dinesh Chugtai', array('individual' => array('gender' => 'male'), 'userEmail' => 'dinesh@piedpiper.com'));
-		$jared = HUBIndividual::getOrCreateIndividual('Jared Donald Dunn', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'jared@piedpiper.com'));
-		$gilfoyle = HUBIndividual::getOrCreateIndividual('Bertram Gilfoyle', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
-		$erlich = HUBIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@piedpiper.com'));
-		$anton = HUBIndividual::getOrCreateIndividual('Son of Anton', array('individual' => array('country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
+		$richard = HubIndividual::getOrCreateIndividual('Richard Hendricks', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'richard@piedpiper.com'));
+		$dinesh = HubIndividual::getOrCreateIndividual('Dinesh Chugtai', array('individual' => array('gender' => 'male'), 'userEmail' => 'dinesh@piedpiper.com'));
+		$jared = HubIndividual::getOrCreateIndividual('Jared Donald Dunn', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'jared@piedpiper.com'));
+		$gilfoyle = HubIndividual::getOrCreateIndividual('Bertram Gilfoyle', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
+		$erlich = HubIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@piedpiper.com'));
+		$anton = HubIndividual::getOrCreateIndividual('Son of Anton', array('individual' => array('country_code' => 'US'), 'userEmail' => 'gilfoyle@piedpiper.com'));
 		$piedPiper->addIndividualOrganization($richard, 'founder', array('job_position' => 'CEO'));
 		$piedPiper->addIndividualOrganization($jared, 'cofounder', array('job_position' => 'COO'));
 		$piedPiper->addIndividualOrganization($dinesh, 'cofounder', array('job_position' => 'Lead Engineer'));
@@ -284,37 +284,37 @@ class HubOpenHub
 		$paramsAviato['organization']['url_website'] = 'http://www.aviato.com';
 		$paramsAviato['organization']['year_founded'] = '2012';
 		$paramsAviato['organization']['text_oneliner'] = 'Aviato is a software aggregation program that takes all the information from social media.';
-		$aviato = HUBOrganization::getOrCreateOrganization('Aviato', $paramsAviato);
+		$aviato = HubOrganization::getOrCreateOrganization('Aviato', $paramsAviato);
 		// user access
 		$aviato->setOrganizationEmail('erlich@piedpiper.com');
 		// individual
-		$erlich = HUBIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@aviato.com'));
+		$erlich = HubIndividual::getOrCreateIndividual('Erlich Bachman', array('individual' => array('gender' => 'male', 'country_code' => 'US'), 'userEmail' => 'erlich@aviato.com'));
 		$aviato->addIndividualOrganization($erlich, 'founder');
 
 		//
 		// create organization 'Peter Geogory Venture'
 		$paramsPeterGregoryVenture['organization']['inputPersonas'] = array($personaInvestor->id);
-		$peterGregoryVenture = HUBOrganization::getOrCreateOrganization('Peter Gregory Venture', $paramsPeterGregoryVenture);
+		$peterGregoryVenture = HubOrganization::getOrCreateOrganization('Peter Gregory Venture', $paramsPeterGregoryVenture);
 
 		//
 		// create organization 'Bizzabo'
 		$paramsBizzabo['organization']['inputPersonas'] = array($personaStartup->id);
 		$paramsBizzabo['organization']['url_website'] = 'http://www.bizzabo.com';
-		$bizzabo = HUBOrganization::getOrCreateOrganization('Bizzabo', $paramsBizzabo);
+		$bizzabo = HubOrganization::getOrCreateOrganization('Bizzabo', $paramsBizzabo);
 
 		//
 		// create organization 'Pied Piper Inc'
 		$paramsPiedPiperInc['organization']['inputPersonas'] = array($personaStartup->id);
 		$paramsPiedPiperInc['organization']['url_website'] = 'http://www.piedpiper.com/';
 		$paramsPiedPiperInc['organization']['is_active'] = true;
-		$piedPiperInc = HUBOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
+		$piedPiperInc = HubOrganization::getOrCreateOrganization('Pied Piper Inc', $paramsPiedPiperInc);
 		// user access
 		$piedPiperInc->setOrganizationEmail('richard@piedpiper.com');
 
 		//
 		// events
 		// TechCrunch Disrupt Hackathon
-		$techCrunchHackathon = HUBEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'),
+		$techCrunchHackathon = HubEvent::getOrCreateEvent('TechCrunch Disrupt Hackathon', array('event' => array('url_website' => 'https://techcrunch.com/events/disrupt-sf-2020/', 'text_short_desc' => 'TechCrunch Disrupt is three days of non-stop programming with two big focuses: founders and investors shaping the future of disruptive technology and ideas and startup experts providing insights to entrepreneurs. It\'s where hundreds of startups across a variety of categories tell their stories to the 10,000 attendees from all around the world. It\'s the ultimate Silicon Valley experience where the leaders of the startup world gather to ask questions, make connections and be inspired.', 'is_paid_event' => true, 'at' => 'San Francisco', 'date_started' => strtotime('10 April 2015 09:00:00 PDT'), 'date_ended' => strtotime('12 April 2015 18:00:00 PDT'),
 		'tag_backend' => 'hackathon, disrupt',
 		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
 		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id),
@@ -346,7 +346,7 @@ class HubOpenHub
 		HUB::getOrCreateEventRegistration($techCrunchHackathon, 'cg49', array('email' => 'erlich@piedpiper.com', 'full_name' => $erlich->full_name, 'organization' => $piedPiper->title, 'persona' => $personaInvestor->title, 'paid_fee' => 120, 'nationality' => $erlich->country_code, 'date_registered' => strtotime('01 March 2015 09:30 PDT'), 'is_attended' => 1, 'event_vendor_code' => 'manual'));
 
 		// RussFest
-		$russFest = HUBEvent::getOrCreateEvent('RussFest', array('event' => array('url_website' => 'https://www.russfest.net/', 'text_short_desc' => 'This is gonna be the mother of all festivals!', 'is_paid_event' => true, 'at' => 'Area 51, Nevada', 'full_address' => '2711 US-95, Amargosa Valley, NV 89020, United States', 'date_started' => strtotime('20 May 2020 08:00:00 PDT'), 'date_ended' => strtotime('22 May 2020 00:00:00 PDT'), 'tag_backend' => 'festival, party',
+		$russFest = HubEvent::getOrCreateEvent('RussFest', array('event' => array('url_website' => 'https://www.russfest.net/', 'text_short_desc' => 'This is gonna be the mother of all festivals!', 'is_paid_event' => true, 'at' => 'Area 51, Nevada', 'full_address' => '2711 US-95, Amargosa Valley, NV 89020, United States', 'date_started' => strtotime('20 May 2020 08:00:00 PDT'), 'date_ended' => strtotime('22 May 2020 00:00:00 PDT'), 'tag_backend' => 'festival, party',
 		'inputPersonas' => array($personaAspiring->id, $personaStartup->id),
 		'inputStartupStages' => array($stageDiscovery->id, $stageValidation->id, $stageProductDevelopment->id, $stageEfficiency->id, $stageGrowth->id),
 		'inputIndustries' => array($industryIT->id, $industryEcommerce->id, $industryAutomotive->id))));
