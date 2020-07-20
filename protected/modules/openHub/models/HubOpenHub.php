@@ -10,10 +10,10 @@ class HubOpenHub
 		$client = new \Github\Client();
 
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->gitHubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
+		$cacheId = sprintf('%s::%s-%s', 'HubOpenHub', 'getLatestRelease', sha1(json_encode(array('v2', Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->gitHubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
+			$return = $client->api('repo')->releases()->latest(Yii::app()->getModule('openHub')->githubOrganization, Yii::app()->getModule('openHub')->githubRepoName);
 
 			// cache for 5min
 			Yii::app()->cache->set($cacheId, $return, 300);
