@@ -157,10 +157,12 @@ class Individual extends IndividualBase
 		// ...
 		$users = $this->getIndividualUser();
 		foreach ($users as $user) {
-			$interest = Neo4jInterest::model()->findOneByAttributes(array('user_id' => $user->id));
-			if (!empty($interest)) {
-				$interest->deletePersonas();
-				$interest->addPersona($this->inputPersonas);
+			if (Yii::app()->params['NEO4J_ENABLE']) {
+				$interest = Neo4jInterest::model()->findOneByAttributes(array('user_id' => $user->id));
+				if (!empty($interest)) {
+					$interest->deletePersonas();
+					$interest->addPersona($this->inputPersonas);
+				}
 			}
 		}
 
