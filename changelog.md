@@ -1,4 +1,5 @@
 ## 0.5.218
+- fixed #32: Saving individual model will trigger error repository() not found 
 
 ## 0.5.217
 - fixed #24: ACL do not list actions of modules properly
