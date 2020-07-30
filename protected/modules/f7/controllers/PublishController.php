@@ -32,11 +32,11 @@ class PublishController extends Controller
 			array('allow',
 				'actions' => array('index')),
 			array('allow',
-				'actions' => array('save', 'view', 'edit', 'confirm'),
-				'expression' => 'Yii::app()->controller->verfiyAccess()',
+				'actions' => array('save', 'view', 'edit', 'revert', 'revertConfirmed'),
+				'expression' => 'Yii::app()->controller->verifyAccess()',
 			),
-			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'create', 'update', 'admin', 'delete', 'download'),
+			array('allow',
+				'actions' => array('download'),
 				'users' => array('@'),
 			),
 			array('deny',  // deny all users
@@ -45,10 +45,369 @@ class PublishController extends Controller
 		);
 	}
 
-	protected function verfiyAccess()
+	public function init()
+	{
+		parent::init();
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+	}
+
+	public function actionIndex($slug, $eid = '', $sid = '')
+	{
+		$form = Form::slug2obj($slug);
+		if (!isset($form)) {
+			throw new Exception('Form not exists');
+		}
+		$this->pageTitle = Yii::t('app', $form->title);
+
+		if ($form->type == 1) {
+			$this->layout = 'publish-survey';
+		} else {
+			$this->layout = 'publish-default';
+		}
+
+		if (!empty($form->intakes) && !empty($form->intakes[0]) && !empty($form->intakes[0]->brandCode)) {
+			$this->layoutParams['brand'] = $form->intakes[0]->brandCode;
+		}
+
+		// Check if closing time of the application has reached
+		if ($form->isApplicationClosed()) {
+			return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
+		}
+
+		// cannot submit
+		if (!HubForm::canSubmit($form, $sid)) {
+			$closingTimeFormatted = Html::formatDateTimezone($form->date_close, 'standard', 'standard', '-', $form->timezone);
+
+			$closingDate = empty($form->date_close) ? Yii::t('f7', 'closing date') : $closingTimeFormatted;
+
+			$error = Yii::t('f7', 'Please note that multiple submissions is not allowed for this form. However, You can edit existing Submission(s) before {closingDate}.', array('{closingDate}' => $closingDate));
+
+			$form->addError($error, $error);
+
+			return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
+		}
+
+		$submission = FormSubmission::model()->findByAttributes(array('form_code' => $form->code, 'id' => $sid, 'user_id' => Yii::app()->user->id));
+
+		// if data not found (ensure this submission belongs to this user)
+		if (!empty($sid) && empty($data)) {
+			return $this->redirect("/f7/publish/index/$slug");
+		}
+
+		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid, $eid);
+
+		$uploadControls = HubForm::getListOfExistingUploadControlsWithValue($submission->json_data);
+		// ys: using session here can be dangerous as user might open multiple tab
+		$session = Yii::app()->session;
+		foreach ($uploadControls as $uploadControl => $value) {
+			$awsPath = $uploadControl . '.aws_path';
+			$session['uploadfiles'] = array($awsPath => $value);
+		}
+
+		$this->render('index', array('form' => $form, 'htmlForm' => $htmlForm));
+	}
+
+	// sid: submission id, can be empty when call by actionIndex to create new submission
+	public function actionSave($slug, $sid = '', $eid = '')
+	{
+		set_time_limit(0);
+		$form = Form::slug2obj($slug);
+
+		if (empty($form)) {
+			throw new Exception(Yii::t('f7', 'Form not exists.'));
+		}
+		if ($form->type == 1) {
+			$this->layout = '/layouts/publish-survey';
+		} else {
+			$this->layout = '/layouts/publish-default';
+		}
+
+		// if application is closed now, show view
+		if ($form->isApplicationClosed()) {
+			// return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
+			Notice::page(Yii::t('f7', 'Application has closed. Form submission not saved!'), Notice_WARNING);
+		}
+
+		// if not allow multiple submission;
+		if (!HubForm::canSubmit($form, $sid)) {
+			$message = Yii::t('f7', 'Please note that multiple submissions is not allowed for this form.');
+			//$form->addError($message, $message);
+			//return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
+			Notice::page($message, Notice_WARNING);
+		}
+
+		if ($form->hasStage()) {
+			$stage = $form->jsonArray_stage[0]->key;
+		}
+
+		// load existing submission from database
+		$submission = FormSubmission::model()->findByAttributes(array('form_code' => $form->code, 'id' => $sid, 'user_id' => Yii::app()->user->id));
+		// submission id is set but failed to get such record
+		if (!empty($sid) && empty($submission)) {
+			Notice::page(Yii::t('f7', 'Matching submission record not found!'), Notice_WARNING);
+		}
+
+		// save draft
+		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid, $eid);
+
+		// if submit
+		if (strtolower($_POST['save']) === 'submit') {
+			// validate input data
+			list($validated, $htmlForm) = $this->performValidation($form, $_POST, $slug, $submission, $sid, $eid);
+			// not validated
+			if (!$validated) {
+				return $this->render('index', array('form' => $form, 'htmlForm' => $htmlForm, 'slug' => $slug, 'sid' => $submission->id, 'eid' => $eid));
+			}
+		}
+
+		$data = array();
+		// load existing json_data
+		if (!empty($submission->json_data)) {
+			$decodedJsonData = json_decode($submission->json_data);
+			foreach ($decodedJsonData as $jVar => $jValue) {
+				// upload file field found in existing data
+				// pre inherite existing upload file data, so that user save existing draft wont wipe of previously uploaded file data
+				if (strstr($jVar, '.aws_path')) {
+					$data[$jVar] = $jValue;
+				}
+			}
+		}
+
+		$orgTitleSubmittedByUser = '';
+		$formContainStarupModel = false;
+		$icCounter = 0;
+
+		foreach ($_POST as $key => $value) {
+			if ($key === 'YII_CSRF_TOKEN' || $key === 'form_code' || $key === 'sid') {
+				continue;
+			}
+
+			// ys: should not be hardcoded like this
+			if ($key == 'startup') {
+				$formContainStarupModel = true;
+				$orgObj = Organization::title2obj($value);
+				$data['startup_id'] = empty($orgObj) ? '' : $orgObj->id;
+			}
+
+			// ys: should not be hardcoded like this
+			if (substr($key, 0, 12) === 'fnationality') {
+				$country = Country::model()->findByAttributes(array('name' => $value));
+				$splitted = explode('fnationality', $key);
+				$num = count($splitted) === 2 ? $splitted[1] : '';
+				$keyname = sprintf('fnationality%s_code', $num);
+				$data[$keyname] = $country->code;
+			}
+
+			// ys: should not be hardcoded like this
+			if (strpos($key, 'icnumber') !== false) {
+				$icCounter++;
+				$keyname = "calculated_age_$icCounter";
+				if (strlen($value) > 0 && ctype_digit(substr($value, 0, 1))) {
+					$data[$keyname] = $this->getAgeFromIC($value);
+				}
+			}
+
+			$data[$key] = $value;
+
+			if (strtolower($key) === 'startup') {
+				$orgTitleSubmittedByUser = $value;
+			}
+		}
+
+		//Survey Form
+		if ($form->type == 1 && !empty($eid)) {
+			$data['EventID'] = $eid;
+			$data['inputtext-eventId'] = $eid;
+		}
+
+		// Server side checking if organization is available before and does not belong to this user.
+		if ($formContainStarupModel) {
+			if (!HubForm::canUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
+				$error = Yii::t('f7', 'The company/startup name you entered has been taken.');
+				$form->addError($error, $error);
+
+				return $this->render('index', array('form' => $form, 'htmlForm' => $htmlForm, 'slug' => $slug, 'sid' => $submission->id));
+			}
+		}
+
+		$jsonData = json_encode($data);
+		$jsonData = $this->storeFormAttachments($form->code, $jsonData);
+
+		$code = empty($submission->code) ? ysUtil::generateUUID() : $submission->code;
+		$status = strtolower($_POST['save']) === strtolower('submit') ? 'submit' : 'draft';
+
+		if (empty($submission)) {
+			$submission = new FormSubmission();
+		}
+		$submission->code = $code;
+		$submission->form_code = $form->code;
+		$submission->user_id = Yii::app()->user->id;
+		$submission->jsonArray_data = json_decode($jsonData);
+		$submission->status = $status;
+		$submission->stage = $stage;
+		$submission->date_submitted = time();
+		$submission->date_added = empty($submission->date_added) ? time() : $submission->date_added;
+		$submission->date_modified = time();
+
+		if ($submission->save(false)) {
+			if ($form->hasHook('onNotifyAfterSubmitForm') != false) {
+				$form->execHook('onNotifyAfterSubmitForm', array('submission' => $submission));
+			} else {
+				$notifMaker = HubForm::notifyMaker_user_afterSubmitForm($submission);
+				HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
+			}
+
+			if ($form->type == 1) {
+				$url = $this->createUrl('/f7/publish/index/', array('slug' => $slug, 'eid' => $eid));
+				$message = 'Thank you for your valuable input. You have successfuly submitted the survery.';
+			} else {
+				$url = $this->createUrl('/f7/publish/view/', array('slug' => $slug, 'sid' => $submission->id));
+			}
+
+			if ($submission->status == 'submit') {
+				Notice::Page(Yii::t('f7', 'You have successfuly submitted your application.'), Notice_SUCCESS, array('url' => $url));
+			} else {
+				Notice::flash(Yii::t('f7', 'You have successfuly saved your application as draft.'), Notice_SUCCESS);
+
+				$this->redirect(array('/f7/publish/edit', 'slug' => $slug, 'sid' => $submission->id));
+			}
+		} else {
+			throw new Exception(Yii::t('f7', 'Opps, something wrong, we failed to update your application due'));
+		}
+	}
+
+	// sid: submission id
+	public function actionView($slug, $sid, $eid = '')
+	{
+		list($form, $htmlForm, $submission) = self::performViewOrEditTasks(false, $slug, $sid, $eid);
+
+		if ($form->type == 1) {
+			$this->layout = '/layouts/publish-survey';
+		} else {
+			$this->layout = '/layouts/publish-default';
+		}
+
+		$this->render('view', array('form' => $form, 'htmlForm' => $htmlForm, 'submission' => $submission));
+	}
+
+	// sid: submission id
+	public function actionEdit($slug, $sid, $eid = '')
+	{
+		set_time_limit(0);
+
+		list($form, $htmlForm, $submission) = $this->performViewOrEditTasks(true, $slug, $sid, $eid);
+		// get user confirmation to revert back to draft to edit
+		if ($submission->status == 'submit') {
+			$this->redirect(array('revert', 'slug' => $slug, 'sid' => $sid));
+		}
+
+		if ($form->type == 1) {
+			$this->layout = '/layouts/publish-survey';
+		} else {
+			$this->layout = '/layouts/publish-default';
+		}
+
+		$this->render('edit', array('form' => $form, 'htmlForm' => $htmlForm, 'submission' => $submission));
+	}
+
+	// ask user to ensure action to revert submitted application
+	public function actionRevert($slug, $sid)
+	{
+		$form = Form::slug2obj($slug);
+		if (empty($form)) {
+			throw new Exception('Form not exists');
+		}
+		if ($form->isApplicationClosed()) {
+			return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
+		}
+
+		$submission = FormSubmission::model()->findByAttributes(array('form_code' => $form->code, 'id' => $sid));
+		// nothing to revert, send to view page
+		if ($submission->status == 'draft') {
+			$this->redirect(array('view', 'slug' => $slug, 'sid' => $sid));
+		}
+
+		$url = Yii::app()->createAbsoluteUrl('/f7/publish/revertConfirmed', array('slug' => $slug, 'sid' => $sid));
+		$urlCancel = Yii::app()->createAbsoluteUrl('/f7/publish/view', array('slug' => $slug, 'sid' => $sid));
+		$htmlMessage = 'Editing this form will change its status to <b><span class="text-danger">Draft</span></b> even if you don\'t change any existing data.<br />Are you sure you want to continue?';
+
+		if ($submission->status === 'draft') {
+			$this->redirect($url);
+		} else {
+			Notice::page($htmlMessage, Notice_WARNING, array('url' => $url, 'urlLabel' => Yii::t('f7', 'Continue Editing'), 'cancelLabel' => Yii::t('f7', 'No'), 'cancelUrl' => $urlCancel));
+		};
+	}
+
+	// confrim revert submission back to 'draft'
+	public function actionRevertConfirmed($slug, $sid)
+	{
+		$form = Form::slug2obj($slug);
+		if (empty($form)) {
+			throw new Exception('Form not exists');
+		}
+
+		// if application has closed
+		if ($form->isApplicationClosed()) {
+			$this->redirect(array('index', 'slug' => $slug, 'sid' => $sid));
+		}
+
+		$submission = FormSubmission::model()->findByAttributes(array('form_code' => $form->code, 'id' => $sid));
+		if ($submission->status == 'draft') {
+			throw new Exception(Yii::t('f7', 'Failed to revert a submission which is already in draft status'));
+		}
+		$submission->status = 'draft';
+		$submission->stage = $submission->form->jsonArray_stage[0]->key;
+		;
+		$submission->date_submitted = null;
+		if ($submission->save()) {
+			// notify user
+			if ($form->hasHook('onNotifyAfterChangedSubmit2Draft') != false) {
+				$form->execHook('onNotifyAfterChangedSubmit2Draft', array('submission' => $submission));
+			} else {
+				$notifMaker = HubForm::notifyMaker_user_afterChangedSubmit2Draft($submission);
+				HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
+			}
+
+			$this->redirect(array('/f7/publish/edit', 'slug' => $submission->form->slug, 'sid' => $submission->id));
+		} else {
+			throw new Exception(Yii::t('f7', 'Failed to rever submission back to draft mode due to unknown error'));
+		}
+	}
+
+	public function actionDownload($filename)
+	{
+		$downloadFile = rawurlencode($filename);
+		$downloadLink = Yii::app()->params['s3Url'] . '/' . "uploads/forms/$downloadFile";
+
+		if (HubForm::isUrlExists($downloadLink) === false) {
+			throw new Exception('The requested file does not exist.');
+		}
+		$contentType = '';
+
+		$ext = strtolower(pathinfo($downloadFile, PATHINFO_EXTENSION));
+
+		if ($ext === 'pdf') {
+			$contentType = 'application/pdf';
+		} elseif ($ext === 'jpeg' || $ext === 'jpg' || $ext === 'png' || $ext === 'bmp' || $ext === 'gif' || $ext === 'doc' || $ext === 'zip') {
+			$contentType = mime_content_type($downloadFile);
+		} else {
+			throw new Exception('File type is not supported');
+		}
+		header('Content-Description: File Transfer');
+		header('Content-Type: ' . $contentType);
+		header('Content-Disposition: inline; filename="' . $downloadFile . '"');
+		header('Content-Transfer-Encoding: binary');
+		header('Accept-Ranges: bytes');
+
+		flush(); // Flush system output buffer
+		readfile($downloadLink);
+		Yii::app()->end();
+	}
+
+	protected function verifyAccess()
 	{
 		try {
-			$slug = $_GET['slug'];
+			$slug = Yii::app()->request->getQuery('slug');
 
 			if (empty($slug)) {
 				return false;
@@ -70,536 +429,57 @@ class PublishController extends Controller
 		}
 	}
 
-	public function init()
-	{
-		parent::init();
-		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-	}
-
-	public function actionIndex($slug, $eid = '', $sid = '')
-	{
-		if (empty($slug)) {
-			throw new Exception('Request is not correct');
-		}
-		$model = Form::slug2obj($slug);
-
-		$this->pageTitle = Yii::t('app', $model->title);
-
-		if (is_null($model)) {
-			throw new Exception('Request is not correct');
-		}
-		if ($model->type == 1) {
-			$this->layout = 'publish-survey';
-		} else {
-			$this->layout = 'publish-default';
-		}
-
-		// Check if closing time of the application has reached
-		if ($model->isApplicationClosed()) {
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
-		}
-
-		$closingTimeFormated = Html::formatDateTimezone($model->date_close, 'standard', 'standard', '-', $model->timezone);
-
-		$closingDate = empty($model->date_close) ? 'closing date' : $closingTimeFormated;
-
-		if (!HubForm::canSubmit($model, $sid)) {
-			$error = Yii::t('f7', 'Please note that multiple submissions is not allowed for this form. However, You can edit existing Submission(s) before {closingDate}.', array('{closingDate}' => $closingDate));
-
-			$model->addError($error, $error);
-
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
-		}
-
-		$userId = Yii::app()->user->id;
-
-		$data = FormSubmission::model()->findByAttributes(array('form_code' => $model->code, 'id' => $sid, 'user_id' => $userId));
-
-		$isEnabled = true;
-
-		$form = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $data->json_data, $model->slug, $sid, $eid);
-
-		//Ensure this submission belongs to this user
-		if (!empty($sid) && empty($data)) {
-			return $this->redirect("/f7/publish/index/$slug");
-		}
-
-		$uploadControls = HubForm::getListOfExistingUploadControlsWithValue($data->json_data);
-
-		// ys: using session here can be dangerous as user might open multiple tab
-		$session = Yii::app()->session;
-
-		foreach ($uploadControls as $uploadControl => $value) {
-			$awsPath = $uploadControl . '.aws_path';
-			$session['uploadfiles'] = array($awsPath => $value);
-		}
-
-		if (!empty($model->intakes) && !empty($model->intakes[0]) && !empty($model->intakes[0]->brandCode)) {
-			$this->layoutParams['brand'] = $model->intakes[0]->brandCode;
-		}
-
-		$this->render('index', array('model' => $model, 'form' => $form));
-	}
-
-	private function getAgeFromIC($value)
-	{
-		$year = substr($value, 0, 2);
-		$dt = DateTime::createFromFormat('y', $year);
-		$year4digits = $dt->format('Y');
-		$month = substr($value, 2, 2);
-		$day = substr($value, 4, 2);
-
-		$age = (date('md', date('U', mktime(0, 0, 0, $month, $day, $year4digits))) > date('md')
-			? ((date('Y') - $year4digits) - 1)
-			: (date('Y') - $year4digits));
-
-		return $age;
-	}
-
-	public function actionSave($slug, $sid = '', $eid = '')
-	{
-		$submissionDate = '';
-		$model = Form::slug2obj($slug);
-
-		if (is_null($model)) {
-			throw new Exception(Yii::t('f7', 'The request is not in proper format.'));
-		}
-		if ($model->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
-
-		// Check if closing time of the application has reached
-		if ($model->isApplicationClosed()) {
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
-		}
-
-		$formCode = $model->code;
-
-		if ($model->hasStage()) {
-			$stage = $model->jsonArray_stage[0]->key;
-		}
-
-		if (!HubForm::canSubmit($model, $sid)) {
-			$error = Yii::t('f7', 'Please note that multiple submissions is not allowed for this form.');
-			$model->addError($error, $error);
-
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
-		}
-
-		$userId = Yii::app()->user->id;
-
-		$formData = FormSubmission::model()->findByAttributes(array('form_code' => $model->code, 'id' => $sid, 'user_id' => $userId));
-
-		//Ensure this submission belongs to this user
-		if (!empty($sid) && empty($formData)) {
-			return $this->redirect("/f7/publish/index/$slug/$eid");
-		}
-
-		$message = Yii::t('f7', 'You have successfuly saved your application as draft.');
-
-		$form = '';
-		if (strtolower($_POST['save']) === 'submit') {
-			$submissionDate = time();
-
-			//Validate input data
-			list($res, $form) = self::performValidation($model, $_POST, $slug, $formData, $sid, $eid);
-			if (!$res) {
-				return $this->render('index', array('model' => $model, 'form' => $form, 'slug' => $slug, 'sid' => $formData->id, 'eid' => $eid));
-			}
-
-			$message = Yii::t('f7', 'You have successfuly submitted your application.');
-		} else {
-			$form = HubForm::convertJsonToHtml(true, $model->json_structure, $formData->json_data, $model->slug, $sid, $eid);
-		}
-
-		$data = array();
-		// pre inherite existing upload file data, so that user save existing draft wont wipe of previously uploaded file data
-		if (!empty($formData->json_data)) {
-			$decodedJsonData = json_decode($formData->json_data);
-			foreach ($decodedJsonData as $jVar => $jValue) {
-				// upload file field found in existing data
-				if (strstr($jVar, '.aws_path')) {
-					$data[$jVar] = $jValue;
-				}
-			}
-		}
-
-		$orgTitleSubmittedByUser = '';
-
-		$formContainStarupModel = false;
-
-		$icCounter = 0;
-
-		foreach ($_POST as $key => $value) {
-			if ($key === 'YII_CSRF_TOKEN' || $key === 'form_code' || $key === 'sid') {
-				continue;
-			}
-
-			if ($key == 'startup') {
-				$formContainStarupModel = true;
-				$orgObj = Organization::title2obj($value);
-				$data['startup_id'] = empty($orgObj) ? '' : $orgObj->id;
-			}
-
-			if (substr($key, 0, 12) === 'fnationality') {
-				$country = Country::model()->findByAttributes(array('name' => $value));
-				$splitted = explode('fnationality', $key);
-				$num = count($splitted) === 2 ? $splitted[1] : '';
-				$keyname = sprintf('fnationality%s_code', $num);
-				$data[$keyname] = $country->code;
-			}
-
-			if (strpos($key, 'icnumber') !== false) {
-				$icCounter++;
-				$keyname = "calculated_age_$icCounter";
-				if (strlen($value) > 0 && ctype_digit(substr($value, 0, 1))) {
-					$data[$keyname] = self::getAgeFromIC($value);
-				}
-			}
-
-			$data[$key] = $value;
-
-			if (strtolower($key) === 'startup') {
-				$orgTitleSubmittedByUser = $value;
-			}
-		}
-
-		//Survey Form
-		if ($model->type == 1 && !empty($eid)) {
-			$data['EventID'] = $eid;
-			$data['inputtext-eventId'] = $eid;
-		}
-
-		//Server side checking if organization is available before and does
-		//not belong to this user.
-		if ($formContainStarupModel) {
-			if (!HubForm::canUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
-				$error = Yii::t('f7', 'The company/startup name you entered has been taken.');
-				$model->addError($error, $error);
-
-				return $this->render('index', array('model' => $model, 'form' => $form, 'slug' => $slug, 'sid' => $formData));
-			}
-		}
-
-		$jsonData = json_encode($data);
-		$jsonData = self::storeFormAttachments($formCode, $jsonData);
-
-		$code = empty($formData->code) ? ysUtil::generateUUID() : $formData->code;
-		$userId = Yii::app()->user->id;
-		$status = strtolower($_POST['save']) === strtolower('submit') ? 'submit' : 'draft';
-
-		if (is_null($formData)) {
-			$formData = new FormSubmission();
-		}
-		$sendEmail = 0;
-		if ($formData->status === 'submit' && $status == 'draft') {
-			$sendEmail = 1;
-		} // send draft email (warning email)
-		elseif ($status === 'submit') {
-			$sendEmail = 2;
-		} // send submit email
-
-		$formData->code = $code;
-		$formData->form_code = $formCode;
-		$formData->user_id = $userId;
-		$formData->jsonArray_data = json_decode($jsonData);
-		$formData->status = $status;
-		$formData->stage = $stage;
-		$formData->date_submitted = $submissionDate;
-		$formData->date_added = empty($formData->date_added) ? time() : $formData->date_added;
-		$formData->date_modified = time();
-
-		$formData->save(false);
-
-		if ($sendEmail === 2) { //Submission Email
-			$profile = Profile::model()->find('t.user_id=:userId', array(':userId' => Yii::app()->user->id));
-			$user = User::userId2obj(Yii::app()->user->id);
-
-			$emailContent = self::getEmailContentAfterFormSubmission($model, $formData);
-
-			if (!empty($user)) {
-				HUB::sendEmail($user->username, $profile->full_name, 'You have successfuly submitted your form.', $emailContent, array());
-			}
-		} elseif ($sendEmail === 1) { //Warning Email
-			$profile = Profile::model()->find('t.user_id=:userId', array(':userId' => Yii::app()->user->id));
-			$user = User::userId2obj(Yii::app()->user->id);
-			$emailContent = self::getEmailContentAfterFormChangedToDraftFromSubmit($model, $formData);
-
-			if (!empty($user)) {
-				HUB::sendEmail($user->username, $profile->full_name, 'Application status was changed to draft.', $emailContent, array());
-			}
-		}
-
-		if ($model->type == 1) {
-			$url = "/f7/publish/index/$slug/?eid=$eid";
-			$message = 'Thank you for your valuable input. You have successfuly submitted the survery.';
-		} else {
-			$url = "/f7/publish/index/$slug";
-		}
-
-		//return $this->render('finish',array('status'=>$status, 'message'=>$message,'url'=>$url));
-		if (strtolower($_POST['save']) === 'submit') {
-			Notice::Page($message, Notice_SUCCESS, array('url' => $url));
-		} else {
-			Notice::flash($message, Notice_SUCCESS);
-
-			return $this->redirect("/f7/publish/edit/$slug/$sid");
-		}
-	}
-
-	protected function getEmailContentAfterFormSubmission($model, $submission)
-	{
-		$intakeTitle = $model->getIntake()->title;
-		$submissionTitle = !empty($intakeTitle) ? $intakeTitle : $model->title;
-
-		$emailBody = $submission->renderSimpleFormattedHtml();
-
-		$html = sprintf("
-		Hi,
-		<br><br>
-		Thank you for submitting your %s for %s.
-		<br><br>
-		Please find below the contents that have been submitted:
-		<br><br>
-
-		%s
-		<br><br>
-		<small>
-		<img src='https://mymagic.my/wp-content/themes/magic2017/assets/art/logo.svg' height='50' width='150'><br>
-		
-
-		MALAYSIAN GLOBAL INNOVATION
-		<br>
-		& CREATIVITY CENTRE 1072152-T
-		<br><br>
-		Block 3730, Persiaran APEC,
-		<br>
-		63000, Cyberjaya, Malaysia
-		<br><br>
-		Website: www.mymagic.my
-		<br>
-		MaGIC Central: central.mymagic.my
-		<br>
-		Facebook: facebook.com/magic.cyberjaya
-		<br>
-		Twitter: @MaGICCyberjaya
-		<br>
-		Instagram: magic_cyberjaya
-		<br>
-		LinkedIn: My MaGIC Cyberjaya
-		</small>
-		", ($model->type == '1') ? 'survey' : 'application', $submissionTitle, $emailBody);
-
-		return $html;
-	}
-
-	protected function getEmailContentAfterFormChangedToDraftFromSubmit($model, $submission)
-	{
-		$closingTimeFormated = Html::formatDateTimezone($model->date_close, 'standard', 'standard', '-', $model->timezone);
-
-		$url = Yii::app()->createAbsoluteUrl('f7/publish/view', array('slug' => $model->slug, 'sid' => $submission->id));
-
-		$html = sprintf("
-		Hi,
-		<br><br>
-		Please note that you just changed your submission status to Draft status. If you want this submission to be considered by MaGIC, You must submit your application before the closing time: %s.
-		<br><br>
-		You can view your application from the following link:<br><br>
-		%s
-		<br><br>
-		<small>
-		<img src='https://mymagic.my/wp-content/themes/magic2017/assets/art/logo.png' height='50' width='150'><br>
-		
-
-		MALAYSIAN GLOBAL INNOVATION
-		<br>
-		& CREATIVITY CENTRE 1072152-T
-		<br><br>
-		Block 3730, Persiaran APEC,
-		<br>
-		63000, Cyberjaya, Malaysia
-		<br><br>
-		Website: www.mymagic.my
-		<br>
-		MaGIC Central: central.mymagic.my
-		<br>
-		Facebook: facebook.com/magic.cyberjaya
-		<br>
-		Twitter: @MaGICCyberjaya
-		<br>
-		Instagram: magic_cyberjaya
-		<br>
-		LinkedIn: My MaGIC Cyberjaya
-		</small>
-		", $closingTimeFormated, $url);
-
-		return $html;
-	}
-
-	public function actionView($slug, $sid = '', $eid = '')
-	{
-		list($model, $form) = self::performViewOrEditTasks(false, $slug, $sid, $eid);
-
-		if ($model->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
-
-		$this->render('view', array('model' => $model, 'form' => $form));
-	}
-
-	protected function isUrlExists($url)
-	{
-		$headers = get_headers($url, 0);
-
-		return stripos($headers[0], '200 OK') ? true : false;
-	}
-
-	public function actionDownload($downloadFile)
-	{
-		$downloadFile = rawurlencode($downloadFile);
-
-		$downloadLink = Yii::app()->params['s3Url'] . '/' . "uploads/forms/$downloadFile";
-
-		if (self::isUrlExists($downloadLink) === false) {
-			throw new Exception('The requested file does not exist.');
-		}
-		$contentType = '';
-
-		$ext = strtolower(pathinfo($downloadFile, PATHINFO_EXTENSION));
-
-		if ($ext === 'pdf') {
-			$contentType = 'application/pdf';
-		} elseif ($ext === 'jpeg' || $ext === 'jpg' || $ext === 'png' || $ext === 'bmp' || $ext === 'gif' || $ext === 'doc') {
-			$contentType = mime_content_type($downloadFile);
-		} else {
-			throw new Exception('File type is not supported');
-		}
-		header('Content-Description: File Transfer');
-		header('Content-Type: ' . $contentType);
-		header('Content-Disposition: inline; filename="' . $downloadFile . '"');
-		header('Content-Transfer-Encoding: binary');
-		header('Accept-Ranges: bytes');
-
-		flush(); // Flush system output buffer
-		readfile($downloadLink);
-		Yii::app()->end();
-
-		// Somehow these methods does not work
-		//Yii::app()->getRequest()->sendFile( $downloadFile , file_get_contents( $downloadLink ) ,['inline'=>true]);
-
-		//Yii::$app->response->sendFile($downloadFile , file_get_contents( $downloadLink ) ,['inline'=>true]);
-		//Yii::$app->response->sendFile($downloadFile, file_get_contents($downloadLink));
-	}
-
-	public function actionEdit($slug, $sid = '', $eid = '')
-	{
-		list($model, $form) = self::performViewOrEditTasks(true, $slug, $sid, $eid);
-
-		if ($model->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
-
-		$this->render('edit', array('model' => $model, 'form' => $form));
-	}
-
-	public function actionConfirm($slug, $sid = '', $eid = '')
-	{
-		if (empty($slug)) {
-			throw new Exception('Request is not correct');
-		}
-		if (empty($sid)) {
-			return $this->redirect("/f7/publish/index/$slug");
-		}
-
-		$model = Form::slug2obj($slug);
-
-		if (is_null($model)) {
-			throw new Exception('Request is not correct');
-		}
-		if ($model->isApplicationClosed()) {
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
-		}
-
-		$url = Yii::app()->createAbsoluteUrl('f7/publish/edit', array('slug' => $slug, 'sid' => $sid));
-		$urlCancel = Yii::app()->createAbsoluteUrl('f7/publish/view', array('slug' => $slug, 'sid' => $sid));
-
-		$htmlMessage = "Editing this form will change its status to <b><span style='Color:red';>Draft</span></b> even if you don't change any existing data.<br />Are you sure you want to continue?";
-
-		$userId = Yii::app()->user->id;
-
-		$data = FormSubmission::model()->findByAttributes(array('form_code' => $model->code, 'id' => $sid, 'user_id' => $userId));
-
-		if ($data->status === 'draft') {
-			$this->redirect($url);
-		} else {
-			Notice::page($htmlMessage, Notice_WARNING, array('url' => $url, 'urlLabel' => Yii::t('f7', 'Continue Editing'), 'cancelLabel' => Yii::t('f7', 'No'), 'cancelUrl' => $urlCancel));
-		};
-	}
-
 	protected function performViewOrEditTasks($isEnabled, $slug, $sid, $eid)
 	{
 		if (empty($slug)) {
-			throw new Exception('Request is not correct');
+			throw new Exception('Incorrect Request');
 		}
 		if (empty($sid)) {
 			if (empty($eid)) {
-				return $this->redirect("/f7/publish/index/$slug");
+				$this->redirect("/f7/publish/index/$slug");
 			} else {
-				return $this->redirect("/f7/publish/index/$slug/?eid=$eid");
+				$this->redirect("/f7/publish/index/$slug/?eid=$eid");
 			}
 		}
 
-		$model = Form::slug2obj($slug);
-
-		$this->pageTitle = Yii::t('app', $model->title);
-
-		if (is_null($model)) {
-			throw new Exception('Request is not correct');
+		$form = Form::slug2obj($slug);
+		if (empty($form)) {
+			throw new Exception('Form not found');
 		}
-		if ($model->type == 1) {
-			return $this->redirect("/f7/publish/index/$slug/?eid=$eid");
+		if ($form->type == 1) {
+			$this->redirect("/f7/publish/index/$slug/?eid=$eid");
 		}
 
-		$closingTimeFormated = Html::formatDateTimezone($model->date_close, 'standard', 'standard', '-', $model->timezone);
+		$this->pageTitle = Yii::t('app', $form->title);
 
-		$closingDate = empty($model->date_close) ? 'closing date' : $closingTimeFormated;
+		if (!HubForm::canSubmit($form, $sid)) {
+			$closingTimeFormated = Html::formatDateTimezone($form->date_close, 'standard', 'standard', '-', $form->timezone);
+			$closingDate = empty($form->date_close) ? 'closing date' : $closingTimeFormated;
 
-		if (!HubForm::canSubmit($model, $sid)) {
-			$error = "Please note that multiple submissions is not allowed for this form. However, You can edit existing Submission(s) before $closingDate.";
+			$error = Yii::t('f7', 'Please note that multiple submissions is not allowed for this form. However, You can edit existing Submission(s) before {closingDate}.', array('{closingDate}' => $closingDate));
 
-			$model->addError($error, $error);
+			$form->addError($error, $error);
 
-			return $this->render('index', array('model' => $model, 'form' => $model->getEmptyForm()));
+			return $this->render('index', array('form' => $form, 'htmlForm' => $form->getEmptyForm()));
 		}
 
-		$userId = Yii::app()->user->id;
-
-		$data = FormSubmission::model()->findByAttributes(array('form_code' => $model->code, 'id' => $sid, 'user_id' => $userId));
-
-		$form = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $data->json_data, $model->slug, $sid);
-
+		$submission = FormSubmission::model()->findByAttributes(array('form_code' => $form->code, 'id' => $sid, 'user_id' => Yii::app()->user->id));
 		//Ensure this submission belongs to this user
-		if (empty($data)) {
-			return $this->redirect("/f7/publish/index/$slug");
+		if (empty($submission)) {
+			$this->redirect("/f7/publish/index/$slug");
 		}
 
-		$uploadControls = HubForm::getListOfExistingUploadControlsWithValue($data->json_data);
+		$htmlForm = HubForm::convertJsonToHtml($isEnabled, $form->json_structure, $submission->json_data, $form->slug, $sid);
 
+		$uploadControls = HubForm::getListOfExistingUploadControlsWithValue($submission->json_data);
 		// ys: using session here can be dangerous as user might open multiple tab
 		$session = Yii::app()->session;
-
 		foreach ($uploadControls as $uploadControl => $value) {
 			$awsPath = $uploadControl . '.aws_path';
 			$session['uploadfiles'] = array($awsPath => $value);
 		}
 
-		return array($model, $form);
+		return array($form, $htmlForm, $submission);
 	}
 
 	protected function performValidation($model, $postedData, $slug, $formData, $sid, $eid)
@@ -614,13 +494,13 @@ class PublishController extends Controller
 
 		$postInJson = json_encode($postedData, true);
 
-		$form = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $postInJson, $model->slug, $sid, $eid);
+		$htmlForm = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $postInJson, $model->slug, $sid, $eid);
 
 		if (!$status) {
-			return array(false, $form);
+			return array(false, $htmlForm);
 		}
 
-		return array(true, $form);
+		return array(true, $htmlForm);
 	}
 
 	protected function storeFormAttachments($formCode, $jsonData)
@@ -641,16 +521,28 @@ class PublishController extends Controller
 				$localFile = Yii::getPathOfAlias('uploads') . '/' . time() . '_' . $_FILES["$uploadControl"]['name'];
 
 				rename($_FILES["$uploadControl"]['tmp_name'], $localFile);
-			}
 
-			if (!empty($_FILES["$uploadControl"])) {
 				$pathToFileInCloud = HubForm::storeFile('uploads/' . basename($localFile));
 
-				// updateJsonForm($jsonData, $elementName, $newkey, $newValue)
 				$jsonData = HubForm::updateJsonForm($jsonData, $uploadControl . '.aws_path', $pathToFileInCloud);
 			}
 		}
 
 		return $jsonData;
+	}
+
+	private function getAgeFromIC($value)
+	{
+		$year = substr($value, 0, 2);
+		$dt = DateTime::createFromFormat('y', $year);
+		$year4digits = $dt->format('Y');
+		$month = substr($value, 2, 2);
+		$day = substr($value, 4, 2);
+
+		$age = (date('md', date('U', mktime(0, 0, 0, $month, $day, $year4digits))) > date('md')
+			? ((date('Y') - $year4digits) - 1)
+			: (date('Y') - $year4digits));
+
+		return $age;
 	}
 }

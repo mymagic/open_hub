@@ -169,4 +169,10 @@ class Industry extends IndustryBase
 	{
 		return self::slug2obj($slug);
 	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
+	}
 }

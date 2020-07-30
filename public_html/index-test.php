@@ -23,6 +23,10 @@
 // change the following paths if necessary
 $yii = dirname(__FILE__) . '/../framework/yii.php';
 include_once dirname(__FILE__) . '/../protected/config/phpini.php';
+$overridePhpIniFilePath = dirname(__FILE__) . '/../protected/overrides/config/phpini.php';
+if (file_exists($overridePhpIniFilePath)) {
+	include $overridePhpIniFilePath;
+}
 
 // remove the following line when in production mode
 defined('YII_DEBUG') or define('YII_DEBUG', true);

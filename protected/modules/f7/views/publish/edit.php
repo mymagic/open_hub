@@ -1,8 +1,10 @@
-<?php $this->layoutParams['form'] = $model; ?>
-<?php $this->renderPartial('_submissionPartial', array('model' => $model)) ?>
-<hr />
-<?php echo $form?>
+<?php $this->layoutParams['form'] = $form; ?>
 
+<?php $submissionPartial = trim($this->renderPartial('_submissionPartial', array('model' => $form), true)); echo $submissionPartial; ?>
+<?php if (empty($submissionPartial)):?><hr /><?php endif; ?>
+
+<?php if (isset($submission->jsonArray_extra) && !empty($submission->jsonArray_extra->text_note)): ?><?php echo Notice::inline($submission->jsonArray_extra->text_note, Notice_INFO) ?><?php endif; ?>
+<?php echo $htmlForm?>
 
 <script>
 

@@ -37,6 +37,8 @@ return array(
 		),
 		'event_mapping' => array(
 		),
+		'extra' => array(
+		),
 	),
 	'foreignKey' => array(
 	),

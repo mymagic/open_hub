@@ -93,8 +93,8 @@ $this->menu = array(
 		array('name' => 'username', 'value' => '$data->user->username'),
 		// array('name'=>'Details', 'type'=>'raw', 'value'=>'$data->renderBackendDetails()', 'filter'=>false),
 		array('name' => 'details', 'type' => 'raw', 'value' => '$data->renderBackendDetails()'),
-		array('name' => 'stage', 'value' => '$data->formatEnumStage($data->stage)', 'filter' => $modelSubmission->getEnumStage(false, true)),
-		array('name' => 'status', 'value' => '$data->formatEnumStatus($data->status)', 'filter' => $modelSubmission->getEnumStatus(false, true)),
+		array('name' => 'stage', 'type' => 'raw', 'value' => '$data->renderStage()', 'filter' => $modelSubmission->getEnumStage(false, true)),
+		array('name' => 'status', 'type' => 'raw', 'value' => '$data->renderStatus()', 'filter' => $modelSubmission->getEnumStatus(false, true)),
 		array('name' => 'date_submitted', 'value' => 'Html::formatDateTimezone($data->date_submitted,  "long", "medium", "-", $data->form->timezone)', 'filter' => false),
 
 		array(

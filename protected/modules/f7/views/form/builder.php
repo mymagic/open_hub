@@ -373,7 +373,7 @@
     getEventsForAction(time, aIdEdit, blockId, sId, aIdDel);
   }
 
-  function prepareRatingComponent(ui, time, id, sId, aIdEdit, aIdDel, blockId)
+  function prepareRatingComponent(ui, time, id, sId, aIdEdit, aIdDel, blockId, labelLow='Strongly Disagree', labelHigh='Strongly Agree')
   {
     var settingsHtml = getHtmlSettingsForRatingComponent(time);
 
@@ -398,8 +398,8 @@
                   '<div id="5-'+ time +'" style="border-right-width:1.5px;" class="rating col-xs-1 col-sm-2 col-md-2">5</div>'+
               '</div>' +
               '<div class="row">' +
-                '<div class="col-xs-4 nopadding"><small>Strongly Disagree</small></div>' +
-                '<div class="col-xs-3 text-right"><small>Strongly Agree</small></div>'+
+                '<div class="col-xs-4 nopadding"><small>'+labelLow+'</small></div>' +
+                '<div class="col-xs-3 text-right"><small>'+labelHigh+'</small></div>'+
               '</div>'+
             '<input type="hidden" id="voted-'+ time +'" name="voted-'+ time +'" value="">' +
         '</div>'+

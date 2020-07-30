@@ -5,16 +5,19 @@
  * This is the model class for table "form_submission".
  *
  * The followings are the available columns in table 'form_submission':
-			 * @property integer $id
-			 * @property string $code
-			 * @property string $form_code
-			 * @property integer $user_id
-			 * @property string $json_data
-			 * @property string $status
-			 * @property string $stage
-			 * @property integer $date_submitted
-			 * @property integer $date_added
-			 * @property integer $date_modified
+	* @property integer $id
+	* @property string $code
+	* @property string $form_code
+	* @property integer $user_id
+	* @property string $json_data
+	* @property string $status
+	* @property string $stage
+	* @property integer $date_submitted
+	* @property integer $date_added
+	* @property integer $date_modified
+	* @property string $json_extra
+	* @property string $process_by
+	* @property integer $date_processed
  *
  * The followings are the available model relations:
  * @property Form $form
@@ -31,11 +34,12 @@
  	public $edate_added;
  	public $sdate_modified;
  	public $edate_modified;
- 	public $username;
- 	public $details;
+ 	public $sdate_processed;
+ 	public $edate_processed;
 
  	// json
  	public $jsonArray_data;
+ 	public $jsonArray_extra;
 
  	public function init()
  	{
@@ -65,13 +69,14 @@
  		// will receive user inputs.
  		return array(
 			array('code, form_code, stage', 'required'),
-			array('user_id, date_submitted, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('user_id, date_submitted, date_added, date_modified, date_processed', 'numerical', 'integerOnly' => true),
 			array('code, form_code', 'length', 'max' => 64),
 			array('status', 'length', 'max' => 6),
 			array('stage', 'length', 'max' => 255),
+			array('process_by', 'length', 'max' => 128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, form_code, username, details, json_data, status, stage, date_submitted, date_added, date_modified, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified', 'safe', 'on' => 'search'),
+			array('id, code, form_code, user_id, json_data, status, stage, date_submitted, date_added, date_modified, json_extra, process_by, date_processed, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified, sdate_processed, edate_processed', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -110,6 +115,9 @@
 		'date_submitted' => Yii::t('app', 'Date Submitted'),
 		'date_added' => Yii::t('app', 'Date Added'),
 		'date_modified' => Yii::t('app', 'Date Modified'),
+		'json_extra' => Yii::t('app', 'Json Extra'),
+		'process_by' => Yii::t('app', 'Process By'),
+		'date_processed' => Yii::t('app', 'Date Processed'),
 		);
 
  		// meta
@@ -138,17 +146,12 @@
  		// @todo Please modify the following code to remove attributes that should not be searched.
 
  		$criteria = new CDbCriteria;
- 		$criteria->with = array('user');
+
  		$criteria->compare('id', $this->id);
  		$criteria->compare('code', $this->code, true);
  		$criteria->compare('form_code', $this->form_code, true);
- 		$criteria->compare('user.username', $this->username, true);
- 		//$criteria->compare('json_data',$this->startup_search, true);
- 		//$criteria->compare('json_data',$this->json_data,true);
- 		$tmp = $this->details;
- 		if (!empty($this->details)) {
- 			$criteria->addSearchCondition('json_data', $this->details);
- 		}
+ 		$criteria->compare('user_id', $this->user_id);
+ 		$criteria->compare('json_data', $this->json_data, true);
  		$criteria->compare('status', $this->status);
  		$criteria->compare('stage', $this->stage, true);
  		if (!empty($this->sdate_submitted) && !empty($this->edate_submitted)) {
@@ -166,21 +169,17 @@
  			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
  			$criteria->addCondition(sprintf('date_modified >= %s AND date_modified < %s', $sTimestamp, $eTimestamp));
  		}
+ 		$criteria->compare('json_extra', $this->json_extra, true);
+ 		$criteria->compare('process_by', $this->process_by, true);
+ 		if (!empty($this->sdate_processed) && !empty($this->edate_processed)) {
+ 			$sTimestamp = strtotime($this->sdate_processed);
+ 			$eTimestamp = strtotime("{$this->edate_processed} +1 day");
+ 			$criteria->addCondition(sprintf('date_processed >= %s AND date_processed < %s', $sTimestamp, $eTimestamp));
+ 		}
 
  		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
-
-			//'sort' => array('defaultOrder' => 't.id DESC'),
-
-			'sort' => array(
-				'attributes' => array(
-					'username' => array(
-						'asc' => 'user.username',
-						'desc' => 'user.username DESC',
-					),
-					'*',
-				),
-			),
+			'sort' => array('defaultOrder' => 't.id DESC'),
 		));
  	}
 
@@ -202,6 +201,10 @@
 			'fDateAdded' => $this->renderDateAdded(),
 			'dateModified' => $this->date_modified,
 			'fDateModified' => $this->renderDateModified(),
+			'jsonExtra' => $this->json_extra,
+			'processBy' => $this->process_by,
+			'dateProcessed' => $this->date_processed,
+			'fDateProcessed' => $this->renderDateProcessed(),
 		);
 
  		// many2many
@@ -232,6 +235,11 @@
  	public function renderDateModified()
  	{
  		return Html::formatDateTimezone($this->date_modified, 'standard', 'standard', '-', $this->getTimezone());
+ 	}
+
+ 	public function renderDateProcessed()
+ 	{
+ 		return Html::formatDateTimezone($this->date_processed, 'standard', 'standard', '-', $this->getTimezone());
  	}
 
  	public function scopes()
@@ -290,6 +298,11 @@
  					$this->date_submitted = strtotime($this->date_submitted);
  				}
  			}
+ 			if (!empty($this->date_processed)) {
+ 				if (!is_numeric($this->date_processed)) {
+ 					$this->date_processed = strtotime($this->date_processed);
+ 				}
+ 			}
 
  			// auto deal with date added and date modified
  			if ($this->isNewRecord) {
@@ -303,16 +316,35 @@
  			if ($this->json_data == 'null') {
  				$this->json_data = null;
  			}
+ 			$this->json_extra = json_encode($this->jsonArray_extra);
+ 			if ($this->json_extra == 'null') {
+ 				$this->json_extra = null;
+ 			}
 
  			// save as null if empty
- 			if (empty($this->user_id) && $this->user_id != 0) {
+ 			if (empty($this->user_id) && $this->user_id !== 0) {
  				$this->user_id = null;
  			}
  			if (empty($this->json_data)) {
  				$this->json_data = null;
  			}
- 			if (empty($this->date_submitted) && $this->date_submitted != 0) {
+ 			if (empty($this->date_submitted) && $this->date_submitted !== 0) {
  				$this->date_submitted = null;
+ 			}
+ 			if (empty($this->date_added) && $this->date_added !== 0) {
+ 				$this->date_added = null;
+ 			}
+ 			if (empty($this->date_modified) && $this->date_modified !== 0) {
+ 				$this->date_modified = null;
+ 			}
+ 			if (empty($this->json_extra)) {
+ 				$this->json_extra = null;
+ 			}
+ 			if (empty($this->process_by)) {
+ 				$this->process_by = null;
+ 			}
+ 			if (empty($this->date_processed) && $this->date_processed !== 0) {
+ 				$this->date_processed = null;
  			}
 
  			return true;
@@ -329,6 +361,7 @@
  		// boolean
 
  		$this->jsonArray_data = json_decode($this->json_data);
+ 		$this->jsonArray_extra = json_decode($this->json_extra);
 
  		parent::afterFind();
  	}

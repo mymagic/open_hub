@@ -48,10 +48,10 @@ class Form extends FormBase
 			array('title', 'length', 'max' => 255),
 			array('timezone', 'length', 'max' => 128),
 			// ys: override to add json_structure and json_stage as they are not standard way the framework handle json (do not have a fixed structure)
-			array('text_short_description, text_note, json_structure, json_stage, json_event_mapping', 'safe'),
+			array('text_short_description, text_note, json_structure, json_stage, json_event_mapping, json_extra', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, slug, date_open, date_close, json_structure, json_stage, is_multiple, is_login_required, title, text_short_description, is_active, timezone, date_modified, date_added, sdate_open, edate_open, sdate_close, edate_close, sdate_modified, edate_modified, sdate_added, edate_added', 'safe', 'on' => 'search'),
+			array('id, code, slug, date_open, date_close, json_structure, json_stage, json_extra, is_multiple, is_login_required, title, text_short_description, is_active, timezone, date_modified, date_added, sdate_open, edate_open, sdate_close, edate_close, sdate_modified, edate_modified, sdate_added, edate_added', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -119,6 +119,7 @@ class Form extends FormBase
 		$return['json_structure'] = Yii::t('app', 'Form Structure');
 		$return['json_stage'] = Yii::t('app', 'Stage Pipeline');
 		$return['json_event_mapping'] = Yii::t('app', 'Event Mapping Instruction');
+		$return['json_extra'] = Yii::t('app', 'Extra');
 
 		return $return;
 	}
@@ -159,15 +160,6 @@ class Form extends FormBase
 			$params['slug'] = $this->slug;
 
 			return Yii::app()->createAbsoluteUrl('f7/publish/edit', $params);
-		}
-	}
-
-	public function getPublicUrlConfirm($params = array())
-	{
-		if (!empty($this->slug)) {
-			$params['slug'] = $this->slug;
-
-			return Yii::app()->createAbsoluteUrl('f7/publish/confirm', $params);
 		}
 	}
 
@@ -267,12 +259,12 @@ class Form extends FormBase
 		return '<form class="col-lg-9"></form>';
 	}
 
-	public function slug2obj($slug)
+	public static function slug2obj($slug)
 	{
 		return Form::model()->findByAttributes(array('slug' => $slug));
 	}
 
-	public function code2obj($code)
+	public static function code2obj($code)
 	{
 		return Form::model()->findByAttributes(array('code' => $code));
 	}
@@ -391,7 +383,6 @@ class Form extends FormBase
 			'fDateModified' => $this->renderDateModified(),
 			'type' => $this->type,
 			'textNote' => $this->text_note,
-			'jsonEventMapping' => $this->json_event_mapping,
 			'fCountDraftSubmissions' => $this->countDraftFormSubmissions(),
 			'fCountSubmittedSubmissions' => $this->countSubmittedFormSubmissions(),
 			'fCountWorkflowSubmissions' => $this->countWorkflowFormSubmissions(),
@@ -402,6 +393,9 @@ class Form extends FormBase
 		}
 		if (!in_array('-jsonEventMapping', $params)) {
 			$return['jsonEventMapping'] = $this->json_event_mapping;
+		}
+		if (!in_array('-jsonExtra', $params)) {
+			$return['jsonExtra'] = $this->json_extra;
 		}
 
 		// many2many
@@ -469,5 +463,45 @@ class Form extends FormBase
 		}
 
 		return $return;
+	}
+
+	public function renderPublishViewOkButton($controller, $submission)
+	{
+		if ((isset($this->jsonArray_extra->viewControls) && isset($this->jsonArray_extra->viewControls->publishViewOkButton))) {
+			$urlParamArray = null;
+			if (!empty($this->jsonArray_extra->viewControls->publishViewOkButton->urlParams)) {
+				// eg: Array ( [0] => stdClass Object ( [id] => startup_id ) [1] => stdClass Object ( [startup] => startup ) )
+				foreach ($this->jsonArray_extra->viewControls->publishViewOkButton->urlParams as $urlParamItem) {
+					$urlParamArray[$urlParamItem->key] = $submission->jsonArray_data->{$urlParamItem->map};
+				}
+			}
+			$urlOk = $controller->createUrl($this->jsonArray_extra->viewControls->publishViewOkButton->url, $urlParamArray);
+
+			return sprintf('<div ><a class="btn btn-md btn-primary" href="%s">%s</a></div>', $urlOk, Yii::t('core', 'Ok'));
+		}
+
+		return '';
+	}
+
+	public function hasHook($hookCode)
+	{
+		if (isset($this->jsonArray_extra->hooks)) {
+			foreach ($this->jsonArray_extra->hooks as $hook) {
+				if ($hook->code == $hookCode) {
+					return $hook;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public function execHook($hookCode, $params)
+	{
+		if ($hook = $this->hasHook($hookCode)) {
+			return call_user_func($hook->call, $params);
+		}
+
+		return false;
 	}
 }

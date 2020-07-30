@@ -42,6 +42,8 @@
 				</div>
 			</div>
 			
+			<?php if ((isset($model->jsonArray_extra->viewControls) && $model->jsonArray_extra->viewControls->hideAvailableFormForIntake)): ?>
+			<?php else: ?>
 			<div>
 			<h5>Available forms for this intake</h5>
 			<ul class="job_provider_vacancy">
@@ -57,6 +59,7 @@
 				
 			</ul>
 			</div>
+			<?php endif; ?>
 			
 		</div>
 	</div>

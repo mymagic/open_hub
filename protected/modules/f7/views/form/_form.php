@@ -177,6 +177,14 @@
 		</div>
 	</div>
 
+	<div class="form-group <?php echo $model->hasErrors('json_extra') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'json_extra'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextArea($model, 'json_extra', array('rows' => 4)); ?>
+			<?php echo $form->bsError($model, 'json_extra'); ?>
+		</div>
+	</div>
+
 
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">

@@ -113,4 +113,10 @@ class StartupStage extends StartupStageBase
 	{
 		return StartupStage::model()->find('t.title=:title', array(':title' => $title));
 	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
+	}
 }

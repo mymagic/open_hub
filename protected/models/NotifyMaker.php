@@ -621,4 +621,113 @@ class NotifyMaker
 
 		return $return;
 	}
+
+	public static function organization_reminderNtisForm($organization, $ntisFormSolution, $userEmail)
+	{
+		$return['title'] = $return['message'] = Yii::t('notify', "Reminder for Application Submission", array('{title}' => $organization->title));
+
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['userEmail'] = $userEmail;
+
+		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_reminderNtisFormSolution', $params, true);
+
+		return $return;
+	}
+
+	/**
+	 * this function called in NtisFormSolutionController
+	 * @param object $organization model Organization
+	 * @param object $ntisFormSolution model NtisFormSolution
+	 * @param string $userEmail recipient email
+	 * 
+	 * @return array 
+	 */
+	public static function admin_applicationProcessNtisFormSolution($organization, $ntisFormSolution, $userEmail)
+	{
+		$return['title'] = $return['message'] = Yii::t('notify', "NTIS Application Status Update");
+
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['userEmail'] = $userEmail;
+
+		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_applicationProcessNtisFormSolution', $params, true);
+		
+		return $return;
+	}
+
+	/**
+	 * this function called in NtisFormSolutionController
+	 * @param object $organization model Organization
+	 * @param object $ntisFormSolution model NtisFormSolution
+	 * @param string $userEmail recipient email
+	 * 
+	 * @return array 
+	 */
+	public static function admin_applicationRejectNtisFormSolution($organization, $ntisFormSolution, $userEmail)
+	{
+		$return['title'] = $return['message'] = Yii::t('notify', "NTIS Application Status Result");
+
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['cohortNo'] = HubNtis::getCohortNo($ntisFormSolution->batch_key);
+		$params['userEmail'] = $userEmail;
+
+		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_applicationRejectNtisFormSolution', $params, true);
+		
+		return $return;
+	}
+	
+	/**
+	 * this function called in NtisFormSolutionController
+	 * @param object $organization model Organization
+	 * @param object $ntisFormSolution model NtisFormSolution
+	 * @param string $userEmail recipient email
+	 * 
+	 * @return array 
+	 */
+	public static function admin_commentNtisFormSolution($organization, $ntisFormSolution, $userEmail)
+	{
+		$return['title'] = $return['message'] = Yii::t('notify', "Notification for Comment");
+
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['userEmail'] = $userEmail;
+
+		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_commentNtisFormSolution', $params, true);
+		
+		return $return;
+	}
+
+	/**
+	 * this function called in NtisFormSolutionController::actionEndorseEsc
+	 * @param object $organization model Organization
+	 * @param object $ntisFormSolution model NtisFormSolution
+	 * @param string $userEmail recipient email
+	 * 
+	 * @return array 
+	 */
+	public static function organization_endorseNtisForm($organization, $ntisFormSolution, $userEmail)
+	{
+		$return['title'] = $return['message'] = Yii::t('notify', "Thanks for your submission", array('{title}' => $organization->title));
+
+		$params['organizationTitle'] = $organization->title;
+		$params['applicationSerialNo'] = $ntisFormSolution->code;
+		$params['userEmail'] = $userEmail;
+		
+		if($ntisFormSolution->getSecretariatDecision()=='accept')
+		{
+			$params['sandbox'] = $ntisFormSolution->formatEnumStatus($ntisFormSolution->esc_sandbox);
+			$return['title'] = "NTIS Screening Status Update";
+			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_endorseAcceptNtisFormSolution', $params, true);
+		}
+		else // reject
+		{
+			$params['reason'] = NtisActionLog::getMessageByActionStatus($ntisFormSolution, 'esc-not-for-sandbox');
+			// $params['reason'] = $ntisFormSolution->text_note;
+			$return['title'] = "NTIS Screening Status Result";
+			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_endorseRejectNtisFormSolution', $params, true);
+		}
+		return $return;
+	}
 }

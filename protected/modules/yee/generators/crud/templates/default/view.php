@@ -154,7 +154,7 @@ if (!empty($spatials)): ?><?php foreach ($spatials as $spatial): ?>
 	<?php $counter = 0; foreach (Yii::app()->params['languages'] as $languageKey => $languageName): ?>
 	<?php echo "\n\t<?php if(array_key_exists('{$languageKey}', Yii::app()->params['backendLanguages'])): ?>"; ?><li class="<?php if ($counter == 0) {
 	echo 'active';
-}?>"><a href="#pane-<?php echo $languageKey ?>" data-toggle="tab"><?php echo "<?php echo Yii::app()->params['backendLanguages']['{$languageKey}']; ?>" ?></a></li><?php echo '<?php endif; ?>'; ?>
+}?>"><a href="#pane-<?php echo $languageKey ?>" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo "<?php echo Yii::app()->params['backendLanguages']['{$languageKey}']; ?>" ?></a></li><?php echo '<?php endif; ?>'; ?>
 	<?php $counter++; ?><?php endforeach; ?>
 	
 </ul>

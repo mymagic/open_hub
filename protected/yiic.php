@@ -18,6 +18,10 @@
 // change the following paths if necessary
 $yiic = dirname(__FILE__) . '/../framework/yiic.php';
 include_once dirname(__FILE__) . '/config/phpini.php';
+$overridePhpIniFilePath = dirname(__FILE__) . '/overrides/config/phpini.php';
+if (file_exists($overridePhpIniFilePath)) {
+	include $overridePhpIniFilePath;
+}
 
 require_once dirname(__FILE__) . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../protected');

@@ -100,9 +100,9 @@ class Intake extends IntakeBase
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'form2intakes' => array(self::HAS_MANY, 'Form2Intake', 'intake_id'),
+			'form2intakes' => array(self::HAS_MANY, 'Form2Intake', 'intake_id', 'order' => 'ordering ASC'),
 			'forms' => array(self::HAS_MANY, 'Form', array('form_id' => 'id'), 'through' => 'form2intakes'),
-			'activeForms' => array(self::HAS_MANY, 'Form', array('form_id' => 'id'), 'through' => 'form2intakes', 'condition' => 'activeForms.is_active=1'),
+			'activeForms' => array(self::HAS_MANY, 'Form', array('form_id' => 'id'), 'through' => 'form2intakes', 'condition' => 'activeForms.is_active=1', 'order' => 'form2intakes.ordering ASC'),
 
 			'impacts' => array(self::MANY_MANY, 'Impact', 'impact2intake(intake_id, impact_id)'),
 			'sdgs' => array(self::MANY_MANY, 'Sdg', 'sdg2intake(intake_id, sdg_id)'),

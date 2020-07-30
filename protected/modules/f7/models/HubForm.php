@@ -73,6 +73,7 @@ class HubForm
 	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm = 'frontend')
 	{
 		$htmlBody = '';
+		$htmlForm = '';
 		$decoded = json_decode($json, true);
 		$decodedData = empty($data) ? null : json_decode($data, true);
 		$formType = strtolower($decoded['form_type']);
@@ -114,16 +115,16 @@ class HubForm
 		}
 
 		if ($formType === 'horizontal') {
-			$htmlForm = sprintf('
-            <div style="font-size:0">
-            <span id="auto-save-span" style="color:gray">Form saved...</span>
-            </div>
+			if ($isEnabled) {
+				$htmlForm .= ' <div style="font-size:0">
+						<span id="auto-save-span" style="color:gray">Form saved (except upload files)...</span>
+						</div>
+						<div class="alert alert-error" id="alert-autosave">
+							<span>Form saved (except upload files)...</span>
+						</div>';
+			}
 
-            <div class="alert alert-error" id="alert-autosave">
-                <span>
-                    Form saved...
-                </span>
-            </div>
+			$htmlForm .= sprintf('
             <form id="f7-form" class="form-horizontal" action="%s" method="%s" enctype="multipart/form-data">
                 <input type="hidden" name="%s" value="%s" />
                 %s
@@ -133,42 +134,15 @@ class HubForm
               %s
             ', $actionURL, 'POST', $csrfTokenName, $csrfToken, $htmlBody, $jsTags);
 		} else {
-			$htmlForm = sprintf('
+			if ($isEnabled) {
+				$htmlForm .= '<span id="auto-save-span" style="color:gray">Form saved...</span>';
+			}
 
-            <span id="auto-save-span" style="color:gray">Form saved...</span>
-
+			$htmlForm .= sprintf('
             <form id="f7-form" action="%s" method="%s" enctype="multipart/form-data">
                 <input type="hidden" name="%s" value="%s" />
                 %s
             </form>
-            <style>    
-            input[type=checkbox] { 
-                display:none;
-            }
-            
-            input[type=checkbox] + label:before {
-                font-family: FontAwesome;
-                display: inline-block;
-                content: "\f096";
-                letter-spacing: 10px;
-                cursor: pointer;
-            }
-            
-            input[type=checkbox]:checked + label:before { 
-                content: "\f046";
-            } 
-            
-            input[type=checkbox]:checked + label:before { 
-                letter-spacing: 8px;
-            }
-            
-            input[type=radio] + label,
-            input[type=checkbox]+ label { 
-                display: block;
-                padding-left: 1.5em;
-                text-indent: -.8em;
-            }
-            </style>
               %s
                 ', $actionURL, 'POST', $csrfTokenName, $csrfToken, $htmlBody, $jsTags);
 		}
@@ -187,6 +161,43 @@ class HubForm
 		}
 
 		return $htmlForm;
+	}
+
+	public static function isUrlExists($url)
+	{
+		$headers = get_headers($url, 0);
+
+		return stripos($headers[0], '200 OK') ? true : false;
+	}
+
+	public static function notifyMaker_user_afterSubmitForm($submission)
+	{
+		$form = $submission->form;
+
+		$params['formType'] = ($form->type == '1') ? 'survey' : 'application';
+		$params['intakeTitle'] = $form->getIntake()->title;
+		$params['submissionTitle'] = !empty($intakeTitle) ? $intakeTitle : $form->title;
+		$params['submittedData'] = $submission->renderSimpleFormattedHtml();
+
+		$notifyMaker['title'] = 'You have successfuly submitted your form.';
+		$notifyMaker['message'] = 'You have successfuly submitted your form.';
+		$notifyMaker['content'] = Yii::app()->getController()->renderPartial('application.modules.f7.views._email.user_afterSubmitForm', $params, true);
+
+		return $notifyMaker;
+	}
+
+	public static function notifyMaker_user_afterChangedSubmit2Draft($submission)
+	{
+		$form = $submission->form;
+
+		$params['dateExpiredFormatted'] = Html::formatDateTimezone($form->date_close, 'standard', 'standard', '-', $form->timezone);
+		$params['url'] = Yii::app()->createAbsoluteUrl('f7/publish/view', array('slug' => $form->slug, 'sid' => $submission->id));
+
+		$notifyMaker['title'] = 'Application status was changed to draft.';
+		$notifyMaker['message'] = 'Application status was changed to draft.';
+		$notifyMaker['content'] = Yii::app()->getController()->renderPartial('application.modules.f7.views._email.user_afterChangedSubmit2Draft', $params, true);
+
+		return $notifyMaker;
 	}
 
 	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
@@ -428,7 +439,7 @@ class HubForm
 			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
 		}
 
-		$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', $params['css'], $innerHtml);
+		$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', self::formatCss($params['css'], $isEnabled), $innerHtml);
 
 		return $html;
 	}
@@ -570,6 +581,7 @@ class HubForm
 		}
 
 		$disable = $isEnabled ? '' : 'disabled';
+		$btns = '';
 
 		foreach ($params['items'] as $btn) {
 			if ($btn['value'] === 'Draft') {
@@ -592,14 +604,25 @@ class HubForm
 
 	protected function getTextboxTag($isEnabled, $params, $decodedData, $linkText = '')
 	{
+		$preset = Yii::app()->request->getQuery('preset');
+		if (isset($preset) && isset($preset[$params['name']])) {
+			$value = $params['value'] = $preset[$params['name']];
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 
-		$modelClass = $params['model_mapping'][$params['name']];
+		if (isset($params['model_mapping'])) {
+			$modelClass = $params['model_mapping'][$params['name']];
+			$mappedModelValue = self::getMappedModelData($modelClass);
+			if (isset($mappedModelValue)) {
+				$value = $mappedModelValue;
+			}
+		} else {
+			if (isset($decodedData[$params['name']])) {
+				$value = $decodedData[$params['name']];
+			}
+		}
 
-		$mappedModelValue = self::getMappedModelData($modelClass);
-
-		$value = empty($mappedModelValue) ? empty($decodedData[$params['name']]) ?
-		$params['value'] : $decodedData[$params['name']] : $mappedModelValue;
 		$html = '';
 
 		$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
@@ -746,14 +769,22 @@ class HubForm
 
 	protected function getListTag($isEnabled, $params, $decodedData, $realm = 'frontend')
 	{
-		$dataClass = $params['model_mapping'][$params['name']];
-
-		$orgs = self::getMappedModelData($dataClass, $params['model_mapping']);
-
+		$html = '';
+		$options = '';
 		$disable = $isEnabled ? '' : 'disabled';
 
-		if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
-			return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
+		$preset = Yii::app()->request->getQuery('preset');
+		if (isset($preset) && isset($preset[$params['name']])) {
+			$value = $params['selected'] = $preset[$params['name']];
+		}
+
+		if (isset($params['model_mapping'])) {
+			$dataClass = $params['model_mapping'][$params['name']];
+			$orgs = self::getMappedModelData($dataClass, $params['model_mapping']);
+
+			if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
+				return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
+			}
 		}
 
 		if ($realm == 'backend' && !$isEnabled && strtolower($dataClass) === 'organization') {
@@ -776,7 +807,7 @@ class HubForm
 				}
 			} else {
 				foreach ($orgs as $item) {
-					$item = ucwords(strtolower($item));
+					// $item = ucwords(strtolower($item)); // ys: need to remove this line although might break as it should not be formatted and can break preset
 					if ($selectedItem === $item) {
 						$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
 					} else {
@@ -800,85 +831,60 @@ class HubForm
 
 	protected function getCheckboxTag($isEnabled, $params, $decodedData)
 	{
+		$html = '';
 		$disable = $isEnabled ? '' : 'disabled';
 
-		$checked = 1;
-		if (!empty($decodedData[$params['name']])) {
-			$checked = 1;
-		} else {
-			if ($params['checked'] == 0) {
-				$checked = 0;
-			}
+		if (!empty($params['hint'])) {
+			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
-		if ($params['checked'] == 1) {
-			$checked = 1;
-		}
+		// not group checkbox
+		if ($params['isGroup'] == 0) {
+			$checked = 0;
 
-		if ($params['isgroup'] == 0) {
-			if (empty($checked)) {
-				$html = sprintf(
-					'
-                <div class="form-check">
-                <input %s type="checkbox" style="%s" class=" %s" type="checkbox" value="%s" name="%s" id="%s">
-                <label class="form-check-label" for="%s">
-                %s
-                </label>
-                </div>',
-				$disable,
-					$params['style'],
-					$params['css'],
-					$params['value'],
-					$params['name'],
-					$params['name'],
-					$params['name'],
-					$params['text']
-				);
+			if (!empty($decodedData[$params['name']])) {
+				$checked = 1;
 			} else {
-				$html = sprintf(
-					'
-                    <div class="form-check">
-                    <input %s type="checkbox" style="%s" class="selectives form-check-input %s" type="checkbox" value="%s" checked="%s" name="%s" id="%s">
-                    <label class="form-check-label" for="%s">
-                    %s
-                    </label>
-                    </div>',
-					$disable,
-					$params['style'],
-					$params['css'],
-					$params['value'],
-					$checked,
-					$params['name'],
-					$params['name'],
-					$params['name'],
-					$params['text']
-				);
+				if ($params['checked'] == 0) {
+					$checked = 0;
+				}
 			}
-		} elseif ($params['isgroup'] == 1) {
-			$n = 0;
-			$checkboxes = '';
-			foreach ($params['items'] as $chkbox) {
-				if ($chkbox['checked'] == 1) {
-					$checkboxes = $checkboxes . '<input class="selectives" type="checkbox"  checked="1" name="option[]" value="' . $chkbox['text'] . '-' . $n . '"/>' . $chkbox['text'] . '<br>';
+
+			if ($params['checked'] == 1) {
+				$checked = 1;
+			}
+
+			$html .= sprintf(
+				'<label class="nobold"><input class="selectives %s" type="checkbox" checked="%s" name="%s" value="%s" style="%s" %s /><div class="checkbox-textChunk-r">%s</div></label>',
+				$params['css'],
+				$checked,
+				$params['name'],
+				$params['value'],
+				$params['style'],
+				$disable,
+				$params['text']
+			);
+		} // group checkbox
+		elseif ($params['isGroup'] == 1) {
+			$htmlCheckboxes = '';
+			if ($params['isInlineItems']) {
+				$params['css'] .= ' checkbox-inline';
+			}
+
+			foreach ($params['items'] as $checkboxItem) {
+				if ($checkboxItem['checked'] == 1 || in_array($checkboxItem['text'], $decodedData[$params['name']])) {
+					$htmlCheckboxes = $htmlCheckboxes . sprintf('<label class="nobold %s"><input class="selectives" type="checkbox"  checked="checked" name="%s[]" value="%s" %s />%s</label>', $params['css'], $params['name'], $checkboxItem['text'], $disable, $checkboxItem['text']);
 				} else {
-					$checkboxes = $checkboxes . '<input class="selectives" type="checkbox"  name="option[]" value="' . $chkbox['text'] . '-' . $n . '"/>' . $chkbox['text'] . '<br>';
+					$htmlCheckboxes = $htmlCheckboxes . sprintf('<label class="nobold %s"><input class="selectives" type="checkbox"  name="%s[]" value="%s" %s />%s</label>', $params['css'], $params['name'], $checkboxItem['text'], $disable, $checkboxItem['text']);
 				}
 
-				++$n;
+				if (!$params['isInlineItems']) {
+					$htmlCheckboxes .= '<br />';
+				}
 			}
-
-			$required = $params['required'] === 1 ? "<label><font color='red'>*</font></label>" : '';
-
-			$html = sprintf('
-            %s
-            <div class="form-group options">
-                <label class="">%s</label>
-                <div class="">
-                    %s
-                </div>
-            </div>', $required, $params['value'], $checkboxes);
+			$html .= sprintf('<div>%s</div>', $htmlCheckboxes);
 		} else {
-			//structure is wrong or missing isgroup property.
+			//structure is wrong or missing isGroup property.
 		}
 
 		return $html;
@@ -1016,13 +1022,13 @@ class HubForm
 		}
 		$disable = $isEnabled ? '' : 'disabled';
 
-		//'uploadfile.aws_path'
+		// stupid hardcoded 'uploadfile.aws_path'
 		$awsPath = $params['name'] . '.aws_path';
 		$value = empty($decodedData[$awsPath]) ? '' : $decodedData[$awsPath];
 		$relativeUrl = $value;
 
+		// ys: this should be removed, using session is stupid
 		$session = Yii::app()->session;
-
 		if (empty($value) && !empty($session['uploadfiles'][$awsPath])) {
 			$value = $session['uploadfiles'][$awsPath];
 		}
@@ -1038,8 +1044,10 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
-		$html .= empty($value) ? '' : sprintf('<div><p>Attached File:</p><ul><li>
-    %s</li></ul></div>', CHtml::link(CHtml::encode($value), array('publish/download/' . basename($relativeUrl)), array('target' => '_blank')));
+		if (!empty($value)) {
+			$html .= sprintf('<div><p>Attached File:</p><ul><li>
+			%s</li></ul></div>', CHtml::link(CHtml::encode($value), Yii::app()->createAbsoluteUrl('/f7/publish/download/', array('filename' => basename($relativeUrl))), array('target' => '_blank')));
+		}
 		$html .= '</div>';
 
 		return $html;
@@ -1051,6 +1059,14 @@ class HubForm
 		$seed = explode('-', $params['name'])[1];
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 		$html = '';
+		$labelLow = 'Strongly Disagree';
+		if (isset($params['label_low'])) {
+			$labelLow = $params['label_low'];
+		}
+		$labelHigh = 'Strongly Agree';
+		if (isset($params['label_high'])) {
+			$labelHigh = $params['label_high'];
+		}
 
 		$cells = '';
 		if (empty($value)) {
@@ -1102,8 +1118,8 @@ class HubForm
         <div class="container margin-top-md" style="max-width:600px; margin:0">
             <div class="row"><div id="rating-%s">%s</div></div>
             <div class="row">
-                <div class="rating-label nopadding col-xs-6"><small>&larr;Strongly Disagree</small></div>
-                <div class="rating-label col-xs-4 nopadding" style="text-align:right;"><small>Strongly Agree&rarr;</small></div>
+                <div class="rating-label nopadding col-xs-6"><small>&larr;%s</small></div>
+                <div class="rating-label col-xs-4 nopadding" style="text-align:right;"><small>%s&rarr;</small></div>
             </div>
             <input type="hidden" id="voted-%s" name="voted-%s" value="%s">
         </div>
@@ -1127,7 +1143,7 @@ class HubForm
                     $(\'#\' + e.target.id).css("color", "white");
             }
             });
-        </script>', $seed, $cells, $seed, $seed, $value, $seed, $seed);
+        </script>', $seed, $cells, $labelLow, $labelHigh, $seed, $seed, $value, $seed, $seed);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
@@ -1191,9 +1207,15 @@ class HubForm
 	//Either the text of error should be identified in json as error property
 	//or we should specify here.
 	// exiang: this is stupid, @mohammad should not break label and form element as different element. told him so but never listen. now is hard to get label
-	protected function validate($element, $value, $error, $validation, $postedData, $jScripts)
+	// element: label, headline, upload...
+	// value: field name
+	// error: preset error message
+	// validation: preset validation code, eg: url in textbox field
+	// postedData: array of data from POST
+	// jScripts:
+	// csvLabel: csv label, optional
+	protected function validate($element, $value, $error, $validation, $postedData, $jScripts, $csvLabel = '')
 	{
-		// ys: upload required has bug when submit. temporary fix it by disable required check on it
 		if ($element === 'label' || $element === 'headline' || $element === 'upload') {
 			return;
 		}
@@ -1202,17 +1224,19 @@ class HubForm
 			return;
 		}
 
+		$labelTitle = !empty($csvLabel) ? $csvLabel : $value;
+
 		if ($element === 'radio') {
 			if (empty($postedData[$value])) {
-				return $error;
+				return empty($error) ? "$labelTitle is required." : $error;
 			}
 		} elseif ($element === 'checkbox') {
-			if (!array_key_exists('option', $postedData)) {
-				return empty($error) ? 'At least one checkbox must be selected.' : $error;
+			if (empty($postedData[$value])) {
+				return empty($error) ? sprintf("At least one item must be checked for field '%s'.", $labelTitle) : $error;
 			}
 		} elseif ($element === 'email') {
 			if (empty($postedData[$value])) {
-				return $error;
+				return empty($error) ? "$labelTitle is required." : $error;
 			}
 
 			if (empty(filter_var($postedData[$value], FILTER_VALIDATE_EMAIL))) {
@@ -1220,7 +1244,7 @@ class HubForm
 			}
 		} elseif ($element === 'phone') {
 			if (empty($postedData[$value])) {
-				return $error;
+				return empty($error) ? "$labelTitle is required." : $error;
 			}
 
 			if (!is_numeric($postedData[$value])) {
@@ -1232,16 +1256,20 @@ class HubForm
 			}
 		} elseif ($element === 'textbox' && !empty($validation)) {
 			if (strtolower($validation) === 'url' && !filter_var($postedData[$value], FILTER_VALIDATE_URL)) {
-				return "Please enter a valid URL for the field $value.";
+				return "Please enter a valid URL for the field $labelTitle.";
 			}
-		} else {
+		} /*elseif ($element === 'upload') {
 			if (empty($postedData[$value])) {
-				return empty($error) ? "$value is required." : $error;
+				return empty($error) ? "$labelTitle is required." : $error;
+			}
+		}*/ else {
+			if (empty($postedData[$value])) {
+				return empty($error) ? "$labelTitle is required." : $error;
 			}
 		}
 	}
 
-	protected function isControlHiddenOrDisable($value, $postedData, $jScripts)
+	protected static function isControlHiddenOrDisable($value, $postedData, $jScripts)
 	{
 		foreach ($jScripts as $script) {
 			if (in_array($value, $script['items']) && ($script['action'] === 'hide' || $script['action'] === 'disable')) {
@@ -1258,7 +1286,7 @@ class HubForm
 		return false;
 	}
 
-	protected function getMappedModelData($model, $mappingParams = '')
+	protected static function getMappedModelData($model, $mappingParams = '')
 	{
 		if (empty($model)) {
 			return '';
@@ -1392,19 +1420,19 @@ class HubForm
 
 	public static function getListOfExistingUploadControlsWithValue($jsonData)
 	{
-		$ret = array();
+		$return = array();
 		if (empty($jsonData)) {
-			return $ret;
+			return $return;
 		}
 
 		$dataObjArray = json_decode($jsonData, true);
 		foreach ($dataObjArray as $key => $value) {
 			if (preg_match('/uploadfile\..*/', $key)) {
-				$ret[$key] = $value;
+				$return[$key] = $value;
 			}
 		}
 
-		return $ret;
+		return $return;
 	}
 
 	public static function isForm2IntakeExists($formId, $intakeId)
@@ -1674,5 +1702,15 @@ class HubForm
 		}
 
 		return array('status' => $status, 'msg' => $msg, 'data' => $data);
+	}
+
+	public static function formatCss($cssClass, $isEnabled)
+	{
+		// readonly
+		if (!$isEnabled) {
+			return str_replace('hidden', '', $cssClass);
+		}
+
+		return $cssClass;
 	}
 }

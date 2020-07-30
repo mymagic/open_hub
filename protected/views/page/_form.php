@@ -51,9 +51,9 @@
 		
 
 	<ul class="nav nav-tabs">
-			<li class="active"><a href="#pane-en" data-toggle="tab">English</a></li>
-					<li class=""><a href="#pane-ms" data-toggle="tab">Bahasa</a></li>
-					<li class=""><a href="#pane-zh" data-toggle="tab">中文</a></li>
+			<li class="active"><a href="#pane-en" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">English</a></li>
+					<li class=""><a href="#pane-ms" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">Bahasa</a></li>
+					<li class=""><a href="#pane-zh" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">中文</a></li>
 				</ul>
 	<div class="tab-content">
 			<!-- English -->

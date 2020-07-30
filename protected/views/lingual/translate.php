@@ -20,7 +20,7 @@ $this->menu=array(
 
 <ul class="nav nav-tabs">
 <?php $lCounter = 0;  foreach (Yii::app()->params['languages'] as $lk => $lv): ?>
-	<li class="<?php echo ($lk == $lingual) ? 'active' : '' ?>"><a href="<?php echo $this->createUrl('lingual/translate', array('scope' => $scope, 'lingual' => $lk)) ?>"><?php echo $lv ?></a></li>
+	<li class="<?php echo ($lk == $lingual) ? 'active' : '' ?>"><a href="<?php echo $this->createUrl('lingual/translate', array('scope' => $scope, 'lingual' => $lk)) ?>" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $lv ?></a></li>
 	<?php $lCounter++; ?>
 <?php endforeach; ?>
 </ul>

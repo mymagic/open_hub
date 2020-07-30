@@ -31,7 +31,7 @@ $this->menu = array(
 <div class="row margin-top-2x"><div class="col col-sm-12">
     <ul class="nav nav-tabs" role="tablist">
         <?php foreach ($result as $key => $params): ?>
-        <li><a href="#<?php echo $key; ?>" role="tab" data-toggle="tab"><?php echo $params['tabLabel']; ?> <span class="badge badge-<?php echo $params['result']->totalItemCount > 0 ? 'primary' : 'default'; ?>"><?php echo $params['result']->totalItemCount; ?></span></a></li>
+        <li><a href="#<?php echo $key; ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $params['tabLabel']; ?> <span class="badge badge-<?php echo $params['result']->totalItemCount > 0 ? 'primary' : 'default'; ?>"><?php echo $params['result']->totalItemCount; ?></span></a></li>
         <?php endforeach; ?>
     </ul>
     <div class="tab-content white-bg">

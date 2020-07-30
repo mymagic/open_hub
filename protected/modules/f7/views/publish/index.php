@@ -1,16 +1,12 @@
-<?php 
-	$this->layoutParams['form'] = $model;
-	if ($model->type == 0) {
-		$this->renderPartial('_submissionPartial', array('model' => $model));
-	}
-?>
+<?php $this->layoutParams['form'] = $form; ?>
 
-<hr />
+<?php $submissionPartial = trim($this->renderPartial('_submissionPartial', array('model' => $form), true)); echo $submissionPartial; ?>
+<?php if (empty($submissionPartial)):?><hr /><?php endif; ?>
 
-<?php if ($model->is_login_required && Yii::app()->user->isGuest): ?>
-	<?php echo Notice::inline(Yii::t('notice', 'Please <a href="{url}">login now</a> to access this form', array('{url}' => $this->createUrl('/site/login', array('returnUrl' => $this->createAbsoluteUrl('/f7/publish/index/', array('slug' => $model->slug, ), 'https')))))) ?>
+<?php if ($form->is_login_required && Yii::app()->user->isGuest): ?>
+	<?php echo Notice::inline(Yii::t('notice', 'Please <a href="{url}">login now</a> to access this form', array('{url}' => $this->createUrl('/site/login', array('returnUrl' => $this->createAbsoluteUrl('/f7/publish/index/', array('slug' => $form->slug, ), 'https')))))) ?>
 <?php else: ?>
-	<?php if ($model->type == 0): ?>
+	<?php if ($form->type == 0): ?>
 		<?php if (empty(Yii::app()->request->getParam('sid'))): ?>
 			<h4>New Submission</h4>
 		<?php else: ?>
@@ -18,17 +14,17 @@
 		<?php endif; ?>
 	<?php endif; ?>
 
-	<?php if (!empty($model->getErrors())): ?>
+	<?php if (!empty($form->getErrors())): ?>
 		<div class="alert alert-danger alert-dismissable">
 			<ul>
-				<?php foreach ($model->getErrors() as $key => $value): ?>
+				<?php foreach ($form->getErrors() as $key => $value): ?>
 					<li><?php echo $key?></li>
 				<?php endforeach; ?>
 			</ul>
 		</div>
 	<?php endif;?>
 
-	<?php echo $form?>
+	<?php echo $htmlForm?>
 <?php endif; ?>
 	
 
@@ -36,7 +32,7 @@
 <?php 
 //If Normal form then only autosave works: for survey autosave does not make sense.
 
-if ($model->type == 0) {
+if ($form->type == 0) {
 	Yii::app()->clientScript->registerScript('autosaveform-script', <<<EOD
 	$('#auto-save-span').css('display','none');
 	setInterval(function(){
