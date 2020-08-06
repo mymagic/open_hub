@@ -51,7 +51,7 @@ class PublishController extends Controller
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 	}
 
-	public function actionIndex($slug, $eid = '', $sid = '')
+	public function actionIndex($slug, $sid = '')
 	{
 		$form = Form::slug2obj($slug);
 		if (!isset($form)) {
@@ -59,10 +59,9 @@ class PublishController extends Controller
 		}
 		$this->pageTitle = Yii::t('app', $form->title);
 
-		if ($form->type == 1) {
-			$this->layout = 'publish-survey';
-		} else {
-			$this->layout = 'publish-default';
+		$this->layout = 'publish';
+		if (isset($form->jsonArray_extra->customLayout)) {
+			$this->layout = $form->jsonArray_extra->customLayout->path;
 		}
 
 		if (!empty($form->intakes) && !empty($form->intakes[0]) && !empty($form->intakes[0]->brandCode)) {
@@ -94,7 +93,7 @@ class PublishController extends Controller
 			return $this->redirect("/f7/publish/index/$slug");
 		}
 
-		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid, $eid);
+		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid);
 
 		$uploadControls = HubForm::getListOfExistingUploadControlsWithValue($submission->json_data);
 		// ys: using session here can be dangerous as user might open multiple tab
@@ -108,7 +107,7 @@ class PublishController extends Controller
 	}
 
 	// sid: submission id, can be empty when call by actionIndex to create new submission
-	public function actionSave($slug, $sid = '', $eid = '')
+	public function actionSave($slug, $sid = '')
 	{
 		set_time_limit(0);
 		$form = Form::slug2obj($slug);
@@ -116,11 +115,7 @@ class PublishController extends Controller
 		if (empty($form)) {
 			throw new Exception(Yii::t('f7', 'Form not exists.'));
 		}
-		if ($form->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
+		$this->layout = '/layouts/publish';
 
 		// if application is closed now, show view
 		if ($form->isApplicationClosed()) {
@@ -148,15 +143,15 @@ class PublishController extends Controller
 		}
 
 		// save draft
-		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid, $eid);
+		$htmlForm = HubForm::convertJsonToHtml(true, $form->json_structure, $submission->json_data, $form->slug, $sid);
 
 		// if submit
 		if (strtolower($_POST['save']) === 'submit') {
 			// validate input data
-			list($validated, $htmlForm) = $this->performValidation($form, $_POST, $slug, $submission, $sid, $eid);
+			list($validated, $htmlForm) = $this->performValidation($form, $_POST, $slug, $submission, $sid);
 			// not validated
 			if (!$validated) {
-				return $this->render('index', array('form' => $form, 'htmlForm' => $htmlForm, 'slug' => $slug, 'sid' => $submission->id, 'eid' => $eid));
+				return $this->render('index', array('form' => $form, 'htmlForm' => $htmlForm, 'slug' => $slug, 'sid' => $submission->id));
 			}
 		}
 
@@ -214,12 +209,6 @@ class PublishController extends Controller
 			}
 		}
 
-		//Survey Form
-		if ($form->type == 1 && !empty($eid)) {
-			$data['EventID'] = $eid;
-			$data['inputtext-eventId'] = $eid;
-		}
-
 		// Server side checking if organization is available before and does not belong to this user.
 		if ($formContainStarupModel) {
 			if (!HubForm::canUserChooseThisOrgization(Yii::app()->user->username, $orgTitleSubmittedByUser)) {
@@ -244,7 +233,9 @@ class PublishController extends Controller
 		$submission->user_id = Yii::app()->user->id;
 		$submission->jsonArray_data = json_decode($jsonData);
 		$submission->status = $status;
-		$submission->stage = $stage;
+		if (empty($submission->stage)) {
+			$submission->stage = $stage;
+		}
 		$submission->date_submitted = time();
 		$submission->date_added = empty($submission->date_added) ? time() : $submission->date_added;
 		$submission->date_modified = time();
@@ -257,17 +248,14 @@ class PublishController extends Controller
 				HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
 			}
 
-			if ($form->type == 1) {
-				$url = $this->createUrl('/f7/publish/index/', array('slug' => $slug, 'eid' => $eid));
-				$message = 'Thank you for your valuable input. You have successfuly submitted the survery.';
-			} else {
-				$url = $this->createUrl('/f7/publish/view/', array('slug' => $slug, 'sid' => $submission->id));
-			}
+			// $message = 'Thank you for your valuable input. You have successfuly submitted the survery.';
+
+			$url = $this->createUrl('/f7/publish/view/', array('slug' => $slug, 'sid' => $submission->id));
 
 			if ($submission->status == 'submit') {
-				Notice::Page(Yii::t('f7', 'You have successfuly submitted your application.'), Notice_SUCCESS, array('url' => $url));
+				Notice::Page(Yii::t('f7', 'You have successfully submitted your entry.'), Notice_SUCCESS, array('url' => $url));
 			} else {
-				Notice::flash(Yii::t('f7', 'You have successfuly saved your application as draft.'), Notice_SUCCESS);
+				Notice::flash(Yii::t('f7', 'You have successfully saved your entry as draft.'), Notice_SUCCESS);
 
 				$this->redirect(array('/f7/publish/edit', 'slug' => $slug, 'sid' => $submission->id));
 			}
@@ -277,35 +265,27 @@ class PublishController extends Controller
 	}
 
 	// sid: submission id
-	public function actionView($slug, $sid, $eid = '')
+	public function actionView($slug, $sid)
 	{
-		list($form, $htmlForm, $submission) = self::performViewOrEditTasks(false, $slug, $sid, $eid);
+		list($form, $htmlForm, $submission) = $this->performViewOrEditTasks(false, $slug, $sid);
 
-		if ($form->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
+		$this->layout = '/layouts/publish';
 
 		$this->render('view', array('form' => $form, 'htmlForm' => $htmlForm, 'submission' => $submission));
 	}
 
 	// sid: submission id
-	public function actionEdit($slug, $sid, $eid = '')
+	public function actionEdit($slug, $sid)
 	{
 		set_time_limit(0);
 
-		list($form, $htmlForm, $submission) = $this->performViewOrEditTasks(true, $slug, $sid, $eid);
+		list($form, $htmlForm, $submission) = $this->performViewOrEditTasks(true, $slug, $sid);
 		// get user confirmation to revert back to draft to edit
 		if ($submission->status == 'submit') {
 			$this->redirect(array('revert', 'slug' => $slug, 'sid' => $sid));
 		}
 
-		if ($form->type == 1) {
-			$this->layout = '/layouts/publish-survey';
-		} else {
-			$this->layout = '/layouts/publish-default';
-		}
+		$this->layout = '/layouts/publish';
 
 		$this->render('edit', array('form' => $form, 'htmlForm' => $htmlForm, 'submission' => $submission));
 	}
@@ -429,25 +409,18 @@ class PublishController extends Controller
 		}
 	}
 
-	protected function performViewOrEditTasks($isEnabled, $slug, $sid, $eid)
+	protected function performViewOrEditTasks($isEnabled, $slug, $sid)
 	{
 		if (empty($slug)) {
 			throw new Exception('Incorrect Request');
 		}
 		if (empty($sid)) {
-			if (empty($eid)) {
-				$this->redirect("/f7/publish/index/$slug");
-			} else {
-				$this->redirect("/f7/publish/index/$slug/?eid=$eid");
-			}
+			$this->redirect("/f7/publish/index/$slug");
 		}
 
 		$form = Form::slug2obj($slug);
 		if (empty($form)) {
 			throw new Exception('Form not found');
-		}
-		if ($form->type == 1) {
-			$this->redirect("/f7/publish/index/$slug/?eid=$eid");
 		}
 
 		$this->pageTitle = Yii::t('app', $form->title);
@@ -482,7 +455,7 @@ class PublishController extends Controller
 		return array($form, $htmlForm, $submission);
 	}
 
-	protected function performValidation($model, $postedData, $slug, $formData, $sid, $eid)
+	protected function performValidation($model, $postedData, $slug, $formData, $sid)
 	{
 		$isEnabled = true;
 
@@ -494,7 +467,7 @@ class PublishController extends Controller
 
 		$postInJson = json_encode($postedData, true);
 
-		$htmlForm = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $postInJson, $model->slug, $sid, $eid);
+		$htmlForm = HubForm::convertJsonToHtml($isEnabled, $model->json_structure, $postInJson, $model->slug, $sid);
 
 		if (!$status) {
 			return array(false, $htmlForm);

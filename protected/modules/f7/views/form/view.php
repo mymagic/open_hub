@@ -43,7 +43,7 @@ $this->menu = array(
 			array('label' => $model->attributeLabel('date_open'), 'value' => Html::formatDateTimezone($model->date_open, 'long', 'medium', '-', $model->timezone)),
 			array('label' => $model->attributeLabel('date_close'), 'value' => Html::formatDateTimezone($model->date_close, 'long', 'medium', '-', $model->timezone)),
 
-			array('name' => 'Survey', 'type' => 'raw', 'value' => Html::renderBoolean($model->type)),
+			// array('name' => 'Survey', 'type' => 'raw', 'value' => Html::renderBoolean($model->type)),
 			array('name' => 'is_multiple', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_multiple)),
 			array('name' => 'is_login_required', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_login_required)),
 			array('name' => 'Public URL', 'type' => 'raw', 'value' => Html::link($model->getPublicUrl(), $model->getPublicUrl())),

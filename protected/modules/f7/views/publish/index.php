@@ -6,12 +6,10 @@
 <?php if ($form->is_login_required && Yii::app()->user->isGuest): ?>
 	<?php echo Notice::inline(Yii::t('notice', 'Please <a href="{url}">login now</a> to access this form', array('{url}' => $this->createUrl('/site/login', array('returnUrl' => $this->createAbsoluteUrl('/f7/publish/index/', array('slug' => $form->slug, ), 'https')))))) ?>
 <?php else: ?>
-	<?php if ($form->type == 0): ?>
-		<?php if (empty(Yii::app()->request->getParam('sid'))): ?>
-			<h4>New Submission</h4>
-		<?php else: ?>
-			<h4>Existing Submission #<?php echo Yii::app()->request->getParam('sid') ?></h4>
-		<?php endif; ?>
+	<?php if (empty(Yii::app()->request->getParam('sid'))): ?>
+		<h4>New Submission</h4>
+	<?php else: ?>
+		<h4>Existing Submission #<?php echo Yii::app()->request->getParam('sid') ?></h4>
 	<?php endif; ?>
 
 	<?php if (!empty($form->getErrors())): ?>

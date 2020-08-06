@@ -306,7 +306,7 @@ class HubEvent extends Component
 		return $eventParticipants;
 	}
 
-	public function getSurveyForm($eventId, $surveyType)
+	public static function getSurveyForm($eventId, $surveyType)
 	{
 		$surveyTypes = self::getSurveyTypes($eventId);
 		$slug = $surveyTypes[$surveyType]['formSlug'];
@@ -315,15 +315,16 @@ class HubEvent extends Component
 		return $form;
 	}
 
-	public function getSurveyFormUrl($eventId, $surveyType)
+	public static function getSurveyFormUrl($eventId, $surveyType)
 	{
 		$form = self::getSurveyForm($eventId, $surveyType);
-		$url = $form->getPublicUrl(array('eid' => $eventId));
+		$event = Event::model()->findByPk($eventId);
+		$url = $form->getPublicUrl(array('preset[inputtext-eventId]' => $eventId, 'preset[inputtext-eventTitle]' => $event->title));
 
 		return $url;
 	}
 
-	public function getSurveyTypes($eventId)
+	public static function getSurveyTypes($eventId)
 	{
 		return array(
 			'1Day' => array('numberOfDays' => '1', 'formSlug' => 'Feedback1', 'participantsMode' => 'attended'),
@@ -331,7 +332,7 @@ class HubEvent extends Component
 		);
 	}
 
-	public function getSurveyTypesForeignReferList($eventId)
+	public static function getSurveyTypesForeignReferList($eventId)
 	{
 		$result = array();
 		$types = self::getSurveyTypes($eventId);

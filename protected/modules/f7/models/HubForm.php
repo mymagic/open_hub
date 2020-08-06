@@ -70,7 +70,7 @@ class HubForm
 		return $intake;
 	}
 
-	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $eid = '', $realm = 'frontend')
+	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $realm = 'frontend')
 	{
 		$htmlBody = '';
 		$htmlForm = '';
@@ -106,12 +106,10 @@ class HubForm
 		$csrfToken = Yii::app()->request->csrfToken;
 		// $session = Yii::app()->session;
 		// $session[$csrfTotkenName] = $csrfToken;
-		if (empty($eid)) {
-			$actionURL = $isEnabled ? "/f7/publish/save/$slug/$sid" : '';
-		} elseif (!empty($eid) && empty($sid)) {
-			$actionURL = $isEnabled ? "/f7/publish/save/$slug/?eid=$eid" : '';
-		} elseif (!empty($eid) && !empty($sid)) {
-			$actionURL = $isEnabled ? "/f7/publish/save/$slug/?sid=$sid&eid=$eid" : '';
+
+		$actionURL = '';
+		if ($isEnabled) {
+			$actionURL = Yii::app()->createUrl('/f7/publish/save/', array('slug' => $slug, 'sid' => $sid, 'preset' => Yii::app()->request->getQuery('preset')));
 		}
 
 		if ($formType === 'horizontal') {
@@ -147,17 +145,20 @@ class HubForm
                 ', $actionURL, 'POST', $csrfTokenName, $csrfToken, $htmlBody, $jsTags);
 		}
 
-		// replace predefined variable
-		if (!empty($eid)) {
-			$event = HUB::getEvent($eid);
-			$htmlForm = str_replace('%EventTitle%', $event->title, $htmlForm);
-			$htmlForm = str_replace('%EventID%', $event->id, $htmlForm);
-		}
-
 		if (!Yii::app()->user->isGuest) {
 			$htmlForm = str_replace('%UserEmail%', Yii::app()->user->username, $htmlForm);
 		} else {
 			$htmlForm = str_replace('%UserEmail%', '', $htmlForm);
+		}
+
+		$preset = Yii::app()->request->getQuery('preset');
+		if (isset($preset)) {
+			foreach ($preset as $presetKey => $presetValue) {
+				$formattedKey = sprintf('%%%s%%', $presetKey);
+				if (strstr($htmlForm, $formattedKey)) {
+					$htmlForm = str_replace($formattedKey, $presetValue, $htmlForm);
+				}
+			}
 		}
 
 		return $htmlForm;
@@ -174,13 +175,13 @@ class HubForm
 	{
 		$form = $submission->form;
 
-		$params['formType'] = ($form->type == '1') ? 'survey' : 'application';
+		$params['formType'] = 'form';
 		$params['intakeTitle'] = $form->getIntake()->title;
 		$params['submissionTitle'] = !empty($intakeTitle) ? $intakeTitle : $form->title;
 		$params['submittedData'] = $submission->renderSimpleFormattedHtml();
 
-		$notifyMaker['title'] = 'You have successfuly submitted your form.';
-		$notifyMaker['message'] = 'You have successfuly submitted your form.';
+		$notifyMaker['title'] = 'You have successfully submitted your form.';
+		$notifyMaker['message'] = 'You have successfully submitted your form.';
 		$notifyMaker['content'] = Yii::app()->getController()->renderPartial('application.modules.f7.views._email.user_afterSubmitForm', $params, true);
 
 		return $notifyMaker;
@@ -604,9 +605,13 @@ class HubForm
 
 	protected function getTextboxTag($isEnabled, $params, $decodedData, $linkText = '')
 	{
+		if (isset($params['value'])) {
+			$value = $params['value'];
+		}
+
 		$preset = Yii::app()->request->getQuery('preset');
 		if (isset($preset) && isset($preset[$params['name']])) {
-			$value = $params['value'] = $preset[$params['name']];
+			$value = $preset[$params['name']];
 		}
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -614,11 +619,11 @@ class HubForm
 		if (isset($params['model_mapping'])) {
 			$modelClass = $params['model_mapping'][$params['name']];
 			$mappedModelValue = self::getMappedModelData($modelClass);
-			if (isset($mappedModelValue)) {
+			if (!empty($mappedModelValue)) {
 				$value = $mappedModelValue;
 			}
 		} else {
-			if (isset($decodedData[$params['name']])) {
+			if (!empty($decodedData[$params['name']])) {
 				$value = $decodedData[$params['name']];
 			}
 		}

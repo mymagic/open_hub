@@ -1,4 +1,4 @@
-<?php if ($model->hasUserSubmission(Yii::app()->user->id) && $model->type == 0):?>
+<?php if ($model->hasUserSubmission(Yii::app()->user->id)):?>
 	<?php if ((isset($model->jsonArray_extra->viewControls) && $model->jsonArray_extra->viewControls->hideMySubmissions)): ?><?php else: ?>
 		<h4>Your Submissions</h4>
 		<div class="ibox-content m-b-sm border-bottom gray-bg">

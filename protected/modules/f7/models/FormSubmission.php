@@ -213,7 +213,7 @@ class FormSubmission extends FormSubmissionBase
 	public function renderJsonData($mode = 'html', $realm = 'frontend')
 	{
 		if ($mode == 'html') {
-			$return = HubForm::convertJsonToHtml(false, $this->form->json_structure, $this->json_data, $this->form->slug, null, $this->jsonArray_data->EventID, $realm);
+			$return = HubForm::convertJsonToHtml(false, $this->form->json_structure, $this->json_data, $this->form->slug, null, $realm);
 		} elseif ($mode == 'csv') {
 			$values = $headers = $return = array();
 			$exportableCsvTags = array('googleplace', 'url', 'email', 'phone', 'textbox', 'number', 'textarea', 'list', 'checkbox', 'radio', 'booleanButton', 'upload',  'rating', );

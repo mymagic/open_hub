@@ -636,7 +636,7 @@ class NotifyMaker
 	}
 
 	/**
-	 * this function called in NtisFormSolutionController
+	 * this function may be called in NtisFormSolutionController or cron
 	 * @param object $organization model Organization
 	 * @param object $ntisFormSolution model NtisFormSolution
 	 * @param string $userEmail recipient email
@@ -651,13 +651,22 @@ class NotifyMaker
 		$params['applicationSerialNo'] = $ntisFormSolution->code;
 		$params['userEmail'] = $userEmail;
 
-		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_applicationProcessNtisFormSolution', $params, true);
+		if (isset(Yii::app()->controller)) 
+		{
+			$pathFile = 'application.modules.ntis.views._email.';
+		}
+		else
+		{
+			$pathFile = '/../modules/ntis/views/_email/';
+		}
+			
+		$return['content'] = HUB::renderPartial($pathFile . 'admin_applicationProcessNtisFormSolution', $params, true);
 		
 		return $return;
 	}
 
 	/**
-	 * this function called in NtisFormSolutionController
+	 * this function may be called in NtisFormSolutionController or cron
 	 * @param object $organization model Organization
 	 * @param object $ntisFormSolution model NtisFormSolution
 	 * @param string $userEmail recipient email
@@ -673,7 +682,16 @@ class NotifyMaker
 		$params['cohortNo'] = HubNtis::getCohortNo($ntisFormSolution->batch_key);
 		$params['userEmail'] = $userEmail;
 
-		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_applicationRejectNtisFormSolution', $params, true);
+		if (isset(Yii::app()->controller)) 
+		{
+			$pathFile = 'application.modules.ntis.views._email.';
+		}
+		else
+		{
+			$pathFile = '/../modules/ntis/views/_email/';
+		}
+			
+		$return['content'] = HUB::renderPartial($pathFile . 'admin_applicationRejectNtisFormSolution', $params, true);
 		
 		return $return;
 	}
@@ -694,7 +712,7 @@ class NotifyMaker
 		$params['applicationSerialNo'] = $ntisFormSolution->code;
 		$params['userEmail'] = $userEmail;
 
-		$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_commentNtisFormSolution', $params, true);
+		$return['content'] = HUB::renderPartial('application.modules.ntis.views._email.admin_commentNtisFormSolution', $params, true);
 		
 		return $return;
 	}
@@ -719,14 +737,14 @@ class NotifyMaker
 		{
 			$params['sandbox'] = $ntisFormSolution->formatEnumStatus($ntisFormSolution->esc_sandbox);
 			$return['title'] = "NTIS Screening Status Update";
-			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_endorseAcceptNtisFormSolution', $params, true);
+			$return['content'] = HUB::renderPartial('application.modules.ntis.views._email.admin_endorseAcceptNtisFormSolution', $params, true);
 		}
 		else // reject
 		{
 			$params['reason'] = NtisActionLog::getMessageByActionStatus($ntisFormSolution, 'esc-not-for-sandbox');
 			// $params['reason'] = $ntisFormSolution->text_note;
 			$return['title'] = "NTIS Screening Status Result";
-			$return['content'] = Yii::app()->getController()->renderPartial('application.modules.ntis.views._email.admin_endorseRejectNtisFormSolution', $params, true);
+			$return['content'] = HUB::renderPartial('application.modules.ntis.views._email.admin_endorseRejectNtisFormSolution', $params, true);
 		}
 		return $return;
 	}

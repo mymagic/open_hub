@@ -71,5 +71,20 @@ $this->breadcrumbs = array(
 </div><!--/Tab panes -->
 </div>
 
-
 </div>
+
+<?php Yii::app()->clientScript->registerScript('backend-dashboard2', "
+var loadedTabs = [];
+
+$(document).on('shown.bs.tab', '#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]', function (e) {
+    var anchor = $(e.target).attr('href');
+    if(loadedTabs.indexOf(anchor) == -1 && $(anchor).data('urlView').length>0)
+    {
+        $(anchor).load($(anchor).data('urlView'), function(){
+            loadedTabs.push(anchor); 
+        });
+    }
+});
+
+");
+?>
