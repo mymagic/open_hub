@@ -81,7 +81,7 @@ foreach ($this->menuSub as $key => $menu) {
 </div>
 <!-- /container -->
 
-
+<!-- // todo: detach MaGIC Connect -->
 <iframe style="border:0; width:1px; height:1px" src="https://<?php echo Yii::app()->params['connectUrl']; ?>/profile"></iframe>
 
 

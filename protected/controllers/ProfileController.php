@@ -108,6 +108,7 @@ class ProfileController extends Controller
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
 		// magic connect
+		// todo: detach MaGIC Connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
 		}

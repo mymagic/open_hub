@@ -66,6 +66,7 @@ class SiteController extends Controller
 		$this->render('about');
 	}
 
+	// todo: detach MaGIC Connect
 	public function actionConnectLogin($returnUrl = '')
 	{
 		if (!empty($returnUrl)) {
@@ -84,6 +85,7 @@ class SiteController extends Controller
 		$this->redirect(Yii::app()->params['connectUrl'] . '/oauth/authorize?' . $query);
 	}
 
+	// todo: detach MaGIC Connect
 	public function actionConnectCallback()
 	{
 		if (empty($this->magicConnect)) {
@@ -142,12 +144,13 @@ class SiteController extends Controller
 		if (UrlHelper::isAbsoluteUrl($userdata['avatar'])) {
 			$imageAvatar = $userdata['avatar'];
 		} else {
+			// todo: detach MaGIC Connect
 			$imageAvatar = $this->magicConnect->getConnectUrl() . '/' . $userdata['avatar'];
 		}
-		
+
 		// if image avatar has been updated, then do not need save the avatar
-		preg_match('/uploads\/profile\/avatar.[0-9]+.jpg/',$this->user->profile->image_avatar,$matches);
-		if(empty($matches)) {
+		preg_match('/uploads\/profile\/avatar.[0-9]+.jpg/', $this->user->profile->image_avatar, $matches);
+		if (empty($matches)) {
 			$this->user->profile->image_avatar = $imageAvatar;
 		}
 
@@ -269,6 +272,7 @@ class SiteController extends Controller
 	}
 
 	// 2 logout requried to clear the session
+	// todo: detach MaGIC Connect
 	public function actionLogoutThen($returnUrl = '')
 	{
 		Notice::flash(Yii::t('notice', 'You have successfully logout from the system!'), Notice_SUCCESS);

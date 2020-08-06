@@ -43,6 +43,7 @@ return array(
 	// do not change this once setup or user password in db will not match during login
 	'saltSecret' => getenv('SALT_SECRET', '0000'),
 
+	// todo: detach MaGIC Connect
 	'connectUrl' => getenv('CONNECT_URL', '//accountd.mymagic.my'),
 	'connectSecretKey' => getenv('CONNECT_SECRET_KEY', '0000'),
 	'connectClientId' => getenv('CONNECT_CLIENT_ID', '1'),

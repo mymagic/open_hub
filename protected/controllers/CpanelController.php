@@ -92,6 +92,7 @@ class CpanelController extends Controller
 
 		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
 		if ($modelIndividual === null) {
+			// todo: detach MaGIC Connect
 			$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 			$gender = null;
 			if ($account->gender === 'M') {
@@ -104,7 +105,7 @@ class CpanelController extends Controller
 			$modelIndividual->full_name = $fullname;
 			$modelIndividual->image_photo = Individual::getDefaultImagePhoto();
 			$modelIndividual->gender = $gender;
-			$modelIndividual->country_code = ($account->country) ? $account->country : NULL;
+			$modelIndividual->country_code = ($account->country) ? $account->country : null;
 			$modelIndividual->save();
 		}
 		if (!$modelIndividual->hasUserEmail(Yii::app()->user->username)) {
@@ -121,11 +122,11 @@ class CpanelController extends Controller
 			$modelIndividual->inputPersonas = empty($_POST['Individual']['inputPersonas']) ? null : $_POST['Individual']['inputPersonas'];
 
 			$modelIndividual->full_name = $model->profile->full_name;
-			if(!empty($model->profile->gender)) { 
-				$modelIndividual->gender = $model->profile->gender; 
+			if (!empty($model->profile->gender)) {
+				$modelIndividual->gender = $model->profile->gender;
 			}
-			if(!empty($model->profile->country_code)) { 
-				$modelIndividual->country_code = $model->profile->country_code; 
+			if (!empty($model->profile->country_code)) {
+				$modelIndividual->country_code = $model->profile->country_code;
 			}
 
 			$model->profile->imageFile_avatar = UploadedFile::getInstance($model->profile, 'imageFile_avatar');
@@ -134,7 +135,7 @@ class CpanelController extends Controller
 			if ($model->profile->save()) {
 				UploadManager::storeImage($model->profile, 'avatar', $model->profile->tableName(), '', $model->profile->user_id);
 
-				if($modelIndividual->save()) {
+				if ($modelIndividual->save()) {
 					UploadManager::storeImage($modelIndividual, 'photo', $modelIndividual->tableName());
 				}
 
@@ -409,6 +410,7 @@ class CpanelController extends Controller
 
 			Yii::app()->user->logout();
 
+			// todo: detach MaGIC Connect
 			$url = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], Yii::app()->params['baseUrl'] . '/site/TerminateAccount');
 
 			$this->redirect($url);

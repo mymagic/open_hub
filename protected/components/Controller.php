@@ -44,6 +44,7 @@ class Controller extends BaseController
 	public $activeMenuCpanel = '';
 	public $activeSubMenuCpanel = '';
 	public $cpanelMenuInterface = '';
+	// todo: detach MaGIC Connect
 	public $magicConnect = null;
 	public $mixPanel = null;
 
@@ -54,6 +55,7 @@ class Controller extends BaseController
 		Yii::app()->session['accessBackend'] = false;
 		Yii::app()->session['accessCpanel'] = false;
 
+		// todo: detach MaGIC Connect
 		if (empty($this->magicConnect)) {
 			$httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
 			$this->magicConnect = new MyMagic\Connect\Client();
