@@ -3,7 +3,7 @@
 	"file": "main.css",
 	"sources": [
 		"main.scss",
-		"_sass/main.scss"
+		"docs/_sass/main.scss"
 	],
 	"sourcesContent": [
 		"@import \"main\";\n#section-resources{text-align:center;}\n#section-resources img{max-height:50px; margin-left:1em; margin-right:1em; margin-top:0.5em; margin-bottom:0.5em;}\n#footer{border-top:1px solid #CCC; padding-top:3em; padding-bottom:5em; background:#eee;}\n#footer ul{text-align:center;}\n#footer ul li{display:inline;}\n#footer li + li::before {\n    content: \" | \";\n}",
