@@ -54,7 +54,7 @@ class Embed extends EmbedBase
 		}
 	}
 
-	public function isCodeExists($code)
+	public static function isCodeExists($code)
 	{
 		$embed = Embed::model()->find('code=:code', array(':code' => $code));
 		if ($embed === null) {
@@ -90,14 +90,31 @@ class Embed extends EmbedBase
 		if (!self::isCodeExists($code)) {
 			$embed = new Embed();
 			$embed->code = $code;
+			if (!isset($values['is_title_enabled'])) {
+				$values['is_title_enabled'] = 0;
+			}
+			if (!isset($values['is_text_description_enabled'])) {
+				$values['is_text_description_enabled'] = 0;
+			}
+			if (!isset($values['is_html_content_enabled'])) {
+				$values['is_html_content_enabled'] = 0;
+			}
+			if (!isset($values['is_image_main_enabled'])) {
+				$values['is_image_main_enabled'] = 0;
+			}
+			if (!isset($values['is_default'])) {
+				$values['is_default'] = 0;
+			}
 		} else {
 			$embed = self::model()->find('code=:code', array(':code' => $code));
 		}
 
 		$embed->setAttributes($values);
-		$embed->save();
+		if ($embed->save()) {
+			return $embed;
+		}
 
-		return $embed;
+		return false;
 	}
 
 	public static function deleteEmbed($code)

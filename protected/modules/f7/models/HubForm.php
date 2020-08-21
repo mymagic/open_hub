@@ -892,6 +892,10 @@ class HubForm
 			//structure is wrong or missing isGroup property.
 		}
 
+		if (!empty($params['hint'])) {
+			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
+		}
+
 		return $html;
 	}
 
@@ -941,6 +945,10 @@ class HubForm
 
 		$html = $radioHTML;
 
+		if (!empty($params['hint'])) {
+			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
+		}
+
 		return $html;
 	}
 
@@ -974,6 +982,10 @@ class HubForm
 		}
 
 		$html = $radioHTML;
+		
+		if (!empty($params['hint'])) {
+			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
+		}
 
 		return $html;
 	}
