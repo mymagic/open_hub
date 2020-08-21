@@ -538,6 +538,8 @@ class Organization extends OrganizationBase
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
 
+		$criteria->group = 't.id';
+
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
 			'pagination' => array('pageSize' => 30),

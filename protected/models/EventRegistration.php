@@ -188,6 +188,8 @@ class EventRegistration extends EventRegistrationBase
 			$criteria->mergeWith($criteriaEvent, $params['compareOperator']);
 		}
 
+		$criteria->group = 't.id';
+
 		return new CActiveDataProvider($this, [
 			'criteria' => $criteria,
 			'pagination' => ['pageSize' => 30],

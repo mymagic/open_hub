@@ -334,6 +334,8 @@ class Event extends EventBase
 		$criteria2->compare('eventGroup.title', $this->title, true, 'OR');
 		$criteria->mergeWith($criteria2, 'OR');
 
+		$criteria->group = 't.id';
+
 		return new CActiveDataProvider($this, [
 			'criteria' => $criteria,
 			'pagination' => ['pageSize' => 30],
