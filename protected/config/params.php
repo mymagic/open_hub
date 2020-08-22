@@ -44,6 +44,7 @@ return array(
 	'saltSecret' => getenv('SALT_SECRET', '0000'),
 
 	// todo: detach MaGIC Connect
+	'authAdapter' => getenv('AUTH_ADAPTER', 'local'), // local or connect
 	'connectUrl' => getenv('CONNECT_URL', '//accountd.mymagic.my'),
 	'connectSecretKey' => getenv('CONNECT_SECRET_KEY', '0000'),
 	'connectClientId' => getenv('CONNECT_CLIENT_ID', '1'),

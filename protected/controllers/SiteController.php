@@ -66,6 +66,57 @@ class SiteController extends Controller
 		$this->render('about');
 	}
 
+	public function actionLocalLogin($returnUrl = '', $email = '')
+	{
+		Notice::debugFlash('SiteController.actionLogin()');
+		if (!Yii::app()->user->isGuest) {
+			Notice::Page(Yii::t('app', 'Please logout from your account before making a new login'), Notice_INFO, array('url' => $this->createUrl('site/logout'), 'urlLabel' => Yii::t('app', 'Logout Now')));
+		}
+
+		$model['form'] = new LoginForm;
+		if (!empty($email)) {
+			$model['form']->username = $email;
+		}
+
+		// if it is ajax validation request
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
+			echo CActiveForm::validate($model['form']);
+			Yii::app()->end();
+		}
+		// collect user input data
+		if (isset($_POST['LoginForm'])) {
+			$model['form']->attributes = $_POST['LoginForm'];
+			// $model['form']->validate() &&
+			// validate user input and redirect to the previous page if valid
+			if ($model['form']->login()) {
+				$redirectUrl = base64_decode($_GET['redirectUrl']);
+				if (!empty($redirectUrl)) {
+					$this->redirect($redirectUrl);
+				}
+
+				// if can access cpanel
+				if (Yii::app()->user->accessCpanel && $_POST['LoginForm']['from'] == 'frontend') {
+					//$this->redirect(array('cpanel/index'));
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
+
+				// if can access backend
+				elseif (Yii::app()->user->accessBackend) {
+					$this->redirect(array('backend/index'));
+				}
+
+				//  others
+				else {
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
+			} else {
+				// form will automatically display error msg
+			}
+		}
+		// display the login form
+		$this->render('localLogin', array('model' => $model));
+	}
+
 	// todo: detach MaGIC Connect
 	public function actionConnectLogin($returnUrl = '')
 	{
@@ -255,7 +306,11 @@ class SiteController extends Controller
 	 */
 	public function actionLogin($returnUrl = '')
 	{
-		$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/localLogin', 'returnUrl' => $returnUrl));
+		}
 	}
 
 	/**
@@ -277,11 +332,16 @@ class SiteController extends Controller
 	{
 		Notice::flash(Yii::t('notice', 'You have successfully logout from the system!'), Notice_SUCCESS);
 		if (empty($returnUrl)) {
+			// todo: potential https issue
 			$returnUrl = sprintf('http:%s', urlencode(Yii::app()->params['baseUrl']));
 		}
 
-		$urlConnectLogout = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], $returnUrl);
-		$this->redirect($urlConnectLogout);
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$urlConnectLogout = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], $returnUrl);
+			$this->redirect($urlConnectLogout);
+		} else {
+			$this->redirect(Yii::app()->params['baseUrl']);
+		}
 	}
 
 	public function actionSignup()

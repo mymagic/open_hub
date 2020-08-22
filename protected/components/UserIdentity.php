@@ -53,7 +53,7 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 		}
 		// password unmatch
-		elseif ($user->password !== sha1($this->password) && ($type == 'default')) {
+		elseif (!$user->matchPassword($this->password) && ($type == 'default')) {
 			$user->stat_login_count++;
 			$user->save(false);
 			$this->errorCode = self::ERROR_PASSWORD_INVALID;
