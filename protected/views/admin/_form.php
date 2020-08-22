@@ -6,40 +6,39 @@
 
 <div class="">
 
-<?php $form=$this->beginWidget('ActiveForm', array(
-	'id'=>'admin-form',
+<?php $form = $this->beginWidget('ActiveForm', array(
+	'id' => 'admin-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
 	// controller action is handling ajax validation correctly.
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
-	'htmlOptions'=>array
-	(
-		'class'=>'form-horizontal crud-form',
-		'role'=>'form',
-		'enctype'=>'multipart/form-data',
+	'enableAjaxValidation' => false,
+	'htmlOptions' => array(
+		'class' => 'form-horizontal crud-form',
+		'role' => 'form',
+		'enctype' => 'multipart/form-data',
 	)
 )); ?>
 
 	<?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
-<?php if($model->hasErrors()): ?>
+<?php if ($model->hasErrors()): ?>
 	<?php echo $form->bsErrorSummary($model); ?>
 <?php endif; ?>	
 	
 		
-	<div class="form-group <?php echo $model->hasErrors("username") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model->hasErrors('username') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'username'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsEmailTextField($model, 'username', array('placeholder'=>Yii::t('backend', "User's primary email address"))); ?>
+			<?php echo $form->bsEmailTextField($model, 'username', array('placeholder' => Yii::t('backend', "User's primary email address"))); ?>
 			<?php echo $form->bsError($model, 'username'); ?>
 		</div>
 	</div>
 	
 	
-	<div class="form-group <?php echo $model->hasErrors("full_name") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model->hasErrors('full_name') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model, 'full_name'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsTextField($model, 'full_name', array('placeholder'=>Yii::t('backend', "User's full name as per IC"))); ?>
+			<?php echo $form->bsTextField($model, 'full_name', array('placeholder' => Yii::t('backend', "User's full name as per IC"))); ?>
 			<?php echo $form->bsError($model, 'full_name'); ?>
 		</div>
 	</div>

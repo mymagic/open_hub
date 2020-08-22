@@ -17,51 +17,87 @@
 
 class Member extends MemberBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
-	
-	public $username, $full_name, $is_active;
-	public $gender, $mobile_no;
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
+
+	public $username;
+
+	public $full_name;
+
+	public $is_active;
+	public $gender;
+	public $mobile_no;
 	public $text_admin_remark;
-	public $signup_ip, $last_login_ip;
-	
+	public $signup_ip;
+	public $last_login_ip;
+
 	// magic connect
-	public $first_name, $last_name;
-	
+	public $first_name;
+	public $last_name;
+
+	public function behaviors()
+	{
+		$return = array(
+			/*'backend' => array(
+				'class' => 'application.yeebase.extensions.taggable-behavior.ETaggableBehavior',
+				'tagTable' => 'tag',
+				'tagBindingTable' => 'tag2member',
+				'modelTableFk' => 'user_id',
+				'tagTablePk' => 'id',
+				'tagTableName' => 'name',
+				'tagBindingTableTagId' => 'tag_id',
+				'cacheID' => 'cacheTag2Member',
+				'createTagsAutomatically' => true,
+			),*/
+		);
+
+		foreach (Yii::app()->modules as $moduleKey => $moduleParams) {
+			if (isset($moduleParams['modelBehaviors']) && !empty($moduleParams['modelBehaviors']['Member'])) {
+				$return[$moduleKey] = Yii::app()->getModule($moduleKey)->modelBehaviors['Member'];
+				$return[$moduleKey]['model'] = $this;
+			}
+		}
+
+		return $return;
+	}
+
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-			'portfolio' => array(self::HAS_ONE, 'Portfolio', array('user_id'=>'user_id')),
+			'portfolio' => array(self::HAS_ONE, 'Portfolio', array('user_id' => 'user_id')),
 		);
 	}
-	
+
 	public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id', 'required', 'except'=>array('create', 'createConnect')),
-			array('user_id, date_joined, date_added, date_modified', 'numerical', 'integerOnly'=>true),
+			array('user_id', 'required', 'except' => array('create', 'createConnect')),
+			array('user_id, date_joined, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('text_admin_remark, log_admin_remark', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('username, full_name, is_active, mobile_no, user_id, log_admin_remark, date_joined, date_added, date_modified, sdate_joined, edate_joined, sdate_added, edate_added, sdate_modified, edate_modified, signup_ip, last_login_ip', 'safe', 'on'=>'search'),
-			
+			array('username, full_name, is_active, mobile_no, user_id, log_admin_remark, date_joined, date_added, date_modified, sdate_joined, edate_joined, sdate_added, edate_added, sdate_modified, edate_modified, signup_ip, last_login_ip', 'safe', 'on' => 'search'),
+
 			// create
-			array('username, full_name', 'required', 'on'=>'create'),
-			array('username', 'unique', 'allowEmpty'=>false, 'className'=>'User', 'attributeName'=>'username', 'caseSensitive'=>false, 'on'=>array('create')),
-			array('username', 'email', 'allowEmpty'=>false, 'checkMX'=>true, 'on'=>array('create')),
-			
+			array('username, full_name', 'required', 'on' => 'create'),
+			array('username', 'unique', 'allowEmpty' => false, 'className' => 'User', 'attributeName' => 'username', 'caseSensitive' => false, 'on' => array('create')),
+			array('username', 'email', 'allowEmpty' => false, 'checkMX' => true, 'on' => array('create')),
+
 			// magic connect
 			// createConnect
-			array('username, first_name, last_name', 'required', 'on'=>'createConnect'),
-			array('username', 'unique', 'allowEmpty'=>false, 'className'=>'User', 'attributeName'=>'username', 'caseSensitive'=>false, 'on'=>array('createConnect')),
-			array('username', 'email', 'allowEmpty'=>false, 'checkMX'=>true, 'on'=>array('createConnect')),
+			array('username, first_name, last_name', 'required', 'on' => 'createConnect'),
+			array('username', 'unique', 'allowEmpty' => false, 'className' => 'User', 'attributeName' => 'username', 'caseSensitive' => false, 'on' => array('createConnect')),
+			array('username', 'email', 'allowEmpty' => false, 'checkMX' => true, 'on' => array('createConnect')),
 		);
 	}
-	
+
 	public function attributeLabels()
 	{
 		return array(
@@ -73,48 +109,45 @@ class Member extends MemberBase
 		'date_modified' => Yii::t('app', 'Date Modified'),
 		);
 	}
-	
-	public function search($mode='')
+
+	public function search($mode = '')
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
 		$criteria->with = array('user', 'user.profile');
 		$criteria->together = true;
-		
+
 		$criteria->compare('user.username', $this->username, true);
 		$criteria->compare('user.is_active', $this->is_active, true);
 		$criteria->compare('profile.full_name', $this->full_name, true);
 		$criteria->compare('user.signup_ip', $this->signup_ip, true);
 		$criteria->compare('user.last_login_ip', $this->last_login_ip, true);
-		
-		$criteria->compare('t.user_id',$this->user_id);
-		
-		$criteria->compare('t.log_admin_remark',$this->log_admin_remark,true);
-		if(!empty($this->sdate_joined) && !empty($this->edate_joined))
-		{
+
+		$criteria->compare('t.user_id', $this->user_id);
+
+		$criteria->compare('t.log_admin_remark', $this->log_admin_remark, true);
+		if (!empty($this->sdate_joined) && !empty($this->edate_joined)) {
 			$sTimestamp = strtotime($this->sdate_joined);
 			$eTimestamp = strtotime("{$this->edate_joined} +1 day");
 			$criteria->addCondition(sprintf('t.date_joined >= %s AND t.date_joined < %s', $sTimestamp, $eTimestamp));
 		}
-		if(!empty($this->sdate_added) && !empty($this->edate_added))
-		{
+		if (!empty($this->sdate_added) && !empty($this->edate_added)) {
 			$sTimestamp = strtotime($this->sdate_added);
 			$eTimestamp = strtotime("{$this->edate_added} +1 day");
 			$criteria->addCondition(sprintf('t.date_added >= %s AND t.date_added < %s', $sTimestamp, $eTimestamp));
 		}
-		if(!empty($this->sdate_modified) && !empty($this->edate_modified))
-		{
+		if (!empty($this->sdate_modified) && !empty($this->edate_modified)) {
 			$sTimestamp = strtotime($this->sdate_modified);
 			$eTimestamp = strtotime("{$this->edate_modified} +1 day");
 			$criteria->addCondition(sprintf('t.date_modified >= %s AND t.date_modified < %s', $sTimestamp, $eTimestamp));
 		}
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-			'sort'=>array(
-				'defaultOrder'=>'user.date_last_login DESC, t.username ASC',
+			'criteria' => $criteria,
+			'sort' => array(
+				'defaultOrder' => 'user.date_last_login DESC, t.username ASC',
 			),
 		));
 	}
@@ -123,57 +156,66 @@ class Member extends MemberBase
 	{
 		return $this->user->username;
 	}
-	
+
 	public function getMobileNo()
 	{
 		return $this->user->profile->mobile_no;
 	}
-	
+
 	public function canReceiveSms()
 	{
 		// todo: check if user flag accept sms notification on
 		return false;
-		if($this->user->profile->isMobileNumberVerified() && !empty($this->getMobileNo())) return true;
+		if ($this->user->profile->isMobileNumberVerified() && !empty($this->getMobileNo())) {
+			return true;
+		}
+
 		return false;
 	}
-	
+
 	public function canReceiveEmail()
 	{
 		return true;
 	}
-	
+
 	public function canReceivePush()
 	{
-		if(!empty($this->getPrimaryDevice())) return true;
+		if (!empty($this->getPrimaryDevice())) {
+			return true;
+		}
+
 		return false;
 	}
-	
+
 	public function getPrimaryDevice()
 	{
 		return false;
-		$tmps = $this->user->devices(array('scopes'=>array('isPrimary')));
-		if(!empty($tmps) && !empty($tmps[0])) return $tmps[0];
+		$tmps = $this->user->devices(array('scopes' => array('isPrimary')));
+		if (!empty($tmps) && !empty($tmps[0])) {
+			return $tmps[0];
+		}
 	}
-	
+
 	public function username2obj($username)
 	{
-		$member = Member::model()->find('t.username=:username', array(':username'=>$username));
-		if(!empty($member))
-		{
+		$member = Member::model()->find('t.username=:username', array(':username' => $username));
+		if (!empty($member)) {
 			return $member;
 		}
 	}
-	
-	public function toApi($params='')
+
+	public function toApi($params = '')
 	{
 		$return = array(
-			'userId'=>$this->user_id,
-			'username'=>$this->username,
-			'fGetPubNubChannelId'=>$this->getPubNubChannelId(),
+			'userId' => $this->user_id,
+			'username' => $this->username,
+			//'fGetPubNubChannelId' => $this->getPubNubChannelId(),
 		);
-		
-		if(!in_array('-user', $params)) $return['user'] = $this->user->toApi();
+
+		if (!in_array('-user', $params)) {
+			$return['user'] = $this->user->toApi();
+		}
+
 		return $return;
 	}
-
 }

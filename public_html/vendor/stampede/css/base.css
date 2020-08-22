@@ -810,6 +810,11 @@ h6,
     font-weight: 300;
     padding: 0 5px
 }
+textarea.form-control{
+    line-height:normal !important;
+    height:8em;
+    padding:5px 5px;
+}
 
 .form-control:focus {
     -webkit-box-shadow: none;

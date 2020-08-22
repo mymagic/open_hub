@@ -41,12 +41,13 @@ class LogController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('index','view','admin'),
-				'users'=>array('@'),
-				'expression'=>"\$user->getState('isSuperAdmin') || \$user->getState('isDeveloper')",
+				'actions' => array('index', 'view', 'admin'),
+				'users' => array('@'),
+				// 'expression' => "\$user->getState('isSuperAdmin') || \$user->getState('isDeveloper')",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -57,11 +58,10 @@ class LogController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
-
 
 	/**
 	 * Lists all models.
@@ -76,13 +76,15 @@ class LogController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Log('search');
+		$model = new Log('search');
 		// $model->unsetAttributes();  // clear any default values
 		// if(isset($_GET['Log'])) $model->attributes=$_GET['Log'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -95,9 +97,11 @@ class LogController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Log::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Log::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -107,8 +111,7 @@ class LogController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='log-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'log-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

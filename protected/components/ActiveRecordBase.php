@@ -35,4 +35,13 @@ class ActiveRecordBase extends ActiveRecord
 			'pagination' => $pagination
 		));
 	}
+
+	public static function getOneAttributeLabel($var)
+	{
+		$class = get_called_class();
+		$obj = new $class();
+		$labels = $obj->attributeLabels();
+
+		return $labels[$var];
+	}
 }

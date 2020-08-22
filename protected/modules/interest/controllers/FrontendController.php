@@ -1,52 +1,53 @@
 <?php
+
 class FrontendController extends Controller
 {
-    // customParse is for cpanelNavCompanyInformation to pass in organization ID
-    //public $customParse = '';
-    public $neodb = null;
+	// customParse is for cpanelNavOrganizationInformation to pass in organization ID
+	//public $customParse = '';
+	public $neodb = null;
 
-    public function filters()
-    {
-        return array(
-            'accessControl', // perform access control for CRUD operations
-        );
-    }
+	public function filters()
+	{
+		return array(
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
 
-    public function accessRules()
-    {
-        return array(
-            array(
-                'allow',
-                'actions' => array(''),
-                'users' => array('*'),
-            ),
-            array(
-                'allow',
-                'actions' => array('index'),
-                'users' => array('@'),
-            ),
-            array(
-                'deny',  // deny all users
-                'users' => array('*'),
-            ),
-        );
-    }
+	public function accessRules()
+	{
+		return array(
+			array(
+				'allow',
+				'actions' => array(''),
+				'users' => array('*'),
+			),
+			array(
+				'allow',
+				'actions' => array('index'),
+				'users' => array('@'),
+			),
+			array(
+				'deny',  // deny all users
+				'users' => array('*'),
+			),
+		);
+	}
 
-    public function init()
-    {
-        parent::init();
-        $this->layout = '/layouts/frontend';
-        $this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+	public function init()
+	{
+		parent::init();
+		$this->layout = '/layouts/frontend';
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 
-        // for cpanel navigation
-        // $this->layout = '//layouts/cpanel'; //default layout for cpanel
-        // $this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-        // $this->cpanelMenuInterface = 'cpanelNavDashboard'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
-        // $this->customParse = ''; //to pass in organization ID for cpanelNavCompanyInformation
-        // $this->activeMenuCpanel = ''; //active menu name based on NameModule.php getNavItems() active attribute
-    }
+		// for cpanel navigation
+		// $this->layout = '//layouts/cpanel'; //default layout for cpanel
+		// $this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		// $this->cpanelMenuInterface = 'cpanelNavDashboard'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
+		// $this->customParse = ''; //to pass in organization ID for cpanelNavOrganizationInformation
+		// $this->activeMenuCpanel = ''; //active menu name based on NameModule.php getNavItems() active attribute
+	}
 
-    public function actionIndex()
-    {
-    }
+	public function actionIndex()
+	{
+	}
 }

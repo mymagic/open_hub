@@ -14,7 +14,7 @@
 <div class="form">
 
 <?php echo "<?php \$form=\$this->beginWidget('CActiveForm', array(
-	'id'=>'".$this->class2id($this->modelClass).'-'.basename($this->viewName)."-form',
+	'id'=>'" . $this->class2id($this->modelClass) . '-' . basename($this->viewName) . "-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
 	// controller action is handling ajax validation correctly.
 	// See class documentation of CActiveForm for details on this,
@@ -26,7 +26,7 @@
 
 	<?php echo "<?php echo \$form->errorSummary(\$model); ?>\n"; ?>
 
-<?php foreach($this->getModelAttributes() as $attribute): ?>
+<?php foreach ($this->getModelAttributes() as $attribute): ?>
 	<div class="row">
 		<?php echo "<?php echo \$form->labelEx(\$model,'$attribute'); ?>\n"; ?>
 		<?php echo "<?php echo \$form->textField(\$model,'$attribute'); ?>\n"; ?>

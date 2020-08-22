@@ -162,11 +162,13 @@
 <script type="text/javascript">
 
     $(window).on('load',function(){
-            <?php if(!$is_popup_process_completed) { ?>
+            <?php if (!$is_popup_process_completed) {
+	?>
               $("#sampleModal").fadeIn('fast', function() {
                      $(this).modal('show');
               });
-            <?php } ?>
+            <?php
+} ?>
            
 
         

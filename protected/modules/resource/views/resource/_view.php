@@ -6,7 +6,7 @@
 <div class="view panel panel-default">
 <div class="panel-heading">
 	<b><?php echo Html::encode($data->getAttributeLabel('id')); ?>:</b>
-	#<?php echo Html::link(Html::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	#<?php echo Html::link(Html::encode($data->id), array('view', 'id' => $data->id)); ?>
 	<br />
 
 </div>
@@ -25,7 +25,7 @@
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('html_content')); ?>:</b>
-	<?php echo ($data->html_content); ?>
+	<?php echo($data->html_content); ?>
 	<br />
 
 	<b><?php echo Html::encode($data->getAttributeLabel('image_logo')); ?>:</b>

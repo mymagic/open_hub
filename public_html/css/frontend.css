@@ -224,3 +224,34 @@ label{
 	}	
 }
  
+
+@media (max-width: 768px){
+	#body-frontend .navbar-header
+	{
+		float:none;
+	}
+}
+#body-frontend .navbar-nav>li>.dropdown-menu
+{
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border:1px solid #eee !important;
+}
+#body-frontend #nav-main
+{
+	margin-top:0; 
+	margin-bottom:0;
+}
+#body-frontend .nav > li.active
+{
+	border-left:0 !important;
+}
+#body-frontend .nav>li>a:hover, #body-frontend .nav>li>a:focus
+{
+	text-decoration:none !important;
+}
+.grid-view th
+{
+	background-color:#ededed !important;
+}
+.grid-view th a{color:#353535;}

@@ -69,16 +69,17 @@ if ($realm == 'backend') {
 	</div>
 
 
-	<?php if (Yii::app()->user->isDeveloper) : ?>
+	<?php // if (Yii::app()->user->isDeveloper) :?>
+	<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) : ?>
 		<div class="px-8 py-6 mt-4 shadow-panel">
 			<div class="crud-view">
 				<?php if (!empty($model->_metaStructures)) : ?>
 					<h2><?php echo Yii::t('core', 'Meta Data') ?></h2>
 					<?php echo Notice::inline(Yii::t('notice', 'Meta Data Only accessible by developer role'), Notice_WARNING) ?>
 					<?php $this->widget('application.components.widgets.DetailView', array(
-																										'data' => $model,
-																										'attributes' => $model->metaItems2DetailViewArray(),
-																									)); ?>
+							'data' => $model,
+							'attributes' => $model->metaItems2DetailViewArray(),
+						)); ?>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -95,32 +96,33 @@ if ($realm == 'backend') {
 <?php if ($realm == 'backend') : ?>
 	<div class="crud-view">
 		<?php $this->widget('application.components.widgets.DetailView', array(
-																								'data' => $model,
-																								'attributes' => array(
-																									'id',
-																									array('name' => 'organization_id', 'value' => $model->organization->title),
-																									array('name' => 'product_category_id', 'value' => $model->productCategory->title),
-																									'title',
-																									array('name' => 'text_short_description', 'type' => 'raw', 'value' => nl2br($model->text_short_description)),
-																									array('name' => 'typeof', 'value' => $model->formatEnumTypeof($model->typeof)),
-																									array('name' => 'image_cover', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_cover')),
-																									'url_website',
-																									array('name' => 'price', 'type' => 'raw', 'value' => $model->renderPrice()),
-																									array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
-																									array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
-																									array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
-																								),
-																							)); ?>
+				'data' => $model,
+				'attributes' => array(
+					'id',
+					array('name' => 'organization_id', 'value' => $model->organization->title),
+					array('name' => 'product_category_id', 'value' => $model->productCategory->title),
+					'title',
+					array('name' => 'text_short_description', 'type' => 'raw', 'value' => nl2br($model->text_short_description)),
+					array('name' => 'typeof', 'value' => $model->formatEnumTypeof($model->typeof)),
+					array('name' => 'image_cover', 'type' => 'raw', 'value' => Html::activeThumb($model, 'image_cover')),
+					'url_website',
+					array('name' => 'price', 'type' => 'raw', 'value' => $model->renderPrice()),
+					array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
+					array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
+					array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
+				),
+			)); ?>
 
-		<?php if (Yii::app()->user->isDeveloper) : ?>
+		<?php // if (Yii::app()->user->isDeveloper) :?>
+		<?php if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) : ?>
 			<div class="crud-view">
 				<?php if (!empty($model->_metaStructures)) : ?>
 					<h2><?php echo Yii::t('core', 'Meta Data') ?></h2>
 					<?php echo Notice::inline(Yii::t('notice', 'Meta Data Only accessible by developer role'), Notice_WARNING) ?>
 					<?php $this->widget('application.components.widgets.DetailView', array(
-																										'data' => $model,
-																										'attributes' => $model->metaItems2DetailViewArray(),
-																									)); ?>
+							'data' => $model,
+							'attributes' => $model->metaItems2DetailViewArray(),
+						)); ?>
 				<?php endif; ?>
 			</div>
 		<?php endif; ?>

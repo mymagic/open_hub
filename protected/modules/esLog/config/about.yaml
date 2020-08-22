@@ -2,7 +2,7 @@ code: "esLog"
 version: "1.0"
 title: "Elastic Search Log"
 oneliner: "Added log functionality on commmon services using Elastic Search"
-lastUpdate: "2019-08-01"
+lastUpdate: "2020-03-12"
 developer:
   author: "Tan Yee Siang"
   organization: "MaGIC"

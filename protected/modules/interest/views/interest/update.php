@@ -9,10 +9,15 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'List Interest'), 'url' => array('/interest/interest/index')),
+	array(
+		'label' => Yii::t('app', 'Manage Interest'), 'url' => array('/interest/interest/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+	),
 	array('label' => Yii::t('app', 'Create Interest'), 'url' => array('/interest/interest/create')),
-	array('label' => Yii::t('app', 'View Interest'), 'url' => array('/interest/interest/view', 'id' => $model->id)),
-	array('label' => Yii::t('app', 'Manage Interest'), 'url' => array('/interest/interest/admin')),
+	array(
+		'label' => Yii::t('app', 'View Interest'), 'url' => array('/interest/interest/view', 'id' => $model->id),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view')
+),
 );
 ?>
 

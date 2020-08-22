@@ -24,11 +24,10 @@ class ChargeController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,6 @@ class ChargeController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -49,20 +47,21 @@ class ChargeController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('view','create','update','admin' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('view', 'create', 'update', 'admin'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list'),
-				'users'=>array('@'),
+				'actions' => array('list'),
+				'users' => array('@'),
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -78,8 +77,8 @@ class ChargeController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -89,7 +88,7 @@ class ChargeController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Charge;
+		$model = new Charge;
 		$model->title = Yii::app()->request->getQuery('title');
 		$model->status = 'new';
 		$model->currency_code = Yii::app()->request->getQuery('currency_code', 'MYR');
@@ -102,23 +101,25 @@ class ChargeController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Charge']))
-		{
-			$model->attributes=$_POST['Charge'];
+		if (isset($_POST['Charge'])) {
+			$model->attributes = $_POST['Charge'];
 			$model->status = 'pending';
 			$model->is_active = 1;
 
-			if(!empty($model->date_started)) $model->date_started = strtotime($model->date_started);
-			if(!empty($model->date_expired)) $model->date_expired = strtotime($model->date_expired);
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if (!empty($model->date_started)) {
+				$model->date_started = strtotime($model->date_started);
+			}
+			if (!empty($model->date_expired)) {
+				$model->date_expired = strtotime($model->date_expired);
+			}
+
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -129,31 +130,34 @@ class ChargeController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
-		if(!$model->canUpdateByAdmin()) Notice::page(Yii::t('backend', 'You cant update this item'));
+		$model = $this->loadModel($id);
+		if (!$model->canUpdateByAdmin()) {
+			Notice::page(Yii::t('backend', 'You cant update this item'));
+		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Charge']))
-		{
-			$model->attributes=$_POST['Charge'];
+		if (isset($_POST['Charge'])) {
+			$model->attributes = $_POST['Charge'];
 
-			if(!empty($model->date_started)) $model->date_started = strtotime($model->date_started);
-			if(!empty($model->date_expired)) $model->date_expired = strtotime($model->date_expired);
+			if (!empty($model->date_started)) {
+				$model->date_started = strtotime($model->date_started);
+			}
+			if (!empty($model->date_expired)) {
+				$model->date_expired = strtotime($model->date_expired);
+			}
 
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Index
 	 */
@@ -165,39 +169,39 @@ class ChargeController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionList($chargeToCode='')
+	public function actionList($chargeToCode = '')
 	{
 		$this->layout = 'cpanel';
 		$this->pageTitle = Yii::t('app', 'My Charges');
 		$this->activeSubMenuCpanel = 'charges';
 
 		$criteria = new CDbCriteria;
-			$criteria->compare('t.is_active', 1);
-			$criteria->compare('t.charge_to', 'email');
-			$criteria->compare('t.charge_to_code', Yii::app()->user->username);
+		$criteria->compare('t.is_active', 1);
+		$criteria->compare('t.charge_to', 'email');
+		$criteria->compare('t.charge_to_code', Yii::app()->user->username);
 
 		$criteria2 = new CDbCriteria;
 		$criteria2->with = array(
-			'organization'=>array('alias'=>'o'), 
-			'organization.organization2Emails'=>array('alias'=>'o2e')
+			'organization' => array('alias' => 'o'),
+			'organization.organization2Emails' => array('alias' => 'o2e')
 		);
 		$criteria2->together = true;
 		$criteria2->condition = 'charge_to=:chargeTo AND o2e.user_email=:userEmail AND o2e.status=:status';
-		$criteria2->params = array('userEmail'=>Yii::app()->user->username, 'status'=>'approve', 'chargeTo'=>'organization');
+		$criteria2->params = array('userEmail' => Yii::app()->user->username, 'status' => 'approve', 'chargeTo' => 'organization');
 		$criteria->mergeWith($criteria2, 'OR');
 
-		$dataProvider=new CActiveDataProvider('Charge', array(
+		$dataProvider = new CActiveDataProvider('Charge', array(
 			'criteria' => $criteria,
-			'sort'=>array(
-				'defaultOrder'=>'t.id DESC',
+			'sort' => array(
+				'defaultOrder' => 't.id DESC',
 			),
 		));
 		$dataProvider->pagination->pageSize = 10;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('list',array(
-			'dataProvider'=>$dataProvider,
-			'chargeToCode'=>$chargeToCode
+
+		$this->render('list', array(
+			'dataProvider' => $dataProvider,
+			'chargeToCode' => $chargeToCode
 		));
 	}
 
@@ -206,13 +210,17 @@ class ChargeController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Charge('search');
+		$model = new Charge('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Charge'])) $model->attributes=$_GET['Charge'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Charge'])) {
+			$model->attributes = $_GET['Charge'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -225,9 +233,11 @@ class ChargeController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Charge::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Charge::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -237,8 +247,7 @@ class ChargeController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='charge-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'charge-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

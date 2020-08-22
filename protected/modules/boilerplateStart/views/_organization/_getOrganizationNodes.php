@@ -1,3 +1,3 @@
-<h4>Boilerplat Start</h4>
+<h4>Boilerplate Start</h4>
 <ol>
 </ol>

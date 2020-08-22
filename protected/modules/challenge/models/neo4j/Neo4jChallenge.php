@@ -70,7 +70,6 @@ class Neo4jChallenge extends Neo4j
 
 	public $relationshipData;
 
-
 	public function __construct($model = '')
 	{
 		$this->init();
@@ -79,12 +78,10 @@ class Neo4jChallenge extends Neo4j
 		$this->industries = new NeoCollection();
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param string $id
@@ -94,7 +91,6 @@ class Neo4jChallenge extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -102,7 +98,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->id;
 	}
-
 
 	/**
 	 * @param string $title
@@ -112,7 +107,6 @@ class Neo4jChallenge extends Neo4j
 		$this->title = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -120,7 +114,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->title;
 	}
-
 
 	/**
 	 * @param boolean $is_active
@@ -130,7 +123,6 @@ class Neo4jChallenge extends Neo4j
 		$this->is_active = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -138,7 +130,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->is_active;
 	}
-
 
 	/**
 	 * @param boolean $is_publish
@@ -148,7 +139,6 @@ class Neo4jChallenge extends Neo4j
 		$this->is_publish = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -156,7 +146,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->is_publish;
 	}
-
 
 	/**
 	 * @param boolean $is_highlight
@@ -166,7 +155,6 @@ class Neo4jChallenge extends Neo4j
 		$this->is_highlight = $value;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -174,7 +162,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->is_highlight;
 	}
-
 
 	/**
 	 * @param int $date_open
@@ -184,7 +171,6 @@ class Neo4jChallenge extends Neo4j
 		$this->date_open = $value;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -192,7 +178,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->date_open;
 	}
-
 
 	/**
 	 * @param int $date_close
@@ -202,7 +187,6 @@ class Neo4jChallenge extends Neo4j
 		$this->date_close = $value;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -210,7 +194,6 @@ class Neo4jChallenge extends Neo4j
 	{
 		return $this->date_close;
 	}
-
 
 	/**
 	 * @return Neo4jIndustry[]|NeoCollection
@@ -220,18 +203,16 @@ class Neo4jChallenge extends Neo4j
 		return $this->industries;
 	}
 
-
 	/**
 	 * @param Neo4jIndustry $industry
 	 */
 	public function addIndustries(Neo4jIndustry $industry)
 	{
 		if (!$this->industries->contains($industry)) {
-		$this->industries->add($industry);
-		$this->entityManager->flush();
+			$this->industries->add($industry);
+			$this->entityManager->flush();
 		}
 	}
-
 
 	/**
 	 * @param Neo4jIndustry $industry
@@ -239,33 +220,31 @@ class Neo4jChallenge extends Neo4j
 	public function removeIndustries(Neo4jIndustry $industry)
 	{
 		if ($this->industries->contains($industry)) {
-		$keys = $this->industries->getKeys();
-		foreach($keys as $key) {
-		$this->industries->remove($key);
-		}
-		$this->entityManager->flush();
+			$keys = $this->industries->getKeys();
+			foreach ($keys as $key) {
+				$this->industries->remove($key);
+			}
+			$this->entityManager->flush();
 		}
 	}
 
+	public function getRecommendation()
+	{
+		$userId = Yii::app()->user->id;
+		$time = time();
 
-	public function getRecommendation() {
-
-        $userId = Yii::app()->user->id;
-        $time = time();
-
-        $challenges = $this->entityManager->createQuery("MATCH (interest:Neo4jInterest {user_id: '$userId'})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]-(challenge:Neo4jChallenge)
+		$challenges = $this->entityManager->createQuery("MATCH (interest:Neo4jInterest {user_id: '$userId'})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE|:HAS_SDG|:HAS_CLUSTER]-(challenge:Neo4jChallenge)
         WHERE toInteger(challenge.date_close) > $time AND challenge.is_active = 1 AND challenge.is_publish = 1
         RETURN challenge.id, count(challenge) as frequency
         ORDER BY frequency DESC
-        LIMIT 10")->execute();
+        LIMIT 4")->execute();
 
-        $challengeIds = array();
+		$challengeIds = array();
 
-        foreach($challenges as $challenge) {
-            array_push($challengeIds, $challenge['challenge.id']);
-        }
+		foreach ($challenges as $challenge) {
+			array_push($challengeIds, $challenge['challenge.id']);
+		}
 
 		return $challengeIds;
-
 	}
 }

@@ -15,8 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 class Behavior extends CBehavior
 {
-
 }

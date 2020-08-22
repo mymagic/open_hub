@@ -1,16 +1,16 @@
 <?php
  /*************************************************************************
- * 
+ *
  * TAN YEE SIANG CONFIDENTIAL
  * __________________
- * 
+ *
  *  [2002] - [2007] TAN YEE SIANG
  *  All Rights Reserved.
- * 
+ *
  * NOTICE:  All information contained herein is, and remains
  * the property of TAN YEE SIANG and its suppliers,
  * if any.  The intellectual and technical concepts contained
- * herein are proprietary to TAN YEE SIANG 
+ * herein are proprietary to TAN YEE SIANG
  * and its suppliers and may be covered by U.S. and Foreign Patents,
  * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
@@ -46,22 +46,30 @@
 	)
 )); ?>\n"; ?>
 
-<?php foreach($this->tableSchema->columns as $column): ?>
+<?php foreach ($this->tableSchema->columns as $column): ?>
 <?php
-	$field=$this->generateInputField($this->modelClass,$column);
-	
+	$field = $this->generateInputField($this->modelClass, $column);
+
 	// not searchable
 	// password
-	if($this->buildSetting->isPasswordColumn($column)) continue;
+	if ($this->buildSetting->isPasswordColumn($column)) {
+		continue;
+	}
 	// html
-	if($this->buildSetting->isHtmlColumn($column)) continue;
+	if ($this->buildSetting->isHtmlColumn($column)) {
+		continue;
+	}
 	// image
-	if($this->buildSetting->isImageColumn($column)) continue;
+	if ($this->buildSetting->isImageColumn($column)) {
+		continue;
+	}
 	// json
-	if($this->buildSetting->isJsonColumn($column)) continue;
+	if ($this->buildSetting->isJsonColumn($column)) {
+		continue;
+	}
 ?>
 
-<?php if($this->buildSetting->isDateColumn($column)): ?>
+<?php if ($this->buildSetting->isDateColumn($column)): ?>
 
 	<div class="form-group">
 		<?php echo "<?php echo \$form->bsLabelFx2(\$model, '{$column->name}', array('required'=>false)); ?>\n"; ?>
@@ -77,16 +85,16 @@
 
 <?php else: ?>
 
-	<?php if(ysUtil::isLanguageField($column->name)): ?><?php $languageKey=ysUtil::getLanguageKey($column->name); ?><?php echo "<?php if(array_key_exists('{$languageKey}', Yii::app()->params['backendLanguages'])): ?>\n"; ?><?php endif; ?>
+	<?php if (ysUtil::isLanguageField($column->name)): ?><?php $languageKey = ysUtil::getLanguageKey($column->name); ?><?php echo "<?php if(array_key_exists('{$languageKey}', Yii::app()->params['backendLanguages'])): ?>\n"; ?><?php endif; ?>
 	
 	<div class="form-group">
 		<?php echo "<?php echo \$form->bsLabelFx2(\$model, '{$column->name}', array('required'=>false)); ?>\n"; ?>
 		<div class="col-sm-10">
-			<?php echo "<?php echo ".$this->generateActiveField($this->modelClass, $column, "search")."; ?>\n"; ?>
+			<?php echo '<?php echo ' . $this->generateActiveField($this->modelClass, $column, 'search') . "; ?>\n"; ?>
 		</div>
 	</div>
 	
-	<?php if(ysUtil::isLanguageField($column->name)): ?><?php echo "<?php endif; ?>\n"; ?><?php endif; ?>
+	<?php if (ysUtil::isLanguageField($column->name)): ?><?php echo "<?php endif; ?>\n"; ?><?php endif; ?>
 	
 <?php endif; ?>
 	

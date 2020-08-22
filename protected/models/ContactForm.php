@@ -39,7 +39,7 @@ class ContactForm extends CFormModel
 			// email has to be a valid email address
 			array('email', 'email'),
 			// verifyCode needs to be entered correctly
-			array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
+			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
 		);
 	}
 
@@ -51,8 +51,8 @@ class ContactForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'body'=>Yii::t('app', 'Message'),
-			'verifyCode'=>Yii::t('app', 'Verification Code'),
+			'body' => Yii::t('app', 'Message'),
+			'verifyCode' => Yii::t('app', 'Verification Code'),
 		);
 	}
 }

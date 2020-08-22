@@ -17,19 +17,22 @@
 
 class Resource2OrganizationFunding extends Resource2OrganizationFundingBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Resource2OrganizationFunding extends Resource2OrganizationFundingBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Resource2OrganizationFunding extends Resource2OrganizationFundingBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class Resource2OrganizationFunding extends Resource2OrganizationFundingBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -91,21 +94,17 @@ class Resource2OrganizationFunding extends Resource2OrganizationFundingBase
 		return $return;
 	}
 
-	public function getUrl($mode='')
+	public function getUrl($mode = '')
 	{
-		if($mode == 'backendEdit')
-		{
-
+		if ($mode == 'backendEdit') {
 		}
 		// backendDelete
-		elseif($mode == 'backendDelete')
-		{
-			return Yii::app()->createUrl('/resource2OrganizationFunding/delete', array('id'=>$this->id));
+		elseif ($mode == 'backendDelete') {
+			return Yii::app()->createUrl('/resource2OrganizationFunding/delete', array('id' => $this->id));
 		}
 		// backendView
-		else
-		{
-			return Yii::app()->createUrl('/resource2OrganizationFunding/view', array('id'=>$this->id));
+		else {
+			return Yii::app()->createUrl('/resource2OrganizationFunding/view', array('id' => $this->id));
 		}
 	}
 }

@@ -2,19 +2,22 @@
 
 class Sdg2Intake extends Sdg2IntakeBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -22,7 +25,7 @@ class Sdg2Intake extends Sdg2IntakeBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -50,7 +53,7 @@ class Sdg2Intake extends Sdg2IntakeBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -60,9 +63,9 @@ class Sdg2Intake extends Sdg2IntakeBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -76,7 +79,7 @@ class Sdg2Intake extends Sdg2IntakeBase
 		return $return;
 	}
 
-	function behaviors() 
+	public function behaviors()
 	{
 		/*return array
 		(
@@ -84,7 +87,7 @@ class Sdg2Intake extends Sdg2IntakeBase
 				'class'=>'application.yeebase.components.behaviors.SpatialDataBehavior',
 				'spatialFields'=>array(
 					// all spatial fields here
-				
+
 				),
 			),
 		);*/

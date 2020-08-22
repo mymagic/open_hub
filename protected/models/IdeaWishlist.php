@@ -17,7 +17,10 @@
 
 class IdeaWishlist extends IdeaWishlistBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function relations()
 	{
@@ -29,8 +32,7 @@ class IdeaWishlist extends IdeaWishlistBase
 		);
 	}
 
-
-	public function toApi($params='')
+	public function toApi($params = '')
 	{
 		$return = array(
 			'id' => $this->id,
@@ -41,19 +43,17 @@ class IdeaWishlist extends IdeaWishlistBase
 			'dateModified' => $this->date_modified,
 		);
 
-		/*if(!in_array('-product', $params) && !empty($this->product)) 
+		/*if(!in_array('-product', $params) && !empty($this->product))
 		{
 			$return['product'] = $this->product->toApi();
 		}*/
-		if(!in_array('-partner', $params) && !empty($this->partner)) 
-		{
+		if (!in_array('-partner', $params) && !empty($this->partner)) {
 			$return['partner'] = $this->partner->toApi(array('-products'));
 		}
-		if(!in_array('-enterprise', $params) && !empty($this->enterprise)) 
-		{
+		if (!in_array('-enterprise', $params) && !empty($this->enterprise)) {
 			$return['enterprise'] = $this->enterprise->toApi(array('-products'));
 		}
-			
+
 		return $return;
 	}
 }

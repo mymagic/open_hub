@@ -7,8 +7,11 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
+	array(
+		'label' => Yii::t('app', 'Manage Interest'), 'url' => array('/interest/interest/admin'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+	),
 	array('label' => Yii::t('app', 'Create Interest'), 'url' => array('/interest/interest/create')),
-	array('label' => Yii::t('app', 'Manage Interest'), 'url' => array('/interest/interest/admin')),
 );
 ?>
 

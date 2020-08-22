@@ -9,7 +9,7 @@
 <p>Timezone: <?php echo date('T', strtotime($booking->booking_time)) ?></p>
 <p>Mode of Communication: <?php echo ucwords(str_replace(array('-', '_'), ' ', $booking->session_method)) ?> - <?php echo $booking->renderContactInfo() ?></p>
 <br />
-<?php if(!empty($enquiry) || !empty($companyName)): ?>
+<?php if (!empty($enquiry) || !empty($companyName)): ?>
 <p>From Startup/Company: <?php echo $companyName ?></p>
 <p>Enquiry: <?php echo nl2br($enquiry) ?></p>
 <br />

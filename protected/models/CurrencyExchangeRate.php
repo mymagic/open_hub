@@ -17,19 +17,22 @@
 
 class CurrencyExchangeRate extends CurrencyExchangeRateBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class CurrencyExchangeRate extends CurrencyExchangeRateBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class CurrencyExchangeRate extends CurrencyExchangeRateBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class CurrencyExchangeRate extends CurrencyExchangeRateBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -93,6 +96,6 @@ class CurrencyExchangeRate extends CurrencyExchangeRateBase
 
 	public function getObjByKeys($fromCurrency, $toCurrency, $year, $month, $day)
 	{
-		return self::model()->find('t.from_currency_code=:fromCurrency AND t.to_currency_code=:toCurrency AND year=:year AND month=:month AND day=:day', array(':fromCurrency'=>$fromCurrency, ':toCurrency'=>$toCurrency, ':year'=>$year, ':month'=>$month, ':day'=>$day));
+		return self::model()->find('t.from_currency_code=:fromCurrency AND t.to_currency_code=:toCurrency AND year=:year AND month=:month AND day=:day', array(':fromCurrency' => $fromCurrency, ':toCurrency' => $toCurrency, ':year' => $year, ':month' => $month, ':day' => $day));
 	}
 }

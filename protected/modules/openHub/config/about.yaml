@@ -1,9 +1,12 @@
 code: "openHub"
-version: "1.0"
-title: "Open HUB"
-oneliner: "Open source HUB website"
-lastUpdate: "2019-08-01"
+version: "1.3"
+title: "OpenHUB"
+oneliner: "OpenHUB - the open source ecosystem management tool"
+lastUpdate: "2020-05-28"
 developer:
   author: "Tan Yee Siang"
   organization: "MaGIC"
   email: "yee.siang@mymagic.my"
+dependency:
+  - module: 'interest'
+    version: '1.0'

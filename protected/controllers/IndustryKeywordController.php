@@ -24,11 +24,10 @@ class IndustryKeywordController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class IndustryKeywordController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,16 +48,17 @@ class IndustryKeywordController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','createBulk','update','admin','delete','loadBulkFromIndustry' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'createBulk', 'update', 'admin', 'delete', 'loadBulkFromIndustry'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -69,8 +69,8 @@ class IndustryKeywordController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -80,50 +80,47 @@ class IndustryKeywordController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new IndustryKeyword;
+		$model = new IndustryKeyword;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['IndustryKeyword']))
-		{
-			$model->attributes=$_POST['IndustryKeyword'];
+		if (isset($_POST['IndustryKeyword'])) {
+			$model->attributes = $_POST['IndustryKeyword'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
-	
-	public function actionCreateBulk($industryCode='')
-	{
-		$model=new IndustryKeyword;
-		if(!empty($industryCode)) $model->industry_code = $industryCode;
-		if(isset($_POST['IndustryKeyword']))
-		{
-			foreach($_POST['IndustryKeyword']['inputTitles'] as $industryKeywordTitle)
-			{
-				if(empty($industryKeywordTitle)) continue;
 
-				$model=new IndustryKeyword;
+	public function actionCreateBulk($industryCode = '')
+	{
+		$model = new IndustryKeyword;
+		if (!empty($industryCode)) {
+			$model->industry_code = $industryCode;
+		}
+		if (isset($_POST['IndustryKeyword'])) {
+			foreach ($_POST['IndustryKeyword']['inputTitles'] as $industryKeywordTitle) {
+				if (empty($industryKeywordTitle)) {
+					continue;
+				}
+
+				$model = new IndustryKeyword;
 				$model->industry_code = $_POST['IndustryKeyword']['industry_code'];
 				$model->title = $industryKeywordTitle;
-				if($model->save())
-				{
-					$this->redirect(array('industry/view', 'id'=>$model->industry->id));
+				if ($model->save()) {
+					$this->redirect(array('industry/view', 'id' => $model->industry->id));
 				}
 			}
-			
 		}
 
-		$this->render('createBulk',array(
-			'model'=>$model,
+		$this->render('createBulk', array(
+			'model' => $model,
 		));
 	}
 
@@ -134,28 +131,25 @@ class IndustryKeywordController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['IndustryKeyword']))
-		{
-			$model->attributes=$_POST['IndustryKeyword'];
+		if (isset($_POST['IndustryKeyword'])) {
+			$model->attributes = $_POST['IndustryKeyword'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -165,10 +159,11 @@ class IndustryKeywordController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -182,12 +177,12 @@ class IndustryKeywordController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('IndustryKeyword');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('IndustryKeyword');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -196,21 +191,24 @@ class IndustryKeywordController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new IndustryKeyword('search');
+		$model = new IndustryKeyword('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['IndustryKeyword'])) $model->attributes=$_GET['IndustryKeyword'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['IndustryKeyword'])) {
+			$model->attributes = $_GET['IndustryKeyword'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
 	public function actionLoadBulkFromIndustry()
 	{
 		$industries = Industry::model()->findAll();
-		foreach($industries as $industry)
-		{
+		foreach ($industries as $industry) {
 			$sql = sprintf("INSERT INTO industry_keyword (industry_code, title, date_added, date_modified) VALUES ('%s', '%s', %s, %s)
 			ON DUPLICATE KEY UPDATE date_modified=VALUES(date_modified)", $industry->code, $industry->title, time(), time());
 
@@ -228,9 +226,11 @@ class IndustryKeywordController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=IndustryKeyword::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = IndustryKeyword::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -240,8 +240,7 @@ class IndustryKeywordController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='industry-keyword-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'industry-keyword-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

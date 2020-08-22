@@ -35,8 +35,8 @@ class EventOrganizationBulkInsertForm extends CFormModel
 	{
 		return array(
 			array('event_id', 'required'),
-            array('uploadFile_excel', 'file', 'types'=>'xls, xlsx', 'allowEmpty'=>false),
-            array('event_id, file_excel', 'safe', 'on'=>'search'),
+			array('uploadFile_excel', 'file', 'types' => 'xls, xlsx', 'allowEmpty' => false),
+			array('event_id, file_excel', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -46,10 +46,8 @@ class EventOrganizationBulkInsertForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'event_id'=>Yii::t('core', 'Event'),
-			'uploadFile_excel'=>Yii::t('core', 'Excel'),
+			'event_id' => Yii::t('core', 'Event'),
+			'uploadFile_excel' => Yii::t('core', 'Excel'),
 		);
 	}
-
-	
 }

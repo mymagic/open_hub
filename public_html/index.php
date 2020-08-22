@@ -18,20 +18,38 @@
 // change the following paths if necessary
 $yii = dirname(__FILE__) . '/../framework/yii.php';
 include_once dirname(__FILE__) . '/../protected/config/phpini.php';
-$config = dirname(__FILE__) . '/../protected/config/main.php';
-
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,0); 
-curl_setopt($ch, CURLOPT_TIMEOUT, 10000); //timeout in seconds
+// php ini specific override
+$overridePhpIniFilePath = dirname(__FILE__) . '/../protected/overrides/config/phpini.php';
+if (file_exists($overridePhpIniFilePath)) {
+	include $overridePhpIniFilePath;
+}
 
 // remove the following lines when in production mode
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 // specify how many levels of call stack should be shown in each log message
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 
- require_once($yii);
-include_once dirname(__FILE__) . '/../protected/config/path.php'; require_once(dirname(__FILE__) .'/../protected/vendor/autoload.php'); require_once(dirname(__FILE__) .'/../protected/components/WebApplication.php');
+require_once $yii;
+require_once dirname(__FILE__) . '/../protected/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../protected');
+$dotenv->load();
+
+$config = dirname(__FILE__) . '/../protected/config/main.php';
+include_once dirname(__FILE__) . '/../protected/config/path.php';
+require_once dirname(__FILE__) . '/../protected/components/WebApplication.php';
 
 //$app = Yii::createWebApplication($config);
 $app = new WebApplication($config);
-$app->attachBehavior('WebBehavior', 'application.yeebase.components.behaviors.WebBehavior');
+//$app->attachBehavior('WebBehavior', 'application.yeebase.components.behaviors.WebBehavior');
 $app->run();
+
+function envKeySplit($array)
+{
+	$lists = explode(';', $array);
+	foreach ($lists as $list) {
+		list($k, $v) = explode(':', $list);
+		$final[$k] = $v;
+	}
+
+	return $final;
+}

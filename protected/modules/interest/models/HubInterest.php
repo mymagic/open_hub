@@ -25,12 +25,12 @@ class HubInterest
 	{
 		try {
 			$client = Yii::app()->neo4j->getClient();
-			$records = $client->run("
+			$records = $client->run('
 			MATCH (user:User {username: {username}})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE]-(resource:Resource)
 			RETURN resource.id, count(resource) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		", ['username' => Yii::app()->user->username]);
+		', ['username' => Yii::app()->user->username]);
 			$resources = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($resources, Resource::model()->findByPk($record->value('resource.id')));
@@ -38,7 +38,6 @@ class HubInterest
 
 			return $resources;
 		} catch (NeoException $err) {
-
 			return null;
 		}
 	}
@@ -47,13 +46,13 @@ class HubInterest
 	{
 		try {
 			$client = Yii::app()->neo4j->getClient();
-			$records = $client->run("
+			$records = $client->run('
 			MATCH (user:User {username: {username}})-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE]->()<-[:HAS_PERSONA|:HAS_INDUSTRY|:HAS_STARTUPSTAGE]-(event:Event)
 			WHERE event.end > {time}
 			RETURN event.id, count(event) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		", ['username' => Yii::app()->user->username, 'time' => (string) time()]);
+		', ['username' => Yii::app()->user->username, 'time' => (string) time()]);
 			$events = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($events, Event::model()->findByPk($record->value('event.id')));
@@ -68,15 +67,14 @@ class HubInterest
 	public function getRecommendationForChallenges()
 	{
 		try {
-
 			$client = Yii::app()->neo4j->getClient();
-			$records = $client->run("
+			$records = $client->run('
 			MATCH (user:User {username: {username}})-[:HAS_INDUSTRY]->()<-[:HAS_INDUSTRY]-(challenge:Challenge)
 			WHERE challenge.end > {time}
 			RETURN challenge.id, count(challenge) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		", ['username' => Yii::app()->user->username, 'time' => (string) time()]);
+		', ['username' => Yii::app()->user->username, 'time' => (string) time()]);
 			$challenges = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($challenges, Challenge::model()->findByPk($record->value('challenge.id')));
@@ -190,7 +188,6 @@ class HubInterest
 		} catch (NeoException $err) {
 		}
 
-
 		$stack = $client->stack();
 		$resources = Resource::model()->findAll();
 
@@ -205,7 +202,6 @@ class HubInterest
 			echo "\nResources data inserted\n";
 		} catch (NeoException $err) {
 		}
-
 
 		$stack = $client->stack();
 		$challenges = Challenge::model()->findAll();
@@ -222,7 +218,6 @@ class HubInterest
 		} catch (NeoException $err) {
 		}
 
-
 		$stack = $client->stack();
 		$personas = Persona::model()->findAll();
 
@@ -237,7 +232,6 @@ class HubInterest
 			echo "\nPersonas data inserted\n";
 		} catch (NeoException $err) {
 		}
-
 
 		$stack = $client->stack();
 		$stages = StartupStage::model()->findAll();
@@ -254,7 +248,6 @@ class HubInterest
 		} catch (NeoException $err) {
 		}
 
-
 		$stack = $client->stack();
 		$industries = Industry::model()->findAll();
 
@@ -269,7 +262,6 @@ class HubInterest
 			echo "\nIndustries data inserted\n";
 		} catch (NeoException $err) {
 		}
-
 
 		$stack = $client->stack();
 		$sdgs = Sdg::model()->findAll();
@@ -315,7 +307,6 @@ class HubInterest
 		} catch (NeoException $err) {
 		}
 
-
 		$stack = $client->stack();
 		$events = Event::model()->findAll();
 		foreach ($events as $event) {
@@ -334,7 +325,6 @@ class HubInterest
 			echo "\nEvent relationship data inserted\n";
 		} catch (NeoException $err) {
 		}
-
 
 		$stack = $client->stack();
 		$resources = Resource::model()->findAll();
@@ -357,7 +347,6 @@ class HubInterest
 		} catch (NeoException $err) {
 			echo $err;
 		}
-
 
 		$stack = $client->stack();
 		$challenges = Challenge::model()->findAll();

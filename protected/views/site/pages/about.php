@@ -2,7 +2,7 @@
 /* @var $this SiteController */
 
 $this->pageTitle = Yii::t('app', 'About');
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	Yii::t('app', 'About'),
 );
 ?>

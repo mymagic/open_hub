@@ -16,12 +16,26 @@ class TestController extends Controller
 		return array(
 			array('allow',  // deny all users
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])',
 	  ),
 	  array('deny',  // deny all users
 				'users' => array('*'),
 			),
 		);
+	}
+
+	public function actionGetLatestRelease()
+	{
+		$release = HubOpenHub::getLatestRelease();
+		print_r($release);
+	}
+
+	public function actionBSD3License()
+	{
+		$client = new \Github\Client();
+		$licenses = $client->api('licenses')->show('bsd-3-clause');
+		print_r($licenses);
 	}
 
 	public function actionBoilerplateStartOrganizationBehavior()
@@ -33,7 +47,7 @@ class TestController extends Controller
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {

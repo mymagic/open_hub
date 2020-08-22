@@ -17,19 +17,22 @@
 
 class Resource2Industry extends Resource2IndustryBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Resource2Industry extends Resource2IndustryBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Resource2Industry extends Resource2IndustryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,13 +78,13 @@ class Resource2Industry extends Resource2IndustryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
-	function behaviors() 
+	public function behaviors()
 	{
 		// do not include this or else findByAttributes will give error
 		/*return array
@@ -90,7 +93,7 @@ class Resource2Industry extends Resource2IndustryBase
 				'class'=>'application.yeebase.components.behaviors.SpatialDataBehavior',
 				'spatialFields'=>array(
 					// all spatial fields here
-				
+
 				),
 			),
 		);*/

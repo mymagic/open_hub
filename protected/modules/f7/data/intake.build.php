@@ -1,40 +1,39 @@
 <?php
+
 return array(
 	'layout' => '//layouts/backend',
 	'isDeleteDisabled' => false,
 	'moduleCode' => 'f7',
 	'isAllowMeta' => true,
-	'foreignRefer' => array('key'=>'id', 'title'=>'title'),
+	'foreignRefer' => array('key' => 'id', 'title' => 'title'),
 	'menuTemplate' => array(
-		'index'=>'admin, create',
-		'admin'=>'create',
-		'create'=>'admin',
-		'update'=>'admin, create, view',
-		'view'=>'admin, create, update, delete',
+		'index' => 'admin, create',
+		'admin' => 'create',
+		'create' => 'admin',
+		'update' => 'admin, create, view',
+		'view' => 'admin, create, update, delete',
 	),
 	'admin' => array(
 		'list' => array('id', 'title', 'date_started', 'is_active', 'is_highlight'),
 		'sortDefaultOrder' => 't.date_started DESC',
 	),
 	'structure' => array(
-        'code' => array
-		(
-			'isUnique'=>true,
-			'isUUID'=>true,
+		'code' => array(
+			'isUnique' => true,
+			'isUUID' => true,
 		),
-        'slug' => array
-		(
-			'isUnique'=>true,
-			'isUUID'=>false,
+		'slug' => array(
+			'isUnique' => true,
+			'isUUID' => false,
 		),
-		'json_extra'=>array('isJson'=>true),
+		'json_extra' => array('isJson' => true),
 	),
-    // this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
-    'json'=>array(
-		'extra'=>array(
+	// this foreignKey is mainly for crud view generation. model relationship will not use this at the moment
+	'json' => array(
+		'extra' => array(
 		),
 	),
-    'foreignKey' => array(
+	'foreignKey' => array(
 	),
 	/*
 		eg: resource (this table), industry(target table), resource2industry(linked table)
@@ -46,23 +45,20 @@ return array(
 		label: optional
 		notMasterData: optional boolean, default: false. If set true, means the target table can be huge so the input method will be different
 	*/
-	'many2many'=>array(
-		
-		'industry'=>array('className'=>'Industry', 'relationName'=>'industries', 'relationTable'=>'industry2intake'),
-		
-		'persona'=>array('className'=>'Persona', 'relationName'=>'personas', 'relationTable'=>'persona2intake'),
-		
-		'startup_stage'=>array('className'=>'StartupStage', 'relationName'=>'startupStages', 'relationTable'=>'startup_stage2intake'),
-		
-		'impact'=>array('className'=>'Impact', 'relationName'=>'impacts', 'relationTable'=>'impact2intake'),
+	'many2many' => array(
+		'industry' => array('className' => 'Industry', 'relationName' => 'industries', 'relationTable' => 'industry2intake'),
 
-		'sdg'=>array('className'=>'Sdg', 'relationName'=>'sdgs', 'relationTable'=>'sdg2intake'),
-		
+		'persona' => array('className' => 'Persona', 'relationName' => 'personas', 'relationTable' => 'persona2intake'),
+
+		'startup_stage' => array('className' => 'StartupStage', 'relationName' => 'startupStages', 'relationTable' => 'startup_stage2intake'),
+
+		'impact' => array('className' => 'Impact', 'relationName' => 'impacts', 'relationTable' => 'impact2intake'),
+
+		'sdg' => array('className' => 'Sdg', 'relationName' => 'sdgs', 'relationTable' => 'sdg2intake'),
 	),
 
-	'tag'=>array(
-		'backend'=>array(
-			'tagTable'=>'tag', 'tagBindingTable'=>'tag2intake', 'modelTableFk'=>'intake_id', 'tagTablePk'=>'id', 'tagTableName'=>'name', 'tagBindingTableTagId'=>'tag_id', 'cacheID'=>'cacheTag2Intake'),
+	'tag' => array(
+		'backend' => array(
+			'tagTable' => 'tag', 'tagBindingTable' => 'tag2intake', 'modelTableFk' => 'intake_id', 'tagTablePk' => 'id', 'tagTableName' => 'name', 'tagBindingTableTagId' => 'tag_id', 'cacheID' => 'cacheTag2Intake'),
 	),
-	
-); 
+);

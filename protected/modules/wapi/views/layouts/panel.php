@@ -1,8 +1,8 @@
 <?php $this->beginContent(sprintf('webroot.themes.%s.views.layouts._backend', Yii::app()->theme->name)); ?>
-<?php Yii::import('webroot.themes.'.Yii::app()->theme->name.'.model.Inspinia'); ?>
+<?php Yii::import('webroot.themes.' . Yii::app()->theme->name . '.model.Inspinia'); ?>
 
 <?php Yii::app()->getClientScript()->registerCssFile($this->module->assetsUrl . '/css/wapi.css'); ?>
-<?php Yii::app()->getClientScript()->registerScriptFile($this->module->assetsUrl . "/javascript/wapi.js", CClientScript::POS_END); ?>
+<?php Yii::app()->getClientScript()->registerScriptFile($this->module->assetsUrl . '/javascript/wapi.js', CClientScript::POS_END); ?>
 
 <!-- container -->
 <div class="container-fluid margin-top-lg">

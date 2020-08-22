@@ -52,8 +52,8 @@ class LoginForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'rememberMe'=>Yii::t('core', 'Remember me next time'),
-			'username'=>Yii::t('core', 'Email'),
+			'rememberMe' => Yii::t('core', 'Remember me next time'),
+			'username' => Yii::t('core', 'Email'),
 		);
 	}
 
@@ -61,16 +61,14 @@ class LoginForm extends CFormModel
 	 * Authenticates the password.
 	 * This is the 'authenticate' validator as declared in rules().
 	 */
-	public function authenticate($attribute,$params)
+	public function authenticate($attribute, $params)
 	{
-		Notice::debugFlash("LoginForm.authenticate()");
-		
-		if(!$this->hasErrors())
-		{
-			$this->_identity=new UserIdentity($this->username, $this->password);
+		Notice::debugFlash('LoginForm.authenticate()');
+
+		if (!$this->hasErrors()) {
+			$this->_identity = new UserIdentity($this->username, $this->password);
 			$this->_identity->authenticate();
-			if(!$this->_identity->errorCode)
-			{
+			if (!$this->_identity->errorCode) {
 				$this->addError('password', Yii::t('core', 'Incorrect username or password.'));
 			}
 		}
@@ -82,42 +80,34 @@ class LoginForm extends CFormModel
 	 */
 	public function login()
 	{
-		Notice::debugFlash("LoginForm.login()");
-		
-		if($this->_identity===null)
-		{
-			Notice::debugFlash(Yii::t('notice',"username:{username}, password:{password}", ['username'=>$this->username, 'password'=>$this->password]));
-			
+		Notice::debugFlash('LoginForm.login()');
+
+		if ($this->_identity === null) {
+			Notice::debugFlash(Yii::t('notice', 'username:{username}, password:{password}', ['username' => $this->username, 'password' => $this->password]));
+
 			$this->_identity = new UserIdentity($this->username, $this->password);
-			$this->_identity->authenticate(); 
+			$this->_identity->authenticate();
 		}
-		
-		Notice::debugFlash(Yii::t('notice',"login error code: {error}", ['error'=>$this->_identity->errorCode]));
-		
+
+		Notice::debugFlash(Yii::t('notice', 'login error code: {error}', ['error' => $this->_identity->errorCode]));
+
 		// login decision
-		if($this->_identity->errorCode === UserIdentity::ERROR_NONE)
-		{
-			Notice::debugFlash("UserIdentity::ERROR_NONE");
-			$duration=$this->rememberMe ? 3600*24*30 : 0; // 30 days
+		if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
+			Notice::debugFlash('UserIdentity::ERROR_NONE');
+			$duration = $this->rememberMe ? 3600 * 24 * 30 : 0; // 30 days
 			Yii::app()->user->login($this->_identity, $duration);
+
 			return true;
-		}
-		elseif($this->_identity->errorCode === UserIdentity::ERROR_USERNAME_INVALID)
-		{
-			Notice::debugFlash("UserIdentity::ERROR_USERNAME_INVALID");
-			$this->addError('username','Invalid username');
-		}
-		elseif($this->_identity->errorCode === UserIdentity::ERROR_ACCOUNT_BLOCKED)
-		{
-			Notice::debugFlash("UserIdentity::ERROR_ACCOUNT_BLOCKED");
+		} elseif ($this->_identity->errorCode === UserIdentity::ERROR_USERNAME_INVALID) {
+			Notice::debugFlash('UserIdentity::ERROR_USERNAME_INVALID');
+			$this->addError('username', 'Invalid username');
+		} elseif ($this->_identity->errorCode === UserIdentity::ERROR_ACCOUNT_BLOCKED) {
+			Notice::debugFlash('UserIdentity::ERROR_ACCOUNT_BLOCKED');
 			$this->addError('username', Yii::t('core', 'Your account has been disabled by the system admin.'));
-		}
-		else
-		{
-			
+		} else {
 			$this->addError('password', Yii::t('notice', 'Incorrect username or password.'));
 		}
-		
+
 		return false;
 	}
 }

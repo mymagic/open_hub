@@ -123,7 +123,7 @@ class ServiceModule extends WebModule
 	public function getNavItems($controller, $forInterface)
 	{
 		//for cpanel
-		//cpanelNavDashboard , cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
+		//cpanelNavDashboard , cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		switch ($forInterface) {
 			case 'cpanelNavDashboard': {
 					return array(
@@ -139,9 +139,9 @@ class ServiceModule extends WebModule
 				}
 			case 'cpanelNavSetting': {
 				}
-			case 'cpanelNavCompany': {
+			case 'cpanelNavOrganization': {
 				}
-			case 'cpanelNavCompanyInformation': {
+			case 'cpanelNavOrganizationInformation': {
 				}
 		}
 	}

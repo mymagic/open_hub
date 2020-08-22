@@ -82,15 +82,19 @@ class UserIdentity extends CUserIdentity
 	private function resetLogin()
 	{
 		$this->setState('accessBackend', false);
+		$this->setState('accessSensitiveData', false);
 		$this->setState('accessCpanel', false);
 
+		$this->setState('rolesAssigned', false);
+
 		Yii::app()->session['accessBackend'] = false;
+		Yii::app()->session['accessSensitiveData'] = false;
 		Yii::app()->session['accessCpanel'] = false;
 	}
 
 	private function doLogin($user)
 	{
-		$rolesCanAccessBackend = Yii::app()->params['rolesCanAccessBackend'];
+		// $rolesCanAccessBackend = Yii::app()->params['rolesCanAccessBackend'];
 		$user->stat_login_count++;
 
 		// increase stat_login_success_count
@@ -110,6 +114,7 @@ class UserIdentity extends CUserIdentity
 		//
 		// role
 		$roleLevelDisplay = '';
+		$rolesAssigned = [];
 		$roles = Role::model()->findAll();
 
 		// can access backend?
@@ -122,17 +127,30 @@ class UserIdentity extends CUserIdentity
 			// loop all roles this user has
 			if (count($user->roles) > 0) {
 				foreach ($user->roles as $role) {
-					$this->setState('is' . ucwords($role->code), true);
+					// $this->setState('is' . ucwords($role->code), true);
 					$roleLevelDisplay .= Yii::t('default', $role->title) . ', ';
 
+					/*
 					if (in_array($role->code, $rolesCanAccessBackend)) {
 						$this->setState('accessBackend', true);
 						Yii::app()->session['accessBackend'] = true;
+					}
+					//*/
+
+					$rolesAssigned[] = $role->code;
+					if ($role->is_access_backend == 1 && (!isset(Yii::app()->session['accessBackend']) || Yii::app()->session['accessBackend'] === false)) {
+						$this->setState('accessBackend', true);
+						Yii::app()->session['accessBackend'] = true;
+					}
+					if ($role->is_access_sensitive_data == 1 && (!isset(Yii::app()->session['accessSensitiveData']) || Yii::app()->session['accessSensitiveData'] === false)) {
+						$this->setState('accessSensitiveData', true);
+						Yii::app()->session['accessSensitiveData'] = true;
 					}
 				}
 			}
 		}
 		$this->setState('roleLevelDisplay', substr($roleLevelDisplay, 0, -2));
+		$this->setState('rolesAssigned', implode(',', $rolesAssigned));
 
 		// can access cpanel?
 		if ((!empty($user->member) && !empty($user->member->username))) {

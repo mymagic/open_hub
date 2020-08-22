@@ -15,7 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 /**
  * This is the model class for table "role2user".
  *
@@ -23,17 +22,16 @@
 		 * @property integer $role_id
 		 * @property integer $user_id
  */
- 
+
 class IdeaRfp2EnterpriseBase extends ActiveRecordBase
 {
 	public $uploadPath;
-	
-	
+
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'ideaRfp2Enterprise';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'ideaRfp2Enterprise';
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -51,10 +49,10 @@ class IdeaRfp2EnterpriseBase extends ActiveRecordBase
 		// will receive user inputs.
 		return array(
 			array('idea_rfp_id, enterprise_organization_code', 'required'),
-			array('idea_rfp_id', 'numerical', 'integerOnly'=>true),
+			array('idea_rfp_id', 'numerical', 'integerOnly' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('idea_rfp_id, enterprise_organization_code', 'safe', 'on'=>'search'),
+			array('idea_rfp_id, enterprise_organization_code', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -96,23 +94,22 @@ class IdeaRfp2EnterpriseBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('idea_rfp_id',$this->idea_rfp_id);
-		$criteria->compare('enterprise_organization_code',$this->enterprise_organization_code);
+		$criteria->compare('idea_rfp_id', $this->idea_rfp_id);
+		$criteria->compare('enterprise_organization_code', $this->enterprise_organization_code);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
+
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -120,10 +117,8 @@ class IdeaRfp2EnterpriseBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Role2user the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
-	
-
 }

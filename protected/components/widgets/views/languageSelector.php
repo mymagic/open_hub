@@ -1,19 +1,19 @@
 <div id="select-language">
 <?php 
-	
+
 	/*
 	// Render options as dropDownList
 	echo CHtml::form();
 	foreach($languages as $key=>$lang) {
 		echo CHtml::hiddenField(
-			$key, 
+			$key,
 			$this->getOwner()->createMultilanguageReturnUrl($key));
 	}
 	echo CHtml::dropDownList('language', $currentLang, $languages,
 		array(
 			'submit'=>'',
 		)
-	); 
+	);
 	echo CHtml::endForm();*/
 
 ?>
@@ -24,8 +24,10 @@
 			<span class="sr-only">Toggle Dropdown</span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<?php foreach(Yii::app()->params['languages'] as $langCode=>$language): ?>
-				<?php if(Yii::app()->language == $langCode) continue; ?>
+			<?php foreach (Yii::app()->params['languages'] as $langCode => $language): ?>
+				<?php if (Yii::app()->language == $langCode) {
+	continue;
+} ?>
 				<li><a href="<?php echo $this->getOwner()->createMultilanguageReturnUrl($langCode) ?>"><span id="languageSelectorFlag-<?php echo $langCode ?>" class="languageSelectorFlag"></span><?php echo $language ?></a></li>
 			<?php endforeach; ?>
 			

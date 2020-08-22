@@ -24,19 +24,16 @@ class ProductCategoryController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 
-			'order' => array
-			(
+		return array(
+			'order' => array(
 				'class' => 'application.yeebase.extensions.OrderColumn.OrderAction',
 				'modelClass' => 'ProductCategory',
-				'pkName'  => 'id',
+				'pkName' => 'id',
 				'backToAction' => 'admin',
 			),
 		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -44,7 +41,6 @@ class ProductCategoryController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -57,16 +53,17 @@ class ProductCategoryController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin' ,'order'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'order'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -77,8 +74,8 @@ class ProductCategoryController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -88,26 +85,24 @@ class ProductCategoryController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new ProductCategory;
+		$model = new ProductCategory;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['ProductCategory']))
-		{
-			$model->attributes=$_POST['ProductCategory'];
+		if (isset($_POST['ProductCategory'])) {
+			$model->attributes = $_POST['ProductCategory'];
 
 			$model->imageFile_cover = UploadedFile::getInstance($model, 'imageFile_cover');
-	
-			if($model->save())
-			{
+
+			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -118,32 +113,28 @@ class ProductCategoryController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
-		
+		$model = $this->loadModel($id);
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['ProductCategory']))
-		{
-			$model->attributes=$_POST['ProductCategory'];
+		if (isset($_POST['ProductCategory'])) {
+			$model->attributes = $_POST['ProductCategory'];
 
 			$model->imageFile_cover = UploadedFile::getInstance($model, 'imageFile_cover');
-			
-			if($model->save())
-			{
+
+			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
-				
-				$this->redirect(array('view','id'=>$model->id));
+
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
-		
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Index
 	 */
@@ -157,12 +148,13 @@ class ProductCategoryController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('ProductCategory');
-		$dataProvider->criteria->order =  'ordering ASC';		$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('ProductCategory');
+		$dataProvider->criteria->order = 'ordering ASC';
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -171,13 +163,17 @@ class ProductCategoryController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new ProductCategory('search');
+		$model = new ProductCategory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ProductCategory'])) $model->attributes=$_GET['ProductCategory'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['ProductCategory'])) {
+			$model->attributes = $_GET['ProductCategory'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -190,9 +186,11 @@ class ProductCategoryController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=ProductCategory::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = ProductCategory::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -202,8 +200,7 @@ class ProductCategoryController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='product-category-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'product-category-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

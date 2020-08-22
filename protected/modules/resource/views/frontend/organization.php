@@ -1,17 +1,17 @@
 <?php
-$this->breadcrumbs=array(
-    'Resource Directory'=>array('//resource'),
-    $model['title']
+$this->breadcrumbs = array(
+	'Resource Directory' => array('//resource'),
+	$model['title']
 );
 
 ?>
 
 <?php
-    $subFilters = array_keys($_GET);
-    unset($subFilters[0]);
-    $subFilters = implode(',', $subFilters);
-    $category_filter = $_GET ? explode(',', $subFilters) : array();
-    $result = json_decode($data, true);
+	$subFilters = array_keys($_GET);
+	unset($subFilters[0]);
+	$subFilters = implode(',', $subFilters);
+	$category_filter = $_GET ? explode(',', $subFilters) : array();
+	$result = json_decode($data, true);
 
 ?>
 
@@ -32,7 +32,7 @@ $this->breadcrumbs=array(
 
     <p style="max-width: 85%; text-align: justify;"> <?php echo $model->text_short_description ?></p>
 
-    <?php if(!empty($model->latlong_address)): ?>
+    <?php if (!empty($model->latlong_address)): ?>
     <div class="gm-map full-width">
         <?php echo Html::mapView('map-resourceAddress', $model->latlong_address[0], $model->latlong_address[1]) ?>
     </div>
@@ -40,18 +40,18 @@ $this->breadcrumbs=array(
 
     <br />
 
-    <?php if(!empty($model->full_address)): ?>
+    <?php if (!empty($model->full_address)): ?>
         <h3><?php echo Yii::t('resource', 'Address') ?>:</h3>
         <p><?php echo $model->full_address ?></p>
         <hr />
     <?php endif; ?>
 
-    <?php if(!empty($resources)): ?>
-    <h3><?php echo Yii::t('resource', 'Resources by {organizationTitle}', array('{organizationTitle}'=>$model->title)) ?></h3>
+    <?php if (!empty($resources)): ?>
+    <h3><?php echo Yii::t('resource', 'Resources by {organizationTitle}', array('{organizationTitle}' => $model->title)) ?></h3>
     <div class="margin-bottom-2x margin-top-lg"><ol>
-    <?php foreach ($resources as $resource ): ?>
+    <?php foreach ($resources as $resource): ?>
     <li>
-        <a href="<?php echo $this->createUrl("frontend/view", array('id' => $resource->id, 'brand'=>$this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> <small>(<?php echo $resource->resourceCategories[0]->title ?>)</small></a>
+        <a href="<?php echo $this->createUrl('frontend/view', array('id' => $resource->id, 'brand' => $this->layoutParams['brand']))?>"><?php echo $resource->getAttrData('title') ?> <small>(<?php echo $resource->resourceCategories[0]->title ?>)</small></a>
     </li>
     <?php endforeach; ?>
     </ol></div>

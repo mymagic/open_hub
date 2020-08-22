@@ -39,13 +39,13 @@ if ($realm == 'backend') {
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs nav-new" role="tablist">
 		<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-		<li role="presentation" class="tab-noborder <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>"><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
+		<li role="presentation" class="tab-noborder <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>"><a href="#tab-<?php echo $tabModule['key'] ?>" aria-controls="tab-<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $tabModule['title'] ?></a></li>
 		<?php endforeach; ?><?php endforeach; ?>
 	</ul>
 	<!-- Tab panes -->
 	<div class="tab-content padding-lg white-bg">
 		<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-		<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>" id="<?php echo $tabModule['key'] ?>">
+		<div role="tabpanel" class="tab-pane <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>" id="tab-<?php echo $tabModule['key'] ?>">
 			<?php echo $this->renderPartial($tabModule['viewPath'], array('model' => $model, 'organization' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries)) ?>
 		</div>
 		<?php endforeach; ?><?php endforeach; ?>
@@ -70,38 +70,38 @@ if ($realm == 'backend') {
 						<div class="ml-4"><?php echo $model->email_contact ?></div>
 					</div>
 					<div class="inline-flex items-center mr-8 my-2">
-						<span class="label label-success">Active</span>
-						<div class="ml-4">Since <?php echo $model->year_founded ?></div>
+						<span class="label label-success"><?php echo $model->getPublicDisplayStatus('text') ?></span>
+						<?php if (!empty($model->year_founded)):  ?><div class="ml-4">Since <?php echo $model->year_founded ?></div><?php endif; ?>
 					</div>
 				</div>
 				<div class="mt-4">
-					<h5 class="muted">COMPANY ONE LINER</h5>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Organization Oneliner') ?></h5>
 					<p class="break-all"><?php echo $model->text_oneliner ?></p>
 				</div>
 				<div class="mt-4">
-					<h5 class="muted">COMPANY DESCRIPTION</h5>
-					<p class="break-all"><?php echo $model->text_short_description ?></p>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Organization Description') ?></h5>
+					<p class="break-all"><?php echo Html::encodeDisplay($model->text_short_description) ?></p>
 				</div>
 			</div>
 		</div>
 
 		<div class="px-8 py-6 shadow-panel mt-4">
-			<h2>Company Profile</h2>
+			<h2><?php echo Yii::t('app', 'Organization Profile') ?></h2>
 			<div>
 				<div class="mt-4">
-					<h5 class="muted">LEGAL NAME</h5>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Legal Name') ?></h5>
 					<p class="break-all"><?php echo $model->legal_name ?></p>
 				</div>
 				<div class="mt-4">
-					<h5 class="muted">COMPANY REGISTRATION NUMBER</h5>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Company Registration Number') ?></h5>
 					<p class="break-all"><?php echo $model->company_number ?></p>
 				</div>
 				<div class="mt-4">
-					<h5 class="muted">TYPE OF COMPANY</h5>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Type of Organization') ?></h5>
 					<p class="break-all"><?php echo $model->legalform->title ?></p>
 				</div>
 				<div class="mt-4">
-					<h5 class="muted">INDUSTRY</h5>
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Industry') ?></h5>
 					<div>
 						<?php foreach ($model->industries as $industry) : ?>
 							<span class="label"><?php echo $industry->title ?></span>
@@ -110,28 +110,28 @@ if ($realm == 'backend') {
 				</div>
 			</div>
 		</div>
+	
+
+		<div class="mt-4 flex justify-end">
+			<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('/organization/update', array('id' => $model->id, 'realm' => $realm)); ?>"><?php echo Yii::t('app', 'Edit Organization Profile') ?> <i class="fa fa-arrow-right"></i></a>
+		</div>
 
 		<div class="px-8 py-6 shadow-panel mt-4">
 			<ul class="nav nav-tabs nav-new new-dash-tab" role="tablist">
 				<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-				<li role="presentation" class="tab-noborder <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>"><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
+				<li role="presentation" class="tab-noborder <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>"><a href="#tab-<?php echo $tabModule['key'] ?>" aria-controls="tab-<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $tabModule['title'] ?></a></li>
 				<?php endforeach; ?><?php endforeach; ?>
 			</ul>
 			<!-- Tab panes -->
 			<div class="tab-content padding-lg white-bg">
 				<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-				<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>" id="<?php echo $tabModule['key'] ?>">
+				<div role="tabpanel" class="tab-pane <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>" id="tab-<?php echo $tabModule['key'] ?>">
 					<?php echo $this->renderPartial($tabModule['viewPath'], array('model' => $model, 'organization' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries)) ?>
 				</div>
 				<?php endforeach; ?><?php endforeach; ?>
 			</div>
 		</div>
 
-
-
-		<div class="mt-4 flex justify-end">
-			<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('/organization/update', array('id' => $model->id, 'realm' => $realm)); ?>">Edit Company Profile <i class="fa fa-arrow-right"></i></a>
-		</div>
 
 	</section>
 

@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,11 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
 class ApiController extends Controller
 {
 	public function actionIndex()
@@ -32,10 +32,12 @@ class ApiController extends Controller
 
 		$return['meta']['input']['keyword'] = $keyword;
 
-		if (strlen($keyword) < 2)
+		if (strlen($keyword) < 2) {
 			$return['msg'] = 'Please insert longer keyword';
-		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username))
+		}
+		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username)) {
 			$return['msg'] = 'Invalid Access';
+		}
 
 		$return['meta']['input']['email'] = Yii::app()->user->username;
 
@@ -62,7 +64,7 @@ class ApiController extends Controller
 
 	public function actionGetRandomProfiles($looking = '', $limit = 10)
 	{
-		$return['status'] = 'fail';
+		/*$return['status'] = 'fail';
 		$return['msg'] = 'Unknown Error';
 		$return['meta'] = '';
 		$return['data'] = null;
@@ -70,18 +72,34 @@ class ApiController extends Controller
 		$return['meta']['input']['limit'] = $limit;
 		$return['meta']['input']['looking'] = $looking;
 
-		if ($limit > 100) $limit = 100;
+		if ($limit > 100) {
+			$limit = 100;
+		}
 
-		if (!empty($looking)) $arrayLooking = explode(',', $looking);
-		$filterLooking = "";
+		if (!empty($looking)) {
+			$arrayLooking = explode(',', $looking);
+		}
+		$filterLooking = '';
 		if (!empty($arrayLooking)) {
 			$filterLooking .= '(';
-			if (in_array('fulltime', $arrayLooking)) $filterLooking .= ' r1.is_looking_fulltime=1 OR ';
-			if (in_array('contract', $arrayLooking)) $filterLooking .= ' r1.is_looking_contract=1 OR ';
-			if (in_array('freelance', $arrayLooking)) $filterLooking .= ' r1.is_looking_freelance=1 OR ';
-			if (in_array('cofounder', $arrayLooking)) $filterLooking .= ' r1.is_looking_cofounder=1 OR ';
-			if (in_array('internship', $arrayLooking)) $filterLooking .= ' r1.is_looking_internship=1 OR ';
-			if (in_array('apprenticeship', $arrayLooking)) $filterLooking .= ' r1.is_looking_apprenticeship=1 OR ';
+			if (in_array('fulltime', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_fulltime=1 OR ';
+			}
+			if (in_array('contract', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_contract=1 OR ';
+			}
+			if (in_array('freelance', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_freelance=1 OR ';
+			}
+			if (in_array('cofounder', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_cofounder=1 OR ';
+			}
+			if (in_array('internship', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_internship=1 OR ';
+			}
+			if (in_array('apprenticeship', $arrayLooking)) {
+				$filterLooking .= ' r1.is_looking_apprenticeship=1 OR ';
+			}
 			$filterLooking = substr($filterLooking, 0, -3) . ') AND';
 		}
 
@@ -113,12 +131,12 @@ class ApiController extends Controller
 		header('Access-Control-Allow-Origin: *');
 		header('Content-type: application/json');
 		echo CJSON::encode($return);
-		Yii::app()->end();
+		Yii::app()->end();*/
 	}
 
 	public function actionKeepAlive()
 	{
-		echo "OK";
+		echo 'OK';
 		Yii::app()->end();
 	}
 
@@ -128,7 +146,7 @@ class ApiController extends Controller
 	// format: pdf
 	public function actionGetUploadedFile($dir, $code, $uid, $format)
 	{
-		if (empty($dir) || empty($code) || empty($uid) || empty($format)) {
+		/*if (empty($dir) || empty($code) || empty($uid) || empty($format)) {
 			Notice::page(Yii::t('notice', 'Please supply the required params'), Notice_ERROR);
 		}
 
@@ -138,7 +156,7 @@ class ApiController extends Controller
 		if (Yii::app()->file->set($filePath)->exists) {
 			$hasAccess = false;
 			// check security
-			if ($dir == "map_application" || $dir == "se_application") {
+			if ($dir == 'map_application' || $dir == 'se_application') {
 				$startup = Startup::model()->find('code=:code', array(':code' => $uid));
 				// can access if it is user own file
 				if ($startup && $startup->user_id == Yii::app()->user->id) {
@@ -166,10 +184,9 @@ class ApiController extends Controller
 				Notice::page(Yii::t('notice', 'Invalid Access'), Notice_ERROR);
 			}
 		} else {
-			Notice::page(Yii::t('notice', "Requested file not found: {fileName}", ['{fileName}' => $fileName]), Notice_ERROR);
-		}
+			Notice::page(Yii::t('notice', 'Requested file not found: {fileName}', ['{fileName}' => $fileName]), Notice_ERROR);
+		}*/
 	}
-
 
 	public function actionRenderStateList($country_code)
 	{
@@ -177,14 +194,16 @@ class ApiController extends Controller
 		$data = State::model()->findAll(array(
 			'select' => 't.code, t.title',
 			'condition' => "country_code='{$countryCode}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));
 		$data = Html::listData($data, 'code', 'title');
 		//print_r($data);exit;
 		echo "<option value=''>Select State</option>";
-		foreach ($data as $value => $state) echo CHtml::tag('option', array('value' => $value), CHtml::encode($state), true);
+		foreach ($data as $value => $state) {
+			echo CHtml::tag('option', array('value' => $value), CHtml::encode($state), true);
+		}
 	}
 
 	public function actionRenderCityList($state_code)
@@ -193,19 +212,24 @@ class ApiController extends Controller
 		$data = City::model()->findAll(array(
 			'select' => 't.id, t.title',
 			'condition' => "state_code='{$stateCode}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));
 		$data = Html::listData($data, 'id', 'title');
 		echo "<option value=''>Select City</option>";
-		foreach ($data as $value => $city) echo CHtml::tag('option', array('value' => $value), CHtml::encode($city), true);
+		foreach ($data as $value => $city) {
+			echo CHtml::tag('option', array('value' => $value), CHtml::encode($city), true);
+		}
 	}
 
 	public function actionGetUserActFeed()
 	{
+		$meta = array();
 		$user = HUB::getUserByUsername(Yii::app()->user->username);
-		if (empty($user)) $this->outputJsonFail('Invalid User', $meta);
+		if (empty($user)) {
+			$this->outputJsonFail('Invalid User', $meta);
+		}
 
 		$year = Yii::app()->request->getQuery('year', date('Y'));
 		$services = Yii::app()->request->getQuery('services', '*');
@@ -234,13 +258,15 @@ class ApiController extends Controller
 		$status = 'fail';
 		$data = null;
 
-		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username))
+		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username)) {
 			$return['msg'] = 'Invalid Access';
+		}
 
 		$title = Yii::app()->request->getParam('title');
 
-		if (empty($title))
+		if (empty($title)) {
 			$this->renderJSON(array('status' => $status));
+		}
 
 		$organization = Organization::title2obj($title);
 
@@ -261,13 +287,15 @@ class ApiController extends Controller
 		$status = 'fail';
 		$data = null;
 
-		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username))
+		if (Yii::app()->user->isGuest || empty(Yii::app()->user->username)) {
 			$return['msg'] = 'Invalid Access';
+		}
 
 		$title = Yii::app()->request->getParam('title');
 
-		if (empty($title))
+		if (empty($title)) {
 			$this->renderJSON(array('status' => $status));
+		}
 
 		$tmp = Organization::model()->with('organization2Emails')->findByAttributes(array('title' => $title));
 
@@ -278,7 +306,7 @@ class ApiController extends Controller
 
 			$user = User::model()->with('profile')->find('t.username=:username', array(':username' => $email));
 
-			$arr = ["email" => $email, "fullName" => $user->profile->full_name];
+			$arr = ['email' => $email, 'fullName' => $user->profile->full_name];
 			$data[] = $arr;
 			$status = 'success';
 		}
@@ -294,9 +322,10 @@ class ApiController extends Controller
 		$status = 'fail';
 
 		$title = trim(Yii::app()->request->getParam('title'));
-		if (empty($title))
+		if (empty($title)) {
 			$this->renderJSON(array('status' => $status));
-			
+		}
+
 		$text_oneliner = yii::app()->request->getParam('oneliner');
 		$url_website = yii::app()->request->getParam('website');
 
@@ -305,7 +334,9 @@ class ApiController extends Controller
 		$params['userEmail'] = Yii::app()->user->username;
 
 		$organization = HubOrganization::getOrCreateOrganization($title, $params);
-		if(!empty($organization->id)) $status = 'success';
+		if (!empty($organization->id)) {
+			$status = 'success';
+		}
 
 		header('Content-type: application/json');
 		$this->renderJSON(array('status' => $status));
@@ -317,18 +348,21 @@ class ApiController extends Controller
 		$resource_id = trim($resource_id);
 		$typefor_code = trim($typefor_code);
 
-		if (!empty($resource_id)) $resource = Resource::model()->findByPk($resource_id);
+		if (!empty($resource_id)) {
+			$resource = Resource::model()->findByPk($resource_id);
+		}
 		if (!empty($resource->resourceCategories)) {
 			foreach ($resource->resourceCategories as $resourceCategory) {
-				if ($resourceCategory->typefor == $typefor_code)
+				if ($resourceCategory->typefor == $typefor_code) {
 					$selecteds[] = $resourceCategory->id;
+				}
 			}
 		}
 
 		$data = ResourceCategory::model()->findAll(array(
 			'select' => 't.id, t.title',
 			'condition' => "typefor='{$typefor_code}'",
-			'order' => 't.title ASC'
+			'order' => 't.title ASC',
 			//'group'=>'t.batch',
 			//'distinct'=>true,
 		));
@@ -356,10 +390,11 @@ class ApiController extends Controller
 		// public cant access
 		if (Yii::app()->user->isGuest || (!Yii::app()->user->accessCpanel && !Yii::app()->user->accessBackend)) {
 			$status = 'fail';
-			$msg = "Unable to retrieve milestone. You have no access to this milestone.";
+			$msg = 'Unable to retrieve milestone. You have no access to this milestone.';
 		}
 		// user can access backend
-		else if (Yii::app()->user->accessBackend) { }
+		elseif (Yii::app()->user->accessBackend) {
+		}
 		// user can access cpanel and is not owner of the startup
 		/*elseif(Yii::app()->user->accessCpanel && $milestone->username != Yii::app()->user->username)
 		{
@@ -367,9 +402,8 @@ class ApiController extends Controller
 			$msg = "Unable to update monthly target. You have no access to this startup.";
 		}*/ else {
 			$status = 'fail';
-			$msg = "Invalid Access";
+			$msg = 'Invalid Access';
 		}
-
 
 		if ($status != 'fail') {
 			try {
@@ -377,7 +411,7 @@ class ApiController extends Controller
 				$status = 'success';
 			} catch (Exception $e) {
 				$status = 'fail';
-				$msg = "Error: " . $e->getMessage();
+				$msg = 'Error: ' . $e->getMessage();
 			}
 		}
 
@@ -409,10 +443,11 @@ class ApiController extends Controller
 		// public cant access
 		if (Yii::app()->user->isGuest || (!Yii::app()->user->accessCpanel && !Yii::app()->user->accessBackend)) {
 			$status = 'fail';
-			$msg = "Unable to update milestone. You have no access to this milestone.";
+			$msg = 'Unable to update milestone. You have no access to this milestone.';
 		}
 		// user can access backend
-		else if (Yii::app()->user->accessBackend) { }
+		elseif (Yii::app()->user->accessBackend) {
+		}
 		// user can access cpanel and is not owner of the startup
 		/*elseif(Yii::app()->user->accessCpanel && $milestone->username != Yii::app()->user->username)
 		{
@@ -420,9 +455,8 @@ class ApiController extends Controller
 			$msg = "Unable to update monthly target. You have no access to this startup.";
 		}*/ else {
 			$status = 'fail';
-			$msg = "Invalid Access";
+			$msg = 'Invalid Access';
 		}
-
 
 		if ($status != 'fail') {
 			try {
@@ -437,7 +471,9 @@ class ApiController extends Controller
 					}
 				}
 
-				if ($content == '-') $content = '';
+				if ($content == '-') {
+					$content = '';
+				}
 				$milestone->jsonArray_value[$year][$month][$week]['value'] = $content;
 				if ($milestone->save()) {
 					$status = 'success';
@@ -445,7 +481,7 @@ class ApiController extends Controller
 				}
 			} catch (Exception $e) {
 				$status = 'fail';
-				$msg = "Error: " . $e->getMessage();
+				$msg = 'Error: ' . $e->getMessage();
 			}
 		}
 
@@ -477,10 +513,11 @@ class ApiController extends Controller
 		// public cant access
 		if (Yii::app()->user->isGuest || (!Yii::app()->user->accessCpanel && !Yii::app()->user->accessBackend)) {
 			$status = 'fail';
-			$msg = "Unable to update milestone. You have no access to this milestone.";
+			$msg = 'Unable to update milestone. You have no access to this milestone.';
 		}
 		// user can access backend
-		else if (Yii::app()->user->accessBackend) { }
+		elseif (Yii::app()->user->accessBackend) {
+		}
 		// user can access cpanel and is not owner of the startup
 		/*elseif(Yii::app()->user->accessCpanel && $milestone->username != Yii::app()->user->username)
 		{
@@ -488,9 +525,8 @@ class ApiController extends Controller
 			$msg = "Unable to update monthly target. You have no access to this startup.";
 		}*/ else {
 			$status = 'fail';
-			$msg = "Invalid Access";
+			$msg = 'Invalid Access';
 		}
-
 
 		if ($status != 'fail') {
 			try {
@@ -499,9 +535,9 @@ class ApiController extends Controller
 				$month = $_POST['month'];
 				$week = $_POST['week'];
 
-				if ($milestone->jsonArray_value[$year][$month][$week]['value'] == '')
+				if ($milestone->jsonArray_value[$year][$month][$week]['value'] == '') {
 					throw new Exception('Cant realized if value is not set');
-
+				}
 				$milestone->jsonArray_value[$year][$month][$week]['realized'] = $content;
 				if ($milestone->save()) {
 					$status = 'success';
@@ -509,7 +545,7 @@ class ApiController extends Controller
 				}
 			} catch (Exception $e) {
 				$status = 'fail';
-				$msg = "Error: " . $e->getMessage();
+				$msg = 'Error: ' . $e->getMessage();
 			}
 		}
 
@@ -535,10 +571,11 @@ class ApiController extends Controller
 		// public cant access
 		if (Yii::app()->user->isGuest || (!Yii::app()->user->accessCpanel && !Yii::app()->user->accessBackend)) {
 			$status = 'fail';
-			$msg = "Unable to update milestone. You have no access to this milestone.";
+			$msg = 'Unable to update milestone. You have no access to this milestone.';
 		}
 		// user can access backend
-		else if (Yii::app()->user->accessBackend) { }
+		elseif (Yii::app()->user->accessBackend) {
+		}
 		// user can access cpanel and is not owner of the startup
 		/*elseif(Yii::app()->user->accessCpanel && $milestone->username != Yii::app()->user->username)
 		{
@@ -546,9 +583,8 @@ class ApiController extends Controller
 			$msg = "Unable to update monthly target. You have no access to this startup.";
 		}*/ else {
 			$status = 'fail';
-			$msg = "Invalid Access";
+			$msg = 'Invalid Access';
 		}
-
 
 		if ($status != 'fail') {
 			try {
@@ -559,7 +595,7 @@ class ApiController extends Controller
 				}
 			} catch (Exception $e) {
 				$status = 'fail';
-				$msg = "Error: " . $e->getMessage();
+				$msg = 'Error: ' . $e->getMessage();
 			}
 		}
 

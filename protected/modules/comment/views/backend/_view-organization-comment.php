@@ -1,7 +1,7 @@
 <?php
 
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/viima-comment/css/jquery-comments.css');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/viima-comment/js/jquery-comments.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/viima-comment/js/jquery-comments.js');
 Yii::app()->clientScript->registerScriptFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.textcomplete/1.8.0/jquery.textcomplete.js');
 
 ?>
@@ -25,7 +25,7 @@ $(function() {
         return data;
     }
     $(commentContainerId).comments({
-        profilePictureURL: '<?php echo $user->profile->image_avatar ?>',
+        profilePictureURL: '<?php echo StorageHelper::getUrl($user->profile->image_avatar) ?>',
         currentUserId: <?php echo $user->id ?>,
         roundProfilePictures: true,
         textareaRows: 1,

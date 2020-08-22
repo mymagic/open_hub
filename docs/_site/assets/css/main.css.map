@@ -1,0 +1,14 @@
+{
+	"version": 3,
+	"file": "main.css",
+	"sources": [
+		"main.scss",
+		"docs/_sass/main.scss"
+	],
+	"sourcesContent": [
+		"@import \"main\";\n#section-resources{text-align:center;}\n#section-resources img{max-height:50px; margin-left:1em; margin-right:1em; margin-top:0.5em; margin-bottom:0.5em;}\n#footer{border-top:1px solid #CCC; padding-top:3em; padding-bottom:5em; background:#eee;}\n#footer ul{text-align:center;}\n#footer ul li{display:inline;}\n#footer li + li::before {\n    content: \" | \";\n}",
+		"$backgroundColor: #ffffff;\n$bodyColor: #000000;\n$bodyFont: -apple-system,BlinkMacSystemFont,\"Segoe UI\",Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\";\n\nbody {\n  background: $backgroundColor;\n  color: $bodyColor;\n  font-family: $bodyFont;\n}\n"
+	],
+	"names": [],
+	"mappings": "ACIA,AAAA,IAAI,CAAC,EACH,UAAU,EALM,OAAO,EAMvB,KAAK,EALK,OAAO,EAMjB,WAAW,EALF,aAAa,EAAC,kBAAkB,EAAC,UAAU,EAAC,SAAS,EAAC,KAAK,EAAC,UAAU,EAAC,mBAAmB,EAAC,gBAAgB,EAAC,iBAAiB,GAMvI;;ADPD,AAAA,kBAAkB,CAAA,EAAC,UAAU,EAAC,MAAM,GAAG;;AACvC,AAAA,kBAAkB,CAAC,GAAG,CAAA,EAAC,UAAU,EAAC,IAAI,EAAE,WAAW,EAAC,GAAG,EAAE,YAAY,EAAC,GAAG,EAAE,UAAU,EAAC,KAAK,EAAE,aAAa,EAAC,KAAK,GAAG;;AACnH,AAAA,OAAO,CAAA,EAAC,UAAU,EAAC,cAAc,EAAE,WAAW,EAAC,GAAG,EAAE,cAAc,EAAC,GAAG,EAAE,UAAU,EAAC,IAAI,GAAG;;AAC1F,AAAA,OAAO,CAAC,EAAE,CAAA,EAAC,UAAU,EAAC,MAAM,GAAG;;AAC/B,AAAA,OAAO,CAAC,EAAE,CAAC,EAAE,CAAA,EAAC,OAAO,EAAC,MAAM,GAAG;;AAC/B,AAAA,OAAO,CAAC,EAAE,GAAG,EAAE,AAAA,QAAQ,CAAC,EACpB,OAAO,EAAE,KAAK,GACjB"
+}

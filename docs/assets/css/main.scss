@@ -1,0 +1,12 @@
+---
+---
+
+@import "main";
+#section-resources{text-align:center;}
+#section-resources img{max-height:50px; margin-left:1em; margin-right:1em; margin-top:0.5em; margin-bottom:0.5em;}
+#footer{border-top:1px solid #CCC; padding-top:3em; padding-bottom:5em; background:#eee;}
+#footer ul{text-align:center;}
+#footer ul li{display:inline;}
+#footer li + li::before {
+    content: " | ";
+}

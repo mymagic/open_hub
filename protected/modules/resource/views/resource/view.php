@@ -9,10 +9,22 @@ if ($realm == 'backend') {
 	);
 
 	$this->menu = array(
-		array('label' => Yii::t('app', 'Manage Resources'), 'url' => array('/resource/resource/admin')),
-		array('label' => Yii::t('app', 'Create Resource'), 'url' => array('/resource/resource/create')),
-		array('label' => Yii::t('app', 'Update Resource'), 'url' => array('/resource/resource/update', 'id' => $model->id)),
-		array('label' => Yii::t('app', 'Delete Resource'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?'))),
+		array(
+			'label' => Yii::t('app', 'Manage Resources'), 'url' => array('/resource/resource/admin'),
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+		),
+		array(
+			'label' => Yii::t('app', 'Create Resource'), 'url' => array('/resource/resource/create'),
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
+		),
+		array(
+			'label' => Yii::t('app', 'Update Resource'), 'url' => array('/resource/resource/update', 'id' => $model->id),
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
+		),
+		array(
+			'label' => Yii::t('app', 'Delete Resource'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')),
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
+		),
 	);
 } elseif ($realm == 'cpanel') {
 	$this->breadcrumbs = array(
@@ -141,5 +153,5 @@ endif; ?>
 		<a type="button" class="btn btn-outline btn-default" href="<?php echo $this->createUrl('update', array('id' => $model->id, 'organization_id' => $organization->id, 'realm' => $realm)); ?>">Edit Resource Information <i class="fa fa-arrow-right"></i></a>
 	</div>
 <?php elseif ($realm == 'backend') : ?>
-	<?php echo $this->renderPartial('_viewBackend', array('model' => $model, 'user' => $user, 'tabs' => $tabs, 'tab' => $tab, 'organization' => $organization, 'inputOrganizations' => $inputOrganizations, 'inputIndustries' => $inputIndustries, 'inputPersonas' => $inputPersonas, 'inputStartupStages' => $inputStartupStages, 'inputResourceCategories' => $inputResourceCategories, 'inputResourceGeofocuses' => $inputResourceGeofocuses)) ?>
+	<?php echo $this->renderPartial('_viewBackend', array('model' => $model, 'user' => $user, 'tabs' => $tabs, 'tab' => $tab, 'organization' => $organization, 'actions' => $actions, 'inputOrganizations' => $inputOrganizations, 'inputIndustries' => $inputIndustries, 'inputPersonas' => $inputPersonas, 'inputStartupStages' => $inputStartupStages, 'inputResourceCategories' => $inputResourceCategories, 'inputResourceGeofocuses' => $inputResourceGeofocuses)) ?>
 <?php endif; ?>

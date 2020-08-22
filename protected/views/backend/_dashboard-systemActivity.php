@@ -1,46 +1,45 @@
 
 <div class="panel panel-default" id="vue-systemActivity">
     <div class="panel-heading">System Activity <small class="text-muted">(max 30 records each)</small> <span class="pull-right">Start: 
-        <?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker',array(
-            'name'=>'dateStart',
-            'value'=>date('Y-m-d', strtotime('this week monday')),
-            // additional javascript options for the date picker plugin
-            'options'=>array(
-                'showAnim'=>'fold',
-                'dateFormat'=>'yy-mm-dd',
-                'changeMonth' => true, 
-                'changeYear' => true,
-                'timeInput' => false,
-                'showTime' => false,
-                'showHour' => false,
-                'showMinute' => false,
-                'showTimepicker' => false,
-                
-            ),
-            'htmlOptions'=>array(
-                'v-model' => 'dateStart'
-            ),
-        )); ?>
+        <?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker', array(
+			'name' => 'dateStart',
+			'value' => date('Y-m-d', strtotime('this week monday')),
+			// additional javascript options for the date picker plugin
+			'options' => array(
+				'showAnim' => 'fold',
+				'dateFormat' => 'yy-mm-dd',
+				'changeMonth' => true,
+				'changeYear' => true,
+				'timeInput' => false,
+				'showTime' => false,
+				'showHour' => false,
+				'showMinute' => false,
+				'showTimepicker' => false,
+			),
+			'htmlOptions' => array(
+				'v-model' => 'dateStart'
+			),
+		)); ?>
         End: 
-        <?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker',array(
-            'name'=>'dateEnd',
-            'value'=>date('Y-m-d', strtotime('this week sunday')),
-            // additional javascript options for the date picker plugin
-            'options'=>array(
-                'showAnim'=>'fold',
-                'dateFormat'=>'yy-mm-dd',
-                'changeMonth' => true, 
-                'changeYear' => true,
-                'timeInput' => false,
-                'showTime' => false,
-                'showHour' => false,
-                'showMinute' => false,
-                'showTimepicker' => false,
-            ),
-            'htmlOptions'=>array(
-                'v-model' => 'dateEnd'
-            ),
-        )); ?>
+        <?php $this->widget('application.yeebase.extensions.CJuiDateTimePicker.CJuiDateTimePicker', array(
+			'name' => 'dateEnd',
+			'value' => date('Y-m-d', strtotime('this week sunday')),
+			// additional javascript options for the date picker plugin
+			'options' => array(
+				'showAnim' => 'fold',
+				'dateFormat' => 'yy-mm-dd',
+				'changeMonth' => true,
+				'changeYear' => true,
+				'timeInput' => false,
+				'showTime' => false,
+				'showHour' => false,
+				'showMinute' => false,
+				'showTimepicker' => false,
+			),
+			'htmlOptions' => array(
+				'v-model' => 'dateEnd'
+			),
+		)); ?>
     <button class="btn btn-xs btn-primary" v-on:click="fetchData(0)">Go</button>
     <a class="btn btn-xs btn-white" v-on:click="fetchData(1)"><?php echo Html::faIcon('fa-refresh') ?></a></span></div>
 
@@ -269,5 +268,5 @@ var vue = new Vue({
 			}
 		}
 	}
-});"); 
+});");
 ?>

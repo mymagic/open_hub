@@ -24,11 +24,10 @@ class JunkController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class JunkController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,12 +48,13 @@ class JunkController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('index','view','create','update','admin','delete','clear','clearConfirmed'),
-				'users'=>array('@'),
-				// 'expression'=>"\$user->getState('isDeveloper')==true",
+				'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'clear', 'clearConfirmed'),
+				'users' => array('@'),
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -66,17 +66,19 @@ class JunkController extends Controller
 
 	public function actionClear()
 	{
-
-		Notice::page(Yii::t('backend', "Are you sure to clear all data in Junk?"), Notice_WARNING, 
-		array('url'=>$this->createUrl('clearConfirmed'), 'cancelUrl'=>$this->createUrl('admin')));
-
+		Notice::page(
+			Yii::t('backend', 'Are you sure to clear all data in Junk?'),
+			Notice_WARNING,
+		array('url' => $this->createUrl('clearConfirmed'), 'cancelUrl' => $this->createUrl('admin'))
+		);
 	}
 
 	public function actionClearConfirmed()
 	{
-		if(Junk::model()->deleteAll())
+		if (Junk::model()->deleteAll()) {
 			$this->redirect(array('admin'));
-		
+		}
+
 		Notice::page(Yii::t('backend', 'Unable to clear data'));
 	}
 
@@ -86,8 +88,8 @@ class JunkController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -97,24 +99,21 @@ class JunkController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Junk;
+		$model = new Junk;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Junk']))
-		{
-			$model->attributes=$_POST['Junk'];
+		if (isset($_POST['Junk'])) {
+			$model->attributes = $_POST['Junk'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -125,39 +124,40 @@ class JunkController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Junk']))
-		{
-			$model->attributes=$_POST['Junk'];
+		if (isset($_POST['Junk'])) {
+			$model->attributes = $_POST['Junk'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
+	public function actionDelete($id, $returnUrl = '')
 	{
 		$this->loadModel($id)->delete();
+		if (empty($returnUrl) && !empty($_POST['returnUrl'])) {
+			$returnUrl = $_POST['returnUrl'];
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		if (!isset($_GET['ajax'])) {
+			$this->redirect(isset($returnUrl) ? $returnUrl : array('admin'));
+		}
 	}
 
 	/**
@@ -165,13 +165,17 @@ class JunkController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Junk('search');
+		$model = new Junk('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Junk'])) $model->attributes=$_GET['Junk'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Junk'])) {
+			$model->attributes = $_GET['Junk'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -184,9 +188,11 @@ class JunkController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Junk::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Junk::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -196,8 +202,7 @@ class JunkController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='junk-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'junk-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

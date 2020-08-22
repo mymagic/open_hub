@@ -24,11 +24,10 @@ class EventOwnerController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class EventOwnerController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request		
+			//'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,16 +48,17 @@ class EventOwnerController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin', 'delete'),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -69,8 +69,8 @@ class EventOwnerController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -78,28 +78,27 @@ class EventOwnerController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate($eventCode='')
+	public function actionCreate($eventCode = '')
 	{
 		$this->pageTitle = Yii::t('backend', 'Set Event Owner');
-		$model=new EventOwner;
+		$model = new EventOwner;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		if(!empty($eventCode)) $model->event_code = $eventCode;
+		if (!empty($eventCode)) {
+			$model->event_code = $eventCode;
+		}
 
-		if(isset($_POST['EventOwner']))
-		{
-			$model->attributes=$_POST['EventOwner'];
+		if (isset($_POST['EventOwner'])) {
+			$model->attributes = $_POST['EventOwner'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('event/view','id'=>$model->event->id));
+			if ($model->save()) {
+				$this->redirect(array('event/view', 'id' => $model->event->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -110,26 +109,24 @@ class EventOwnerController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['EventOwner']))
-		{
-			$model->attributes=$_POST['EventOwner'];
+		if (isset($_POST['EventOwner'])) {
+			$model->attributes = $_POST['EventOwner'];
 
-			if($model->save())
-			{
-				$this->redirect(array('event/view','id'=>$model->event->id));
+			if ($model->save()) {
+				$this->redirect(array('event/view', 'id' => $model->event->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -143,12 +140,12 @@ class EventOwnerController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('EventOwner');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('EventOwner');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -157,13 +154,17 @@ class EventOwnerController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new EventOwner('search');
+		$model = new EventOwner('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['EventOwner'])) $model->attributes=$_GET['EventOwner'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['EventOwner'])) {
+			$model->attributes = $_GET['EventOwner'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -171,11 +172,10 @@ class EventOwnerController extends Controller
 	{
 		$model = $this->loadModel($id);
 		$copy = clone $model;
-		if($model->delete())
-		{
-			Notice::flash(Yii::t('notice', "'{organizationTitle}' has been unlinked from this event", array('{organizationTitle}'=>$model->organization->title)), Notice_SUCCESS);
+		if ($model->delete()) {
+			Notice::flash(Yii::t('notice', "'{organizationTitle}' has been unlinked from this event", array('{organizationTitle}' => $model->organization->title)), Notice_SUCCESS);
 		}
-		$this->redirect(array('event/view','id'=>$copy->event->id));
+		$this->redirect(array('event/view', 'id' => $copy->event->id));
 	}
 
 	/**
@@ -187,9 +187,11 @@ class EventOwnerController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=EventOwner::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = EventOwner::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -199,8 +201,7 @@ class EventOwnerController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='event-owner-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'event-owner-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

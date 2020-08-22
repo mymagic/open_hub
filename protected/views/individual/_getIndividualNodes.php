@@ -12,21 +12,21 @@
 <h4>Meta</h4>
 <ul>
 <?php foreach ($model->_dynamicData as $dt => $dd) {
-    echo sprintf('<li>%s: %s</li>', $dt, $dd);
+	echo sprintf('<li>%s: %s</li>', $dt, $dd);
 }?>
 </ul>
 
 <h4>Email with Access <small>individual2Emails</small></h4>
 <ol>
 <?php foreach ($model->individual2Emails as $individual2Email) {
-    echo sprintf('<li>#%s %s [%s]</li>', $individual2Email->id, $individual2Email->user_email, $individual2Email->is_verify ? 'Verified' : 'Not Verified');
+	echo sprintf('<li>#%s %s [%s]</li>', $individual2Email->id, $individual2Email->user_email, $individual2Email->is_verify ? 'Verified' : 'Not Verified');
 }?>
 </ol>
 
 <h4>Organizations <small>individualOrganizations</small></h4>
 <ol>
 <?php foreach ($model->individualOrganizations as $individualOrganization) {
-    echo sprintf('<li>#%s at comapny:%s as role:%s</li>', $individualOrganization->id, $individualOrganization->organization->title, $individualOrganization->as_role_code);
+	echo sprintf('<li>#%s at comapny:%s as role:%s</li>', $individualOrganization->id, $individualOrganization->organization->title, $individualOrganization->as_role_code);
 } ?>
 </ol>
 
@@ -34,14 +34,14 @@
 <h4>Persona <small>persona2Individual</small></h4>
 <ol>
 <?php foreach ($model->personas as $persona) {
-    echo sprintf('<li>#%s %s</li>', $persona->id, $persona->title);
+	echo sprintf('<li>#%s %s</li>', $persona->id, $persona->title);
 }?>
 </ol>
 
 </ol>
 
 
-<?php $modules = YeeModule::getParsableModules(); ?>
+<?php $modules = YeeModule::getActiveParsableModules(); ?>
 <?php foreach ($modules as $moduleKey => $moduleParams): ?>
 <?php $view = sprintf('application.modules.%s.views._individual._getIndividualNodes', $moduleKey); ?>
     <?php if (HUB::isViewExists($view)): ?>

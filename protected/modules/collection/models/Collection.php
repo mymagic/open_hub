@@ -2,92 +2,92 @@
 
 class Collection extends CollectionBase
 {
-    public static function model($class = __CLASS__)
-    {
-        return parent::model($class);
-    }
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-    public function init()
-    {
-        // custom code here
-        // ...
+	public function init()
+	{
+		// custom code here
+		// ...
 
-        parent::init();
+		parent::init();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function beforeValidate()
-    {
-        // custom code here
-        // ...
+	public function beforeValidate()
+	{
+		// custom code here
+		// ...
 
-        return parent::beforeValidate();
-    }
+		return parent::beforeValidate();
+	}
 
-    public function afterValidate()
-    {
-        // custom code here
-        // ...
+	public function afterValidate()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterValidate();
-    }
+		return parent::afterValidate();
+	}
 
-    protected function beforeSave()
-    {
-        // custom code here
-        // ...
+	protected function beforeSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::beforeSave();
-    }
+		return parent::beforeSave();
+	}
 
-    protected function afterSave()
-    {
-        // custom code here
-        // ...
+	protected function afterSave()
+	{
+		// custom code here
+		// ...
 
-        return parent::afterSave();
-    }
+		return parent::afterSave();
+	}
 
-    protected function beforeFind()
-    {
-        // custom code here
-        // ...
+	protected function beforeFind()
+	{
+		// custom code here
+		// ...
 
-        parent::beforeFind();
+		parent::beforeFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    protected function afterFind()
-    {
-        // custom code here
-        // ...
+	protected function afterFind()
+	{
+		// custom code here
+		// ...
 
-        parent::afterFind();
+		parent::afterFind();
 
-        // return void
-    }
+		// return void
+	}
 
-    public function attributeLabels()
-    {
-        $return = parent::attributeLabels();
+	public function attributeLabels()
+	{
+		$return = parent::attributeLabels();
 
-        // custom code here
-        // $return['title'] = Yii::t('app', 'Custom Name');
+		// custom code here
+		// $return['title'] = Yii::t('app', 'Custom Name');
 
-        return $return;
-    }
+		return $return;
+	}
 
-    public function title2Obj($user, $title)
-    {
-        $collection = self::model()->find(array(
-            'condition' => 't.title=:title AND t.creator_user_id=:userId',
-            'params' => array(':title' => $title, ':userId' => $user->id),
-            'order' => 'id DESC',
-        ));
-        if (!empty($collection)) {
-            return $collection;
-        }
-    }
+	public function title2Obj($user, $title)
+	{
+		$collection = self::model()->find(array(
+			'condition' => 't.title=:title AND t.creator_user_id=:userId',
+			'params' => array(':title' => $title, ':userId' => $user->id),
+			'order' => 'id DESC',
+		));
+		if (!empty($collection)) {
+			return $collection;
+		}
+	}
 }

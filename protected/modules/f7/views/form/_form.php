@@ -4,6 +4,18 @@
 /* @var $form CActiveForm */
 ?>
 
+<?php 
+	// codemirror
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/edit/matchbrackets.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/addon/scroll/simplescrollbars.js', CClientScript::POS_END);
+
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/mode/javascript/javascript.js', CClientScript::POS_END);
+	Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/mode/clike/clike.js', CClientScript::POS_END);
+
+	Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/lib/codemirror.css');
+	Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl . '/vendors/codemirror/theme/midnight.css');
+?>
 
 <div class="">
 
@@ -66,13 +78,17 @@
 	<div class="form-group <?php echo $model->hasErrors('json_structure') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'json_structure'); ?>
 		<div class="col-sm-10">
-			<?php if (!array_key_exists('builder', $js) && !empty($model->json_structure)) { ?>
+			<?php if (!array_key_exists('builder', $js) && !empty($model->json_structure)) {
+		?>
 				<?php echo $form->bsTextArea($model, 'json_structure', array('rows' => 20)); ?>
 				<?php echo $form->bsError($model, 'json_structure'); ?>
-			<?php } else { ?>
+			<?php
+	} else {
+		?>
 				<br>
-				<json-form-structure :json='<?php echo ($model->json_structure) ? $model->json_structure : 'null' ?>'></json-form-structure>
-			<?php } ?>
+				<json-form-structure json='<?php echo ($model->json_structure) ? htmlentities(json_encode($model->json_structure, true), ENT_QUOTES, 'UTF-8') : 'null' ?>'></json-form-structure>
+			<?php
+	} ?>
 		</div>
 	</div>
 
@@ -120,14 +136,6 @@
 		</div>
 	</div>
 
-	<div class="form-group <?php echo $model->hasErrors('type') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'Survey'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'type'); ?>
-			<?php echo $form->bsError($model, 'type'); ?>
-		</div>
-	</div>
-
 	<div class="form-group <?php echo $model->hasErrors('is_multiple') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_multiple'); ?>
 		<div class="col-sm-10">
@@ -148,8 +156,24 @@
 	<div class="form-group <?php echo $model->hasErrors('json_stage') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'json_stage'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'json_stage', array('rows' => 2)); ?>
+			<?php echo $form->bsTextArea($model, 'json_stage', array('rows' => 4)); ?>
 			<?php echo $form->bsError($model, 'json_stage'); ?>
+		</div>
+	</div>
+
+	<div class="form-group <?php echo $model->hasErrors('json_event_mapping') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'json_event_mapping'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextArea($model, 'json_event_mapping', array('rows' => 4)); ?>
+			<?php echo $form->bsError($model, 'json_event_mapping'); ?>
+		</div>
+	</div>
+
+	<div class="form-group <?php echo $model->hasErrors('json_extra') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'json_extra'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextArea($model, 'json_extra', array('rows' => 4)); ?>
+			<?php echo $form->bsError($model, 'json_extra'); ?>
 		</div>
 	</div>
 
@@ -165,19 +189,42 @@
 </div><!-- form -->
 
 
+<?php 
+// Yii::app()->clientScript->registerScript('f7-form-_form', "
+// $('#Form_json_structure').bind('change paste', function(e){
+// 	var str = $(this).val();
+// 	var result = false;
+// 	try {
+// 		JSON.parse(str);
+// 		result = true;
+//     } catch (e) {
+// 		$('#btn-submit').addClass('disabled').attr('disabled', true);
+// 		return;
+// 	}
 
-<?php Yii::app()->clientScript->registerScript('f7-form-_form', "
-$('#Form_json_structure').bind('change paste', function(e){
-	var str = $(this).val();
-	var result = false;
-	try {
-		JSON.parse(str);
-		result = true;
-    } catch (e) {
-		$('#btn-submit').addClass('disabled').attr('disabled', true);
-		return;
-	}
+// 	if(result) $('#btn-submit').removeClass('disabled').removeAttr('disabled', true);
+// } );
+// ");
+?>
 
-	if(result) $('#btn-submit').removeClass('disabled').removeAttr('disabled', true);
-} );
-"); ?>
+<?php Yii::app()->clientScript->registerScript('js-f7-form-_form', <<<JS
+
+document.getElementById('Form_json_structure').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_structure').value), undefined, 4);
+
+document.getElementById('Form_json_stage').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_stage').value), undefined, 4);
+
+document.getElementById('Form_json_event_mapping').value = JSON.stringify(JSON.parse(document.getElementById('Form_json_event_mapping').value), undefined, 4);
+
+/*var editor = CodeMirror.fromTextArea(document.getElementById("Form_json_stage"), {
+    htmlMode: true,
+    lineNumbers: true,
+    matchBrackets: true,
+    mode: "application/json",
+    indentUnit: 4,
+    indentWithTabs: true,
+    lineWrapping: true,
+    scrollbarStyle: 'simple',
+    theme:'midnight',   
+});*/
+JS
+, CClientScript::POS_READY); ?>

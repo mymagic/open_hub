@@ -7,18 +7,18 @@
 <div class="form-new <?php if ($realm == 'cpanel') : ?>org-padding<?php endif; ?>">
 
 	<?php $form = $this->beginWidget('ActiveForm', array(
-																'id' => 'resource-form',
-																// Please note: When you enable ajax validation, make sure the corresponding
-																// controller action is handling ajax validation correctly.
-																// There is a call to performAjaxValidation() commented in generated controller code.
-																// See class documentation of CActiveForm for details on this.
-																'enableAjaxValidation' => false,
-																'htmlOptions' => array(
-																	'class' => 'form-horizontal crud-form',
-																	'role' => 'form',
-																	'enctype' => 'multipart/form-data',
-																)
-															)); ?>
+		'id' => 'resource-form',
+		// Please note: When you enable ajax validation, make sure the corresponding
+		// controller action is handling ajax validation correctly.
+		// There is a call to performAjaxValidation() commented in generated controller code.
+		// See class documentation of CActiveForm for details on this.
+		'enableAjaxValidation' => false,
+		'htmlOptions' => array(
+			'class' => 'form-horizontal crud-form',
+			'role' => 'form',
+			'enctype' => 'multipart/form-data',
+		)
+	)); ?>
 
 	<?php echo Notice::inline(Yii::t('notice', 'Fields with <span class="required">*</span> are required.')); ?>
 	<?php if ($model->hasErrors()) : ?>
@@ -39,7 +39,7 @@
 			<div class="col-sm-10">
 				<?php if (!$model->isNewRecord) : ?>
 					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList()), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
-				<?php else : // only those active one for new record 
+				<?php else : // only those active one for new record
 				?>
 					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList(false, false, array('params' => array('mode' => 'isActiveId')))), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
 				<?php endif; ?>
@@ -48,7 +48,7 @@
 		</div>
 	<?php endif; ?>
 
-	<?php if (!$model->isNewRecord) : // user only change slug after resource created to make filling form easier 
+	<?php if (!$model->isNewRecord) : // user only change slug after resource created to make filling form easier
 	?>
 		<div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelEx2($model, 'slug'); ?>
@@ -63,20 +63,20 @@
 		<?php echo $form->bsLabelEx2($model, 'typefor'); ?>
 		<div class="col-sm-10">
 			<?php echo $form->bsEnumDropDownList(
-																$model,
-																'typefor',
-																array(
-																	'ajax' => array(
-																		'type' => 'GET',
-																		'url' => Yii::app()->createUrl('api/renderResourceCategoryList', array('resource_id' => $model->id)), //or $this->createUrl('loadcities') if '$this' extends CController
-																		'data' => array('typefor_code' => 'js:this.value'),
-																		'success' => 'function(data){
-						$(\'#Resource_inputResourceCategories\').html(data).trigger("chosen:updated");
-					}',
-																		//..or 'update'=>'#Resource_inputResourceCategories', 
-																	)
-																)
-															); ?>
+				$model,
+				'typefor',
+				array(
+					'ajax' => array(
+						'type' => 'GET',
+						'url' => Yii::app()->createUrl('api/renderResourceCategoryList', array('resource_id' => $model->id)), //or $this->createUrl('loadcities') if '$this' extends CController
+						'data' => array('typefor_code' => 'js:this.value'),
+						'success' => 'function(data){
+							$(\'#Resource_inputResourceCategories\').html(data).trigger("chosen:updated");
+						}',
+						//..or 'update'=>'#Resource_inputResourceCategories',
+					)
+				)
+			); ?>
 			<?php echo $form->bsError($model, 'typefor'); ?>
 		</div>
 	</div>
@@ -97,7 +97,7 @@
 		</div>
 	</div>
 
-	<?php if ($realm == 'backend') : ?>
+	<?php // if ($realm == 'backend') :?>
 		<div class="form-group <?php echo $model->hasErrors('image_logo') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelEx2($model, 'image_logo'); ?>
 			<div class="col-sm-10">
@@ -129,14 +129,15 @@
 				<?php echo $form->bsError($model, 'latlong_address'); ?>
 			</div>
 		</div>
-	<?php endif; ?>
+	<?php // endif;?>
 
+	<?php if ($realm != 'cpanel'): ?>
 	<div class="margin-bottom-2x">
 		<ul class="nav nav-tabs">
 
-			<?php if (array_key_exists('en', Yii::app()->params['backendLanguages'])) : ?><li class="active"><a href="#pane-en" data-toggle="tab"><?php echo Yii::app()->params['backendLanguages']['en']; ?></a></li><?php endif; ?>
-			<?php if (array_key_exists('ms', Yii::app()->params['backendLanguages'])) : ?><li class=""><a href="#pane-ms" data-toggle="tab"><?php echo Yii::app()->params['backendLanguages']['ms']; ?></a></li><?php endif; ?>
-			<?php if (array_key_exists('zh', Yii::app()->params['backendLanguages'])) : ?><li class=""><a href="#pane-zh" data-toggle="tab"><?php echo Yii::app()->params['backendLanguages']['zh']; ?></a></li><?php endif; ?>
+			<?php if (array_key_exists('en', Yii::app()->params['backendLanguages'])) : ?><li class="active"><a href="#pane-en" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo Yii::app()->params['backendLanguages']['en']; ?></a></li><?php endif; ?>
+			<?php if (array_key_exists('ms', Yii::app()->params['backendLanguages'])) : ?><li class=""><a href="#pane-ms" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo Yii::app()->params['backendLanguages']['ms']; ?></a></li><?php endif; ?>
+			<?php if (array_key_exists('zh', Yii::app()->params['backendLanguages'])) : ?><li class=""><a href="#pane-zh" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo Yii::app()->params['backendLanguages']['zh']; ?></a></li><?php endif; ?>
 		</ul>
 		<div class="tab-content">
 
@@ -204,8 +205,25 @@
 
 
 		</div>
-		<hr />
 	</div>
+	<?php else: ?>
+		<div class="form-group <?php echo $model->hasErrors('title') ? 'has-error' : '' ?>">
+			<?php echo $form->bsLabelEx2($model, 'title'); ?>
+			<div class="col-sm-10">
+				<?php echo $form->bsTextField($model, 'title'); ?>
+				<?php echo $form->bsError($model, 'title'); ?>
+			</div>
+		</div>
+
+		<div class="form-group <?php echo $model->hasErrors('html_content') ? 'has-error' : '' ?>">
+			<?php echo $form->bsLabelEx2($model, 'html_content'); ?>
+			<div class="col-sm-10">
+				<?php echo $form->bsHtmlMiniEditor($model, 'html_content'); ?>
+				<?php echo $form->bsError($model, 'html_content'); ?>
+			</div>
+		</div>
+	<?php endif; ?>
+	<hr />
 
 
 
@@ -244,7 +262,8 @@
 		</div>
 	</div>
 	<!-- /many2many -->
-	<?php if ($realm == 'backend' && Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin) : ?>
+	<?php // if ($realm == 'backend' && Yii::app()->user->accessBackend && Yii::app()->user->isSuperAdmin) :?>
+	<?php if ($realm == 'backend' && Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']])) : ?>
 		<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>
 			<div class="col-sm-10">

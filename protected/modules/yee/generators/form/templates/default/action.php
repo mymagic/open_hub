@@ -5,9 +5,9 @@
  */
 ?>
 <?php
-$viewName=basename($this->viewName);
+$viewName = basename($this->viewName);
 ?>
-public function action<?php echo ucfirst(trim($viewName,'_')); ?>()
+public function action<?php echo ucfirst(trim($viewName, '_')); ?>()
 {
     $model=new <?php echo $this->modelClass; ?><?php echo empty($this->scenario) ? '' : "('{$this->scenario}')"; ?>;
 

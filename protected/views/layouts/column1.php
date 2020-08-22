@@ -1,5 +1,5 @@
 <?php /* @var $this Controller */ ?>
-<?php $this->beginContent('//layouts/_default'); ?>
+<?php $this->beginContent('layouts._default'); ?>
 <div id="content">
 	<?php echo $content; ?>
 </div><!-- content -->

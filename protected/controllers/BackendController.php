@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,11 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
 class BackendController extends Controller
 {
 	public $layout = 'backend';
@@ -39,14 +39,15 @@ class BackendController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions' => array('dashboard', 'logout', 'me', 'changePassword', 'updateAccount', 'getQuickInfo', 'getSubjectTags', 'getSystemActFeed', 'getUsageChart', 'getSystemLog'),
+				'actions' => array('dashboard', 'renderDashboardViewTab', 'logout', 'me', 'changePassword', 'updateAccount', 'getQuickInfo', 'getSubjectTags'),
 				'users' => array('@'),
 				'expression' => '$user->accessBackend==true',
 			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+			array('allow', // allow admin user to sync local account to connect
 				'actions' => array('connect', 'connectConfirmed'),
 				'users' => array('@'),
-				'expression' => '$user->accessBackend==true && $user->isSuperAdmin==true ',
+				// 'expression' => '$user->isDeveloper==true || $user->isSuperAdmin==true ',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow',
 				'actions' => array('index', 'login'),
@@ -118,7 +119,8 @@ class BackendController extends Controller
 
 	public function actionDashboard()
 	{
-		$model = null;
+		$realm = 'backend';
+
 		$stat['totalUsers'] = User::model()->countByAttributes(array('is_active' => 1));
 		$stat['totalLogins'] = Yii::app()->db->createCommand('SELECT SUM(stat_login_success_count) FROM user WHERE is_active=1')->queryScalar();
 		$stat['totalOrganizations'] = Organization::model()->countByAttributes(array('is_active' => 1));
@@ -129,18 +131,27 @@ class BackendController extends Controller
 		// todo: select total registration base on active and not cancelled events
 		$stat['totalEventRegistrations'] = Yii::app()->db->createCommand('SELECT COUNT(er.id) FROM event_registration as er LEFT JOIN event as e ON er.event_code=e.code WHERE e.is_active=1')->queryScalar();
 
-		/*$stat['totalResources'] = Resource::model()->countByAttributes(array('is_active'=>1));
+		$notices = $tabs = array();
+		$model = null;
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getDashboardViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getDashboardViewTabs($model, $realm));
+			}
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getDashboardNotices')) {
+				$notices = array_merge($notices, (array) Yii::app()->getModule($moduleKey)->getDashboardNotices($model, $realm));
+			}
+		}
 
-		$stat['totalIdeaAccrediteds'] = HubIdea::countActiveAccreditedEnterprises();
-		$stat['totalIdeaPartners'] = HubIdea::countPartners();
-		$stat['totalIdeaRfps'] = IdeaRfp::model()->countByAttributes(array());
+		ksort($tabs);
 
-		$stat['totalEnvoyVisits'] = EnvoyVisitor::model()->countByAttributes(array());
+		$this->render('dashboard', array('model' => $model, 'tabs' => $tabs, 'stat' => $stat, 'notices' => $notices));
+	}
 
-		$stat['totalFundingCaptured'] = HUB::sumFunding();
-		$stat['totalRevenueCaptured'] = HUB::sumMilestoneRevenueRealized();*/
-
-		$this->render('dashboard', array('model' => $model, 'stat' => $stat));
+	public function actionRenderDashboardViewTab($viewPath)
+	{
+		$model = null;
+		$this->renderPartial($viewPath, $model, false, true);
 	}
 
 	public function actionMe()
@@ -175,10 +186,11 @@ class BackendController extends Controller
 			if (!empty($user->username)) {
 				echo $user->username . ' - ' . $user->profile->full_name . '<br>';
 				try {
+					// todo: detach MaGIC Connect
 					$c = $this->magicConnect->isUserExists($user->username);
 					if ($c != true) {
 						++$countToConnect;
-						$result = $this->magicConnect->createUser($model->username, $model->first_name, $model->last_name, $newPassword);
+						$result = $this->magicConnect->createUser($user->username, $user->first_name, $user->last_name, $newPassword);
 						if ($result) {
 							++$countConnected;
 						}
@@ -205,6 +217,7 @@ class BackendController extends Controller
 			// find which have connect account and which not
 			if (!empty($user->username)) {
 				try {
+					// todo: detach MaGIC Connect
 					$c = $this->magicConnect->isUserExists($user->username);
 					if ($c == true) {
 						++$countConnected;
@@ -235,8 +248,9 @@ class BackendController extends Controller
 		if (Yii::app()->user->isGuest) {
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
-		
+
 		// magic connect
+		// todo: detach MaGIC Connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
 		}
@@ -274,6 +288,7 @@ class BackendController extends Controller
 			throw new CException(Yii::t('app', 'You must login to update your profile'));
 		}
 		// magic connect
+		// todo: detach MaGIC Connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
 		}
@@ -319,66 +334,5 @@ class BackendController extends Controller
 		}
 		echo CJSON::encode($result);
 		Yii::app()->end();
-	}
-
-	public function actionGetSystemActFeed($dateStart, $dateEnd, $forceRefresh = 0)
-	{
-		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
-
-		try {
-			$response = $client->post(
-				'getSystemActFeed',
-			[
-				'form_params' => [
-					'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'forceRefresh' => $forceRefresh,
-				],
-				'verify' => false,
-			]
-			);
-		} catch (Exception $e) {
-			$this->outputJsonFail($e->getMessage());
-		}
-
-		header('Content-type: application/json');
-		echo $response->getBody();
-	}
-
-	public function actionGetSystemLog($page = 1)
-	{
-		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
-
-		try {
-			$response = $client->post(
-				'getEsLogs',
-			[
-				'form_params' => [
-					'page' => $page,
-				],
-				'verify' => false,
-			]
-			);
-		} catch (Exception $e) {
-			$this->outputJsonFail($e->getMessage());
-		}
-
-		header('Content-type: application/json');
-		echo $response->getBody();
-	}
-
-	public function actionGetUsageChart()
-	{
-		// pageview
-		// session
-		// visitors
-
-		// signup
-		// organisation created
-		// resource listed
-		// mentor listed
-		// mentorship session recorded
-
-		// ide created
-		// impact partner created
-		// rfp created
 	}
 }

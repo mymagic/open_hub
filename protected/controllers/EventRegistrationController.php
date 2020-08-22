@@ -53,9 +53,10 @@ class EventRegistrationController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'syncFromBizzabo', 'syncFromBizzaboConfirmed', 'housekeeping', 'housekeepingConfirmed', 'bulkInsert', 'bulkInsertConfirmed'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'housekeeping', 'housekeepingConfirmed', 'bulkInsert', 'delete'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
@@ -68,10 +69,38 @@ class EventRegistrationController extends Controller
 	 *
 	 * @param int $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
+		$model = $this->loadModel($id);
+
+		$actions = array();
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventRegistrationActions($model, 'cpanel'));
+				}
+			}
+		}
+
+		$tabs = self::composeEventRegistrationViewTabs($model, $realm);
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
+			'actions' => $actions,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 		));
 	}
 
@@ -82,6 +111,7 @@ class EventRegistrationController extends Controller
 	public function actionCreate()
 	{
 		$model = new EventRegistration();
+		$model->event_vendor_code = 'manual';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -200,31 +230,6 @@ class EventRegistrationController extends Controller
 		return $model;
 	}
 
-	// sync event data from bizzabo thru intermediate database at misc
-	// please not that this only sync event entires, but not the registration data
-	// todo: modularize
-	public function actionSyncFromBizzabo($dateStart = '', $dateEnd = '')
-	{
-		Notice::page(Yii::t('backend', 'You are about to sync event registration record from Bizzbo, thru an intermediate Database that periodically in sync with Bizzabo API. Please take note that this function only sync the latest 5k records and the stability depends on your server setting. Click OK to continue.'), Notice_WARNING, array(
-			'url' => $this->createUrl('eventRegistration/syncFromBizzaboConfirmed', array('dateStart' => $dateStart, 'dateEnd' => $dateEnd)),
-			'cancelUrl' => $this->createUrl('eventRegistration/admin'),
-		));
-	}
-
-	// todo: modularize
-	public function actionSyncFromBizzaboConfirmed($dateStart = '', $dateEnd = '')
-	{
-		// limit to latest 5k records
-		$result = HubBizzabo::syncEventRegistrationFromBizzabo($dateStart, $dateEnd, 5000);
-		if ($result['status'] == 'success') {
-			Notice::page($result['msg'], Notice_SUCCESS, array('url' => $this->createUrl('admin')));
-		} else {
-			Notice::page($result['msg'], Notice_ERROR);
-		}
-
-		Yii::app()->end();
-	}
-
 	public function actionHousekeeping()
 	{
 		Notice::page(Yii::t('backend', 'You are about to perform housekeeping on event registration data:'), Notice_WARNING, array(
@@ -276,8 +281,8 @@ class EventRegistrationController extends Controller
 				$evenRegistration = EventRegistration::model()->findByPk($row['id']);
 				// skip if record already have meta record
 				if (!isset($evenRegistration->_dynamicData['EventRegistration-status-isBumi']) || !isset($evenRegistration->_dynamicData['EventRegistration-status-isIndian'])) {
-					$update = HUB::updateBumiIndianStatusForEventRegistration($evenRegistration);
-					$updateMsg[] = sprintf('ID: #%d - Full Name: %s; isBumi %s; isIndian %s', $evenRegistration->id, $evenRegistration->full_name, Html::renderBoolean(HUB::checkEventRegistrationIsBumiStatus($evenRegistration)), Html::renderBoolean(HUB::checkEventRegistrationIsIndianStatus($evenRegistration)));
+					$update = HubBumi::updateIsBumiIndianForEventRegistration($evenRegistration);
+					$updateMsg[] = sprintf('ID: #%d - Full Name: %s; isBumi %s; isIndian %s', $evenRegistration->id, $evenRegistration->full_name, Html::renderBoolean(HubBumi::checkEventRegistrationIsBumi($evenRegistration)), Html::renderBoolean(HubBumi::checkEventRegistrationIsIndian($evenRegistration)));
 					// $i++;
 				}
 				// if($i==20) break;
@@ -383,8 +388,22 @@ class EventRegistrationController extends Controller
 		$this->render('bulkInsert', array('model' => $model, 'events' => $events, 'settingTemplateFile' => $settingTemplateFile));
 	}
 
-	public function actionBulkInsertConfirmed()
+	public function actionDelete($id, $returnUrl = '')
 	{
+		$this->loadModel($id)->delete();
+
+		if (empty($returnUrl) && !empty($_POST['returnUrl'])) {
+			$returnUrl = $_POST['returnUrl'];
+		}
+
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if (!isset($_GET['ajax'])) {
+			$this->redirect(isset($returnUrl) ? $returnUrl : array('admin'));
+		}
+
+		if (!empty($returnUrl)) {
+			$this->redirect($returnUrl);
+		}
 	}
 
 	/**
@@ -398,5 +417,38 @@ class EventRegistrationController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	public function composeEventRegistrationViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getEventRegistrationViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
+
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
+
+		ksort($tabs);
+
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
+			$tabs['eventRegistration'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
+
+		return $tabs;
 	}
 }

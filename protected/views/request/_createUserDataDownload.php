@@ -37,19 +37,19 @@
 
 <h2>User Profile</h2>
 <dl>
-<?php foreach($json['userProfile'] as $key=>$item): ?>
+<?php foreach ($json['userProfile'] as $key => $item): ?>
     <dt><?php echo $item['label'] ?></dt>
     <dd><?php echo Html::encodeDisplay($item['value']) ?></dd>
 <?php endforeach; ?>
 </dl>
 
 
-<?php if(!empty($json['roles'])): ?>
+<?php if (!empty($json['roles'])): ?>
 <hr />
 <h2>User Roles</h2>
-<?php foreach($json['roles'] as $role): ?>
+<?php foreach ($json['roles'] as $role): ?>
 <dl>
-    <?php foreach($role as $key=>$item): ?>
+    <?php foreach ($role as $key => $item): ?>
         <dt><?php echo $item['label'] ?></dt>
         <dd><?php echo Html::encodeDisplay($item['value']) ?></dd>
     <?php endforeach; ?>
@@ -57,14 +57,16 @@
 <?php endforeach; ?>
 <?php endif; ?>
 
-<?php if(!empty($json['organizations'])): ?>
+<?php if (!empty($json['organizations'])): ?>
 <hr />
 <h2>Companies</h2>
-<?php foreach($json['organizations'] as $organization): ?>
+<?php foreach ($json['organizations'] as $organization): ?>
 <h3><?php echo $organization['title']['value'] ?></h3>
 <dl>
-<?php foreach($organization as $key=>$item): ?>
-    <?php if($key == 'title') continue; ?>
+<?php foreach ($organization as $key => $item): ?>
+    <?php if ($key == 'title') {
+	continue;
+} ?>
     <dt><?php echo $item['label'] ?></dt>
     <dd><?php echo Html::encodeDisplay($item['value']) ?></dd>
 <?php endforeach; ?>
@@ -72,17 +74,19 @@
 <?php endforeach; ?>
 <?php endif; ?>
 
-<?php if(!empty($json['eventRegistrations'])): ?>
+<?php if (!empty($json['eventRegistrations'])): ?>
 <hr />
 <h2>Registered Event</h2>
 
-<?php foreach($json['eventRegistrations'] as $year=>$events): ?>
+<?php foreach ($json['eventRegistrations'] as $year => $events): ?>
 <h3><?php echo $year ?></h3>
 <dl>
-<?php foreach($events as $event): ?>
+<?php foreach ($events as $event): ?>
 <h4><?php echo $event['title']['value'] ?></h4>
-<?php foreach($event as $key=>$item): ?>
-    <?php if($key == 'title') continue; ?>
+<?php foreach ($event as $key => $item): ?>
+    <?php if ($key == 'title') {
+	continue;
+} ?>
     <dt><?php echo $item['label'] ?></dt>
     <dd><?php echo Html::encodeDisplay($item['value']) ?></dd>
 <?php endforeach; ?>
@@ -92,13 +96,15 @@
 <?php endif; ?>
 
 
-<?php if(!empty($json['formSubmissions'])): ?>
+<?php if (!empty($json['formSubmissions'])): ?>
 <hr />
 <h2>Form Submissions</h2>
-<?php foreach($json['formSubmissions'] as $formSubmission): ?>
+<?php foreach ($json['formSubmissions'] as $formSubmission): ?>
 <dl>
-<?php foreach($formSubmission as $key=>$item): ?>
-<?php if($key == 'jsonData' || $key == 'htmlData') continue; ?>
+<?php foreach ($formSubmission as $key => $item): ?>
+<?php if ($key == 'jsonData' || $key == 'htmlData') {
+	continue;
+} ?>
     <dt><?php echo $item['label'] ?></dt>
     <dd><?php echo Html::encodeDisplay($item['value']) ?></dd>
 <?php endforeach; ?>
@@ -109,20 +115,22 @@
 <?php endif; ?>
 
 
-<?php if(!empty($json['actFeeds'])):?>
+<?php if (!empty($json['actFeeds'])):?>
 <hr />
 <h2>Activity Feeds</h2>
-<?php foreach($json['actFeeds'] as $year=>$actFeeds): ?>
-    <?php if(empty($actFeeds)) continue; ?>
+<?php foreach ($json['actFeeds'] as $year => $actFeeds): ?>
+    <?php if (empty($actFeeds)) {
+	continue;
+} ?>
     <h3><?php echo $year ?></h3>
-    <?php foreach($actFeeds as $date=>$actFeeds2): ?>
+    <?php foreach ($actFeeds as $date => $actFeeds2): ?>
         <h4><?php echo $date ?></h4>
-        <?php foreach($actFeeds2 as $time=>$actFeeds3): ?>
+        <?php foreach ($actFeeds2 as $time => $actFeeds3): ?>
             <h5><?php echo $time ?></h5>
             <ol>
-            <?php foreach($actFeeds3 as $actFeed): ?>
+            <?php foreach ($actFeeds3 as $actFeed): ?>
             <li><dl>
-            <?php foreach($actFeed as $key=>$item): ?>
+            <?php foreach ($actFeed as $key => $item): ?>
                 <dt><?php echo ucwords($key) ?></dt>
                 <dd><?php echo Html::encodeDisplay($item) ?></dd>
             <?php endforeach; ?>
@@ -138,4 +146,4 @@
 </body>
 </html>
 
-<?php //print_r($json) ?>
+<?php //print_r($json)?>

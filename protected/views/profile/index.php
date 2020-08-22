@@ -1,7 +1,7 @@
 <?php
 /* @var $this ProfileController */
 
-$this->breadcrumbs=array(
+$this->breadcrumbs = array(
 	'Profile',
 );
 ?>

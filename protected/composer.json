@@ -1,8 +1,10 @@
 {
-    "authors": [{
-        "name": "Tan Yee Siang",
-        "email": "yee.siang@mymagic.my"
-    }],
+    "authors": [
+        {
+            "name": "Tan Yee Siang",
+            "email": "yee.siang@mymagic.my"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "config": "./"
@@ -11,7 +13,7 @@
     "require": {
         "guzzlehttp/guzzle": "~6.0",
         "mymagic/connect": "^3.2.3",
-        "exiang/ys-util": "^1.3.0",
+        "exiang/ys-util": "^1.3.5",
         "ramsey/uuid": "^3.6",
         "wadeshuler/php-paypal-ipn": "^2.5",
         "tecnickcom/tcpdf": "^6.2",
@@ -23,7 +25,8 @@
         "mixpanel/mixpanel-php": "2.*",
         "phpoffice/phpspreadsheet": "^1.2",
         "drewm/mailchimp-api": "^2.5",
-        "phpunit/phpunit-selenium": "^3",
+        "phpunit/phpunit": "~5",
+        "phpunit/phpunit-selenium": "~3",
         "willdurand/geocoder": "^3.3",
         "geoip2/geoip2": "^2.9",
         "symfony/yaml": "^3.4",
@@ -33,9 +36,32 @@
         "simple-html-dom/simple-html-dom": "^1.5",
         "aws/aws-sdk-php": "^3.121",
         "graphaware/neo4j-php-client": "^4.0",
-        "graphaware/neo4j-php-ogm": "@rc"
+        "graphaware/neo4j-php-ogm": "@rc",
+        "vlucas/phpdotenv": "^4.1",
+        "josegonzalez/dotenv": "^3.2",
+        "michelf/php-markdown": "^1.9",
+        "intervention/httpauth": "^3.0",
+        "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {
-        "nette/php-generator": "^3.3"
+        "nette/php-generator": "^3.3",
+        "phpunit/phpunit": "~5"
+    },
+    "extra": {
+        "merge-plugin": {
+            "include": [
+                "overrides/composer.json"
+            ],
+            "require": [
+                "modules/*/composer.json"
+            ],
+            "recurse": true,
+            "replace": false,
+            "ignore-duplicates": false,
+            "merge-dev": true,
+            "merge-extra": false,
+            "merge-extra-deep": false,
+            "merge-scripts": false
+        }
     }
 }

@@ -24,11 +24,10 @@ class OrganizationStatusController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,7 @@ class OrganizationStatusController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,16 +48,17 @@ class OrganizationStatusController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin','delete' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true && \$user->isSensitiveDataAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true || ($user->isAdmin==true && $user->isSensitiveDataAdmin==true)',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -68,15 +68,42 @@ class OrganizationStatusController extends Controller
 		$this->activeMenuMain = 'organization';
 		parent::init();
 	}
-	
+
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($id, $realm = 'backend', $tab = 'comment')
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$model = $this->loadModel($id);
+
+		$actions = [];
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			// for backend only
+			if (Yii::app()->user->accessBackend && $realm == 'backend') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationStatusActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationStatusActions($model, 'backend'));
+				}
+			}
+			// for frontend only
+			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationStatusActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getOrganizationStatusActions($model, 'cpanel'));
+				}
+			}
+		}
+
+		$tabs = self::composeOrganizationStatusViewTabs($model, $realm);
+
+		$this->render('view', array(
+			'model' => $model,
+			'realm' => $realm,
+			'tab' => $tab,
+			'tabs' => $tabs,
+			'user' => $user,
 		));
 	}
 
@@ -84,30 +111,30 @@ class OrganizationStatusController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate($organization_id='')
+	public function actionCreate($organization_id = '')
 	{
-		$model=new OrganizationStatus;
+		$model = new OrganizationStatus;
 		$model->organization_id = $organization_id;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['OrganizationStatus']))
-		{
-			$model->attributes=$_POST['OrganizationStatus'];
+		if (isset($_POST['OrganizationStatus'])) {
+			$model->attributes = $_POST['OrganizationStatus'];
 
-			if(!empty($model->date_reported)) $model->date_reported = strtotime($model->date_reported);
-	
-			if($model->save())
-			{
-				$log = Yii::app()->esLog->log(sprintf("created status record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger'=>'OrgranizationStatusController::actionCreate', 'model'=>'OrganizationStatus', 'action'=>'create', 'id'=>$model->organization->id, 'organizationId'=>$model->organization->id));
+			if (!empty($model->date_reported)) {
+				$model->date_reported = strtotime($model->date_reported);
+			}
 
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$log = Yii::app()->esLog->log(sprintf("created status record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger' => 'OrgranizationStatusController::actionCreate', 'model' => 'OrganizationStatus', 'action' => 'create', 'id' => $model->organization->id, 'organizationId' => $model->organization->id));
+
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -118,31 +145,31 @@ class OrganizationStatusController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['OrganizationStatus']))
-		{
-			$model->attributes=$_POST['OrganizationStatus'];
+		if (isset($_POST['OrganizationStatus'])) {
+			$model->attributes = $_POST['OrganizationStatus'];
 
-			if(!empty($model->date_reported)) $model->date_reported = strtotime($model->date_reported);
+			if (!empty($model->date_reported)) {
+				$model->date_reported = strtotime($model->date_reported);
+			}
 
-			if($model->save())
-			{
-				$log = Yii::app()->esLog->log(sprintf("updated status record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger'=>'OrgranizationStatusController::actionUpdate', 'model'=>'OrganizationStatus', 'action'=>'update', 'id'=>$model->organization->id, 'organizationId'=>$model->organization->id));
+			if ($model->save()) {
+				$log = Yii::app()->esLog->log(sprintf("updated status record #%s for organization '%s'", $model->id, $model->organization->title), 'organization', array('trigger' => 'OrgranizationStatusController::actionUpdate', 'model' => 'OrganizationStatus', 'action' => 'update', 'id' => $model->organization->id, 'organizationId' => $model->organization->id));
 
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -151,16 +178,16 @@ class OrganizationStatusController extends Controller
 	{
 		$model = $this->loadModel($id);
 		$copy = clone $model;
-		if($model->delete())
-		{
-			$log = Yii::app()->esLog->log(sprintf("deleted status record #%s for organization '%s'", $copy->id, $copy->organization->title), 'organization', array('trigger'=>'OrgranizationStatusController::actionDelete', 'model'=>'OrganizationStatus', 'action'=>'delete', 'id'=>$copy->organization->id, 'organizationId'=>$copy->organization->id));
+		if ($model->delete()) {
+			$log = Yii::app()->esLog->log(sprintf("deleted status record #%s for organization '%s'", $copy->id, $copy->organization->title), 'organization', array('trigger' => 'OrgranizationStatusController::actionDelete', 'model' => 'OrganizationStatus', 'action' => 'delete', 'id' => $copy->organization->id, 'organizationId' => $copy->organization->id));
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -174,12 +201,12 @@ class OrganizationStatusController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('OrganizationStatus');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('OrganizationStatus');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -188,13 +215,17 @@ class OrganizationStatusController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new OrganizationStatus('search');
+		$model = new OrganizationStatus('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['OrganizationStatus'])) $model->attributes=$_GET['OrganizationStatus'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['OrganizationStatus'])) {
+			$model->attributes = $_GET['OrganizationStatus'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -207,9 +238,11 @@ class OrganizationStatusController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=OrganizationStatus::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = OrganizationStatus::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -219,10 +252,42 @@ class OrganizationStatusController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='organizationStatus-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'organizationStatus-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	public function composeOrganizationStatusViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationStatusViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getMemberViewTabs($model, $realm));
+			}
+		}
+
+		if ($realm == 'backend') {
+			/*$tabs['member'][] = array(
+				'key' => 'individual',
+				'title' => 'Individual',
+				'viewPath' => 'views.individualMember.backend._view-member-individual'
+			);*/
+		}
+
+		ksort($tabs);
+
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
+			$tabs['organizationStatus'][] = array(
+				'key' => 'meta',
+				'title' => 'Meta <span class="label label-warning">dev</span>',
+				'viewPath' => '_view-meta',
+			);
+		}
+
+		return $tabs;
 	}
 }

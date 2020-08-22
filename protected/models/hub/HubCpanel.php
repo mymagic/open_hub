@@ -17,7 +17,6 @@
 
 class HubCpanel
 {
-
 	public function cpanelDefaultNavItems($controller, $forInterface)
 	{
 		switch ($forInterface) {
@@ -29,6 +28,20 @@ class HubCpanel
 							'active' => $controller->activeMenuCpanel == 'activity' ? true : false,
 							'visible' => true,
 							'icon' => 'fa-rss'
+						),
+						array(
+							'label' => Yii::t('app', 'My Organizations'),
+							'url' => '/cpanel/organization',
+							'active' => $controller->activeMenuCpanel == 'organization' ? true : false,
+							'visible' => true,
+							'icon' => 'fa-briefcase'
+						),
+						array(
+							'label' => Yii::t('app', 'Settings'),
+							'url' => '/cpanel/profile',
+							'active' => $controller->activeMenuCpanel == 'profile' ? true : false,
+							'visible' => false,
+							'icon' => 'fa-cog'
 						),
 						array(
 							'label' => Yii::t('app', 'Backend'),
@@ -67,24 +80,24 @@ class HubCpanel
 					);
 					break;
 				}
-			case 'cpanelNavCompany': {
+			case 'cpanelNavOrganization': {
 					return array(
 						array(
-							'label' => Yii::t('app', 'Company List'),
+							'label' => Yii::t('app', 'Organization List'),
 							'url' => Yii::app()->createUrl('/organization/list', array('realm' => 'cpanel')),
 							'active' => $controller->activeMenuCpanel == 'list' ? true : false,
 							'visible' => true,
-							'icon' => 'fa-building'
+							'icon' => 'fa-briefcase'
 						),
 						array(
-							'label' => Yii::t('app', 'Create Company'),
+							'label' => Yii::t('app', 'Create New'),
 							'url' => Yii::app()->createUrl('/organization/create', array('realm' => 'cpanel')),
 							'active' => $controller->activeMenuCpanel == 'create' ? true : false,
 							'visible' => true,
 							'icon' => 'fa-plus-circle'
 						),
 						array(
-							'label' => Yii::t('app', 'Join Existing Company'),
+							'label' => Yii::t('app', 'Join Existing'),
 							'url' => Yii::app()->createUrl('/organization/join', array('realm' => 'cpanel')),
 							'active' => $controller->activeMenuCpanel == 'join' ? true : false,
 							'visible' => true,
@@ -93,24 +106,24 @@ class HubCpanel
 					);
 					break;
 				}
-			case 'cpanelNavCompanyInformation': {
+			case 'cpanelNavOrganizationInformation': {
 					return array(
 						array(
-							'label' => Yii::t('app', 'Company Information'),
+							'label' => Yii::t('app', 'Organization Info'),
 							'url' => Yii::app()->createUrl('/organization/view', array('id' => $controller->customParse, 'realm' => 'cpanel')),
 							'active' => $controller->activeMenuCpanel == 'information' ? true : false,
 							'visible' => true,
-							'icon' => 'fa-building'
+							'icon' => 'fa-briefcase'
 						),
 						array(
-							'label' => Yii::t('app', 'Team Member'),
+							'label' => Yii::t('app', 'Team Members'),
 							'url' => Yii::app()->createUrl('/organization/team', array('id' => $controller->customParse)),
 							'active' => $controller->activeMenuCpanel == 'team' ? true : false,
 							'visible' => true,
 							'icon' => 'fa-users'
 						),
 						array(
-							'label' => Yii::t('app', 'Product'),
+							'label' => Yii::t('app', 'Products'),
 							'url' => Yii::app()->createUrl('/product/list', array('id' => $controller->customParse, 'realm' => 'cpanel')),
 							'active' => $controller->activeMenuCpanel == 'product' ? true : false,
 							'visible' => true,
@@ -133,12 +146,12 @@ class HubCpanel
 					return Yii::t('app', 'Settings');
 					break;
 				}
-			case 'cpanelNavCompany': {
-					return Yii::t('app', 'Company');
+			case 'cpanelNavOrganization': {
+					return Yii::t('app', 'Organization');
 					break;
 				}
-			case 'cpanelNavCompanyInformation': {
-					return Yii::t('app', 'Company');
+			case 'cpanelNavOrganizationInformation': {
+					return Yii::t('app', 'Organization');
 					break;
 				}
 		}
@@ -147,7 +160,7 @@ class HubCpanel
 	public function cpanelNavItems($controller, $forInterface)
 	{
 		$nav = self::cpanelDefaultNavItems($controller, $controller->cpanelMenuInterface);
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getNavItems')) {
 				$nav = array_merge($nav, (array) Yii::app()->getModule($moduleKey)->getNavItems($controller, $controller->cpanelMenuInterface));

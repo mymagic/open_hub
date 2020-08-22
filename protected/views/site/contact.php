@@ -2,8 +2,8 @@
 /* @var $this SiteController */
 /* @var $model ContactForm */
 /* @var $form CActiveForm */
-$this->pageTitle= Yii::t('app', 'Contact Us');
-$this->breadcrumbs=array(
+$this->pageTitle = Yii::t('app', 'Contact Us');
+$this->breadcrumbs = array(
 	Yii::t('app', 'Contact'),
 );
 ?>
@@ -14,16 +14,15 @@ $this->breadcrumbs=array(
 <div class="col-md-9">
 
 
-<?php $form=$this->beginWidget('ActiveForm', array(
-	'id'=>'form-contact',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
+<?php $form = $this->beginWidget('ActiveForm', array(
+	'id' => 'form-contact',
+	'enableClientValidation' => true,
+	'clientOptions' => array(
+		'validateOnSubmit' => true,
 	),
-	'htmlOptions'=>array
-	(
-		'class'=>'form-horizontal',
-		'role'=>'form'
+	'htmlOptions' => array(
+		'class' => 'form-horizontal',
+		'role' => 'form'
 	)
 )); ?>
 
@@ -31,15 +30,15 @@ $this->breadcrumbs=array(
 
 	<?php echo $form->bsErrorSummary($model['form']); ?>
 
-	<div class="form-group <?php echo $model['form']->hasErrors("email") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model['form']->hasErrors('email') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model['form'], 'email'); ?>
 		<div class="col-sm-9">
-			<?php echo $form->bsEmailTextField($model['form'], 'email', array('placeholder'=>Yii::t('app', 'Please enter your primary email address'))); ?>
+			<?php echo $form->bsEmailTextField($model['form'], 'email', array('placeholder' => Yii::t('app', 'Please enter your primary email address'))); ?>
 			<?php echo $form->bsError($model['form'], 'email'); ?>
 		</div>
 	</div>
 	
-	<div class="form-group <?php echo $model['form']->hasErrors("subject") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model['form']->hasErrors('subject') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model['form'], 'subject'); ?>
 		<div class="col-sm-9">
 			<?php echo $form->bsTextField($model['form'], 'subject'); ?>
@@ -47,7 +46,7 @@ $this->breadcrumbs=array(
 		</div>
 	</div>
 	
-	<div class="form-group <?php echo $model['form']->hasErrors("body") ? 'has-error':'' ?>">
+	<div class="form-group <?php echo $model['form']->hasErrors('body') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx3($model['form'], 'body'); ?>
 		<div class="col-sm-9">
 			<?php echo $form->bsTextArea($model['form'], 'body'); ?>
@@ -55,13 +54,13 @@ $this->breadcrumbs=array(
 		</div>
 	</div>
 	
-	<?php if(CCaptcha::checkRequirements()): ?>
-	<div class="form-group <?php echo $model['form']->hasErrors("verifyCode") ? 'has-error':'' ?>">
-		<?php echo $form->bsLabelEx3($model['form'],'verifyCode'); ?>
+	<?php if (CCaptcha::checkRequirements()): ?>
+	<div class="form-group <?php echo $model['form']->hasErrors('verifyCode') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx3($model['form'], 'verifyCode'); ?>
 		<div class="col-sm-9">
 			<p><?php $this->widget('CCaptcha', array('captchaAction' => '/site/captcha')); ?></p>
-			<p><?php echo $form->bsTextField($model['form'], 'verifyCode', array('placeholder'=>'Please enter the letters as they are shown in the following image')); ?></p>
-			<?php echo $form->bsError($model['form'],'verifyCode'); ?>
+			<p><?php echo $form->bsTextField($model['form'], 'verifyCode', array('placeholder' => 'Please enter the letters as they are shown in the following image')); ?></p>
+			<?php echo $form->bsError($model['form'], 'verifyCode'); ?>
 		</div>
 	</div>
 	<?php endif; ?>

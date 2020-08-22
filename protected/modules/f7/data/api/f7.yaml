@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+  description: F7 Forms and Intakes APIs
+  version: "v1"
+  title: F7
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getF7OpeningForms:
+    post:
+      tags:
+      - admin
+      description: Get list of forms open between start and end date
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters: 
+        - in: formData
+          name: dateStart
+          type: string
+          description: Date Start
+          required: true
+          default: '2020-02-01'
+        - in: formData
+          name: dateEnd
+          type: string
+          description: Date End
+          required: true
+          default: '2020-02-07'
+        - in: formData
+          name: forceRefresh
+          type: number
+          description: Force Refresh
+          required: true
+          default: '0'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

@@ -20,7 +20,7 @@ tags:
 - name: internal
   description: Internal API calls available to in-house developers only
 paths:
-  /getEsLogs:
+  /getEsLogSystemActFeed:
     post:
       tags:
       - admin

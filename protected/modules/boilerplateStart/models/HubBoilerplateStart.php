@@ -18,4 +18,14 @@ class HubBoilerplateStart
 		));*/
 		return array();
 	}
+
+	public function countAllMemberBoilerplateStarts($member)
+	{
+		return 0;
+	}
+
+	public function getActiveMemberBoilerplateStarts($member, $limit = 100)
+	{
+		return array();
+	}
 }

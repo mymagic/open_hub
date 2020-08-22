@@ -125,8 +125,8 @@
             <tbody>
             <tr>
                 <td>
-                    <button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noRegistration']; ?></button>
-                    Event without registration
+                    <a href="<?php echo $this->createUrl('event/adminNoRegistration') ?>"><button type="button" class="btn btn-white btn-sm m-r-sm"><?php echo $stat['quality']['noRegistration']; ?></button>
+                    Event without registration</a>
                 </td>
             </tr>
             <tr>

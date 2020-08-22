@@ -17,19 +17,22 @@
 
 class Service extends ServiceBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class Service extends ServiceBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class Service extends ServiceBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class Service extends ServiceBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -103,19 +106,21 @@ class Service extends ServiceBase
 	public function hasUser($userId)
 	{
 		// todo: check by sql is more efficient
-		foreach($this->service2Users as $item)
-		{
-			if($userId==$item->user_id) return true;
+		foreach ($this->service2Users as $item) {
+			if ($userId == $item->user_id) {
+				return true;
+			}
 		}
+
 		return false;
 	}
-	
+
 	public function canBookmarkByUser($userId)
 	{
-		if(!$this->is_bookmarkable || $this->hasUser($userId)) return false;
+		if (!$this->is_bookmarkable || $this->hasUser($userId)) {
+			return false;
+		}
+
 		return true;
 	}
-	
-
-	
 }

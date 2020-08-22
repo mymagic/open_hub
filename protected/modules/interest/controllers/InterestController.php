@@ -1,4 +1,5 @@
 <?php
+
 class InterestController extends Controller
 {
 	/**
@@ -25,7 +26,7 @@ class InterestController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -49,9 +50,11 @@ class InterestController extends Controller
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				// 'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'actions' => array('list', 'view', 'admin', 'delete'),
 				'users' => array('@'),
-				'expression' => "\$user->isAdmin==true",
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'deny',  // deny all users
@@ -85,7 +88,6 @@ class InterestController extends Controller
 		if (isset($_POST['Interest'])) {
 			$model->attributes = $_POST['Interest'];
 
-
 			if ($model->save()) {
 				Yii::app()->esLog->log(sprintf("created interest for user '%s'", $model->user->username), 'interest', array('trigger' => 'InterestController::actionCreate', 'model' => 'Interest', 'action' => 'create', 'id' => $model->id));
 				$this->redirect(array('view', 'id' => $model->id));
@@ -112,7 +114,6 @@ class InterestController extends Controller
 		if (isset($_POST['Interest'])) {
 			$model->attributes = $_POST['Interest'];
 
-
 			if ($model->save()) {
 				Yii::app()->esLog->log(sprintf("updated interest for user '%s'", $model->user->username), 'interest', array('trigger' => 'InterestController::actionUpdate', 'model' => 'Interest', 'action' => 'update', 'id' => $model->id));
 				$this->redirect(array('view', 'id' => $model->id));
@@ -133,14 +134,14 @@ class InterestController extends Controller
 
 		$this->layout = 'layouts.cpanel'; //default layout for cpanel
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->cpanelMenuInterface = 'cpanelNavSetting'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
+		$this->cpanelMenuInterface = 'cpanelNavSetting'; //cpanel menu interface type ex. cpanelNavDashboard, cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		$this->activeMenuCpanel = 'interest'; //active menu name based on NameModule.php getNavItems() active attribute
 
 		if (isset($_POST['Interest'])) {
 			$model->attributes = $_POST['Interest'];
 
 			if ($model->save()) {
-				Notice::flash(Yii::t('notice', "Your interest is successfully updated."), Notice_SUCCESS);
+				Notice::flash(Yii::t('notice', 'Your interest is successfully updated.'), Notice_SUCCESS);
 				$this->redirect('setting');
 			}
 		}
@@ -162,8 +163,9 @@ class InterestController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if (!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
 
 	/**
@@ -195,8 +197,12 @@ class InterestController extends Controller
 	{
 		$model = new Interest('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Interest'])) $model->attributes = $_GET['Interest'];
-		if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+		if (isset($_GET['Interest'])) {
+			$model->attributes = $_GET['Interest'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
 		$this->render('admin', array(
 			'model' => $model,
@@ -213,8 +219,10 @@ class InterestController extends Controller
 	public function loadModel($id)
 	{
 		$model = Interest::model()->findByPk($id);
-		if ($model === null)
+		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 

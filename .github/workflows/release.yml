@@ -1,0 +1,75 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.2'
+        extensions: mbstring, yaml, curl
+        ini-values: post_max_size=48M, short_open_tag=On, output_buffering=20480  
+        tools: phpunit
+    
+    - name: Install composer dependencies
+      working-directory: ./protected
+      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Install composer dependencies for module openHub
+      working-directory: ./protected/modules/openHub
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+    
+    - name: Prepare Release
+      run: |
+        mkdir ./_release/ && mkdir ./_release/tmp/
+        mkdir -p ./_release/tmp/public_html/ && cp -r ./public_html ./_release/tmp/ &&
+        mkdir -p ./_release/tmp/protected/ && cp -r ./protected ./_release/tmp/ &&
+        mkdir -p ./_release/tmp/framework/ && cp -r ./framework ./_release/tmp/ &&
+        cp LICENSE ./_release/tmp/LICENSE && 
+        mkdir -m 777 ./_release/tmp/protected/overrides/ && 
+        mkdir -m 777 ./_release/tmp/protected/runtime/ && 
+        mkdir -m 777 ./_release/tmp/protected/messages/ && 
+        mkdir -m 777 ./_release/tmp/public_html/assets/ && 
+        mkdir -m 777 ./_release/tmp/public_html/uploads/ && 
+        rm -rf ./_release/tmp/.git* &&
+        chmod -R 777 ./_release/tmp/protected/data/ &&
+        chmod -R 777 ./_release/tmp/protected/modules/ && 
+        chmod -R 777 ./_release/tmp/protected/vendor/ 
+      
+    - name: Pack Release
+      working-directory: ./_release/tmp/
+      run: |
+        zip ../openhub-latest.zip -r -m .
+        cp ../openhub-latest.zip ../openhub-${GITHUB_REF##*/}.zip
+      
+    - name: Deploy S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'ap-southeast-1'   # optional: defaults to us-east-1
+        SOURCE_DIR: '_release'      # optional: defaults to entire repositor
+        DEST_DIR: 'github/release' 
+      
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    # - name: Run test suite
+    #   run: composer run-script test

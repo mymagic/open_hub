@@ -24,11 +24,10 @@ class SettingController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -49,21 +48,23 @@ class SettingController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('panel'),
-				'users'=>array('@'),
-				'expression'=>"\$user->getState('isSuperAdmin')==true",
+				'actions' => array('panel'),
+				'users' => array('@'),
+				// 'expression' => "\$user->getState('isSuperAdmin')==true",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('view','create','update','admin','delete'),
-				'users'=>array('@'),
-				'expression'=>"\$user->getState('isDeveloper')==true",
+				'actions' => array('view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
+				// 'expression' => "\$user->getState('isDeveloper')==true",
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -74,8 +75,8 @@ class SettingController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -85,24 +86,21 @@ class SettingController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Setting;
+		$model = new Setting;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Setting']))
-		{
-			$model->attributes=$_POST['Setting'];
+		if (isset($_POST['Setting'])) {
+			$model->attributes = $_POST['Setting'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -113,51 +111,43 @@ class SettingController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Setting']))
-		{
-			$model->attributes=$_POST['Setting'];
+		if (isset($_POST['Setting'])) {
+			$model->attributes = $_POST['Setting'];
 			$model->scenario = sprintf('update%s', ucwords($model->datatype));
 
-			if($model->datatype == 'image')
-			{
+			if ($model->datatype == 'image') {
 				$model->imageFile_value = UploadedFile::getInstance($model, 'imageFile_value');
 			}
-			if($model->datatype == 'file')
-			{
+			if ($model->datatype == 'file') {
 				$model->uploadFile_value = UploadedFile::getInstance($model, 'uploadFile_value');
 			}
 
 			//print_r($model->uploadFile_value);exit;
 
-			if($model->validate())
-			{
-				if($model->save())
-				{
-					if($model->datatype == 'image' && is_object($model->imageFile_value))
-					{
+			if ($model->validate()) {
+				if ($model->save()) {
+					if ($model->datatype == 'image' && is_object($model->imageFile_value)) {
 						$image = new Image($model->imageFile_value->tempName);
 						$saveFileName = sprintf('%s.%s.%s', 'setting', $model->id, strtolower(ysUtil::getFileExtension($model->imageFile_value->name)));
-						$image->save(sprintf($model->uploadPath.DIRECTORY_SEPARATOR.'%s', $saveFileName));
+						$image->save(sprintf($model->uploadPath . DIRECTORY_SEPARATOR . '%s', $saveFileName));
 						$model->value = sprintf('uploads/%s/%s', $model->tableName(), $saveFileName);
 						$model->save();
 
 						UploadManager::storeImage($model, 'value', $model->tableName(), null, '', 'value');
 					}
-					if($model->datatype == 'file' && is_object($model->uploadFile_value))
-					{
+					if ($model->datatype == 'file' && is_object($model->uploadFile_value)) {
 						/*$saveFileName = sprintf('%s.%s.%s', 'setting', $model->id, strtolower(ysUtil::getFileExtension($model->uploadFile_value->name)));
 						$model->value = sprintf('uploads/%s/%s', $model->tableName(), $saveFileName);
 						$model->save();*/
 
 						UploadManager::storeFile($model, 'value', $model->tableName(), '', 'value');
-						
 					}
-					$this->redirect(array('view','id'=>$model->id));
+					$this->redirect(array('view', 'id' => $model->id));
 				}
 			}
 			/*else
@@ -167,31 +157,41 @@ class SettingController extends Controller
 			}*/
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
-	
+
 	public function actionPanel()
 	{
-		// seo
-		$model['seo-meta-title'] = $this->loadModelByCode('seo-meta-title');
-		$model['seo-meta-keywords'] = $this->loadModelByCode('seo-meta-keywords');
-		$model['seo-meta-description'] = $this->loadModelByCode('seo-meta-description');
-		
-		if(isset($_POST['Setting']))
-		{
+		// auto create if not found
+		$model['seo-meta-title'] = (!Setting::isCodeExists('seo-meta-title')) ? Setting::setSetting('seo-meta-title', '', 'string') : $this->loadModelByCode('seo-meta-title');
+
+		$model['seo-meta-keywords'] = (!Setting::isCodeExists('seo-meta-keywords')) ? Setting::setSetting('seo-meta-keywords', '', 'text') : $this->loadModelByCode('seo-meta-keywords');
+
+		$model['seo-meta-description'] = (!Setting::isCodeExists('seo-meta-description')) ? Setting::setSetting('seo-meta-description', '', 'text') : $this->loadModelByCode('seo-meta-description');
+
+		$model['organization-master-code'] = (!Setting::isCodeExists('organization-master-code')) ? Setting::setSetting('organization-master-code', '', 'string') : $this->loadModelByCode('organization-master-code');
+
+		if (isset($_POST['Setting'])) {
 			// seo
-			$model['seo-meta-title']->value = $_POST['Setting']['seo-meta-title']; $model['seo-meta-title']->save(false);
-			$model['seo-meta-keywords']->value = $_POST['Setting']['seo-meta-keywords']; $model['seo-meta-keywords']->save(false);
-			$model['seo-meta-description']->value = $_POST['Setting']['seo-meta-description']; $model['seo-meta-description']->save(false);
-			
+			$model['seo-meta-title']->value = $_POST['Setting']['seo-meta-title'];
+			$model['seo-meta-title']->save(false);
+			$model['seo-meta-keywords']->value = $_POST['Setting']['seo-meta-keywords'];
+			$model['seo-meta-keywords']->save(false);
+			$model['seo-meta-description']->value = $_POST['Setting']['seo-meta-description'];
+			$model['seo-meta-description']->save(false);
+
+			// organization
+			$model['organization-master-code']->value = $_POST['Setting']['organization-master-code'];
+			$model['organization-master-code']->save(false);
+
 			// when done
 			Notice::flash(Yii::t('backend', 'Your settings have been saved successfully'), Notice_SUCCESS);
 			$this->redirect(array('setting/panel'));
 		}
-		
-		$this->render('panel', array('model'=>$model));
+
+		$this->render('panel', array('model' => $model));
 	}
 
 	/**
@@ -204,8 +204,9 @@ class SettingController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
 
 	/**
@@ -221,13 +222,15 @@ class SettingController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Setting('search');
+		$model = new Setting('search');
 		// $model->unsetAttributes();  // clear any default values
 		// if(isset($_GET['Setting'])) $model->attributes=$_GET['Setting'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -240,16 +243,21 @@ class SettingController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Setting::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Setting::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
+
 	public function loadModelByCode($code)
 	{
-		$model=Setting::model()->find('code=:code', array(':code'=>$code));
-		if($model===null)
-			throw new CHttpException(404,'The requested setting does not exist.');
+		$model = Setting::model()->find('code=:code', array(':code' => $code));
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested setting does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -259,8 +267,7 @@ class SettingController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='setting-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'setting-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

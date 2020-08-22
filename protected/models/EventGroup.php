@@ -17,19 +17,22 @@
 
 class EventGroup extends EventGroupBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -37,7 +40,7 @@ class EventGroup extends EventGroupBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -65,7 +68,7 @@ class EventGroup extends EventGroupBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -75,9 +78,9 @@ class EventGroup extends EventGroupBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -91,14 +94,26 @@ class EventGroup extends EventGroupBase
 		return $return;
 	}
 
-	public function getForeignReferList($isNullable=false, $is4Filter=false)
+	public function getForeignReferList($isNullable = false, $is4Filter = false)
 	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
-		$result = Yii::app()->db->createCommand()->select("code as key, title as title")->from(self::tableName())->order('title ASC')->queryAll();
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
+		$language = Yii::app()->language;
+
+		if ($is4Filter) {
+			$isNullable = false;
+		}
+		if ($isNullable) {
+			$result[] = array('key' => '', 'title' => '');
+		}
+		$result = Yii::app()->db->createCommand()->select('code as key, title as title')->from(self::tableName())->order('title ASC')->queryAll();
+		if ($is4Filter) {
+			$newResult = array();
+			foreach ($result as $r) {
+				$newResult[$r['key']] = $r['title'];
+			}
+
+			return $newResult;
+		}
+
 		return $result;
 	}
 
@@ -107,13 +122,13 @@ class EventGroup extends EventGroupBase
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'events' => array(self::HAS_MANY, 'Event', 'event_group_code', 'order'=>'date_started DESC'),
-			'eventsActive' => array(self::HAS_MANY, 'Event', 'event_group_code', 'condition'=>'is_active=1','order'=>'date_started DESC'),
-			'eventsInactive' => array(self::HAS_MANY, 'Event', 'event_group_code', 'condition'=>'is_active=0','order'=>'date_started DESC'),
+			'events' => array(self::HAS_MANY, 'Event', 'event_group_code', 'order' => 'date_started DESC'),
+			'eventsActive' => array(self::HAS_MANY, 'Event', 'event_group_code', 'condition' => 'is_active=1', 'order' => 'date_started DESC'),
+			'eventsInactive' => array(self::HAS_MANY, 'Event', 'event_group_code', 'condition' => 'is_active=0', 'order' => 'date_started DESC'),
 
 			// meta
-			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on'=>sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
-			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on'=>'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through'=>'metaStructures'),
+			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
+			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
 		);
 	}
 }

@@ -35,7 +35,6 @@ class ProductController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-
 		);
 	}
 
@@ -56,7 +55,8 @@ class ProductController extends Controller
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin', 'adminByOrganization'),
 				'users' => array('@'),
-				'expression' => "\$user->isAdmin==true",
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow',
@@ -85,9 +85,10 @@ class ProductController extends Controller
 	{
 		$product = $this->loadModel($id);
 
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
-
 			if (!$product->organization->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/product/list'));
 			}
@@ -95,7 +96,7 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $product->organization->id;
 		}
 		$this->pageTitle = Yii::t('app', 'View Product');
@@ -113,9 +114,10 @@ class ProductController extends Controller
 	 */
 	public function actionCreate($organization_id = '', $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
-
 			$org = Organization::model()->findByPk($organization_id);
 			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/product/list'));
@@ -124,14 +126,16 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $organization_id;
 		}
 		$this->pageTitle = Yii::t('app', 'Create Product');
 		$this->activeSubMenuCpanel = 'product-create';
 
 		$model = new Product;
-		if (!empty($organization_id)) $model->organization_id = $organization_id;
+		if (!empty($organization_id)) {
+			$model->organization_id = $organization_id;
+		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -163,7 +167,9 @@ class ProductController extends Controller
 	{
 		$model = $this->loadModel($id);
 
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 
 		if ($realm == 'cpanel') {
 			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username)) {
@@ -172,14 +178,12 @@ class ProductController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->organization->id;
 		}
 
 		$this->pageTitle = Yii::t('app', 'Update Product');
 		$this->activeSubMenuCpanel = 'product-adminByOrganization';
-
-
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -201,7 +205,6 @@ class ProductController extends Controller
 			'realm' => $realm
 		));
 	}
-
 
 	/**
 	 * Index
@@ -229,19 +232,22 @@ class ProductController extends Controller
 		if ($realm === 'cpanel') {
 			$model = Organization::model()->findByPk($id);
 
-			if (!$model->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/product/list', 'realm' => $realm));
+			}
 
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'product';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->id;
 
 			$model = new Product('search');
 			$model->unsetAttributes();
 			$model->organization_id = $id;
-			if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+			if (Yii::app()->request->getParam('clearFilters')) {
+				EButtonColumnWithClearFilters::clearFilters($this, $model);
+			}
 
 			$this->render('list', array('model' => $model));
 		}
@@ -254,8 +260,12 @@ class ProductController extends Controller
 	{
 		$model = new Product('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Product'])) $model->attributes = $_GET['Product'];
-		if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+		if (isset($_GET['Product'])) {
+			$model->attributes = $_GET['Product'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
 		$this->render('admin', array(
 			'model' => $model,
@@ -264,16 +274,24 @@ class ProductController extends Controller
 
 	public function actionAdminByOrganization($organization_id, $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
-		if ($realm == 'cpanel') $this->layout = 'cpanel';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
+		if ($realm == 'cpanel') {
+			$this->layout = 'cpanel';
+		}
 		$this->pageTitle = Yii::t('app', 'Manage Products');
 
 		//$this->activeSub = 'product-adminByOrganization';
 		$model = new Product('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Product'])) $model->attributes = $_GET['Product'];
+		if (isset($_GET['Product'])) {
+			$model->attributes = $_GET['Product'];
+		}
 		$model->organization_id = $organization_id;
-		if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
 		$this->render('adminByOrganization', array(
 			'model' => $model,
@@ -292,8 +310,10 @@ class ProductController extends Controller
 	public function loadModel($id)
 	{
 		$model = Product::model()->findByPk($id);
-		if ($model === null)
+		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 

@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
 *
 * NOTICE OF LICENSE
@@ -17,11 +18,35 @@
 
 class HubMember
 {
-    // todo
-    // username is email
-    public static function createMember($username, $fullname)
-    {
-        // check if user not exists, then create user and profile
-        // create member
-    }
+	// todo
+	// username is email
+	public static function createMember($username, $fullname)
+	{
+		// check if user not exists, then create user and profile
+		// create member
+	}
+
+	public function getSystemActFeed($dateStart, $dateEnd, $page = 1, $forceRefresh = 0)
+	{
+		$limit = 30;
+		$status = 'fail';
+		$msg = 'Unknown error';
+
+		$timestampStart = strtotime($dateStart);
+		$timestampEnd = strtotime($dateEnd) + (24 * 60 * 60);
+
+		// date range can not be more than 60 days
+		if (floor(($timestampEnd - $timestampStart) / (60 * 60 * 24)) > 60) {
+			$msg = 'Max date range cannot more than 60 days';
+		} else {
+			$data = null;
+			$sql = sprintf('SELECT * FROM member WHERE date_modified>=%s AND date_modified<%s ORDER BY date_modified DESC LIMIT %s, %s', $timestampStart, $timestampEnd, ($page - 1) * $limit, $limit);
+			$data = Member::model()->findAllBySql($sql);
+
+			$status = 'success';
+			$msg = '';
+		}
+
+		return array('status' => $status, 'msg' => $msg, 'data' => $data);
+	}
 }

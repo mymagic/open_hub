@@ -148,7 +148,7 @@ class <?php echo $modelClass; ?>Base extends <?php echo $this->baseClass . "\n";
 
 	if (!empty($tags)) {
 		echo "\n\t// tag\n";
-		$tmp = "";
+		$tmp = '';
 		foreach ($tags as $tagKey => $tagValues) {
 			$tmp .= sprintf("\tpublic \$tag_%s;\n", $tagKey);
 		}
@@ -507,7 +507,7 @@ $this->setTags($this->tag_<?php echo $tagKey ?>);
 
 <?php if ($neo4j) : ?>
 	if (Yii::app()->neo4j->getStatus()) {
-	<?php echo "Neo4j" . $modelClass; ?>::model($this)->sync();
+	<?php echo 'Neo4j' . $modelClass; ?>::model($this)->sync();
 	}
 <?php endif; ?>
 
@@ -521,7 +521,7 @@ return parent::afterSave();
 	// custom code here
 	// ...
 	if (Yii::app()->neo4j->getStatus()) {
-	<?php echo "Neo4j" . $modelClass; ?>::model()->deleteOneByPk($this->id);
+	<?php echo 'Neo4j' . $modelClass; ?>::model()->deleteOneByPk($this->id);
 	}
 	return parent::afterDelete();
 	}

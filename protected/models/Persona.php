@@ -17,19 +17,22 @@
 
 class Persona extends PersonaBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -39,7 +42,7 @@ class Persona extends PersonaBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -70,7 +73,7 @@ class Persona extends PersonaBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -80,9 +83,9 @@ class Persona extends PersonaBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -96,8 +99,24 @@ class Persona extends PersonaBase
 		return $return;
 	}
 
-	public function slug2obj($slug)
+	public static function slug2obj($slug)
 	{
-		return Persona::model()->find('t.slug=:slug', array(':slug'=>$slug));
+		return Persona::model()->find('t.slug=:slug', array(':slug' => $slug));
+	}
+
+	public static function getBySlug($slug)
+	{
+		return self::slug2obj($slug);
+	}
+
+	public static function getByTitle($title)
+	{
+		return Persona::model()->find('t.title=:title', array(':title' => $title));
+	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
 	}
 }

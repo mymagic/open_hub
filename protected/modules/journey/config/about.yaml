@@ -1,0 +1,9 @@
+code: "journey"
+version: "1.2"
+title: "Journey"
+oneliner: "Base module of entire HUB system. Also provide functions to search and track startup & individual activities recorded in this system"
+lastUpdate: "2020-03-12"
+developer:
+  author: "Tan Yee Siang"
+  organization: "MaGIC"
+  email: "yee.siang@mymagic.my"

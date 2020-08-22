@@ -55,17 +55,20 @@ class OrganizationController extends Controller
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array(
-					'list', 'view', 'create', 'update', 'admin', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+					'list', 'view', 'create', 'update', 'admin',
+					'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
+					'overview', 'merge', 'getOrganizationNodes', 'doMerge', 'doMergeConfirmed', 'getTagsBackend', 'score', 'join', 'team', 'toggleOrganization2EmailStatusReject'
 				),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('housekeeping'),
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow',
@@ -85,7 +88,8 @@ class OrganizationController extends Controller
 				'allow',
 				'actions' => array('overview', 'view', 'admin'),
 				'users' => array('@'),
-				'expression' => '$user->isEcosystem==true',
+				// 'expression' => '$user->isEcosystem==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'deny',  // deny all users
@@ -118,7 +122,7 @@ class OrganizationController extends Controller
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'information';
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->id;
 			$this->pageTitle = Yii::t('app', "View '{OrganizationTitle}'", array('{OrganizationTitle}' => $model->title));
 		}
@@ -133,7 +137,7 @@ class OrganizationController extends Controller
 		$actions = array();
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
@@ -177,13 +181,12 @@ class OrganizationController extends Controller
 		}
 
 		if ($realm == 'cpanel') {
-
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->pageTitle = 'Create Company';
-			$this->cpanelMenuInterface = 'cpanelNavCompany';
+			$this->pageTitle = Yii::t('app', 'Create Organization');
+			$this->cpanelMenuInterface = 'cpanelNavOrganization';
 			$this->activeMenuCpanel = 'create';
-			$this->pageTitle = Yii::t('app', 'Create Company');
+			$this->pageTitle = Yii::t('app', 'Create Organization');
 		}
 
 		$model = new Organization;
@@ -223,13 +226,13 @@ class OrganizationController extends Controller
 			$realm = 'backend';
 		}
 		$this->pageTitle = Yii::t('app', 'Update Organization');
-		
+
 		if ($realm == 'cpanel') {
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
 			$this->activeMenuCpanel = 'information';
-			$this->pageTitle = Yii::t('app', 'Update Company');
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->pageTitle = Yii::t('app', 'Update Organization');
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $model->id;
 		}
 
@@ -248,6 +251,7 @@ class OrganizationController extends Controller
 		if (isset($_POST['Organization'])) {
 			$oriModel = clone $model;
 			$model->attributes = $_POST['Organization'];
+			$model->setLatLongAddress($_POST['Organization']['latlong_address']);
 
 			// convert full address to parts and store
 			if (($oriModel->full_address != $model->full_address) && !empty($model->full_address)) {
@@ -312,22 +316,20 @@ class OrganizationController extends Controller
 
 			$this->render('index', array(
 				'dataProvider' => $dataProvider,
-				'realm' => 	$realm,
+				'realm' => $realm,
 			));
 		}
 		if ($realm === 'cpanel') {
-
 			$this->layout = 'cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->pageTitle = 'Company List';
-			$this->cpanelMenuInterface = 'cpanelNavCompany';
+			$this->pageTitle = Yii::t('app', 'Organization List');
+			$this->cpanelMenuInterface = 'cpanelNavOrganization';
 			$this->activeMenuCpanel = 'list';
-
 
 			$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'approve');
 			$this->render('index', array(
 				'model' => $model,
-				'realm' => 	$realm,
+				'realm' => $realm,
 			));
 		}
 	}
@@ -336,12 +338,13 @@ class OrganizationController extends Controller
 	{
 		$model = $this->loadModel($id);
 
-		if (!$model->canAccessByUserEmail(Yii::app()->user->username))
-			$this->redirect(array('/company/list'));
+		if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
+			$this->redirect(array('/organization/list'));
+		}
 
 		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+		$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 		$this->pageTitle = 'Team Members';
 		$this->activeMenuCpanel = 'team';
 		$this->customParse = $model->id;
@@ -419,13 +422,12 @@ class OrganizationController extends Controller
 	{
 		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Join Company';
-		$this->cpanelMenuInterface = 'cpanelNavCompany';
+		$this->pageTitle = Yii::t('app', 'Join Organization');
+		$this->cpanelMenuInterface = 'cpanelNavOrganization';
 		$this->activeMenuCpanel = 'join';
 		$model = HUB::getActiveOrganizations(Yii::app()->user->username, 'pending');
 		$this->render('join', array('model' => $model));
 	}
-
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -458,7 +460,7 @@ class OrganizationController extends Controller
 		$model = HUB::getOrganization2Email($id);
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$model->organization->hasUserEmail(Yii::app()->user->username)) {
 				Notice::page(Yii::t('notice', 'Invalid Access'));
 			}
 		}
@@ -594,14 +596,14 @@ class OrganizationController extends Controller
 		$model = HUB::getOrganization2Email($id);
 
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$model->organization->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list'));
+			}
 		}
 
 		$model->status = 'reject';
 
 		if ($model->save()) {
-
 			$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($model);
 			HUB::sendEmail($model->user_email, $model->user_email, $notifMaker['title'], $notifMaker['content']);
 
@@ -856,7 +858,7 @@ class OrganizationController extends Controller
 	{
 		$tabs = array();
 
-		$modules = YeeModule::getParsableModules();
+		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getOrganizationViewTabs')) {
 				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getOrganizationViewTabs($model, $realm));
@@ -873,7 +875,8 @@ class OrganizationController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
 			$tabs['organization'][] = array(
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',
@@ -903,7 +906,7 @@ class OrganizationController extends Controller
 			'application_id' => $application_id
 		));
 		// Get startup_id
-		// Get map_application id 
+		// Get map_application id
 		// $this->render('score', array());
 	}
 }

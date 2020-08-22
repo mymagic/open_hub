@@ -15,44 +15,49 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 class EventCommand extends ConsoleCommand
 {
-    public $verbose=false;
-    public function actionIndex()
+	public $verbose = false;
+
+	public function actionIndex()
 	{
 		echo "Available command:\n";
-		echo "  * syncRecentEvent\nSync recent event data from bizzabo thru intermediate database, plus minus 2 weeks from now\n";
-		echo "  * syncEventRegistration\nSync event registration data from bizzabo thru intermediate database, with limit of latest 10000 records\n";
+		echo "setActiveEventOwner2MasterOrganization - Bulk assign master organizaton to all existing active events\n";
 		echo "\n";
 	}
-	
-	// todo: modularize
-	public function actionSyncRecentEvent()
+
+	public function actionSetActiveEventOwner2MasterOrganization()
 	{
-		$dateStart = strtotime('2 weeks ago');
-		$dateEnd = strtotime('+2 weeks');
+		$masterOrganizationCode = Setting::code2value('organization-master-code');
+		if (!empty($masterOrganizationCode)) {
+			$masterOrganization = Organization::code2obj($masterOrganizationCode);
+		}
 
-		Yii::app()->esLog->log(sprintf("called event\syncRecentEvent"), 'command', array('trigger'=>'EventCommand::actionSyncRecentEvent', 'model'=>'', 'action'=>'', 'id'=>''), '', array('dateStart'=>$dateStart, 'dateEnd'=>$dateEnd));
+		if (empty($masterOrganization)) {
+			throw new Exception('Failed to proceed as Master Organization is not set in setting');
+		}
 
-		$result = HubBizzabo::syncEventFromBizzabo($dateStart, $dateEnd);
-	}
-	
-	// todo: modularize
-	public function actionSyncEventRegistration()
-	{
-		$limit = 10000;
+		// get all active events
+		$events = Event::model()->isActive()->findAll();
+		$count = 0;
+		$asRoleCode = 'owner';
 
-		Yii::app()->esLog->log(sprintf("called event\syncEventRegistration"), 'command', array('trigger'=>'EventCommand::actionSyncEventRegistration', 'model'=>'', 'action'=>'', 'id'=>''), '', array('limit'=>$limit));
+		// loop thru each of the events
+		foreach ($events as $event) {
+			// if event don't have owner with the above role code, create and assign to it
+			echo $event->title . "\n";
 
-		$result = HubBizzabo::syncEventRegistrationFromBizzabo('', '', $limit);
-	}
+			if (!$event->hasEventOwner($masterOrganization->code, $asRoleCode)) {
+				$eventOwner = new EventOwner;
+				$eventOwner->organization_code = $masterOrganization->code;
+				$eventOwner->event_code = $event->code;
+				$eventOwner->as_role_code = $asRoleCode;
+				if ($eventOwner->save()) {
+					$count++;
+				}
+			}
+		}
 
-	public function actionTestEsLog()
-	{
-		$controller = Yii::app()->controller;
-		$controller = new CController('');
-		//echo empty(Yii::app()->controller)?"not found":"found";
-		$log = $controller->esLog("test esLog in console", 'test', array('trigger'=>'EventCommand::actionTestEsLog', 'model'=>'', 'action'=>'', 'id'=>''));
+		Yii::app()->esLog->log(sprintf("called event\setActiveEventOwner2MasterOrganization"), 'command', array('trigger' => 'EventCommand::actionSetActiveEventOwner2MasterOrganization', 'model' => '', 'action' => '', 'id' => ''), '', array('countAssigned' => $count));
 	}
 }

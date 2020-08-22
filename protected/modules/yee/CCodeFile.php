@@ -20,9 +20,9 @@
  */
 class CCodeFile extends CComponent
 {
-	const OP_NEW='new';
-	const OP_OVERWRITE='overwrite';
-	const OP_SKIP='skip';
+	const OP_NEW = 'new';
+	const OP_OVERWRITE = 'overwrite';
+	const OP_SKIP = 'skip';
 
 	/**
 	 * @var string the file path that the new code should be saved to.
@@ -47,16 +47,17 @@ class CCodeFile extends CComponent
 	 * @param string $path the file path that the new code should be saved to.
 	 * @param string $content the newly generated code
 	 */
-	public function __construct($path,$content)
+	public function __construct($path, $content)
 	{
-		$this->path=strtr($path,array('/'=>DIRECTORY_SEPARATOR,'\\'=>DIRECTORY_SEPARATOR));
-		$this->content=$content;
-		if(is_file($path))
-			$this->operation=file_get_contents($path)===$content ? self::OP_SKIP : self::OP_OVERWRITE;
-		elseif($content===null)  // is dir
-			$this->operation=is_dir($path) ? self::OP_SKIP : self::OP_NEW;
-		else
-			$this->operation=self::OP_NEW;
+		$this->path = strtr($path, array('/' => DIRECTORY_SEPARATOR, '\\' => DIRECTORY_SEPARATOR));
+		$this->content = $content;
+		if (is_file($path)) {
+			$this->operation = file_get_contents($path) === $content ? self::OP_SKIP : self::OP_OVERWRITE;
+		} elseif ($content === null) {  // is dir
+			$this->operation = is_dir($path) ? self::OP_SKIP : self::OP_NEW;
+		} else {
+			$this->operation = self::OP_NEW;
+		}
 	}
 
 	/**
@@ -64,49 +65,45 @@ class CCodeFile extends CComponent
 	 */
 	public function save()
 	{
-		$module=Yii::app()->controller->module;
-		if($this->content===null)  // a directory
-		{
-			if(!is_dir($this->path))
-			{
-				$oldmask=@umask(0);
-				$result=@mkdir($this->path,$module->newDirMode,true);
+		$module = Yii::app()->controller->module;
+		if ($this->content === null) {  // a directory
+			if (!is_dir($this->path)) {
+				$oldmask = @umask(0);
+				$result = @mkdir($this->path, $module->newDirMode, true);
 				@umask($oldmask);
-				if(!$result)
-				{
-					$this->error="Unable to create the directory '{$this->path}'.";
+				if (!$result) {
+					$this->error = "Unable to create the directory '{$this->path}'.";
+
 					return false;
 				}
 			}
+
 			return true;
 		}
 
-		if($this->operation===self::OP_NEW)
-		{
-			$dir=dirname($this->path);
-			if(!is_dir($dir))
-			{
-				$oldmask=@umask(0);
-				$result=@mkdir($dir,$module->newDirMode,true);
+		if ($this->operation === self::OP_NEW) {
+			$dir = dirname($this->path);
+			if (!is_dir($dir)) {
+				$oldmask = @umask(0);
+				$result = @mkdir($dir, $module->newDirMode, true);
 				@umask($oldmask);
-				if(!$result)
-				{
-					$this->error="Unable to create the directory '$dir'.";
+				if (!$result) {
+					$this->error = "Unable to create the directory '$dir'.";
+
 					return false;
 				}
 			}
 		}
-		if(@file_put_contents($this->path,$this->content)===false)
-		{
-			$this->error="Unable to write the file '{$this->path}'.";
+		if (@file_put_contents($this->path, $this->content) === false) {
+			$this->error = "Unable to write the file '{$this->path}'.";
+
 			return false;
-		}
-		else
-		{
-			$oldmask=@umask(0);
-			@chmod($this->path,$module->newFileMode);
+		} else {
+			$oldmask = @umask(0);
+			@chmod($this->path, $module->newFileMode);
 			@umask($oldmask);
 		}
+
 		return true;
 	}
 
@@ -115,10 +112,11 @@ class CCodeFile extends CComponent
 	 */
 	public function getRelativePath()
 	{
-		if(strpos($this->path,Yii::app()->basePath)===0)
-			return substr($this->path,strlen(Yii::app()->basePath)+1);
-		else
+		if (strpos($this->path, Yii::app()->basePath) === 0) {
+			return substr($this->path, strlen(Yii::app()->basePath) + 1);
+		} else {
 			return $this->path;
+		}
 	}
 
 	/**
@@ -126,9 +124,10 @@ class CCodeFile extends CComponent
 	 */
 	public function getType()
 	{
-		if(($pos=strrpos($this->path,'.'))!==false)
-			return substr($this->path,$pos+1);
-		else
+		if (($pos = strrpos($this->path, '.')) !== false) {
+			return substr($this->path, $pos + 1);
+		} else {
 			return 'unknown';
+		}
 	}
 }

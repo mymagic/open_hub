@@ -3,7 +3,7 @@
     <div class="col col-md-12">
     <div class="well text-center">
     <?php foreach ($actions['organization'] as $action): ?>
-        <a class="margin-bottom-sm btn btn-<?php echo $action['visual']; ?>" href="<?php echo $action[url]; ?>" title="<?php echo $action['title']; ?>"><?php echo $action[label]; ?></a>
+        <a class="margin-bottom-sm btn btn-<?php echo $action['visual']; ?>" href="<?php echo $action['url']; ?>" title="<?php echo $action['title']; ?>"><?php echo $action['label']; ?></a>
     <?php endforeach; ?>
     </div>
     </div>
@@ -13,13 +13,13 @@
 
 <div class="row">
     <div class="col col-md-12">
-        <h3>Companies Involved</h3>
+        <h3><?php echo Yii::t('backend', 'Organizations Involved') ?></h3>
         <?php if (!empty($model->individualOrganizations)): ?>
         <?php foreach ($model->individualOrganizations as $individualOrganization):?>
             <?php if (!$individualOrganization->individual->is_active) {
-    continue;
+	continue;
 } ?>
-            <li><a href="<?php echo $this->createUrl('organization/view', array('id' => $individualOrganization->organization->id)); ?>" target="_blank"><strong><?php echo $individualOrganization->organization->title; ?></strong> (<?php echo $individualOrganization->as_role_code; ?>) <?php echo Html::renderBoolean($individualOrganization->organization->is_active); ?></a>
+            <li><a href="<?php echo $this->createUrl('organization/view', array('id' => $individualOrganization->organization->id)); ?>" target="_blank"><strong><?php echo $individualOrganization->organization->title; ?></strong> (<?php echo $individualOrganization->as_role_code; ?>) <?php echo Html::renderBoolean($individualOrganization->organization->is_active); ?></a><?php if(!empty($individualOrganization->getDateServed())):?> - <small><?php echo $individualOrganization->getDateServed() ?></small><?php endif; ?>
             </li>
         <?php endforeach; ?>
         <?php endif; ?>

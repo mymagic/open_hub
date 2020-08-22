@@ -54,7 +54,8 @@ class IndustryController extends Controller
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'admin', 'viewIndustryKeywordsMap'),
 				'users' => array('@'),
-				'expression' => '$user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
@@ -64,8 +65,8 @@ class IndustryController extends Controller
 
 	public function actionViewIndustryKeywordsMap()
 	{
-		$industries = Industry::model()->isActive()->findAll(array("order" => "title"));
-		$this->render('viewIndustryKeywordsMap', array('industries'=>$industries));
+		$industries = Industry::model()->isActive()->findAll(array('order' => 'title'));
+		$this->render('viewIndustryKeywordsMap', array('industries' => $industries));
 	}
 
 	/**
@@ -182,6 +183,7 @@ class IndustryController extends Controller
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
+
 		return $model;
 	}
 

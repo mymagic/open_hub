@@ -11,6 +11,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # otherwise forward it to index.php
 RewriteRule . index.php
 
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
 AddType application/x-7z-compressed 7z
 
 <ifModule mod_gzip.c>

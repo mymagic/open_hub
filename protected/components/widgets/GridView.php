@@ -15,9 +15,9 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-Yii::import("application.components.widgets.DataColumn");
-Yii::import("zii.widgets.grid.CGridView");
-Yii::import("application.components.widgets.pagers.LinkPager");
+Yii::import('application.components.widgets.DataColumn');
+Yii::import('zii.widgets.grid.CGridView');
+Yii::import('application.components.widgets.pagers.LinkPager');
 
 class GridView extends CGridView
 {
@@ -42,11 +42,12 @@ class GridView extends CGridView
 		}
 
 		//$this->pagerCssClass = 'text-right';
-		// exiang: tried to add additional (style:warning) to filter css class but it will make the js not functioning 
+		// exiang: tried to add additional (style:warning) to filter css class but it will make the js not functioning
 		$this->filterCssClass = 'filters';
 		$this->template = "<div class=\"row\"><div class=\"col-xs-4\">{summary}</div><div class=\"col-xs-8\">{pager}</div></div>\n{items}\n<div class=\"row\"><div class=\"col-xs-12\">&nbsp;{pager}</div></div>";
 
 		parent::init();
+
 		return true;
 	}
 
@@ -54,9 +55,9 @@ class GridView extends CGridView
 	{
 		if ($this->dataProvider->getItemCount() > 0 || $this->showTableOnEmpty) {
 			if ($this->responsiveMethod == 'default') {
-				echo "<div class=\"table-responsive\">";
+				echo '<div class="table-responsive">';
 			} else {
-				echo "<div class=\"\">";
+				echo '<div class="">';
 			}
 
 			if (!empty($this->responsiveOverlayMsg)) {
@@ -82,9 +83,10 @@ class GridView extends CGridView
 			$body = ob_get_clean();
 			$this->renderTableFooter();
 			echo $body; // TFOOT must appear before TBODY according to the standard.
-			echo "</table></div>";
-		} else
+			echo '</table></div>';
+		} else {
 			$this->renderEmptyText();
+		}
 	}
 
 	public function renderTableHeader()
@@ -92,16 +94,19 @@ class GridView extends CGridView
 		if (!$this->hideHeader) {
 			echo "<thead >\n";
 
-			if ($this->filterPosition === self::FILTER_POS_HEADER)
+			if ($this->filterPosition === self::FILTER_POS_HEADER) {
 				$this->renderFilter();
+			}
 
 			echo sprintf("<tr class=\"%s\">\n", $this->itemsHeaderCssClass);
-			foreach ($this->columns as $column)
+			foreach ($this->columns as $column) {
 				$column->renderHeaderCell();
+			}
 			echo "</tr>\n";
 
-			if ($this->filterPosition === self::FILTER_POS_BODY)
+			if ($this->filterPosition === self::FILTER_POS_BODY) {
 				$this->renderFilter();
+			}
 
 			echo "</thead>\n";
 		} elseif ($this->filter !== null && ($this->filterPosition === self::FILTER_POS_HEADER || $this->filterPosition === self::FILTER_POS_BODY)) {
@@ -113,14 +118,15 @@ class GridView extends CGridView
 
 	public function renderPager()
 	{
-		if (!$this->enablePagination)
+		if (!$this->enablePagination) {
 			return;
+		}
 
 		$pager = array();
 		$class = 'LinkPager';
-		if (is_string($this->pager))
+		if (is_string($this->pager)) {
 			$class = $this->pager;
-		elseif (is_array($this->pager)) {
+		} elseif (is_array($this->pager)) {
 			$pager = $this->pager;
 			if (isset($pager['class'])) {
 				$class = $pager['class'];
@@ -133,54 +139,63 @@ class GridView extends CGridView
 			echo '<div class="' . $this->pagerCssClass . '">';
 			$this->widget($class, $pager);
 			echo '</div>';
-		} else
+		} else {
 			$this->widget($class, $pager);
+		}
 	}
 
 	protected function initColumns()
 	{
 		if ($this->columns === array()) {
-			if ($this->dataProvider instanceof CActiveDataProvider)
+			if ($this->dataProvider instanceof CActiveDataProvider) {
 				$this->columns = $this->dataProvider->model->attributeNames();
-			elseif ($this->dataProvider instanceof IDataProvider) {
+			} elseif ($this->dataProvider instanceof IDataProvider) {
 				// use the keys of the first row of data as the default columns
 				$data = $this->dataProvider->getData();
-				if (isset($data[0]) && is_array($data[0]))
+				if (isset($data[0]) && is_array($data[0])) {
 					$this->columns = array_keys($data[0]);
+				}
 			}
 		}
 		$id = $this->getId();
 		foreach ($this->columns as $i => $column) {
-			if (is_string($column))
+			if (is_string($column)) {
 				$column = $this->createDataColumn($column);
-			else {
-				if (!isset($column['class']))
+			} else {
+				if (!isset($column['class'])) {
 					$column['class'] = 'DataColumn';
+				}
 				$column = Yii::createComponent($column, $this);
 			}
 			if (!$column->visible) {
 				unset($this->columns[$i]);
 				continue;
 			}
-			if ($column->id === null)
+			if ($column->id === null) {
 				$column->id = $id . '_c' . $i;
+			}
 			$this->columns[$i] = $column;
 		}
 
-		foreach ($this->columns as $column)
+		foreach ($this->columns as $column) {
 			$column->init();
+		}
 	}
 
 	protected function createDataColumn($text)
 	{
-		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches))
+		if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
 			throw new CException(Yii::t('zii', 'The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
+		}
 		$column = new DataColumn($this);
 		$column->name = $matches[1];
-		if (isset($matches[3]) && $matches[3] !== '')
+		if (isset($matches[3]) && $matches[3] !== '') {
 			$column->type = $matches[3];
-		if (isset($matches[5]))
+		}
+		if (isset($matches[5])) {
 			$column->header = $matches[5];
+		}
+
 		return $column;
 	}
 

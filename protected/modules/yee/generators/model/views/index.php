@@ -23,7 +23,7 @@ $('#{$class}_connectionId').change(function(){
 	var tableName=$('#{$class}_tableName');
 	tableName.autocomplete('option', 'source', []);
 	$.ajax({
-		url: '".Yii::app()->getUrlManager()->createUrl('gii/model/getTableNames')."',
+		url: '" . Yii::app()->getUrlManager()->createUrl('gii/model/getTableNames') . "',
 		data: {db: this.value},
 		dataType: 'json'
 	}).done(function(data){
@@ -97,23 +97,23 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 	<div class="row">
 		<?php echo $form->labelEx($model, 'tableName'); ?>
 		<?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-            'model' => $model,
-            'attribute' => 'tableName',
-            'name' => 'tableName',
-            'source' => Yii::app()->hasComponent($model->connectionId) ? array_keys(Yii::app()->{$model->connectionId}->schema->getTables()) : array(),
-            'options' => array(
-                'minLength' => '0',
-                'focus' => new CJavaScriptExpression('function(event,ui) {
-					$("#'.CHtml::activeId($model, 'tableName').'").val(ui.item.label).change();
+			'model' => $model,
+			'attribute' => 'tableName',
+			'name' => 'tableName',
+			'source' => Yii::app()->hasComponent($model->connectionId) ? array_keys(Yii::app()->{$model->connectionId}->schema->getTables()) : array(),
+			'options' => array(
+				'minLength' => '0',
+				'focus' => new CJavaScriptExpression('function(event,ui) {
+					$("#' . CHtml::activeId($model, 'tableName') . '").val(ui.item.label).change();
 					return false;
 				}'),
-            ),
-            'htmlOptions' => array(
-                'id' => CHtml::activeId($model, 'tableName'),
-                'size' => '65',
-                'data-tooltip' => '#tableName-tooltip',
-            ),
-        )); ?>
+			),
+			'htmlOptions' => array(
+				'id' => CHtml::activeId($model, 'tableName'),
+				'size' => '65',
+				'data-tooltip' => '#tableName-tooltip',
+			),
+		)); ?>
 		<div class="tooltip" id="tableName-tooltip">
 		This refers to the table name that a new model class should be generated for
 		(e.g. <code>tbl_user</code>). It can contain schema name, if needed (e.g. <code>public.tbl_post</code>).

@@ -9,6 +9,10 @@ class OpenHubModule extends WebModule
 	public $organizationId;
 	public $var1;
 	public $var2;
+	public $githubOrganization;
+	public $githubRepoName;
+	public $githubReleaseUrl;
+	public $isMockUpgrade = false;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
@@ -119,7 +123,7 @@ class OpenHubModule extends WebModule
 	public function getNavItems($controller, $forInterface)
 	{
 		//for cpanel
-		//cpanelNavDashboard , cpanelNavSetting, cpanelNavCompany, cpanelNavCompanyInformation
+		//cpanelNavDashboard , cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		switch ($forInterface) {
 			case 'cpanelNavDashboard': {
 					return array(
@@ -136,9 +140,9 @@ class OpenHubModule extends WebModule
 				}
 			case 'cpanelNavSetting': {
 				}
-			case 'cpanelNavCompany': {
+			case 'cpanelNavOrganization': {
 				}
-			case 'cpanelNavCompanyInformation': {
+			case 'cpanelNavOrganizationInformation': {
 				}
 		}
 	}
@@ -196,6 +200,16 @@ class OpenHubModule extends WebModule
 
 	public function getBackendAdvanceSearch($controller, $searchFormModel)
 	{
+	}
+
+	public function getDashboardNotices($model, $realm = 'backend')
+	{
+		$upgradeInfo = HubOpenHub::getUpgradeInfo();
+		if ($upgradeInfo['canUpgrade'] && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'upgrade'], 'module' => (object)['id' => 'openHub']])) {
+			$notices[] = array('message' => Yii::t('openHub', 'System upgrade: latest release  {versionReleased} is available. <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>', array('{versionReleased}' => $upgradeInfo['latestRelease']['tag_name'], '{url}' => Yii::app()->createUrl('//openHub/backend/upgrade'))), 'type' => Notice_WARNING);
+		}
+
+		return $notices;
 	}
 
 	public function doOrganizationsMerge($source, $target)

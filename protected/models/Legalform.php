@@ -17,9 +17,12 @@
 
 class Legalform extends LegalformBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
-	public function toApi($params='')
+	public function toApi($params = '')
 	{
 		$return = array(
 			'id' => $this->id,
@@ -29,7 +32,7 @@ class Legalform extends LegalformBase
 			'dateAdded' => $this->date_added,
 			'dateModified' => $this->date_modified,
 		);
-			
+
 		return $return;
 	}
 }

@@ -7,7 +7,7 @@
 
 
 <?php
-$modules = YeeModule::getParsableModules();
+$modules = YeeModule::getActiveParsableModules();
 foreach ($modules as $moduleKey => $moduleParams) {
 	if (method_exists(Yii::app()->getModule($moduleKey), 'getSharedAssets')) {
 		$assets = Yii::app()->getModule($moduleKey)->getSharedAssets('layout-frontend');
@@ -160,6 +160,7 @@ jQuery(document).ready(function ($) {
 });
 </script>
 
+<!-- // todo: detach MaGIC Connect -->
 <iframe style="border:0; width:1px; height:1px" src="https://<?php echo Yii::app()->params['connectUrl']; ?>/profile"></iframe>
 
 

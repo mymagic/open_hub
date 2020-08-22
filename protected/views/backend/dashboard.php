@@ -1,46 +1,27 @@
 <?php
-    // peity
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/inspinia/js/plugins/peity/jquery.peity.min.js', CClientScript::POS_END);
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl.'/vendors/inspinia/js/demo/peity-demo.js', CClientScript::POS_END);
-?>
-
-<?php
 $this->breadcrumbs = array(
-    Yii::t('app', 'Backend') => array('index'),
-    Yii::t('app', 'Dashboard'),
+	Yii::t('app', 'Backend') => array('index'),
+	Yii::t('app', 'Dashboard'),
 ); ?>
 
-<style type="text/css">
-	.is-collapsed{
-  display: none;
-}
-.timeline-item .date {
-	width: auto;
-}
-@media(max-width: 768px) {
-	.timeline-item .date {
-		width: 110px;
-	}
-}
-</style>
 <div class="row">
 
-<div class="col-lg-3">
-	<div class="panel panel-default">
+<div class="col col-lg-3">
+    <div class="panel panel-default">
 		<div class="panel-heading"><?php echo Yii::t('app', 'Welcome'); ?> </div>
 		 <div class="panel-body">
 		 	<p><?php echo $this->user->profile->full_name; ?> (<?php echo $this->user->username; ?>)</p>
 		 	<div class="row">
 			<div class="col-sm-6">
 				<div class="widget style1 navy-bg padding-md">
-					<a href="<?php echo $this->createUrl('organization/overview'); ?>" class="text-white"><span><i class="fa fa-briefcase"></i> Company</span>
+					<a href="<?php echo $this->createUrl('organization/overview'); ?>" class="text-white"><span><i class="fa fa-briefcase"></i> <?php echo Yii::t('backend', 'Organization')?></span>
 					<h3 class="font-bold"><?php echo $stat['totalOrganizations']; ?></h3>
 					</a>
 				</div>
 			</div>
 			<div class="col-sm-6">
 				<div class="widget style1 padding-md">
-					<a href="<?php echo $this->createUrl('individual/admin'); ?>" class=""><span><i class="fa fa-user"></i> Individual</span>
+					<a href="<?php echo $this->createUrl('individual/admin'); ?>" class=""><span><i class="fa fa-user"></i> <?php echo Yii::t('backend', 'Individual')?></span>
 					<h3 class="font-bold"><?php echo $stat['totalIndividuals']; ?></h3>
 					</a>
 				</div>
@@ -58,38 +39,52 @@ $this->breadcrumbs = array(
 		
 	</div>	
 
-	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> Need Help?</a>
+	<a href="http://bit.ly/2odDCWm" class="btn btn-block btn-warning" target="_blank"><i class="fa fa-book text-primary"></i> <?php echo Yii::t('backend', 'Need Help?') ?></a>
 	
 	<div class="margin-bottom-lg">&nbsp;</div>
 </div>
 
 <div class="col col-lg-9">
-	<!-- Nav tabs -->
-	<ul class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#activity" aria-controls="home" role="tab" data-toggle="tab">Overview</a></li>
-		<li role="presentation"><a href="#log" aria-controls="log" role="tab" data-toggle="tab">Log</a></li>
-	</ul><!-- /Nav tabs -->
-	 <!-- Tab panes -->
-	 <div class="tab-content">
-		<div role="tabpanel" class="tab-pane active" id="activity"><?php echo $this->renderPartial('_dashboard-systemActivity'); ?></div>
-		<div role="tabpanel" class="tab-pane" id="log"><?php echo $this->renderPartial('_dashboard-systemLog'); ?></div>
-	</div><!--/Tab panes -->
-	
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist" id="navTab-backendBashboardViewTabs">
+	<li role="presentation" class=""><a href="#welcome" aria-controls="welcome" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">Welcome</a></li>
+<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
+    <li role="presentation" class=""><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $tabModule['title'] ?></a></li>
+<?php endforeach; ?><?php endforeach; ?>
+</ul><!-- /Nav tabs -->
+<!-- Tab panes -->
+<div class="tab-content">
+	<div role="tabpanel" class="tab-pane white-bg padding-md" id="welcome" data-url-view="">
+		<div class="flashNotices">
+		<?php foreach ($notices as $notice):?>
+			<?php echo Notice::inline($notice['message'], !empty($notice['type']) ? $notice['type'] : Notice_INFO, true, false, true); ?>
+		<?php endforeach; ?>
+		</div>
+		<p class="margin-top-lg margin-bottom-3x">Welcome to <?php echo Yii::app()->name ?> Backend</p>
+		
+	</div>
+<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
+    <div role="tabpanel" class="tab-pane white-bg padding-md" id="<?php echo $tabModule['key'] ?>" data-url-view="<?php echo $this->createUrl('backend/renderDashboardViewTab', array('viewPath' => $tabModule['viewPath'])) ?>">
+        <div class="text-center margin-top-lg margin-bottom-2x"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+    </div>
+    <?php endforeach; ?><?php endforeach; ?>
+</div><!--/Tab panes -->
 </div>
 
-
 </div>
 
-<?php if (Yii::app()->params['environment'] == 'production'):?>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  // .mymagic.my
-  ga('create', 'UA-62910124-1', 'auto');
-  ga('create', 'UA-62910124-5', 'auto', 'centralTracker');
-  ga('send', 'pageview');
-  ga('centralTracker.send', 'pageview');
-</script>
-<?php endif; ?>
+<?php Yii::app()->clientScript->registerScript('backend-dashboard2', "
+var loadedTabs = [];
+
+$(document).on('shown.bs.tab', '#navTab-backendBashboardViewTabs a[data-toggle=\"tab\"]', function (e) {
+    var anchor = $(e.target).attr('href');
+    if(loadedTabs.indexOf(anchor) == -1 && $(anchor).data('urlView').length>0)
+    {
+        $(anchor).load($(anchor).data('urlView'), function(){
+            loadedTabs.push(anchor); 
+        });
+    }
+});
+
+");
+?>

@@ -16,7 +16,8 @@ class TestController extends Controller
 		return array(
 			array('allow',  // deny all users
 				'users' => array('@'),
-				'expression' => '$user->isDeveloper==true',
+				// 'expression' => '$user->isDeveloper==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)["id"=>"custom","action"=>(object)["id"=>"developer"]])',
 	  ),
 	  array('deny',  // deny all users
 				'users' => array('*'),
@@ -27,13 +28,13 @@ class TestController extends Controller
 	public function actionBoilerplateStartOrganizationBehavior()
 	{
 		$organization = new Organization;
-		var_dump($organization->shout());
+		var_dump($organization->shoutBoilerplateStart());
 	}
 
 	public function actionIndex()
 	{
 		//if you want to use reflection
-		$reflection = new ReflectionClass(TestController);
+		$reflection = new ReflectionClass('TestController');
 		$methods = $reflection->getMethods();
 		$actions = array();
 		foreach ($methods as $method) {

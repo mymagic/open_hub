@@ -30,11 +30,11 @@ class CCodeGenerator extends Controller
 	/**
 	 * @var string the layout to be used by the generator. Defaults to 'generator'.
 	 */
-	public $layout='generator';
+	public $layout = 'generator';
 	/**
 	 * @var array a list of available code templates (name=>path)
 	 */
-	public $templates=array();
+	public $templates = array();
 	/**
 	 * @var string the code model class. This can be either a class name (if it can be autoloaded)
 	 * or a path alias referring to the class file.
@@ -49,7 +49,7 @@ class CCodeGenerator extends Controller
 	 */
 	public function getPageTitle()
 	{
-		return 'Gii - '.ucfirst($this->id).' Generator';
+		return 'Gii - ' . ucfirst($this->id) . ' Generator';
 	}
 
 	/**
@@ -60,15 +60,14 @@ class CCodeGenerator extends Controller
 	 */
 	public function actionIndex()
 	{
-		$model=$this->prepare();
-		if($model->files!=array() && isset($_POST['generate'], $_POST['answers']))
-		{
-			$model->answers=$_POST['answers'];
-			$model->status=$model->save() ? CCodeModel::STATUS_SUCCESS : CCodeModel::STATUS_ERROR;
+		$model = $this->prepare();
+		if ($model->files != array() && isset($_POST['generate'], $_POST['answers'])) {
+			$model->answers = $_POST['answers'];
+			$model->status = $model->save() ? CCodeModel::STATUS_SUCCESS : CCodeModel::STATUS_ERROR;
 		}
 
-		$this->render('index',array(
-			'model'=>$model,
+		$this->render('index', array(
+			'model' => $model,
 		));
 	}
 
@@ -79,15 +78,14 @@ class CCodeGenerator extends Controller
 	 */
 	public function actionCode()
 	{
-		$model=$this->prepare();
-		if(isset($_GET['id']) && isset($model->files[$_GET['id']]))
-		{
+		$model = $this->prepare();
+		if (isset($_GET['id']) && isset($model->files[$_GET['id']])) {
 			$this->renderPartial('/common/code', array(
-				'file'=>$model->files[$_GET['id']],
+				'file' => $model->files[$_GET['id']],
 			));
+		} else {
+			throw new CHttpException(404, 'Unable to find the code you requested.');
 		}
-		else
-			throw new CHttpException(404,'Unable to find the code you requested.');
 	}
 
 	/**
@@ -99,24 +97,24 @@ class CCodeGenerator extends Controller
 	{
 		Yii::import('gii.components.TextDiff');
 
-		$model=$this->prepare();
-		if(isset($_GET['id']) && isset($model->files[$_GET['id']]))
-		{
-			$file=$model->files[$_GET['id']];
-			if(!in_array($file->type,array('php', 'txt','js','css')))
-				$diff=false;
-			elseif($file->operation===CCodeFile::OP_OVERWRITE)
-				$diff=TextDiff::compare(file_get_contents($file->path), $file->content);
-			else
-				$diff='';
+		$model = $this->prepare();
+		if (isset($_GET['id']) && isset($model->files[$_GET['id']])) {
+			$file = $model->files[$_GET['id']];
+			if (!in_array($file->type, array('php', 'txt', 'js', 'css'))) {
+				$diff = false;
+			} elseif ($file->operation === CCodeFile::OP_OVERWRITE) {
+				$diff = TextDiff::compare(file_get_contents($file->path), $file->content);
+			} else {
+				$diff = '';
+			}
 
-			$this->renderPartial('/common/diff',array(
-				'file'=>$file,
-				'diff'=>$diff,
+			$this->renderPartial('/common/diff', array(
+				'file' => $file,
+				'diff' => $diff,
 			));
+		} else {
+			throw new CHttpException(404, 'Unable to find the code you requested.');
 		}
-		else
-			throw new CHttpException(404,'Unable to find the code you requested.');
 	}
 
 	/**
@@ -126,11 +124,11 @@ class CCodeGenerator extends Controller
 	 */
 	public function getViewPath()
 	{
-		if($this->_viewPath===null)
-		{
-			$class=new ReflectionClass(get_class($this));
-			$this->_viewPath=dirname($class->getFileName()).DIRECTORY_SEPARATOR.'views';
+		if ($this->_viewPath === null) {
+			$class = new ReflectionClass(get_class($this));
+			$this->_viewPath = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
 		}
+
 		return $this->_viewPath;
 	}
 
@@ -139,7 +137,7 @@ class CCodeGenerator extends Controller
 	 */
 	public function setViewPath($value)
 	{
-		$this->_viewPath=$value;
+		$this->_viewPath = $value;
 	}
 
 	/**
@@ -147,21 +145,21 @@ class CCodeGenerator extends Controller
 	 */
 	protected function prepare()
 	{
-		if($this->codeModel===null)
-			throw new CException(get_class($this).'.codeModel property must be specified.');
-		$modelClass=Yii::import($this->codeModel,true);
-		$model=new $modelClass;
+		if ($this->codeModel === null) {
+			throw new CException(get_class($this) . '.codeModel property must be specified.');
+		}
+		$modelClass = Yii::import($this->codeModel, true);
+		$model = new $modelClass;
 		$model->loadStickyAttributes();
-		if(isset($_POST[$modelClass]))
-		{
-			$model->attributes=$_POST[$modelClass];
-			$model->status=CCodeModel::STATUS_PREVIEW;
-			if($model->validate())
-			{
+		if (isset($_POST[$modelClass])) {
+			$model->attributes = $_POST[$modelClass];
+			$model->status = CCodeModel::STATUS_PREVIEW;
+			if ($model->validate()) {
 				$model->saveStickyAttributes();
 				$model->prepare();
 			}
 		}
+
 		return $model;
 	}
 }

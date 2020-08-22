@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,13 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
-use Symfony\Component\Yaml\Yaml;
-
 class HUB extends Component
 {
 	public static function now()
@@ -405,7 +403,6 @@ class HUB extends Component
 		return HubCpanel::cpanelNavItems($controller, $forInterface);
 	}
 
-
 	//
 	// organization
 	public static function getOrCreateOrganization($title, $params)
@@ -464,7 +461,6 @@ class HUB extends Component
 		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getOrganizationAllActive', sha1(json_encode(array('v1', $page, $filter, $limitPerPage))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
-
 			if (!empty($filter) && is_array($filter)) {
 				// searchTitle
 				// filter out unwanted characters for security purpose
@@ -536,31 +532,30 @@ class HUB extends Component
 			// is it magic alumni?
 			// todo: filter magic alumni by event only owned by magic
 			if ($filter['magic'] == 1) {
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			}
 			// is it magic sea?
 			elseif ($filter['sea'] == 1 || $filter['sebasic'] == 1) {
-
 				if ($filter['sea'] == 1) {
 					$ideaMembershipType = "mi1.value='idea'"; // 'idea';
 					$extraJoin = '';
@@ -570,96 +565,94 @@ class HUB extends Component
 					$extraJoin = "INNER JOIN sea_form_basic as sfb ON o.id = sfb.organization_id AND sfb.status = 'approved'";
 				}
 
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				INNER JOIN `meta_structure` as ms1 on ms1.ref_table='organization'
 				INNER JOIN `meta_item` as mi1 on mi1.meta_structure_id=ms1.id
-				
+
 				INNER JOIN `meta_structure` as ms2 on ms2.ref_table='organization'
 				INNER JOIN `meta_item` as mi2 on mi2.meta_structure_id=ms2.id
 
 				%s
 
-				WHERE %s 
+				WHERE %s
 				AND (ms1.code='Organization-idea-membershipType' AND %s AND mi1.ref_id=o.id)
-				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id) 
+				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id)
 
 				GROUP BY o.id ORDER BY o.title ASC) tmp", $extraJoin, $bufferFilter, $ideaMembershipType);
 
-
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
 
 				INNER JOIN `meta_structure` as ms1 on ms1.ref_table='organization'
 				INNER JOIN `meta_item` as mi1 on mi1.meta_structure_id=ms1.id
-				
+
 				INNER JOIN `meta_structure` as ms2 on ms2.ref_table='organization'
 				INNER JOIN `meta_item` as mi2 on mi2.meta_structure_id=ms2.id
-			
+
 				%s
-				
-				WHERE %s 
+
+				WHERE %s
 				AND (ms1.code='Organization-idea-membershipType' AND %s AND mi1.ref_id=o.id)
-				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id) 
-				
+				AND (ms2.code='Organization-idea-isEnterprise' AND mi2.value='1' AND mi2.ref_id=o.id)
+
 				GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $extraJoin, $bufferFilter, $ideaMembershipType, $offset, $limitPerPage);
 			} elseif ($filter['ecosystem-builder'] == 1) {
-
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				JOIN event_organization as eo ON (eo.organization_id=o.id) 
-			
+				JOIN event_organization as eo ON (eo.organization_id=o.id)
+
 				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			} else {
-				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				WHERE %s GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
 
-				$sql = sprintf("SELECT o.* FROM organization as `o` 
-				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+				$sql = sprintf("SELECT o.* FROM organization as `o`
+				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
 				LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-				
-				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+
+				LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
-				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant') 
-			
+				LEFT JOIN event_organization as eo ON (eo.organization_id=o.id AND eo.as_role_code='selectedParticipant')
+
 				WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			}
 
@@ -685,6 +678,7 @@ class HUB extends Component
 		// todo: implement cache
 		$bufferFilter = 'o.is_active=1';
 		$filters = array();
+		$tempSql = '';
 
 		$slugTitleArray = [
 			'personas' => self::getOrganizationPersonas(true),
@@ -751,11 +745,11 @@ class HUB extends Component
 		}
 		$filter['magic'] = preg_replace('/[^A-Za-z0-9]/', '', $filter['magic']);
 		if ($filter['magic'] === 1) {
-			$tempSql .= 'SELECT o.* FROM organization as `o` 
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+			$tempSql .= 'SELECT o.* FROM organization as `o`
+                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
                     LEFT JOIN persona as persona ON p2o.persona_id=persona.id
 
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
                     LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
                     JOIN event_organization as eo ON eo.organization_id=o.id
@@ -764,11 +758,11 @@ class HUB extends Component
 
 			$sql = sprintf($tempSql, $bufferFilter, $limit);
 		} else {
-			$tempSql .= 'SELECT o.* FROM organization as `o` 
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id 
+			$tempSql .= 'SELECT o.* FROM organization as `o`
+                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
                     LEFT JOIN persona as persona ON p2o.persona_id=persona.id
 
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
+                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
                     LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
                     WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s';
@@ -1122,7 +1116,7 @@ class HUB extends Component
 	}
 
 	// get transaction by ref_id
-	public static function getTransactionsByRefId($refId)
+	public static function getTransactionsByRefId($refId, $pagi = null)
 	{
 		$pagi['auto'] = isset($pagi['auto']) ? $pagi['auto'] : false;
 		$pagi['currentPage'] = isset($pagi['currentPage']) ? $pagi['currentPage'] : 0;
@@ -1135,7 +1129,7 @@ class HUB extends Component
 			$pagination = array('pageSize' => $pagi['pageSize'], 'currentPage' => $pagi['currentPage'], 'validateCurrentPage' => false);
 		}
 
-		$dataProvider = new CActiveDataProvider(Transaction, array(
+		$dataProvider = new CActiveDataProvider('Transaction', array(
 			'criteria' => $criteria,
 			'sort' => array('defaultOrder' => 't.date_modified DESC'),
 			'pagination' => $pagination,
@@ -1148,372 +1142,6 @@ class HUB extends Component
 			'pages' => $dataProvider->pagination,
 		);
 	}
-
-	//
-	//
-	// idea
-
-	//
-	// idea product / productCategory
-
-	public static function getIdeaAllActiveProductCategories()
-	{
-		return HubIdea::getAllActiveProductCategories();
-	}
-
-	public static function getIdeaAllHighlightedProductCategories()
-	{
-		return HubIdea::getAllHighlightedProductCategories();
-	}
-
-	public static function getIdeaProductCategoryById($id)
-	{
-		return HubIdea::getProductCategoryById($id);
-	}
-
-	// get all product that is
-	// highlighted in idea and (Product-idea-isHighlight)
-	// belong to organization that enrolled to idea (Organization-idea-isEnrolled) and
-	// has organization membership type in idea that is idea or idea+ (Organization-idea-membershipType)
-	public static function getIdeaAllHighlightedProducts()
-	{
-		return HubIdea::getAllHighlightedProducts();
-	}
-
-	public static function getIdeaProductsByCategory($productCategoryId)
-	{
-		return HubIdea::getProductsByCategory($productCategoryId);
-	}
-
-	public static function getIdeaProductDetail($id)
-	{
-		return HubIdea::getProductDetail($id);
-	}
-
-	public static function searchIdeaProducts($keyword)
-	{
-		return HubIdea::searchProducts($keyword);
-	}
-
-	//
-	// idea enterprise
-	public static function createIdeaEnterpriseOrganization($title, $params)
-	{
-		return HubIdea::createEnterpriseOrganization($title, $params);
-	}
-
-	public static function updateIdeaEnterpriseOrganization($enterprise, $userEmail, $params)
-	{
-		return HubIdea::updateEnterpriseOrganization($enterprise, $userEmail, $params);
-	}
-
-	// get list of enterprises own by this user that already enroll to IDEA
-	public static function getIdeaUserEnterprises($username)
-	{
-		return HubIdea::getUserEnterprises($username);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaEnterpriseById($id)
-	{
-		return HubIdea::getEnterpriseById($id);
-	}
-
-	public static function getIdeaAllHighlightedEnterprises()
-	{
-		return HubIdea::getAllHighlightedEnterprises();
-	}
-
-	public static function getIdeaUserApplicableEnterprises($username)
-	{
-		return HubIdea::getUserApplicableEnterprises($username);
-	}
-
-	public static function getIdeaAllActiveEnterprises($offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getAllActiveEnterprises($offset, $baseLimit);
-	}
-
-	public static function getIdeaAllActiveAccreditedEnterprises($offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getAllActiveAccreditedEnterprises($offset, $baseLimit);
-	}
-
-	// filter with meta for idea organization only
-	public static function searchIdeaEnterprises($keyword, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::searchEnterprises($keyword, $offset, $baseLimit);
-	}
-
-	public static function searchIdeaAccreditedEnterprises($keyword, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::searchAccreditedEnterprises($keyword, $offset, $baseLimit);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaEnterprisesByProductCategoryId($productCategoryId, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getEnterprisesByProductCategoryId($productCategoryId, $offset, $baseLimit);
-	}
-
-	// make sure filter with meta for idea organization only
-	// productCategoryIds: multiple productCategory Id saperate by comma
-	public static function getIdeaEnterprisesByProductCategoryIds($productCategoryIds, $offset = 0, $baseLimit = 3)
-	{
-		return HubIdea::getEnterprisesByProductCategoryIds($productCategoryIds, $offset, $baseLimit);
-	}
-
-	// pass in an enterprise, get others suggested one
-	public static function getIdeaSuggestedEnterprises($enterprise)
-	{
-		return HubIdea::getSuggestedEnterprises($enterprise);
-	}
-
-	public static function applyIdeaEnterprise($organization, $userEmail)
-	{
-		return HubIdea::applyEnterprise($organization, $userEmail);
-	}
-
-	public static function enrollIdeaEnterprise($organization, $userEmail)
-	{
-		return HubIdea::enrollEnterprise($organization, $userEmail);
-	}
-
-	// set organization is apply for accreditation
-	public static function applyIdeaAccreditation($organization, $userEmail)
-	{
-		return HubIdea::applyAccreditation($organization, $userEmail);
-	}
-
-	public static function approveIdeaEnterpriseApplication($organization)
-	{
-		return HubIdea::approveEnterpriseApplication($organization);
-	}
-
-	public static function removeIdeaEnterprise($organization)
-	{
-		return HubIdea::removeEnterprise($organization);
-	}
-
-	public static function upgradeIdeaEnterpriseMembership($organization)
-	{
-		return HubIdea::upgradeEnterpriseMembership($organization);
-	}
-
-	public static function downgradeIdeaEnterpriseMembership($organization)
-	{
-		return HubIdea::downgradeEnterpriseMembership($organization);
-	}
-
-	//
-	// idea partner
-	public static function createIdeaPartnerOrganization($title, $params)
-	{
-		return HubIdea::createPartnerOrganization($title, $params);
-	}
-
-	public static function updateIdeaPartnerOrganization($partner, $userEmail, $params)
-	{
-		return HubIdea::updatePartnerOrganization($partner, $userEmail, $params);
-	}
-
-	public static function getIdeaUserApplicablePartners($username)
-	{
-		return HubIdea::getUserApplicablePartners($username);
-	}
-
-	public static function getIdeaUserPartners($username)
-	{
-		return HubIdea::getUserPartners($username);
-	}
-
-	public static function getIdeaPartnerById($id)
-	{
-		return HubIdea::getPartnerById($id);
-	}
-
-	public static function applyIdeaPartner($organization, $userEmail)
-	{
-		return HubIdea::applyPartner($organization, $userEmail);
-	}
-
-	public static function enrollIdeaPartner($organization, $userEmail)
-	{
-		return HubIdea::enrollPartner($organization, $userEmail);
-	}
-
-	public static function approveIdeaPartnerApplication($organization)
-	{
-		return HubIdea::approvePartnerApplication($organization);
-	}
-
-	public static function removeIdeaPartner($organization)
-	{
-		return HubIdea::removePartner($organization);
-	}
-
-	public static function listIdeaPartnersLogo()
-	{
-		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'listIdeaPartnersLogo', sha1(json_encode(array('v1'))));
-		$return = Yii::app()->cache->get($cacheId);
-		if ($return === false || $useCache === false) {
-			$result = HubIdea::listPartnersLogo();
-			Yii::app()->cache->set($cacheId, $result, 300);
-			$return = $result;
-		}
-
-		return $return;
-	}
-
-	public static function listIdeaPartners()
-	{
-		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'listIdeaPartners', sha1(json_encode(array('v1'))));
-		$return = Yii::app()->cache->get($cacheId);
-		if ($return === false || $useCache === false) {
-			$result = HubIdea::listPartners();
-			Yii::app()->cache->set($cacheId, $result, 300);
-			$return = $result;
-		}
-
-		return $return;
-	}
-
-	//
-	// idea organization
-	public static function createIdeaOrganization($title, $params)
-	{
-		return HubIdea::createOrganization($title, $params);
-	}
-
-	public static function updateOrganization($organization, $userEmail, $params)
-	{
-		return HubIdea::updateOrganization($organization, $userEmail, $params);
-	}
-
-	// get list of organizations own by this user that already enroll to IDEA
-	public static function getIdeaUserOrganizations($username)
-	{
-		return HubIdea::getUserOrganizations($username);
-	}
-
-	// make sure filter with meta for idea organization only
-	public static function getIdeaOrganizationById($id)
-	{
-		return HubIdea::getOrganizationById($id);
-	}
-
-	// idea wishlist
-	public static function addIdeaEnterprise2Wishlist($partner, $enterprise)
-	{
-		return HubIdea::addEnterprise2Wishlist($partner, $enterprise);
-	}
-
-	public static function getIdeaWishlist($id)
-	{
-		return HubIdea::getWishlist($id);
-	}
-
-	public static function getIdeaWishlistByPartnerEnterprise($partner, $enterprise)
-	{
-		return HubIdea::getWishlistByPartnerEnterprise($partner, $enterprise);
-	}
-
-	public static function removeIdeaEnterpriseFromWishlist($partner, $enterprise)
-	{
-		return HubIdea::removeEnterpriseFromWishlist($partner, $enterprise);
-	}
-
-	public static function getIdeaEnterprisesFromWishlist($partner)
-	{
-		return HubIdea::getEnterprisesFromWishlist($partner);
-	}
-
-	//
-	// idea rfp
-	public static function sendIdeaRfp($ideaRfp, $forceSend = false)
-	{
-		return HubIdea::sendRfp($ideaRfp, $forceSend);
-	}
-
-	public static function sendIdeaNewRfp($partner, $arrayEnterprises, $title, $htmlContent)
-	{
-		return HubIdea::sendNewRfp($partner, $arrayEnterprises, $title, $htmlContent);
-	}
-
-	public static function listIdeaRfpsByPartner($partner)
-	{
-		return HubIdea::listRfpsByPartner($partner);
-	}
-
-	public static function listIdeaNewRfpsByUser($user)
-	{
-		return HubIdea::listNewRfpsByUser($user);
-	}
-
-	public static function replaceIdeaPartnerIdInUrl($url, $partnerId)
-	{
-		return HubIdea::replacePartnerIdInUrl($url, $partnerId);
-	}
-
-	//
-	// resource
-	public static function getResourceTypefors()
-	{
-		return HubResource::getTypefors();
-	}
-
-	public static function getResourceAllActive($page, $filter)
-	{
-		return HubResource::getAllActive($page, $filter);
-	}
-
-	public static function getResourceAllFeatured()
-	{
-		return HubResource::getAllFeatured();
-	}
-
-	public static function getResource($id)
-	{
-		return HubResource::getResource($id);
-	}
-
-	public static function getResourceBySlug($slug)
-	{
-		return HubResource::getBySlug($slug);
-	}
-
-	public static function getResourceIndustries()
-	{
-		return HubResource::getIndustries();
-	}
-
-	public static function getResourceStartupStages()
-	{
-		return HubResource::getStartupStages();
-	}
-
-	public static function getResourcePersonas($returnOneAssocArray = false)
-	{
-		return HubResource::getPersonas($returnOneAssocArray);
-	}
-
-	public static function getResourceCategories($returnOneAssocArray = false)
-	{
-		return HubResource::getCategories($returnOneAssocArray);
-	}
-
-	public static function getResourceGeofocuses($returnOneAssocArray = false)
-	{
-		return HubResource::getGeofocuses($returnOneAssocArray);
-	}
-
-	public static function getResourceOrganizations($returnOneAssocArray = false)
-	{
-		return HubResource::getOrganizations($returnOneAssocArray);
-	}
-
 
 	//
 	// service
@@ -1579,6 +1207,56 @@ class HUB extends Component
 		return HubMaster::getAllActiveIndustries();
 	}
 
+	public static function getOrCreateIndustry($slug, $params = array())
+	{
+		try {
+			$industry = Industry::getBySlug($slug);
+		} catch (Exception $e) {
+			$industry = null;
+		}
+
+		if ($industry === null) {
+			$industry = self::createIndustry($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$industry->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['text_short_description'];
+				}
+			}
+			$industry->save(false);
+		}
+
+		return $industry;
+	}
+
+	public static function createIndustry($slug, $params = array())
+	{
+		$industry = new Industry();
+		$params['slug'] = $slug;
+		$industry->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $industry->hasAttribute($var)) {
+				$industry->$var = $params['title'];
+			}
+		}
+		if ($industry->validate() && $industry->save(false)) {
+			return $industry;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($industry->getErrors()));
+		}
+
+		return null;
+	}
+
 	public static function getAllActiveProductCategories()
 	{
 		return HubMaster::getAllActiveProductCategories();
@@ -1599,9 +1277,117 @@ class HUB extends Component
 		return HubMaster::getAllActivePersonas();
 	}
 
+	public static function getOrCreatePersona($slug, $params = array())
+	{
+		try {
+			$persona = Persona::getBySlug($slug);
+		} catch (Exception $e) {
+			$persona = null;
+		}
+
+		if ($persona === null) {
+			$persona = self::createPersona($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$persona->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['text_short_description'];
+				}
+			}
+			$persona->save(false);
+		}
+
+		return $persona;
+	}
+
+	public static function createPersona($slug, $params = array())
+	{
+		$persona = new Persona();
+		$params['slug'] = $slug;
+		$persona->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $persona->hasAttribute($var)) {
+				$persona->$var = $params['title'];
+			}
+			$var = 'text_short_description' . $languageKey;
+			if (empty($params[$var]) && $persona->hasAttribute($var)) {
+				$persona->$var = $params['text_short_description'];
+			}
+		}
+		if ($persona->validate() && $persona->save(false)) {
+			return $persona;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($persona->getErrors()));
+		}
+
+		return null;
+	}
+
 	public static function getAllActiveStartupStages()
 	{
 		return HubMaster::getAllActiveStartupStages();
+	}
+
+	public static function getOrCreateStartupStage($slug, $params = array())
+	{
+		try {
+			$stage = StartupStage::getBySlug($slug);
+		} catch (Exception $e) {
+			$stage = null;
+		}
+
+		if ($stage === null) {
+			$stage = self::createStartupStage($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$stage->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['text_short_description'];
+				}
+			}
+			$stage->save(false);
+		}
+
+		return $stage;
+	}
+
+	public static function createStartupStage($slug, $params = array())
+	{
+		$stage = new StartupStage();
+		$params['slug'] = $slug;
+		$stage->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['title'];
+			}
+			$var = 'text_short_description' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['text_short_description'];
+			}
+		}
+		if ($stage->validate() && $stage->save(false)) {
+			return $stage;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($stage->getErrors()));
+		}
+
+		return null;
 	}
 
 	public static function getAllActiveSdgs()
@@ -1741,6 +1527,8 @@ class HUB extends Component
 		$notify->message = $jsonPayload->msg;
 		$notify->jsonArray_payload = $jsonPayload;
 
+		// sendBehalfName and sendBehalfEmail
+
 		// send sms
 		if ($notify->hasSms) {
 			$tmp = self::sendSms($notify->receiverMobileNo, $jsonPayload->msg);
@@ -1767,7 +1555,12 @@ class HUB extends Component
 		return $notify;
 	}
 
-	public static function sendEmail($email, $name, $title, $content, $options = '')
+	// not implemented
+	public static function sendSms($receiverMobileNo, $msg)
+	{
+	}
+
+	public static function sendEmail($email, $name, $title, $content, $options = array())
 	{
 		$receivers[] = array('email' => $email, 'name' => $name);
 
@@ -1777,7 +1570,7 @@ class HUB extends Component
 			}
 		}
 
-		return ysUtil::sendMail($receivers, $title, $content);
+		return ysUtil::sendMail($receivers, $title, $content, $options);
 	}
 
 	//
@@ -1809,6 +1602,27 @@ class HUB extends Component
 		$eventRegistrations = EventRegistration::model()->findAllBySql($sql);
 
 		return $eventRegistrations;
+	}
+
+	// ys: no idea why this function cant be place in HubEvent, it will output error: Call to undefined method HubEvent::getOrCreateEventRegistration()
+	public static function getOrCreateEventRegistration($event, $registrationCode, $params = array())
+	{
+		try {
+			$eventRegistration = EventRegistration::model()->findByAttributes(array('event_id' => $event->id, 'registration_code' => $registrationCode));
+		} catch (Exception $e) {
+			$eventRegistration = null;
+		}
+
+		if ($eventRegistration === null) {
+			$eventRegistration = HubEvent::createEventRegistration($event, $registrationCode, $params);
+		} else {
+			// update attributes
+			$params['registration_code'] = $registrationCode;
+			$eventRegistration->attributes = $params;
+			$eventRegistration->save(false);
+		}
+
+		return $eventRegistration;
 	}
 
 	//
@@ -1883,7 +1697,7 @@ class HUB extends Component
 			}
 
 			foreach ($result as &$r) {
-				$r['serviceTitle'] = $registeredServices[$r[service]];
+				$r['serviceTitle'] = $registeredServices[$r['service']];
 			}
 
 			// loop thru all and sort by timestamp
@@ -2175,7 +1989,7 @@ class HUB extends Component
 		return Yii::app()->db->createCommand($sql)->queryScalar();
 	}
 
-	public function Encrypt($string)
+	public static function Encrypt($string)
 	{
 		try {
 			$salt = Yii::app()->params['encryptionSalt'];
@@ -2330,7 +2144,8 @@ class HUB extends Component
 
 	protected function RemoveAccountMentorSession($email)
 	{
-		try { } catch (Exception $e) {
+		try {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -2350,39 +2165,57 @@ class HUB extends Component
 		}
 	}
 
-	// bumi module
-	public function checkIndividualIsBumiStatus($individual)
+	/**
+	 * to check whether role is allowed to access the route/action
+	 *
+	 * @param string $role
+	 * @param object $controller
+	 * @param string $action this param could be use for custom part to be accessed by the role
+	 *
+	 * @return boolean
+	 **/
+	public function roleCheckerAction($role, $controller, $action = '')
 	{
-		return HubBumi::checkIndividualIsBumi($individual);
-	}
+		$roles = explode(',', $role);
 
-	// bumi module
-	public function checkOrganizationIsBumiStatus($organization)
-	{
-		return HubBumi::checkOrganizationIsBumi($organization);
-	}
+		/*
+		 * if user session is System Admin and role supplied
+		 */
+		if (in_array('superAdmin', $roles)) {
+			// this checkAccess is defined in _accessView & _accessForm to check the route is been set to that role. so if it has been set then do not return true
+			if (!isset($controller->checkAccess)) {
+				return true;
+			}
+		}
 
-	// bumi module
-	public function checkEventRegistrationIsBumiStatus($eventRegistration)
-	{
-		return HubBumi::checkEventRegistrationIsBumi($eventRegistration);
-	}
+		if (is_numeric($role)) {
+			$column = 'roles.id';
+		} else {
+			$column = 'roles.code';
+		}
 
-	// bumi module
-	public function checkIndividualIsIndianStatus($individual)
-	{
-		return HubBumi::checkIndividualIsIndian($individual);
-	}
+		$criteria = new CDbCriteria;
+		$criteria->with = ['roles'];
 
-	// bumi module
-	public function checkEventRegistrationIsIndianStatus($eventRegistration)
-	{
-		return HubBumi::checkEventRegistrationIsIndian($eventRegistration);
-	}
+		$condition = 't.module=:module AND t.controller=:controller AND t.action=:action';
+		$params = array(
+			':module' => !empty($controller->module->id) ? $controller->module->id : '',
+			':controller' => $controller->id,
+			':action' => !empty($action) ? $action : $controller->action->id,
+		);
+		if (isset($filter) && isset($value)) {
+			$condition .= " AND $filter";
+			$params[':role'] = $value;
+		}
+		$criteria->condition = $condition;
+		$criteria->params = $params;
 
-	//bumi module
-	public function updateBumiIndianStatusForEventRegistration($eventRegistration)
-	{
-		return HubBumi::updateIsBumiIndianForEventRegistration($eventRegistration);
+		$criteria->addInCondition($column, $roles);
+		//var_dump($column, $roles);
+
+		// $count = Access::model()->with('roles')->count($condition, $params);
+		$count = Access::model()->isActive()->count($criteria);
+
+		return ($count > 0) ? true : false;
 	}
 }

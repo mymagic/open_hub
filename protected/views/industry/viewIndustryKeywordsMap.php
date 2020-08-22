@@ -8,8 +8,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => Yii::t('app', 'Create Industry'), 'url' => array('/industry/create')),
-	array('label' => Yii::t('app', 'Industry Keywords Mapping'), 'url' => array('/industry/viewIndustryKeywordsMap')),
+	array(
+		'label' => Yii::t('app', 'Create Industry'), 'url' => array('/industry/create'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
+	),
+	array(
+		'label' => Yii::t('app', 'Industry Keywords Mapping'), 'url' => array('/industry/viewIndustryKeywordsMap'),
+		'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'viewIndustryKeywordsMap')
+	),
 );
 ?>
 

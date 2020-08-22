@@ -1,4 +1,5 @@
 <?php
+
 class ResourceController extends Controller
 {
 	/**
@@ -20,7 +21,7 @@ class ResourceController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -29,7 +30,6 @@ class ResourceController extends Controller
 		parent::init();
 		$this->layoutParams['enableGlobalSearchBox'] = true;
 	}
-
 
 	/**
 	 * Specifies the access control rules.
@@ -48,13 +48,13 @@ class ResourceController extends Controller
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('delete', 'admin', 'getTagsBackend'),
 				'users' => array('@'),
-				'expression' => "\$user->isAdmin==true",
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => array('list', 'view', 'create', 'update', 'adminByOrganization'),
 				'users' => array('@'),
-
 			),
 			array(
 				'deny',  // deny all users
@@ -69,47 +69,52 @@ class ResourceController extends Controller
 	 */
 	public function actionView($id, $realm = 'backend', $organizationId = '', $tab = 'comment')
 	{
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organizationId);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
+			}
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
 		$this->pageTitle = Yii::t('app', 'View Resource');
-		$model = $this->loadModel($id);
+		$model = $this->loadModel($id, $organizationId);
 		$this->activeSubMenuCpanel = 'resource-adminByOrganization';
 
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->canAccessByUserEmail(Yii::app()->user->username))
-				Notice::page(Yii::t('notice', "Invalid Access"));
+			if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
+				Notice::page(Yii::t('notice', 'Invalid Access'));
+			}
 		}
 
-		if (!empty($organization_id))
+		if (!empty($organizationId)) {
 			$organization = Organization::model()->findByPk($organizationId);
+		}
 
 		$actions = array();
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$activeServices = HUB::getAllActiveServices();
-		foreach ($activeServices as $service) {
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getIndividualActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getIndividualActions($model, 'backend'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getResourceActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getIndividualActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getIndividualActions($model, 'cpanel'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getResourceActions($model, 'cpanel'));
 				}
 			}
 		}
@@ -122,6 +127,7 @@ class ResourceController extends Controller
 			'organization' => $organization,
 			'tab' => $tab,
 			'tabs' => $tabs,
+			'actions' => $actions,
 			'user' => $user,
 		));
 	}
@@ -132,23 +138,28 @@ class ResourceController extends Controller
 	 */
 	public function actionCreate($organization_id = '', $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
+			}
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
 		$this->pageTitle = Yii::t('app', 'Create Resource');
 
 		$model = new Resource;
-		if (!empty($organization_id)) $organization = Organization::model()->findByPk($organization_id);
+		if (!empty($organization_id)) {
+			$organization = Organization::model()->findByPk($organization_id);
+		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -157,22 +168,25 @@ class ResourceController extends Controller
 			$model->attributes = $_POST['Resource'];
 
 			if ($realm == 'cpanel') {
-				if (!empty($organization->id)) $model->inputOrganizations = array($organization->id);
+				if (!empty($organization->id)) {
+					$model->inputOrganizations = array($organization->id);
+				}
 			}
 
-			if (!empty($_POST['Resource']['latlong_address']))
+			if (!empty($_POST['Resource']['latlong_address'])) {
 				$model->setLatLongAddress($_POST['Resource']['latlong_address']);
+			}
 
 			$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
-			$model->latlong_address = null;
+			// $model->latlong_address = null;
 			// var_dump($model->validate(), $model->getErrors());
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'logo', $model->tableName());
 
 				$log = Yii::app()->esLog->log(sprintf("created resource '%s'", $model->title), 'resource', array('trigger' => 'ResourceController::actionCreate', 'model' => 'Resource', 'action' => 'create', 'id' => $model->id));
 
-				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organization_id' => $organization_id));
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organizationId' => $organization_id));
 			}
 
 			// clear unwanted error messages
@@ -195,36 +209,50 @@ class ResourceController extends Controller
 	 */
 	public function actionUpdate($id, $organization_id = '', $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
+			}
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
 		$this->pageTitle = Yii::t('app', 'Update Resource');
 
-		$model = $this->loadModel($id);
-		if (!empty($organization_id)) $organization = Organization::model()->findByPk($organization_id);
+		$model = $this->loadModel($id, $organization_id);
+		if (!empty($organization_id)) {
+			$organization = Organization::model()->findByPk($organization_id);
+		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if (isset($_POST['Resource'])) {
 			$model->attributes = $_POST['Resource'];
-			if (!empty($_POST['Resource']['latlong_address']))
+			if (!empty($_POST['Resource']['latlong_address'])) {
 				$model->setLatLongAddress($_POST['Resource']['latlong_address']);
+			}
 
-			if (empty($_POST['Resource']['inputIndustries'])) $model->inputIndustries = null;
-			if (empty($_POST['Resource']['inputPersonas'])) $model->inputPersonas = null;
-			if (empty($_POST['Resource']['inputStartupStages'])) $model->inputStartupStages = null;
-			if (empty($_POST['Resource']['inputResourceGeofocuses'])) $model->inputResourceGeofocuses = null;
+			if (empty($_POST['Resource']['inputIndustries'])) {
+				$model->inputIndustries = null;
+			}
+			if (empty($_POST['Resource']['inputPersonas'])) {
+				$model->inputPersonas = null;
+			}
+			if (empty($_POST['Resource']['inputStartupStages'])) {
+				$model->inputStartupStages = null;
+			}
+			if (empty($_POST['Resource']['inputResourceGeofocuses'])) {
+				$model->inputResourceGeofocuses = null;
+			}
 
 			$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
@@ -233,7 +261,7 @@ class ResourceController extends Controller
 
 				$log = Yii::app()->esLog->log(sprintf("updated resource '%s'", $model->title), 'resource', array('trigger' => 'ResourceController::actionUpdate', 'model' => 'Resource', 'action' => 'update', 'id' => $model->id));
 
-				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organization_id' => $organization_id));
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm, 'organizationId' => $organization_id));
 			}
 		}
 
@@ -255,8 +283,9 @@ class ResourceController extends Controller
 		$model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if (!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
 
 	/**
@@ -272,22 +301,24 @@ class ResourceController extends Controller
 	 */
 	public function actionList($organization_id = '', $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username))
+			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
+			}
 
 			$this->layout = 'layouts.cpanel';
 			$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-			$this->cpanelMenuInterface = 'cpanelNavCompanyInformation';
+			$this->cpanelMenuInterface = 'cpanelNavOrganizationInformation';
 			$this->customParse = $org->id;
 			$this->activeMenuCpanel = 'resource';
 		}
 
 		$this->pageTitle = Yii::t('app', 'List Resources');
-
 
 		if ($realm === 'backend') {
 			$dataProvider = new CActiveDataProvider('Resource');
@@ -302,9 +333,13 @@ class ResourceController extends Controller
 		if ($realm === 'cpanel') {
 			$model = new Resource('search');
 			$model->unsetAttributes();  // clear any default values
-			if (isset($_GET['Resource'])) $model->attributes = $_GET['Resource'];
+			if (isset($_GET['Resource'])) {
+				$model->attributes = $_GET['Resource'];
+			}
 			$model->searchOrganizationId = $org->id;
-			if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+			if (Yii::app()->request->getParam('clearFilters')) {
+				EButtonColumnWithClearFilters::clearFilters($this, $model);
+			}
 
 			$this->render('list', array(
 				'model' => $model,
@@ -319,14 +354,22 @@ class ResourceController extends Controller
 	 */
 	public function actionAdmin($realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
-		if ($realm == 'cpanel') $this->layout = 'layouts.cpanel';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
+		if ($realm == 'cpanel') {
+			$this->layout = 'layouts.cpanel';
+		}
 		$this->pageTitle = Yii::t('app', 'Manage Resources');
 
 		$model = new Resource('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Resource'])) $model->attributes = $_GET['Resource'];
-		if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
+		if (isset($_GET['Resource'])) {
+			$model->attributes = $_GET['Resource'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
 		$this->render('admin', array(
 			'model' => $model,
@@ -336,8 +379,12 @@ class ResourceController extends Controller
 
 	public function actionAdminByOrganization($organization_id, $realm = 'backend')
 	{
-		if (empty($realm)) $realm = 'backend';
-		if ($realm == 'cpanel') $this->layout = 'layouts.cpanel';
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
+		if ($realm == 'cpanel') {
+			$this->layout = 'layouts.cpanel';
+		}
 		$this->pageTitle = Yii::t('app', 'Manage Resources');
 
 		$organization = Organization::model()->findByPk($organization_id);
@@ -345,10 +392,13 @@ class ResourceController extends Controller
 		//$this->activeSub = 'product-adminByOrganization';
 		$model = new Resource('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['Resource'])) $model->attributes = $_GET['Resource'];
+		if (isset($_GET['Resource'])) {
+			$model->attributes = $_GET['Resource'];
+		}
 		$model->searchOrganizationId = $organization_id;
-		if (Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this, $model);
-
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
 		$this->render('adminByOrganization', array(
 			'model' => $model,
@@ -364,11 +414,26 @@ class ResourceController extends Controller
 	 * @return Resource the loaded model
 	 * @throws CHttpException
 	 */
-	public function loadModel($id)
+	public function loadModel($id, $organization_id = '')
 	{
-		$model = Resource::model()->findByPk($id);
-		if ($model === null)
+		if (!empty($organization_id)) {
+			$criteria = new CDbCriteria;
+			$criteria->with = [
+				'organizations' => [
+					'condition' => 'organizations.id = :organization_id',
+					'params' => [':organization_id' => $organization_id]
+				]
+			];
+			$criteria->compare('t.id', $id);
+			$model = Resource::model()->find($criteria);
+		} else {
+			$model = Resource::model()->findByPk($id);
+		}
+
+		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -376,7 +441,7 @@ class ResourceController extends Controller
 	{
 		header('Content-type: application/json');
 
-		$tmps = Tag::model()->findAll(array("select" => "name", "order" => "name ASC"));
+		$tmps = Tag::model()->findAll(array('select' => 'name', 'order' => 'name ASC'));
 		foreach ($tmps as $t) {
 			$result[] = $t->name;
 		}
@@ -400,10 +465,11 @@ class ResourceController extends Controller
 	{
 		$tabs = array();
 
-		$services = HUB::getAllActiveServices();
-		foreach ($services as $service) {
-			if (method_exists(Yii::app()->getModule($service->slug), 'getResourceViewTabs')) {
-				$tabs = array_merge($tabs, (array) Yii::app()->getModule($service->slug)->getResourceViewTabs($model, $realm));
+		$modules = YeeModule::getActiveParsableModules();
+
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getResourceViewTabs($model, $realm));
 			}
 		}
 
@@ -417,13 +483,15 @@ class ResourceController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
 			$tabs['resource'][] = array(
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',
 				'viewPath' => 'modules.resource.views.backend._view-meta'
 			);
 		}
+
 		return $tabs;
 	}
 }

@@ -56,7 +56,8 @@ class EventController extends Controller
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
 				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
 				'users' => ['@'],
-				'expression' => '$user->isAdmin==true',
+				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			],
 			['deny',  // deny all users
 				'users' => ['*'],
@@ -66,30 +67,28 @@ class EventController extends Controller
 
 	public function actionExportRegistration($id)
 	{
-        $model = $this->loadModel($id);
+		$model = $this->loadModel($id);
 
-        $headers = array(
+		$headers = array(
 			'Registration Code',
 			'Full Name	',
 			'First Name',
 			'Last Name',
 			'Email',
 			'Phone',
-            'Company',
-            'Gender',
+			'Company',
+			'Gender',
 			'Age Group',
 			'Where Found',
 			'Persona',
 			'Nationality',
 			'Is Attended',
-			'Is Bumi',
 			'Date Registered',
 			'Date Payment',
-        );
+		);
 
-        $buffer[] = $headers;
-        foreach($model->eventRegistrations as $registration)
-        {
+		$buffer[] = $headers;
+		foreach ($model->eventRegistrations as $registration) {
 			$record['registration_code'] = $registration->registration_code;
 			$record['full_name'] = $registration->full_name;
 			$record['first_name'] = $registration->first_name;
@@ -103,13 +102,12 @@ class EventController extends Controller
 			$record['persona'] = $registration->persona;
 			$record['nationality'] = $registration->nationality;
 			$record['is_attended'] = $registration->is_attended;
-			$record['is_bumi'] = $registration->is_bumi;
 			$record['date_registered'] = $registration->renderDateRegistered();
 			$record['date_payment'] = $registration->renderDatePayment();
-            $buffer[] = $record;
-        } 
+			$buffer[] = $record;
+		}
 
-        $filename = sprintf('%s.%s.csv', date('Ymd', $model->date_started), $model->title);
+		$filename = sprintf('%s.%s.csv', date('Ymd', $model->date_started), $model->title);
 
 		header('Content-Type: text/csv; charset=utf-8');
 		header('Content-Disposition: attachment; filename=' . $filename);
@@ -152,18 +150,18 @@ class EventController extends Controller
 		$actions = [];
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$activeServices = HUB::getAllActiveServices();
-		foreach ($activeServices as $service) {
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getEventActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getEventActions($model, 'backend'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-				if (method_exists(Yii::app()->getModule($service->slug), 'getEventActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($service->slug)->getEventActions($model, 'cpanel'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getEventActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getEventActions($model, 'cpanel'));
 				}
 			}
 		}
@@ -184,7 +182,7 @@ class EventController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($realm = 'backend')
 	{
 		$model = new Event();
 		$model->vendor = 'manual';
@@ -194,22 +192,19 @@ class EventController extends Controller
 
 		if (isset($_POST['Event'])) {
 			$model->attributes = $_POST['Event'];
-			$model->setLatLongAddress($_POST['Event']['latlong_address']);
+			$params['event'] = $_POST['Event'];
+			$model = HubEvent::createEvent($_POST['Event']['title'], $params);
 
-			if (!empty($model->date_started)) {
-				$model->date_started = strtotime($model->date_started);
-			}
-			if (!empty($model->date_ended)) {
-				$model->date_ended = strtotime($model->date_ended);
-			}
-
-			if ($model->save()) {
-				$this->redirect(['view', 'id' => $model->id]);
+			if (!empty($model->id)) {
+				$this->redirect(array('view', 'id' => $model->id, 'realm' => $realm));
+			} else {
+				Notice::page(Yii::t('notice', 'Failed to link data to creator'));
 			}
 		}
 
 		$this->render('create', [
 			'model' => $model,
+			'realm' => $realm,
 		]);
 	}
 
@@ -226,8 +221,14 @@ class EventController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 		if (isset($_POST['Event'])) {
+			$oriModel = clone $model;
 			$model->attributes = $_POST['Event'];
 			$model->setLatLongAddress($_POST['Event']['latlong_address']);
+
+			// convert full address to parts and store
+			if (($oriModel->full_address != $model->full_address) && !empty($model->full_address)) {
+				$model->resetAddressParts();
+			}
 
 			if (!empty($model->date_started)) {
 				$model->date_started = strtotime($model->date_started);
@@ -307,10 +308,10 @@ class EventController extends Controller
 
 	public function actionAdminNoRegistration()
 	{
-		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sqlCount = 'SELECT COUNT(e.id) FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 		$count = Yii::app()->db->createCommand($sqlCount)->queryScalar();
 
-		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`id` ASC';
+		$sql = 'SELECT e.* FROM event e LEFT JOIN event_registration r ON e.id=r.event_id LEFT JOIN event_organization o ON e.id=o.event_id WHERE (o.event_id IS NULL AND r.event_id IS NULL) AND e.is_active=1 AND e.is_cancelled != 1 ORDER BY `e`.`date_started` DESC';
 
 		$dataProvider = new CSqlDataProvider($sql, [
 			'totalItemCount' => $count,
@@ -458,10 +459,10 @@ class EventController extends Controller
 	{
 		$tabs = [];
 
-		$services = HUB::getAllActiveServices();
-		foreach ($services as $service) {
-			if (method_exists(Yii::app()->getModule($service->slug), 'getEventViewTabs')) {
-				$tabs = array_merge($tabs, (array) Yii::app()->getModule($service->slug)->getEventViewTabs($model, $realm));
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'getEventViewTabs')) {
+				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getEventViewTabs($model, $realm));
 			}
 		}
 
@@ -470,7 +471,8 @@ class EventController extends Controller
 
 		ksort($tabs);
 
-		if (Yii::app()->user->isDeveloper) {
+		// if (Yii::app()->user->isDeveloper) {
+		if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])) {
 			$tabs['event'][] = [
 				'key' => 'meta',
 				'title' => 'Meta <span class="label label-warning">dev</span>',

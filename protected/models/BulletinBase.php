@@ -15,7 +15,6 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-
 /**
  * This is the model class for table "bulletin".
  *
@@ -39,18 +38,18 @@
 		 * @property integer $date_added
 		 * @property integer $date_modified
  */
- 
+
 class BulletinBase extends ActiveRecordBase
 {
 	public $uploadPath;
-	
+
 	public $imageFile_main;
-	
+
 	public function init()
 	{
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'bulletin';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'bulletin';
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -68,14 +67,14 @@ class BulletinBase extends ActiveRecordBase
 		// will receive user inputs.
 		return array(
 			array('title_en, title_ms, title_zh, text_short_description_en, text_short_description_ms, text_short_description_zh, date_posted', 'required'),
-			array('date_posted, is_active, is_public, is_member, is_admin, date_added, date_modified', 'numerical', 'integerOnly'=>true),
-			array('title_en, title_ms, title_zh', 'length', 'max'=>100),
-			array('text_short_description_en, text_short_description_ms, text_short_description_zh, image_main', 'length', 'max'=>255),
+			array('date_posted, is_active, is_public, is_member, is_admin, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('title_en, title_ms, title_zh', 'length', 'max' => 100),
+			array('text_short_description_en, text_short_description_ms, text_short_description_zh, image_main', 'length', 'max' => 255),
 			array('html_content_en, html_content_ms, html_content_zh', 'safe'),
-			array('imageFile_main', 'file', 'types'=>'jpg, jpeg, png, gif', 'allowEmpty'=>true),
+			array('imageFile_main', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, title_en, title_ms, title_zh, text_short_description_en, text_short_description_ms, text_short_description_zh, html_content_en, html_content_ms, html_content_zh, image_main, date_posted, is_active, is_public, is_member, is_admin, date_added, date_modified', 'safe', 'on'=>'search'),
+			array('id, title_en, title_ms, title_zh, text_short_description_en, text_short_description_ms, text_short_description_zh, html_content_en, html_content_ms, html_content_zh, image_main, date_posted, is_active, is_public, is_member, is_admin, date_added, date_modified', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -133,39 +132,38 @@ class BulletinBase extends ActiveRecordBase
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('title_en',$this->title_en,true);
-		$criteria->compare('title_ms',$this->title_ms,true);
-		$criteria->compare('title_zh',$this->title_zh,true);
-		$criteria->compare('text_short_description_en',$this->text_short_description_en,true);
-		$criteria->compare('text_short_description_ms',$this->text_short_description_ms,true);
-		$criteria->compare('text_short_description_zh',$this->text_short_description_zh,true);
-		$criteria->compare('html_content_en',$this->html_content_en,true);
-		$criteria->compare('html_content_ms',$this->html_content_ms,true);
-		$criteria->compare('html_content_zh',$this->html_content_zh,true);
-		$criteria->compare('image_main',$this->image_main,true);
-		$criteria->compare('date_posted',$this->date_posted);
-		$criteria->compare('is_active',$this->is_active);
-		$criteria->compare('is_public',$this->is_public);
-		$criteria->compare('is_member',$this->is_member);
-		$criteria->compare('is_admin',$this->is_admin);
-		$criteria->compare('date_added',$this->date_added);
-		$criteria->compare('date_modified',$this->date_modified);
+		$criteria->compare('id', $this->id);
+		$criteria->compare('title_en', $this->title_en, true);
+		$criteria->compare('title_ms', $this->title_ms, true);
+		$criteria->compare('title_zh', $this->title_zh, true);
+		$criteria->compare('text_short_description_en', $this->text_short_description_en, true);
+		$criteria->compare('text_short_description_ms', $this->text_short_description_ms, true);
+		$criteria->compare('text_short_description_zh', $this->text_short_description_zh, true);
+		$criteria->compare('html_content_en', $this->html_content_en, true);
+		$criteria->compare('html_content_ms', $this->html_content_ms, true);
+		$criteria->compare('html_content_zh', $this->html_content_zh, true);
+		$criteria->compare('image_main', $this->image_main, true);
+		$criteria->compare('date_posted', $this->date_posted);
+		$criteria->compare('is_active', $this->is_active);
+		$criteria->compare('is_public', $this->is_public);
+		$criteria->compare('is_member', $this->is_member);
+		$criteria->compare('is_admin', $this->is_admin);
+		$criteria->compare('date_added', $this->date_added);
+		$criteria->compare('date_modified', $this->date_modified);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
+
 	public function scopes()
-    {
-		return array
-		(
+	{
+		return array(
 			// 'isActive'=>array('condition'=>"t.is_active = 1"),
 		);
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -173,46 +171,34 @@ class BulletinBase extends ActiveRecordBase
 	 * @param string $className active record class name.
 	 * @return Bulletin the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * This is invoked before the record is saved.
 	 * @return boolean whether the record should be saved.
 	 */
 	protected function beforeSave()
 	{
-		if(parent::beforeSave())
-		{
-			if(!empty($this->date_posted))
-			{
-				if(!is_numeric($this->date_posted))
-				{
+		if (parent::beforeSave()) {
+			if (!empty($this->date_posted)) {
+				if (!is_numeric($this->date_posted)) {
 					$this->date_posted = strtotime($this->date_posted);
 				}
 			}
 
 			// auto deal with date added and date modified
-			if($this->isNewRecord)
-			{
-				$this->date_added=$this->date_modified=time();
+			if ($this->isNewRecord) {
+				$this->date_added = $this->date_modified = time();
+			} else {
+				$this->date_modified = time();
 			}
-			else
-			{
-				$this->date_modified=time();
-			}
-			
+
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
-
-
-
-
 }

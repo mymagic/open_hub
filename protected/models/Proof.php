@@ -18,10 +18,15 @@
 class Proof extends ProofBase
 {
 	public $uploadPath;
-	
-	public $imageFile_value, $uploadFile_value;
-	
-	public static function model($class = __CLASS__){return parent::model($class);}
+
+	public $imageFile_value;
+
+	public $uploadFile_value;
+
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function relations()
 	{
@@ -29,7 +34,6 @@ class Proof extends ProofBase
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_username'),
-
 		);
 	}
 
@@ -37,14 +41,14 @@ class Proof extends ProofBase
 	{
 		// custom code here
 		// ...
-		$this->uploadPath = Yii::getPathOfAlias('uploads').DIRECTORY_SEPARATOR.'proof';
+		$this->uploadPath = Yii::getPathOfAlias('uploads') . DIRECTORY_SEPARATOR . 'proof';
 
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -52,7 +56,7 @@ class Proof extends ProofBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -80,7 +84,7 @@ class Proof extends ProofBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -90,9 +94,9 @@ class Proof extends ProofBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -107,10 +111,9 @@ class Proof extends ProofBase
 		return $return;
 	}
 
-	public function renderValue($mode='text')
+	public function renderValue($mode = 'text')
 	{
-		switch($this->datatype)
-		{
+		switch ($this->datatype) {
 			case 'image':
 			{
 				return Html::activeThumb($this, 'value');
@@ -118,7 +121,9 @@ class Proof extends ProofBase
 			}
 			case 'file':
 			{
-				if(!empty($this->value)) return Html::activeFile($this, 'value');
+				if (!empty($this->value)) {
+					return Html::activeFile($this, 'value');
+				}
 				break;
 			}
 			case 'string':
@@ -128,34 +133,27 @@ class Proof extends ProofBase
 			}
 		}
 	}
-	
-	public function getUrl($mode='')
-	{
-		if($mode == 'backendEdit')
-		{
 
-		}
-		else if($mode == 'return2Record')
-		{
-			switch($this->ref_table)
-			{
-				case 'idea_rfp': { return Yii::app()->createUrl('/idea/ideaRfp/view', array('id'=>$this->ref_id));}
-				case 'organization_funding': { return Yii::app()->createUrl('/organizationFunding/view', array('id'=>$this->ref_id));}
-				case 'organization_revenue': { return Yii::app()->createUrl('/organizationRevenue/view', array('id'=>$this->ref_id));}
-				case 'organization_status': { return Yii::app()->createUrl('/organizationStatus/view', array('id'=>$this->ref_id));}
+	public function getUrl($mode = '')
+	{
+		if ($mode == 'backendEdit') {
+		} elseif ($mode == 'return2Record') {
+			switch ($this->ref_table) {
+				//case 'idea_rfp': { return Yii::app()->createUrl('/idea/ideaRfp/view', array('id' => $this->ref_id));}
+				case 'organization_funding': { return Yii::app()->createUrl('/organizationFunding/view', array('id' => $this->ref_id));}
+				case 'organization_revenue': { return Yii::app()->createUrl('/organizationRevenue/view', array('id' => $this->ref_id));}
+				case 'organization_status': { return Yii::app()->createUrl('/organizationStatus/view', array('id' => $this->ref_id));}
 			}
 		}
 		// backendView
-		else
-		{
-			return Yii::app()->createUrl('/proof/view', array('id'=>$this->id));
+		else {
+			return Yii::app()->createUrl('/proof/view', array('id' => $this->id));
 		}
 	}
 
 	public function getForRecord($refTable, $refId)
 	{
-		switch($refTable)
-		{
+		switch ($refTable) {
 			case 'idea_rfp':
 			{
 				return IdeaRfp::model()->findByPk($refId);
@@ -175,16 +173,28 @@ class Proof extends ProofBase
 		}
 	}
 
-	public function getEnumDatatype($isNullable=false, $is4Filter=false)
+	public function getEnumDatatype($isNullable = false, $is4Filter = false)
 	{
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('code'=>'', 'title'=>$this->formatEnumDatatype(''));
-		
+		if ($is4Filter) {
+			$isNullable = false;
+		}
+		if ($isNullable) {
+			$result[] = array('code' => '', 'title' => $this->formatEnumDatatype(''));
+		}
+
 		// $result[] = array('code'=>'string', 'title'=>$this->formatEnumDatatype('string'));
-		$result[] = array('code'=>'image', 'title'=>$this->formatEnumDatatype('image'));
-		$result[] = array('code'=>'file', 'title'=>$this->formatEnumDatatype('file'));
-		
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['code']] = $r['title']; } return $newResult; }
+		$result[] = array('code' => 'image', 'title' => $this->formatEnumDatatype('image'));
+		$result[] = array('code' => 'file', 'title' => $this->formatEnumDatatype('file'));
+
+		if ($is4Filter) {
+			$newResult = array();
+			foreach ($result as $r) {
+				$newResult[$r['code']] = $r['title'];
+			}
+
+			return $newResult;
+		}
+
 		return $result;
 	}
 }

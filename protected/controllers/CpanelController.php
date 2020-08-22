@@ -1,7 +1,6 @@
 <?php
 /**
-*
-* NOTICE OF LICENSE
+* NOTICE OF LICENSE.
 *
 * This source file is subject to the BSD 3-Clause License
 * that is bundled with this package in the file LICENSE.
@@ -10,13 +9,12 @@
 *
 *
 * @author Malaysian Global Innovation & Creativity Centre Bhd <tech@mymagic.my>
-* @link https://github.com/mymagic/open_hub
+*
+* @see https://github.com/mymagic/open_hub
+*
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-
-use Mpdf\Tag\P;
-
 class CpanelController extends Controller
 {
 	/**
@@ -32,6 +30,7 @@ class CpanelController extends Controller
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
+	 *
 	 * @return array access control rules
 	 */
 	public function accessRules()
@@ -40,13 +39,13 @@ class CpanelController extends Controller
 			array(
 				'allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions' => array(
-					'index', 'services', 'qa', 'guidelines', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount', 'cancelBooking',
+					'index', 'services', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
-					'test', 'activity', 'getTimeline', 'profile'
+					'test', 'activity', 'getTimeline', 'profile', 'organization'
 				),
 				'users' => array('@'),
-				'expression' => "\$user->accessCpanel===true",
+				'expression' => '$user->accessCpanel===true',
 			),
 			array(
 				'deny',  // deny all users
@@ -58,8 +57,8 @@ class CpanelController extends Controller
 	public function init()
 	{
 		parent::init();
-		$this->layout = 'cpanel';
-		$this->pageTitle = 'Activity Feed';
+		$this->layout = 'layouts.cpanel';
+		$this->pageTitle = Yii::t('cpanel', 'Activity Feed');
 		$this->cpanelMenuInterface = 'cpanelNavDashboard';
 		$this->activeMenuCpanel = 'activity';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
@@ -67,239 +66,87 @@ class CpanelController extends Controller
 		$this->layoutParams['enableGlobalSearchBox'] = true;
 	}
 
-	public function actionTest()
+	public function actionOrganization()
 	{
-		$tmps = HUB::listServiceBookmarkable();
-		foreach ($tmps as $tmp) {
-			$result[] = $tmp->toApi();
-		}
-
-		$user = Yii::app()->user;
-		$selected_service_list = HUB::listServiceBookmarkByUser($user);
-
-
-		$this->render('index', array(
-			'listServices' => $result
-		));
+		$this->redirect(array('organization/list', 'realm' => 'cpanel'));
 	}
+
 	public function actionIndex()
 	{
 		$this->redirect(['cpanel/services']);
-
-		// $listServices = HUB::listServiceBookmarkable();
-		$tmps = HUB::listServiceBookmarkable();
-		foreach ($tmps as $tmp) {
-			$result[] = $tmp->toApi();
-		}
-
-		$user = Yii::app()->user;
-		$selected_service_list = HUB::listServiceBookmarkByUser($user);
-		$is_popup_process_completed = false;
-		if (count($selected_service_list) > 0) {
-			$is_popup_process_completed = true;
-			$this->redirect(['cpanel/services']);
-			exit;
-		}
-
-		$this->render('index', array(
-			'listServices' => $result,
-			'is_popup_process_completed' => $is_popup_process_completed
-		));
 	}
 
-	/*
-	id: "4",
-	slug: "activate",
-	title: "Activate",
-	textOneliner: "A collaborative platform to solve real life challenge",
-	isBookmarkable: 1,
-	isActive: 1,
-	dateAdded: "1513581492",
-	fDateAdded: "2017 Dec 18, 15:18 PM +08:00",
-	dateModified: "1515981400",
-	fDateModified: "2018 Jan 15, 09:56 AM +08:00"
-	*/
 	public function actionServices()
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		// $user = Yii::app()->user;
-		// $service_list = HUB::listServiceBookmarkable();
-
-		// //$selected_service_list = HUB::listServiceBookmarkByUser($user);
-		// foreach ($service_list as $service) {
-		// 	$selected_service_list[] = array(
-		// 		'serviceId' => $service->id,
-		// 		'userId' => 0,
-		// 		'service' => $service,
-		// 		'user' => null
-		// 	);
-		// }
-		// $data['selected_service_list'] = $selected_service_list;
-
-
-		// $this->activeSubMenuCpanel = 'services';
-
-		// $this->render('services', array('selected_service_list' => $selected_service_list, 'service_list' => $service_list, 'mentoringInfo' => $mentoringInfo));
-
-		// $this->render('services',$data, $list);
-
 		$this->redirect(array('activity'));
 	}
 
 	public function actionProfile()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Profile Settings';
+		$this->pageTitle = Yii::t('cpanel', 'Profile Settings');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 
-		$model = Individual::getIndividualByEmail(Yii::app()->user->username);
+		$model = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
 
-		if ($model === null) {
+		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
+		if ($modelIndividual === null) {
+			// todo: detach MaGIC Connect
 			$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 			$gender = null;
 			if ($account->gender === 'M') {
 				$gender = 'male';
-			} else if ($account->gender === 'F') {
+			} elseif ($account->gender === 'F') {
 				$gender = 'female';
 			}
 			$fullname = $account->firstname . ' ' . $account->lastname;
-			$model = new Individual();
-			$model->full_name = $fullname;
-			$model->image_photo = Individual::getDefaultImagePhoto();
-			$model->gender = $gender;
-			$model->country_code = ($account->country) ? $account->country : 'null';
-			$model->save();
+			$modelIndividual = new Individual();
+			$modelIndividual->full_name = $fullname;
+			$modelIndividual->image_photo = Individual::getDefaultImagePhoto();
+			$modelIndividual->gender = $gender;
+			$modelIndividual->country_code = ($account->country) ? $account->country : null;
+			$modelIndividual->save();
 		}
-		if (!$model->hasUserEmail(Yii::app()->user->username)) {
-			$i2o = new Individual2Email;
-			$i2o->individual_id = $model->id;
+		if (!$modelIndividual->hasUserEmail(Yii::app()->user->username)) {
+			$i2o = new Individual2Email();
+			$i2o->individual_id = $modelIndividual->id;
 			$i2o->user_email = Yii::app()->user->username;
 			$i2o->is_verify = 1;
 			$i2o->save();
 		}
 
-		if (isset($_POST['Individual'])) {
-			$model->attributes = $_POST['Individual'];
+		if (isset($_POST['Profile'])) {
+			$model->profile->attributes = $_POST['Profile'];
 
-			if (empty($_POST['Individual']['inputPersonas'])) $model->inputPersonas = null;
+			$modelIndividual->inputPersonas = empty($_POST['Individual']['inputPersonas']) ? null : $_POST['Individual']['inputPersonas'];
 
-			$model->imageFile_photo = UploadedFile::getInstance($model, 'imageFile_photo');
+			$modelIndividual->full_name = $model->profile->full_name;
+			if (!empty($model->profile->gender)) {
+				$modelIndividual->gender = $model->profile->gender;
+			}
+			if (!empty($model->profile->country_code)) {
+				$modelIndividual->country_code = $model->profile->country_code;
+			}
 
-			if ($model->save()) {
-				UploadManager::storeImage($model, 'photo', $model->tableName());
-				Yii::app()->esLog->log(sprintf("updated individual '%s'", $model->full_name), 'individual', array('trigger' => 'IndividualController::actionUpdate', 'model' => 'Individual', 'action' => 'update', 'id' => $model->id, 'individualId' => $model->id));
+			$model->profile->imageFile_avatar = UploadedFile::getInstance($model->profile, 'imageFile_avatar');
+			$modelIndividual->imageFile_photo = $model->profile->imageFile_avatar;
+
+			if ($model->profile->save()) {
+				UploadManager::storeImage($model->profile, 'avatar', $model->profile->tableName(), '', $model->profile->user_id);
+
+				if ($modelIndividual->save()) {
+					UploadManager::storeImage($modelIndividual, 'photo', $modelIndividual->tableName());
+				}
+
+				Yii::app()->esLog->log(sprintf("updated profile '%s'", $model->profile->full_name), 'profile', array('trigger' => 'CpanelController::actionProfile', 'model' => 'Profile', 'action' => 'profile', 'id' => $model->profile->user_id, 'userId' => $model->profile->user_id));
 			}
 		}
 
 		$this->render('profile', array(
 			'model' => $model,
+			'modelIndividual' => $modelIndividual
 		));
-	}
-
-	protected function getAndRegisterRandomMentoringSessionForTheHack()
-	{
-		$result = array();
-		$availableMentorSlots = null;
-		$selectedMentor = null;
-		$slotDate = null;
-		$timeZone = null;
-		$currentDateStr = date("Y-m-d", time());
-		$email = Yii::app()->user->username;
-
-		// Record that this user has already seen this
-
-		$programId = Yii::app()->getModule('mentor')->defaultPrivateProgramId;
-
-		if (empty($programId)) return $result;
-
-		$mentors = HubFuturelab::getActiveMentorsWithAppearInByProgramId($programId);
-
-		if (empty($mentors)) return $result;
-
-		for ($i = 0; $i < 3; $i++) {
-			$randomDay = rand(2, 8);
-			$slotDate = date("Y-m-d", strtotime($currentDateStr . ' +' . $randomDay . ' Weekday'));
-
-			if (HubFuturelab::canMenteeAttend($email, $programId, date('Y-m-d', strtotime($slotDate))))
-				break;
-			$i++;
-			$slotDate = null;
-		}
-		if (empty($slotDate)) return $result;
-
-		for ($i = 0; $i < 3; $i++) {
-			$selectedMentor = $mentors[array_rand($mentors)];
-
-			$timeZone = HubFuturelab::figureTimezoneOffset($selectedMentor->timezone);
-
-			$availableMentorSlots = self::pickRandomSlot($programId, $selectedMentor, $slotDate, $timeZone);
-
-			if (count($availableMentorSlots['slots']) > 0)
-				break;
-
-			$i++;
-		}
-
-		//We could not find any random free slot so return
-		if (empty($availableMentorSlots)) return $result;
-
-		$slots = $availableMentorSlots['slots'];
-
-		$randomSlot = $slots[array_rand($slots)];
-
-		//Do actual booking here
-		$params = array();
-		$params['mentorId'] = $selectedMentor->id;
-		$params['programId'] = $programId;
-		$params['date'] = $slotDate;
-		$params['time'] = $randomSlot;
-		$params['timezone'] = $timeZone;
-		$params['sessionMethod'] = 'appear_in';
-		$params['menteeFirstname'] = $this->user->profile->figureFirstName();
-		$params['menteeLastname'] = $this->user->profile->figureLastName();
-		$params['menteeEmail'] = $email;
-		$booking = HubFuturelab::createBooking($params);
-
-		$result['MENTORING_SLOT_DATE'] = $slotDate;
-		$result['MENTORING_SLOT_TIME'] = $randomSlot;
-		$result['MENTORING_SLOT_TIMEZONE'] = $timeZone;
-		$result['MENTORING_MENTOR'] = $selectedMentor;
-		$result['MENTORING_PROGRAM_ID'] = $programId;
-		$result['MENTORING_BOOKING_ID'] = $booking->id;
-
-		return $result;
-	}
-
-	public function pickRandomSlot($programId, $selectedMentor, $slotDate, $timeZone)
-	{
-		$availableMentorSlots = HubFuturelab::getAvailableSlotsByDate($selectedMentor->id, $programId, $slotDate, $timeZone);
-
-		return $availableMentorSlots;
-	}
-
-	public function actionQa()
-	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->activeSubMenuCpanel = 'qa';
-		$this->render('qa');
-	}
-	public function actionGuidelines()
-	{
-		$this->activeSubMenuCpanel = 'guide';
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('guidelines');
-	}
-	public function loadLinkup($id)
-	{
-		$model = Linkup::model()->findByPk($id);
-		if ($model === null)
-			throw new CHttpException(404, 'The requested linkup does not exist.');
-		return $model;
 	}
 
 	public function actionSetUserService()
@@ -320,7 +167,7 @@ class CpanelController extends Controller
 			$service_list = (isset($_POST['selected_service']) && !empty($_POST['selected_service'])) ? $_POST['selected_service'] : '';
 			if (!empty($current_service_list)) {
 				$merged_service_list = array_merge($current_service_list, $service_list);
-				$merged_service_list = implode(",", array_unique($merged_service_list));
+				$merged_service_list = implode(',', array_unique($merged_service_list));
 			} else {
 				$merged_service_list = implode(',', $service_list);
 			}
@@ -332,7 +179,7 @@ class CpanelController extends Controller
 					$result_array['status'] = 1;
 				} else {
 					$result_array['status'] = 0;
-					$result_array['message'] = "There are something issue";
+					$result_array['message'] = 'There are something issue';
 				}
 			} else {
 				$result_array['status'] = 0;
@@ -353,7 +200,9 @@ class CpanelController extends Controller
 
 		$user = HUB::getUserByUsername(Yii::app()->user->username);
 
-		if (empty($user)) $this->outputJsonFail('Invalid User');
+		if (empty($user)) {
+			$this->outputJsonFail('Invalid User');
+		}
 
 		$fyear = Yii::app()->request->getQuery('year', date('Y'));
 		$year = $fyear;
@@ -381,7 +230,9 @@ class CpanelController extends Controller
 	{
 		$user = HUB::getUserByUsername(Yii::app()->user->username);
 
-		if (empty($user)) $this->outputJsonFail('Invalid User');
+		if (empty($user)) {
+			$this->outputJsonFail('Invalid User');
+		}
 
 		$fyear = Yii::app()->request->getQuery('year', date('Y'));
 
@@ -404,7 +255,6 @@ class CpanelController extends Controller
 		echo CJSON::encode($result);
 	}
 
-
 	public function actionSetting()
 	{
 		$this->redirect(['/cpanel/manageUserEmailSubscription']);
@@ -412,9 +262,8 @@ class CpanelController extends Controller
 
 	public function actionDownload()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Download Account Information';
+		$this->pageTitle = Yii::t('cpanel', 'Download Account Information');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'download';
 
@@ -430,7 +279,6 @@ class CpanelController extends Controller
 
 	public function actionDownloadUserDataFile($id)
 	{
-
 		$user = Yii::app()->user;
 		$request = Request::model()->findByPk($id);
 		//print_r($request);
@@ -450,7 +298,9 @@ class CpanelController extends Controller
 		$pendingOrProcessingRequests = HUB::getUserGeneratingDataDownloadRequest($user);
 		$isGeneratingFile = count($pendingOrProcessingRequests) > 0 ? true : false;
 
-		if ($isGeneratingFile) Notice::page(Yii::t('notice', 'Invalid Access'));
+		if ($isGeneratingFile) {
+			Notice::page(Yii::t('notice', 'Invalid Access'));
+		}
 		$request = HUB::requestUserDataDownload($user, $format);
 
 		$this->redirect(['/cpanel/download']);
@@ -458,9 +308,8 @@ class CpanelController extends Controller
 
 	public function actionDeleteUserAccount()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Deactivate Account';
+		$this->pageTitle = Yii::t('cpanel', 'Terminate Account');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 		// renders the view file 'protected/views/site/index.php'
@@ -470,28 +319,31 @@ class CpanelController extends Controller
 
 	public function actionTerminateAccount()
 	{
-
-		$this->layout = 'cpanel';
+		$this->layout = 'layouts.plain';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Deactivate Account';
+		$this->pageTitle = Yii::t('cpanel', 'Terminate Account');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'profile';
 
 		//No passing id from the call for security reasons.
 		$id = Yii::app()->user->id;
 
-		if (is_null($id)) $this->redirect(array('cpanel/deleteUserAccount'));
+		if (is_null($id)) {
+			$this->redirect(array('cpanel/deleteUserAccount'));
+		}
 
 		$userObj = User::userId2obj($id);
 
-		if (is_null($userObj)) $this->redirect(array('cpanel/deleteUserAccount'));
+		if (is_null($userObj)) {
+			$this->redirect(array('cpanel/deleteUserAccount'));
+		}
 
 		$email = $userObj->username;
 
 		if ($userObj->is_active == 1) {
-			$this->render('_confirmAccountDeletion', array('model' => $userObj));
+			$this->render('confirmAccountDeletion', array('model' => $userObj));
 			// Notice::page(Yii::t('notice', "Are you sure?
-			// Once you confirm, your account ({$email}) will be permanently deactivated and you no longer can use this account."), Notice_WARNING, 
+			// Once you confirm, your account ({$email}) will be permanently deactivated and you no longer can use this account."), Notice_WARNING,
 			// array('url'=>$this->createUrl('terminateConfirmed'), 'cancelUrl'=>$this->createUrl('deleteUserAccount')));
 		} else {
 			$this->redirect(array('cpanel/deleteUserAccount'));
@@ -502,11 +354,15 @@ class CpanelController extends Controller
 	{
 		$id = Yii::app()->user->id;
 
-		if (is_null($id)) $this->redirect(array('cpanel/deleteUserAccount'));
+		if (is_null($id)) {
+			$this->redirect(array('cpanel/deleteUserAccount'));
+		}
 
 		$userObj = User::userId2obj($id);
 
-		if (is_null($userObj)) $this->redirect(array('cpanel/deleteUserAccount'));
+		if (is_null($userObj)) {
+			$this->redirect(array('cpanel/deleteUserAccount'));
+		}
 
 		$userObj->is_active = 0;
 
@@ -522,7 +378,7 @@ class CpanelController extends Controller
 			//Add the request to Request table
 			$request = Request::model()->findByAttributes(array('status' => 'pending', 'type_code' => 'removeUserAccount', 'user_id' => $id));
 			if (empty($r)) {
-				$request = new Request;
+				$request = new Request();
 				$request->user_id = $id;
 				$request->type_code = 'removeUserAccount';
 				$request->title = 'Request to remove account by user';
@@ -531,7 +387,6 @@ class CpanelController extends Controller
 			}
 			//Add the request to download user data
 			HUB::requestUserDataDownload($userObj);
-
 
 			//Email user that their account is terminated
 			// $params['email'] = $email;
@@ -555,11 +410,12 @@ class CpanelController extends Controller
 
 			Yii::app()->user->logout();
 
+			// todo: detach MaGIC Connect
 			$url = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], Yii::app()->params['baseUrl'] . '/site/TerminateAccount');
 
 			$this->redirect($url);
 		} else {
-			Notice::flash(Yii::t('notice', "Failed to terminate user {username} due to unknown reason.", ['{username}' => $userObj->username]), Notice_ERROR);
+			Notice::flash(Yii::t('notice', 'Failed to terminate user {username} due to unknown reason.', ['{username}' => $userObj->username]), Notice_ERROR);
 
 			$this->redirect(array('cpanel/deleteUserAccount'));
 		}
@@ -567,9 +423,8 @@ class CpanelController extends Controller
 
 	public function actionNotification()
 	{
-		$this->layout = 'cpanel';
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
-		$this->pageTitle = 'Notification Settings';
+		$this->pageTitle = Yii::t('cpanel', 'Notification Settings');
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'notification';
 
@@ -612,41 +467,4 @@ class CpanelController extends Controller
 			$this->renderJson(array('status' => 'fail', 'msg' => 'Invalid Email Address'));
 		}
 	}
-
-	public function actionCancelBooking($id = '', $programId = '')
-	{
-		try {
-			if (!empty($id) && !empty($programId))
-				HubFuturelab::cancelBooking($id, $programId);
-		} catch (Exception $e) {
-		}
-		$this->redirect('services');
-	}
-
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-
-	public function actions()
-	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-	*/
 }

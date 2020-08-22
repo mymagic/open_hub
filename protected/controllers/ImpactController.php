@@ -24,11 +24,10 @@ class ImpactController extends Controller
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -36,7 +35,6 @@ class ImpactController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-					
 		);
 	}
 
@@ -49,12 +47,13 @@ class ImpactController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin' ),
-				'users'=>array('@'),
-				'expression'=>"\$user->isAdmin==true",
+				'actions' => array('list', 'view', 'create', 'update', 'admin'),
+				'users' => array('@'),
+				// 'expression' => '$user->isSuperAdmin==true',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -65,8 +64,8 @@ class ImpactController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -76,26 +75,24 @@ class ImpactController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Impact;
+		$model = new Impact;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Impact']))
-		{
-			$model->attributes=$_POST['Impact'];
+		if (isset($_POST['Impact'])) {
+			$model->attributes = $_POST['Impact'];
 
 			$model->imageFile_cover = UploadedFile::getInstance($model, 'imageFile_cover');
-	
-			if($model->save())
-			{
+
+			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -106,30 +103,27 @@ class ImpactController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Impact']))
-		{
-			$model->attributes=$_POST['Impact'];
+		if (isset($_POST['Impact'])) {
+			$model->attributes = $_POST['Impact'];
 
 			$model->imageFile_cover = UploadedFile::getInstance($model, 'imageFile_cover');
 
-			if($model->save())
-			{
+			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-	
 	/**
 	 * Index
 	 */
@@ -143,12 +137,12 @@ class ImpactController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('Impact');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('Impact');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -157,13 +151,17 @@ class ImpactController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Impact('search');
+		$model = new Impact('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Impact'])) $model->attributes=$_GET['Impact'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Impact'])) {
+			$model->attributes = $_GET['Impact'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -176,9 +174,11 @@ class ImpactController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Impact::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Impact::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -188,8 +188,7 @@ class ImpactController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='impact-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'impact-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

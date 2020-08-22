@@ -17,19 +17,22 @@
 
 class Industry extends IndustryBase
 {
-	public static function model($class = __CLASS__){return parent::model($class);}
+	public static function model($class = __CLASS__)
+	{
+		return parent::model($class);
+	}
 
 	public function init()
 	{
 		// custom code here
 		// ...
-		
+
 		parent::init();
 
 		// return void
 	}
 
-	public function beforeValidate() 
+	public function beforeValidate()
 	{
 		// custom code here
 		// ...
@@ -38,7 +41,7 @@ class Industry extends IndustryBase
 		return parent::beforeValidate();
 	}
 
-	public function afterValidate() 
+	public function afterValidate()
 	{
 		// custom code here
 		// ...
@@ -62,7 +65,7 @@ class Industry extends IndustryBase
 		if (Yii::app()->neo4j->getStatus()) {
 			Neo4jIndustry::model($this)->sync();
 		}
-		
+
 		return parent::afterSave();
 	}
 
@@ -70,7 +73,7 @@ class Industry extends IndustryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::beforeFind();
 
 		// return void
@@ -80,9 +83,9 @@ class Industry extends IndustryBase
 	{
 		// custom code here
 		// ...
-		
+
 		parent::afterFind();
-		
+
 		// return void
 	}
 
@@ -96,58 +99,80 @@ class Industry extends IndustryBase
 		return $return;
 	}
 
-	public function getForeignReferList($isNullable=false, $is4Filter=false, $htmlOptions='')
+	public function getForeignReferList($isNullable = false, $is4Filter = false, $htmlOptions = '')
 	{
-		$language = Yii::app()->language;		
-		
-		if($is4Filter) $isNullable = false;
-		if($isNullable) $result[] = array('key'=>'', 'title'=>'');
+		$language = Yii::app()->language;
 
-		if(!empty($htmlOptions['params']) && !empty($htmlOptions['params']['key']) && $htmlOptions['params']['key']=='code')
-		{
+		if ($is4Filter) {
+			$isNullable = false;
+		}
+		if ($isNullable) {
+			$result[] = array('key' => '', 'title' => '');
+		}
+
+		if (!empty($htmlOptions['params']) && !empty($htmlOptions['params']['key']) && $htmlOptions['params']['key'] == 'code') {
 			$result = Yii::app()->db->createCommand()
-			->select("code as key, title as title")
+			->select('code as key, title as title')
 			->from(self::tableName())
 			->order('title ASC')->queryAll();
+		} else {
+			$result = Yii::app()->db->createCommand()->select('id as key, title as title')->from(self::tableName())->order('title ASC')->queryAll();
 		}
-		else
-		{
-			$result = Yii::app()->db->createCommand()->select("id as key, title as title")->from(self::tableName())->order('title ASC')->queryAll();
+
+		if ($is4Filter) {
+			$newResult = array();
+			foreach ($result as $r) {
+				$newResult[$r['key']] = $r['title'];
+			}
+
+			return $newResult;
 		}
-		
-		if($is4Filter)	{ $newResult = array(); foreach($result as $r){ $newResult[$r['key']] = $r['title']; } return $newResult; }
+
 		return $result;
 	}
 
 	public function renderIndustryKeywords()
 	{
 		$buffer = null;
-		if(!empty($this->industryKeywords))
-		{
-			foreach($this->industryKeywords as $industryKeyword)
-			{
+		if (!empty($this->industryKeywords)) {
+			foreach ($this->industryKeywords as $industryKeyword) {
 				$buffer[] = $industryKeyword->title;
 			}
 		}
+
 		return implode(', ', $buffer);
 	}
 
 	// find a matching industry record from industry and industry_keyword table
 	// return the industry object or null if not found
-	public function searchByKeyword($keyword)
+	public static function searchByKeyword($keyword)
 	{
-		$industry = Industry::model()->find("t.title=:title AND is_active=1", array(':title'=>trim($keyword)));
-		if(empty($industry))
-		{
-			$industryKeyword = IndustryKeyword::model()->find("t.title=:title", array(':title'=>trim($keyword)));
-			if(!empty($industryKeyword))
-			{
-				if($industryKeyword->industry->is_active == 1)
+		$industry = Industry::model()->find('t.title=:title AND is_active=1', array(':title' => trim($keyword)));
+		if (empty($industry)) {
+			$industryKeyword = IndustryKeyword::model()->find('t.title=:title', array(':title' => trim($keyword)));
+			if (!empty($industryKeyword)) {
+				if ($industryKeyword->industry->is_active == 1) {
 					return $industryKeyword->industry;
+				}
 			}
 		}
+
 		return $industry;
-		
+	}
+
+	public static function slug2obj($slug)
+	{
+		return Industry::model()->find('t.slug=:slug', array(':slug' => $slug));
+	}
+
+	public static function getBySlug($slug)
+	{
+		return self::slug2obj($slug);
+	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
 	}
 }
-

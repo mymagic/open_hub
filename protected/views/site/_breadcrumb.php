@@ -2,7 +2,7 @@
 <p class="content__breadcrumbs"><span xmlns:v="http://rdf.data-vocabulary.org/#"><span typeof="v:Breadcrumb">
 
 <span class="" title="Home">
-<?php if($home2Icon): ?>
+<?php if ($home2Icon): ?>
 <a href="//mymagic.my">
     <svg width="28" height="18">
         <symbol id="SmallLogoB" class="small_logo" viewBox="0 0 80.5 47.7">
@@ -25,9 +25,9 @@
 <?php endif; ?>
 </span>
 
-<?php $total=count($this->breadcrumbs); $count=0; foreach($this->breadcrumbs as $key=>$breadcrumb): ?>
+<?php $total = count($this->breadcrumbs); $count = 0; foreach ($this->breadcrumbs as $key => $breadcrumb): ?>
 / 
-<span class="<?php echo (($count==$total-1))?'breadcrumb_last':''?>"><?php if(!is_numeric($key)): ?><?php echo  Html::link($key, $breadcrumb) ?><?php else: ?><?php echo $breadcrumb ?><?php endif; ?></span>
+<span class="<?php echo (($count == $total - 1)) ? 'breadcrumb_last' : ''?>"><?php if (!is_numeric($key)): ?><?php echo  Html::link($key, $breadcrumb) ?><?php else: ?><?php echo $breadcrumb ?><?php endif; ?></span>
 <?php $count++; endforeach; ?>
 </span></span></p>
 </div>

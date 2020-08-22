@@ -1,6 +1,6 @@
 <?php
-$this->breadcrumbs=array(
-    'Notification'
+$this->breadcrumbs = array(
+	'Notification'
 );
 ?>
 
