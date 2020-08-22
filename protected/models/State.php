@@ -62,4 +62,15 @@ class State extends StateBase
 			'title' => $this->title,
 		);
 	}
+
+	public function code2title($code)
+	{
+		$model = self::model()->find('t.code=:code', array(':code' => $code));
+
+		$value = '';
+		if (!empty($model)) {
+			$value = $model->title;
+		}
+		return $value;
+	}
 }

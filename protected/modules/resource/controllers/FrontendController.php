@@ -232,7 +232,9 @@ class FrontendController extends Controller
 
 	public function actionAdd($keyword = '')
 	{
-		$keyword = $_GET['keyword'];
+		if (!Yii::app()->getModule('resource')->allowUserAddResource) {
+			Notice::page(Yii::t('resource', 'User is not allow to add new resources as per setting'), Notice_INFO);
+		}
 
 		$tmps = HUB::getUserOrganizationsCanJoin($keyword, Yii::app()->user->username);
 
@@ -398,10 +400,12 @@ class FrontendController extends Controller
 				$model->inputOrganizations = array($organization->id);
 			}
 
-			$model->setLatLongAddress($_POST['Resource']['latlong_address']);
+			if (!empty($_POST['Resource']['latlong_address'])) {
+				$model->setLatLongAddress($_POST['Resource']['latlong_address']);
+			}
 
 			$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
-			$model->latlong_address = null;
+			// $model->latlong_address = null;
 			// var_dump($model->validate(), $model->getErrors());
 			if ($model->save()) {
 				$realm = 'cpanel';

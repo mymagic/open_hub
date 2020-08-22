@@ -67,10 +67,13 @@ $this->menu = array(
 		'id',
 		'code',
 		array('name' => 'username', 'type' => 'raw', 'value' => sprintf('<a href="%s">#%s - %s (%s)</a>', Yii::app()->createUrl('/member/view', array('id' => $model->user->id)), $model->user->id, $model->user->username, $model->user->profile->full_name)),
-		array('name' => 'stage', 'type' => 'raw', 'value' => $model->formatEnumStage($model->stage)),
-		array('name' => 'status', 'value' => $model->formatEnumStatus($model->status)),
+		array('name' => 'stage', 'type' => 'raw', 'value' => $model->renderStage()),
+		array('name' => 'status', 'type' => 'raw', 'value' => $model->renderStatus()),
 		//
 		array('label' => $model->attributeLabel('date_submitted'), 'value' => Html::formatDateTime($model->date_submitted, 'long', 'medium', '-', $model->form->timezone)),
+		//
+		'process_by',
+		array('label' => $model->attributeLabel('date_processed'), 'value' => Html::formatDateTime($model->date_processed, 'long', 'medium', '-', $model->form->timezone)),
 
 		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
@@ -80,6 +83,11 @@ $this->menu = array(
 		// developer only
 		array(
 			'name' => 'json_data', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonData" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_data)),
+			// 'visible' => Yii::app()->user->isDeveloper
+			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])
+		),
+		array(
+			'name' => 'json_extra', 'type' => 'raw', 'value' => sprintf('<textarea id="textarea-jsonExtra" class="full-width" rows="10" disabled>%s</textarea>', nl2br($model->json_extra)),
 			// 'visible' => Yii::app()->user->isDeveloper
 			'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'developer']])
 		),
@@ -95,6 +103,21 @@ if(document.getElementById('textarea-jsonData').value != '')
 {
 	document.getElementById('textarea-jsonData').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonData').value), undefined, 4);
 	/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonData"), {
+		htmlMode: true,
+		lineNumbers: true,
+		matchBrackets: true,
+		mode: "application/json",
+		indentUnit: 4,
+		indentWithTabs: true,
+		lineWrapping: true,
+		scrollbarStyle: 'simple',
+		theme:'midnight',
+	});*/
+}
+if(document.getElementById('textarea-jsonExtra').value != '')
+{
+	document.getElementById('textarea-jsonExtra').value = JSON.stringify(JSON.parse(document.getElementById('textarea-jsonExtra').value), undefined, 4);
+	/*var editor = CodeMirror.fromTextArea(document.getElementById("textarea-jsonExtra"), {
 		htmlMode: true,
 		lineNumbers: true,
 		matchBrackets: true,

@@ -1,12 +1,11 @@
-<?php $this->layoutParams['form'] = $model; ?>
+<?php $this->layoutParams['form'] = $form; ?>
 
-<?php if ($model->type == 0) {
-	$this->renderPartial('_submissionPartial', array('model' => $model));
-} ?>
+<?php $submissionPartial = trim($this->renderPartial('_submissionPartial', array('model' => $form), true)); echo $submissionPartial; ?>
+<?php if (empty($submissionPartial)):?><hr /><?php endif; ?>
 
-<hr />
-<?php echo $form?>
+<?php echo $htmlForm?>
 
+<?php echo $form->renderPublishViewOkButton(Yii::app()->controller, $submission) ?>
 
 <?php Yii::app()->clientScript->registerScript('f7-publish-view', "
 	$('#auto-save-span').hide();

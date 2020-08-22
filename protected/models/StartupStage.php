@@ -98,4 +98,25 @@ class StartupStage extends StartupStageBase
 
 		return $return;
 	}
+
+	public static function slug2obj($slug)
+	{
+		return StartupStage::model()->find('t.slug=:slug', array(':slug' => $slug));
+	}
+
+	public static function getBySlug($slug)
+	{
+		return self::slug2obj($slug);
+	}
+
+	public static function getByTitle($title)
+	{
+		return StartupStage::model()->find('t.title=:title', array(':title' => $title));
+	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
+	}
 }

@@ -47,9 +47,9 @@ $this->breadcrumbs = array(
 <div class="col col-lg-9">
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" role="tablist" id="navTab-backendBashboardViewTabs">
-	<li role="presentation" class=""><a href="#welcome" aria-controls="welcome" role="tab" data-toggle="tab">Welcome</a></li>
+	<li role="presentation" class=""><a href="#welcome" aria-controls="welcome" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">Welcome</a></li>
 <?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-    <li role="presentation" class=""><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
+    <li role="presentation" class=""><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $tabModule['title'] ?></a></li>
 <?php endforeach; ?><?php endforeach; ?>
 </ul><!-- /Nav tabs -->
 <!-- Tab panes -->
@@ -71,9 +71,7 @@ $this->breadcrumbs = array(
 </div><!--/Tab panes -->
 </div>
 
-
 </div>
-
 
 <?php Yii::app()->clientScript->registerScript('backend-dashboard2', "
 var loadedTabs = [];

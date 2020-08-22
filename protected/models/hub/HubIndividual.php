@@ -17,6 +17,71 @@
 
 class HubIndividual
 {
+	// title is not unique
+	public static function getOrCreateIndividual($fullname, $params = array())
+	{
+		try {
+			$individual = self::getIndividualByFullname($fullname);
+		} catch (Exception $e) {
+			$individual = null;
+		}
+
+		if ($individual === null) {
+			$individual = self::createIndividual($fullname, $params);
+		} else {
+			// update attributes
+			$params['individual']['full_name'] = $fullname;
+			$individual->attributes = $params['individual'];
+			$individual->save(false);
+
+			// add individual2email
+			if (!empty($params['userEmail'])) {
+				$i2e = $individual->setIndividualEmail($params['userEmail']);
+			}
+		}
+
+		return $individual;
+	}
+
+	public static function createIndividual($fullname, $params = array())
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$individual = new Individual();
+			$individual->scenario = 'createIndividual';
+
+			$params['individual']['full_name'] = $fullname;
+			$individual->attributes = $params['individual'];
+
+			if (!empty(UploadedFile::getInstance($individual, 'imageFile_photo'))) {
+				$individual->imageFile_photo = UploadedFile::getInstance($individual, 'imageFile_photo');
+			} else {
+				$individual->image_photo = 'uploads/individual/photo.default.jpg';
+			}
+
+			if ($individual->save()) {
+				UploadManager::storeImage($individual, 'photo', $individual->tableName());
+
+				// add individual2email
+				if (!empty($params['userEmail'])) {
+					$i2e = $individual->setIndividualEmail($params['userEmail']);
+				}
+
+				$log = Yii::app()->esLog->log(sprintf("created '%s'", $individual->full_name), 'individual', array('trigger' => 'HUB::createIndividual', 'model' => 'Individual', 'action' => 'create', 'id' => $individual->id, 'individualId' => $individual->id), '', array('userEmail' => $params['userEmail']));
+
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($individual->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
+
+		return $individual;
+	}
+
 	public static function getIndividual($id)
 	{
 		$model = Individual::model()->findByPk($id);
@@ -130,18 +195,6 @@ class HubIndividual
 			}
 			$target->save();
 
-			// process individual2Emails
-			// will not merge to target if same email address already exists
-			if (!empty($source->individual2Emails)) {
-				foreach ($source->individual2Emails as $individual2Email) {
-					// if no duplicate
-					if (!$target->hasUserEmail($individual2Email->user_email)) {
-						$individual2Email->individual_id = $target->id;
-						$individual2Email->save();
-					}
-				}
-			}
-
 			// process individualOrganizations
 			if (!empty($source->individualOrganizations)) {
 				foreach ($source->individualOrganizations as $individualOrganization) {
@@ -149,6 +202,17 @@ class HubIndividual
 					if (!$individualOrganization->organization->hasIndividualOrganization($target->id, $individualOrganization->as_role_code)) {
 						$individualOrganization->individual_id = $target->id;
 						$individualOrganization->save();
+					}
+				}
+			}
+
+			// process individualIndividuals
+			if (!empty($source->individualIndividuals)) {
+				foreach ($source->individualIndividuals as $individualIndividual) {
+					// if no duplicate
+					if (!$individualIndividual->individual->hasIndividualIndividual($target->id, $individualIndividual->as_role_code)) {
+						$individualIndividual->individual_id = $target->id;
+						$individualIndividual->save();
 					}
 				}
 			}
@@ -251,5 +315,15 @@ class HubIndividual
 		$criteria->params[':userEmail'] = $userEmail;
 
 		return Individual::model()->findAll($criteria);
+	}
+
+	public static function getIndividualByFullname($fullname)
+	{
+		$model = Individual::model()->fullname2obj($fullname);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested individual does not exist.');
+		}
+
+		return $model;
 	}
 }

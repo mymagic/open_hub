@@ -107,14 +107,14 @@ class ResourceController extends Controller
 		foreach ($modules as $moduleKey => $moduleParams) {
 			// for backend only
 			if (Yii::app()->user->accessBackend && $realm == 'backend') {
-				if (method_exists(Yii::app()->getModule($moduleKey), 'getIndividualActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getIndividualActions($model, 'backend'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getResourceActions($model, 'backend'));
 				}
 			}
 			// for frontend only
 			if (Yii::app()->user->accessCpanel && $realm == 'cpanel') {
-				if (method_exists(Yii::app()->getModule($moduleKey), 'getIndividualActions')) {
-					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getIndividualActions($model, 'cpanel'));
+				if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceActions')) {
+					$actions = array_merge($actions, (array) Yii::app()->getModule($moduleKey)->getResourceActions($model, 'cpanel'));
 				}
 			}
 		}
@@ -127,6 +127,7 @@ class ResourceController extends Controller
 			'organization' => $organization,
 			'tab' => $tab,
 			'tabs' => $tabs,
+			'actions' => $actions,
 			'user' => $user,
 		));
 	}
@@ -178,7 +179,7 @@ class ResourceController extends Controller
 
 			$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
-			$model->latlong_address = null;
+			// $model->latlong_address = null;
 			// var_dump($model->validate(), $model->getErrors());
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'logo', $model->tableName());
@@ -415,7 +416,7 @@ class ResourceController extends Controller
 	 */
 	public function loadModel($id, $organization_id = '')
 	{
-		if(!empty($organization_id)){
+		if (!empty($organization_id)) {
 			$criteria = new CDbCriteria;
 			$criteria->with = [
 				'organizations' => [
@@ -423,12 +424,12 @@ class ResourceController extends Controller
 					'params' => [':organization_id' => $organization_id]
 				]
 			];
-			$criteria->compare('t.id',$id);
+			$criteria->compare('t.id', $id);
 			$model = Resource::model()->find($criteria);
 		} else {
 			$model = Resource::model()->findByPk($id);
 		}
-		
+
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
@@ -465,6 +466,7 @@ class ResourceController extends Controller
 		$tabs = array();
 
 		$modules = YeeModule::getActiveParsableModules();
+
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getResourceViewTabs')) {
 				$tabs = array_merge($tabs, (array) Yii::app()->getModule($moduleKey)->getResourceViewTabs($model, $realm));

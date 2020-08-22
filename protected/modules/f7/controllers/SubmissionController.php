@@ -113,6 +113,7 @@ class SubmissionController extends Controller
 			}
 
 			$model->jsonArray_data = json_decode($model->json_data);
+			$model->jsonArray_extra = json_decode($model->json_extra);
 
 			if ($model->save()) {
 				//UploadManager::storeImage($model, 'logo', $model->tableName());
@@ -147,6 +148,7 @@ class SubmissionController extends Controller
 			//$model->imageFile_logo = UploadedFile::getInstance($model, 'imageFile_logo');
 
 			$model->jsonArray_data = json_decode($model->json_data);
+			$model->jsonArray_extra = json_decode($model->json_extra);
 
 			if ($model->save()) {
 				//UploadManager::storeImage($model, 'logo', $model->tableName());

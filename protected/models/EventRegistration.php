@@ -38,6 +38,10 @@ class EventRegistration extends EventRegistrationBase
 	{
 		// custom code here
 		// ...
+		if (!empty($this->event_id) && empty($this->event_code)) {
+			$event = Event::model()->findByPk($this->event_id);
+			$this->event_code = $event->code;
+		}
 
 		return parent::beforeValidate();
 	}
@@ -183,6 +187,8 @@ class EventRegistration extends EventRegistrationBase
 			$criteriaEvent->addSearchCondition('title', trim($this->searchEvent), true, 'OR');
 			$criteria->mergeWith($criteriaEvent, $params['compareOperator']);
 		}
+
+		$criteria->group = 't.id';
 
 		return new CActiveDataProvider($this, [
 			'criteria' => $criteria,

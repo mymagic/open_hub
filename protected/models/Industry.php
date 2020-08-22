@@ -159,4 +159,20 @@ class Industry extends IndustryBase
 
 		return $industry;
 	}
+
+	public static function slug2obj($slug)
+	{
+		return Industry::model()->find('t.slug=:slug', array(':slug' => $slug));
+	}
+
+	public static function getBySlug($slug)
+	{
+		return self::slug2obj($slug);
+	}
+
+	public function id2title($id)
+	{
+		$model = self::model()->findByPk($id);
+		return !empty($model) ? $model->title : false;
+	}
 }

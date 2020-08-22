@@ -678,6 +678,7 @@ class HUB extends Component
 		// todo: implement cache
 		$bufferFilter = 'o.is_active=1';
 		$filters = array();
+		$tempSql = '';
 
 		$slugTitleArray = [
 			'personas' => self::getOrganizationPersonas(true),
@@ -1206,6 +1207,56 @@ class HUB extends Component
 		return HubMaster::getAllActiveIndustries();
 	}
 
+	public static function getOrCreateIndustry($slug, $params = array())
+	{
+		try {
+			$industry = Industry::getBySlug($slug);
+		} catch (Exception $e) {
+			$industry = null;
+		}
+
+		if ($industry === null) {
+			$industry = self::createIndustry($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$industry->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $industry->hasAttribute($var)) {
+					$industry->$var = $params['text_short_description'];
+				}
+			}
+			$industry->save(false);
+		}
+
+		return $industry;
+	}
+
+	public static function createIndustry($slug, $params = array())
+	{
+		$industry = new Industry();
+		$params['slug'] = $slug;
+		$industry->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $industry->hasAttribute($var)) {
+				$industry->$var = $params['title'];
+			}
+		}
+		if ($industry->validate() && $industry->save(false)) {
+			return $industry;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($industry->getErrors()));
+		}
+
+		return null;
+	}
+
 	public static function getAllActiveProductCategories()
 	{
 		return HubMaster::getAllActiveProductCategories();
@@ -1226,25 +1277,39 @@ class HUB extends Component
 		return HubMaster::getAllActivePersonas();
 	}
 
-	public static function getOrCreatePersona($title, $params = array())
+	public static function getOrCreatePersona($slug, $params = array())
 	{
 		try {
-			$persona = Persona::getByTitle($title);
+			$persona = Persona::getBySlug($slug);
 		} catch (Exception $e) {
 			$persona = null;
 		}
 
 		if ($persona === null) {
-			$persona = self::createPersona($title, $params);
+			$persona = self::createPersona($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$persona->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $persona->hasAttribute($var)) {
+					$persona->$var = $params['text_short_description'];
+				}
+			}
+			$persona->save(false);
 		}
 
 		return $persona;
 	}
 
-	public static function createPersona($title, $params = array())
+	public static function createPersona($slug, $params = array())
 	{
 		$persona = new Persona();
-		$params['title'] = $title;
+		$params['slug'] = $slug;
 		$persona->setAttributes($params);
 
 		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
@@ -1269,6 +1334,60 @@ class HUB extends Component
 	public static function getAllActiveStartupStages()
 	{
 		return HubMaster::getAllActiveStartupStages();
+	}
+
+	public static function getOrCreateStartupStage($slug, $params = array())
+	{
+		try {
+			$stage = StartupStage::getBySlug($slug);
+		} catch (Exception $e) {
+			$stage = null;
+		}
+
+		if ($stage === null) {
+			$stage = self::createStartupStage($slug, $params);
+		} else {
+			$params['slug'] = $slug;
+			$stage->attributes = $params;
+			foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+				$var = 'title_' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['title'];
+				}
+				$var = 'text_short_description' . $languageKey;
+				if (empty($params[$var]) && $stage->hasAttribute($var)) {
+					$stage->$var = $params['text_short_description'];
+				}
+			}
+			$stage->save(false);
+		}
+
+		return $stage;
+	}
+
+	public static function createStartupStage($slug, $params = array())
+	{
+		$stage = new StartupStage();
+		$params['slug'] = $slug;
+		$stage->setAttributes($params);
+
+		foreach (Yii::app()->params['languages'] as $languageKey => $languageParams) {
+			$var = 'title_' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['title'];
+			}
+			$var = 'text_short_description' . $languageKey;
+			if (empty($params[$var]) && $stage->hasAttribute($var)) {
+				$stage->$var = $params['text_short_description'];
+			}
+		}
+		if ($stage->validate() && $stage->save(false)) {
+			return $stage;
+		} else {
+			throw new Exception(Yii::app()->controller->modelErrors2String($stage->getErrors()));
+		}
+
+		return null;
 	}
 
 	public static function getAllActiveSdgs()
@@ -1408,6 +1527,8 @@ class HUB extends Component
 		$notify->message = $jsonPayload->msg;
 		$notify->jsonArray_payload = $jsonPayload;
 
+		// sendBehalfName and sendBehalfEmail
+
 		// send sms
 		if ($notify->hasSms) {
 			$tmp = self::sendSms($notify->receiverMobileNo, $jsonPayload->msg);
@@ -1439,7 +1560,7 @@ class HUB extends Component
 	{
 	}
 
-	public static function sendEmail($email, $name, $title, $content, $options = '')
+	public static function sendEmail($email, $name, $title, $content, $options = array())
 	{
 		$receivers[] = array('email' => $email, 'name' => $name);
 
@@ -1449,7 +1570,7 @@ class HUB extends Component
 			}
 		}
 
-		return ysUtil::sendMail($receivers, $title, $content);
+		return ysUtil::sendMail($receivers, $title, $content, $options);
 	}
 
 	//
@@ -1481,6 +1602,27 @@ class HUB extends Component
 		$eventRegistrations = EventRegistration::model()->findAllBySql($sql);
 
 		return $eventRegistrations;
+	}
+
+	// ys: no idea why this function cant be place in HubEvent, it will output error: Call to undefined method HubEvent::getOrCreateEventRegistration()
+	public static function getOrCreateEventRegistration($event, $registrationCode, $params = array())
+	{
+		try {
+			$eventRegistration = EventRegistration::model()->findByAttributes(array('event_id' => $event->id, 'registration_code' => $registrationCode));
+		} catch (Exception $e) {
+			$eventRegistration = null;
+		}
+
+		if ($eventRegistration === null) {
+			$eventRegistration = HubEvent::createEventRegistration($event, $registrationCode, $params);
+		} else {
+			// update attributes
+			$params['registration_code'] = $registrationCode;
+			$eventRegistration->attributes = $params;
+			$eventRegistration->save(false);
+		}
+
+		return $eventRegistration;
 	}
 
 	//

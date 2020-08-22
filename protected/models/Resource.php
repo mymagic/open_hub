@@ -267,6 +267,7 @@ class Resource extends ResourceBase
 			}
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
+		$criteria->group = 't.id';
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,

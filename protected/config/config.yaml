@@ -34,7 +34,7 @@ main:
                     title: Application theme
                     example: inspinia
                     datatype: enum
-                    datatype_value: "inspinia|bootstrap3"
+                    datatype_value: "inspinia"
                     default: inspinia
                     getter: 'Yii::app()->theme->name;'
                 -   var: params.maintenance
@@ -92,6 +92,24 @@ main:
                     default: //openhubd1.mymagic.my
                     datatype: string
                     getter: "Yii::app()->params['baseUrl'];"
+                -   var: params.noProxyDomain
+                    file: params.php
+                    env: NO_PROXYDOMAIN
+                    title: No Proxy Domain
+                    hint: In most cases, same with your Master Domain if you are not using any proxy / firewall like Cloudflare.
+                    example: noproxy-central.mymagic.my
+                    default: no-proxy-openhub.mymagic.my
+                    datatype: string
+                    getter: "Yii::app()->params['noProxyDomain'];"
+                -   var: params.noProxyUrl
+                    file: params.php
+                    env: NO_PROXY_URL
+                    title: No Proxy URL
+                    hint: URL without the scheme. In most cases, same wtih your Master URL if you are not using any proxy / firewall like Cloudflare.
+                    example: //noproxy-central.mymagic.my
+                    default: //noproxy-openhubd.mymagic.my
+                    datatype: string
+                    getter: "Yii::app()->params['noProxyUrl'];"     
                 -   var: params.moduleDisableNoneCore
                     file: params.php
                     env: MODULE_DISABLE_NONE_CORE
@@ -295,6 +313,7 @@ main:
             title: "File Storage"
             items:
                 -   var: params.storageMode
+                    varInstaller: storageMode
                     file: 
                     env: STORAGE_MODE
                     title: File Storage Mode

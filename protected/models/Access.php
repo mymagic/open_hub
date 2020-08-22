@@ -80,11 +80,11 @@ class Access extends AccessBase
 	/**
 	 * @param string $module
 	 * @param string $controler controller file name
-	 * @param array $actions array of action
-	 * @param array $roles array of role (available roles: superAdmin, developer, admin, roleManager, adminManager, contentManager, memberManager, reportManager, ecosystem)
+	 * @param mixed $actions string/array of action
+	 * @param mixed $roles string/array of role (available roles: superAdmin, developer, admin, roleManager, adminManager, contentManager, memberManager, reportManager, ecosystem)
 	 * 
 	 * @return boolean
-	 **/ 
+	 **/  
 	public function setAccessRole($module, $controller, $actions, $roles)
 	{
 		if(empty($controller)){
@@ -131,10 +131,14 @@ class Access extends AccessBase
 					{
 						$role_id = Role::code2id($role);
 						if(!empty($role_id)){
-							$mRole2Access = new Role2Access;
-							$mRole2Access->role_id = $role_id;
-							$mRole2Access->access_id = $access_id;
-							$mRole2Access->save();
+							// check if record already exist
+							$mRole2Access = Role2Access::model()->findByAttributes(['role_id' => $role_id, 'access_id' => $access_id]);
+							if($mRole2Access===null){
+								$mRole2Access = new Role2Access;
+								$mRole2Access->role_id = $role_id;
+								$mRole2Access->access_id = $access_id;
+								$mRole2Access->save();
+							}
 						}
 					}
 				}

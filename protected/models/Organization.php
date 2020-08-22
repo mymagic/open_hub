@@ -240,13 +240,13 @@ class Organization extends OrganizationBase
 		return parent::beforeSave();
 	}
 
-	public function title2obj($title)
+	public static function title2obj($title)
 	{
 		// exiang: spent 3 hrs on the single quote around title. it's important if you passing data from different collation db table columns and do compare with = (equal). Changed to LIKE for safer comparison
 		return Organization::model()->find('t.title=:title', array(':title' => trim($title)));
 	}
 
-	public function isTitleExists($title)
+	public static function isTitleExists($title)
 	{
 		$exists = self::title2obj($title);
 		if ($exists === null) {
@@ -270,11 +270,16 @@ class Organization extends OrganizationBase
 	}
 
 	// case insensitive
-	public function hasUserEmail($email)
+	// status is optional, pass in to check with percision
+	public function hasUserEmail($email, $status = '')
 	{
 		foreach ($this->organization2Emails as $item) {
 			if (strtolower($email) == strtolower($item->user_email)) {
-				return true;
+				if ($status == '') {
+					return true;
+				} elseif ($status == $item->status) {
+					return true;
+				}
 			}
 		}
 
@@ -307,6 +312,37 @@ class Organization extends OrganizationBase
 			if ($userEmail == $item->user_email && $item->status == 'approve') {
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	public function getOrganizationEmail($userEmail)
+	{
+		foreach ($this->organization2Emails as $item) {
+			if ($userEmail == $item->user_email) {
+				return $item;
+			}
+		}
+
+		return false;
+	}
+
+	// pass even if the the email is not valid
+	public function setOrganizationEmail($userEmail, $status = 'approve')
+	{
+		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+			$o2e = new Organization2Email;
+			$o2e->organization_id = $this->id;
+			$o2e->user_email = $userEmail;
+			$o2e->status = $status;
+
+			return $o2e->save(false);
+		} else {
+			$o2e = $this->getOrganizationEmail($userEmail);
+			$o2e->status = $status;
+
+			return $o2e->save(false);
 		}
 
 		return false;
@@ -501,6 +537,8 @@ class Organization extends OrganizationBase
 			}
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
+
+		$criteria->group = 't.id';
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
@@ -839,6 +877,7 @@ class Organization extends OrganizationBase
 
 	//
 	// persona
+	// persona key is id
 	public function getAllPersonasKey()
 	{
 		$return = array();
@@ -1087,22 +1126,22 @@ class Organization extends OrganizationBase
 		return false;
 	}
 
-	public function addIndividualOrganization($individualId, $asRoleCode, $extra = '')
+	public function addIndividualOrganization($individual, $asRoleCode, $extra = '')
 	{
-		if ($this->hasNoIndividualOrganization($individualId, $asRoleCode)) {
+		if ($this->hasNoIndividualOrganization($individual->id, $asRoleCode)) {
 			$eo = new IndividualOrganization;
 			$eo->organization_code = $this->code;
 			$eo->as_role_code = $asRoleCode;
-			$eo->individual_id = $individualId;
+			$eo->individual_id = $individual->id;
 
-			if (!empty($extra) && !empty($extra['jobPosition'])) {
-				$eo->job_position = $extra['jobPosition'];
+			if (!empty($extra) && !empty($extra['job_position'])) {
+				$eo->job_position = $extra['job_position'];
 			}
-			if (!empty($extra) && !empty($extra['dateStarted'])) {
-				$eo->date_started = $extra['dateStarted'];
+			if (!empty($extra) && !empty($extra['date_started'])) {
+				$eo->date_started = $extra['date_started'];
 			}
-			if (!empty($extra) && !empty($extra['dateEnded'])) {
-				$eo->date_ended = $extra['dateEnded'];
+			if (!empty($extra) && !empty($extra['date_ended'])) {
+				$eo->date_ended = $extra['date_ended'];
 			}
 
 			return $eo->validate() && $eo->save();

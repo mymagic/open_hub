@@ -44,6 +44,7 @@ class Controller extends BaseController
 	public $activeMenuCpanel = '';
 	public $activeSubMenuCpanel = '';
 	public $cpanelMenuInterface = '';
+	// todo: detach MaGIC Connect
 	public $magicConnect = null;
 	public $mixPanel = null;
 
@@ -54,6 +55,7 @@ class Controller extends BaseController
 		Yii::app()->session['accessBackend'] = false;
 		Yii::app()->session['accessCpanel'] = false;
 
+		// todo: detach MaGIC Connect
 		if (empty($this->magicConnect)) {
 			$httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
 			$this->magicConnect = new MyMagic\Connect\Client();
@@ -70,6 +72,7 @@ class Controller extends BaseController
 
 		$this->layoutParams['bodyClass'] = 'gray-bg';
 		$this->layoutParams['hideFlashes'] = false;
+		$this->layoutParams['brand'] = Yii::app()->params['brand'];
 
 		if (Yii::app()->params['environment'] == 'staging') {
 			// Notice::flash('This is a staging environment for testing purposes only. Data you inserted here is not persistent!', Notice_WARNING);
@@ -314,7 +317,7 @@ class Controller extends BaseController
 				// 'visible' => Yii::app()->user->getState('accessBackend') == true && (Yii::app()->user->isSuperAdmin || Yii::app()->user->isContentManager),
 				'visible' => Yii::app()->user->getState('accessBackend') == true && (
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'embed', 'action' => (object)['id' => 'admin']]) ||
-					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'lingual', 'action' => (object)['id' => 'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'lingual', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'i18n']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'setting', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'registry', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'request', 'action' => (object)['id' => 'admin']]) ||
@@ -331,8 +334,8 @@ class Controller extends BaseController
 					),
 					//array('label'=>Yii::t('app', 'Faq'), 'url'=>array('/faq/admin'),),
 					array(
-						'label' => Yii::t('app', 'Lingual'), 'url' => array('/lingual/admin'),
-						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'lingual', 'action' => (object)['id' => 'admin']])
+						'label' => Yii::t('app', 'Lingual'), 'url' => array('/i18n/lingual/admin'),
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'lingual', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'i18n']])
 					),
 					array(
 						'label' => Yii::t('app', 'Setting'), 'url' => array('/setting/admin'),

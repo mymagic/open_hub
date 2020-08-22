@@ -17,6 +17,7 @@
 
 class HubOrganization
 {
+	// title is not unique
 	public static function getOrCreateOrganization($title, $params = array())
 	{
 		try {
@@ -27,6 +28,16 @@ class HubOrganization
 
 		if ($organization === null) {
 			$organization = self::createOrganization($title, $params);
+		} else {
+			// update attributes
+			$params['organization']['title'] = $title;
+			$organization->attributes = $params['organization'];
+			$organization->save(false);
+
+			// add orgnization2email
+			if (!empty($params['userEmail'])) {
+				$o2e = $organization->setIndividualEmail($params['userEmail']);
+			}
 		}
 
 		return $organization;
@@ -57,11 +68,7 @@ class HubOrganization
 
 				// add organization2email
 				if (!empty($params['userEmail'])) {
-					$o2e = new Organization2Email();
-					$o2e->organization_id = $organization->id;
-					$o2e->user_email = $params['userEmail'];
-					$o2e->status = 'approve';
-					$o2e->save();
+					$o2e = $organization->setOrganizationEmail($params['userEmail']);
 				}
 
 				$log = Yii::app()->esLog->log(sprintf("created '%s'", $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));

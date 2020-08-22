@@ -72,6 +72,7 @@ $this->menu = array(
 			array('label' => $model->attributeLabel('date_ended'), 'value' => Html::formatDateTime($model->date_ended, 'long', 'medium')),
 			array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
 			array('name' => 'is_highlight', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_highlight)),
+			'brandCode',
 			array('name' => 'backend', 'label' => sprintf('%s %s', Html::faIcon('fa-tag'), $model->attributeLabel('backend')), 'type' => 'raw', 'value' => Html::csvArea('backend', $model->backend->toString())),
 
 			array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),

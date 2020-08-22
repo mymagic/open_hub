@@ -9,9 +9,16 @@ class OpenHubCommand extends ConsoleCommand
 	public function actionIndex()
 	{
 		echo "Available command:\n";
+		echo "loadDemoData - load demo data into this installation\n";
 		echo "downloadLatestRelease --saveAs=/var/www/open_hub/protected/runtime/download/key.openhub-latest.zip - download latest release package\n";
 		echo "upgrade --key=UUID --force=true - upgrade to latest release package\n";
 		echo "\n";
+	}
+
+	public function actionLoadDemoData()
+	{
+		$result = HubOpenHub::loadDemoData();
+		echo sprintf("[%s] %s\n", ucwords($result['status']), $result['msg']);
 	}
 
 	public function actionDownloadLatestRelease($saveAs = '')

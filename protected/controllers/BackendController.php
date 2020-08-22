@@ -186,6 +186,7 @@ class BackendController extends Controller
 			if (!empty($user->username)) {
 				echo $user->username . ' - ' . $user->profile->full_name . '<br>';
 				try {
+					// todo: detach MaGIC Connect
 					$c = $this->magicConnect->isUserExists($user->username);
 					if ($c != true) {
 						++$countToConnect;
@@ -216,6 +217,7 @@ class BackendController extends Controller
 			// find which have connect account and which not
 			if (!empty($user->username)) {
 				try {
+					// todo: detach MaGIC Connect
 					$c = $this->magicConnect->isUserExists($user->username);
 					if ($c == true) {
 						++$countConnected;
@@ -248,6 +250,7 @@ class BackendController extends Controller
 		}
 
 		// magic connect
+		// todo: detach MaGIC Connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
 		}
@@ -285,6 +288,7 @@ class BackendController extends Controller
 			throw new CException(Yii::t('app', 'You must login to update your profile'));
 		}
 		// magic connect
+		// todo: detach MaGIC Connect
 		if (!empty($this->magicConnect)) {
 			$this->redirect($this->magicConnect->getProfileUrl());
 		}

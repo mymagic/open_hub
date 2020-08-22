@@ -43,7 +43,7 @@ $this->menu = array(
 			array('label' => $model->attributeLabel('date_open'), 'value' => Html::formatDateTimezone($model->date_open, 'long', 'medium', '-', $model->timezone)),
 			array('label' => $model->attributeLabel('date_close'), 'value' => Html::formatDateTimezone($model->date_close, 'long', 'medium', '-', $model->timezone)),
 
-			array('name' => 'Survey', 'type' => 'raw', 'value' => Html::renderBoolean($model->type)),
+			// array('name' => 'Survey', 'type' => 'raw', 'value' => Html::renderBoolean($model->type)),
 			array('name' => 'is_multiple', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_multiple)),
 			array('name' => 'is_login_required', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_login_required)),
 			array('name' => 'Public URL', 'type' => 'raw', 'value' => Html::link($model->getPublicUrl(), $model->getPublicUrl())),
@@ -93,8 +93,8 @@ $this->menu = array(
 		array('name' => 'username', 'value' => '$data->user->username'),
 		// array('name'=>'Details', 'type'=>'raw', 'value'=>'$data->renderBackendDetails()', 'filter'=>false),
 		array('name' => 'details', 'type' => 'raw', 'value' => '$data->renderBackendDetails()'),
-		array('name' => 'stage', 'value' => '$data->formatEnumStage($data->stage)', 'filter' => $modelSubmission->getEnumStage(false, true)),
-		array('name' => 'status', 'value' => '$data->formatEnumStatus($data->status)', 'filter' => $modelSubmission->getEnumStatus(false, true)),
+		array('name' => 'stage', 'type' => 'raw', 'value' => '$data->renderStage()', 'filter' => $modelSubmission->getEnumStage(false, true)),
+		array('name' => 'status', 'type' => 'raw', 'value' => '$data->renderStatus()', 'filter' => $modelSubmission->getEnumStatus(false, true)),
 		array('name' => 'date_submitted', 'value' => 'Html::formatDateTimezone($data->date_submitted,  "long", "medium", "-", $data->form->timezone)', 'filter' => false),
 
 		array(

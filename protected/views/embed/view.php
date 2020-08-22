@@ -51,9 +51,9 @@ $this->menu = array(
 
 
 <ul class="nav nav-tabs">
-		<?php if (array_key_exists('en', Yii::app()->params['languages'])): ?><li class="active"><a href="#pane-en" data-toggle="tab">English</a></li><?php endif; ?>
-		<?php if (array_key_exists('ms', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-ms" data-toggle="tab">Bahasa</a></li><?php endif; ?>
-		<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-zh" data-toggle="tab">中文</a></li><?php endif; ?>
+		<?php if (array_key_exists('en', Yii::app()->params['languages'])): ?><li class="active"><a href="#pane-en" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">English</a></li><?php endif; ?>
+		<?php if (array_key_exists('ms', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-ms" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">Bahasa</a></li><?php endif; ?>
+		<?php if (array_key_exists('zh', Yii::app()->params['languages'])): ?><li class=""><a href="#pane-zh" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true">中文</a></li><?php endif; ?>
 
 </ul>
 <div class="tab-content">

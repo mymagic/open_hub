@@ -3,6 +3,7 @@
 class ResourceModule extends WebModule
 {
 	public $emailTeam;
+	public $allowUserAddResource;
 	public $defaultController = 'frontend';
 	private $_assetsUrl;
 

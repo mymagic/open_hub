@@ -223,7 +223,7 @@ class JourneyModule extends WebModule
 
 				return array(
 					array(
-						'label' => Yii::t('app', 'Journey'), 'url' => array('/journey/backend/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true,
+						'label' => Yii::t('app', 'Journey'), 'url' => array('/journey/backend/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'journey']]),
 						'active' => $controller->activeMenuMain == 'journey' ? true : false,
 					),
 				);
@@ -301,7 +301,7 @@ class JourneyModule extends WebModule
 	{
 		// check list of module required upgrade
 		$countModule2Upgrade = YeeModule::countModuleCanUpgrade();
-		if ($countModule2Upgrade > 0 && HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), (object)['id'=>'module','action'=>(object)['id'=>'admin'],'module'=>(object)['id'=>'sys']])) {
+		if ($countModule2Upgrade > 0 && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'module', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'sys']])) {
 			$notices[] = array('message' => Yii::t('journey', '{n} module needs to upgrade now! <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>|{n} modules need to upgrade now! <a href="{url}" class="btn btn-xs btn-primary">Upgrade</a>', array($countModule2Upgrade, '{url}' => Yii::app()->createUrl('//sys/module/admin'))), 'type' => Notice_WARNING);
 		}
 

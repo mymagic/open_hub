@@ -101,7 +101,7 @@ class F7Module extends WebModule
 							$msg = Yii::t('f7', "Your submission #{submissionId} for '{formTitle}' is in {status} mode.", array('{submissionId}' => $formSubmission->id, '{formTitle}' => $formSubmission->form->title, '{status}' => $formSubmission->formatEnumStatus($formSubmission->status)));
 						}
 
-						$return[] = array('service' => 'f7', 'timestamp' => $formSubmission->date_added, 'date' => date('r', $formSubmission->date_added), 'msg' => $msg, 'actionLabel' => 'View Detail', 'actionUrl' => Yii::app()->createAbsoluteUrl('/f7/publish/index', array('slug' => $formSubmission->form->slug, 'sid' => $formSubmission->id)));
+						$return[] = array('service' => 'f7', 'timestamp' => $formSubmission->date_added, 'date' => date('r', $formSubmission->date_added), 'msg' => $msg, 'actionLabel' => 'View Detail', 'actionUrl' => Yii::app()->createAbsoluteUrl('/f7/publish/view', array('slug' => $formSubmission->form->slug, 'sid' => $formSubmission->id)));
 					}
 				}
 			}

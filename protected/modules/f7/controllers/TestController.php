@@ -41,6 +41,46 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionExecHook($fid)
+	{
+		$form = Form::model()->findByPk($fid);
+		$submission = FormSubmission::model()->findByPk(1984);
+		if ($hook = $form->hasHook('onNotifyAfterSubmitForm')) {
+			//var_dump(call_user_func($hook->call, array('submission' => $submission)));
+			var_dump($form->execHook('onNotifyAfterSubmitForm', array('submission' => $submission)));
+		}
+	}
+
+	public function actionHasHook($fid)
+	{
+		$form = Form::model()->findByPk($fid);
+		print_r($form->hasHook('onNotifyAfterSubmitForm'));
+	}
+
+	public function actionRenderJsonData($sid)
+	{
+		$submission = FormSubmission::model()->findByPk($sid);
+		print_r($submission->renderJsonData('csv'));
+	}
+
+	// https://hubd.mymagic.my/f7/test/notifyMakerAfterChangedSubmit2Draft?sid=1982
+	public function actionNotifyMakerAfterSubmitForm($sid)
+	{
+		$submission = FormSubmission::model()->findByPk($sid);
+		$notifyMaker = HubForm::notifyMaker_user_afterSubmitForm($submission);
+		print_r($notifyMaker);
+		exit;
+	}
+
+	// https://hubd.mymagic.my/f7/test/notifyMakerAfterChangedSubmit2Draft?sid=1982
+	public function actionNotifyMakerAfterChangedSubmit2Draft($sid)
+	{
+		$submission = FormSubmission::model()->findByPk($sid);
+		$notifyMaker = HubForm::notifyMaker_user_afterChangedSubmit2Draft($submission);
+		print_r($notifyMaker);
+		exit;
+	}
+
 	public function actionCountRelation($formId)
 	{
 		$form = Form::model()->findByPk($formId);

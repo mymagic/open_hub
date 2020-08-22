@@ -89,6 +89,9 @@ class Individual extends IndividualBase
 			'envoyVisitors' => array(self::HAS_MANY, 'EnvoyVisitor', array('user_email' => 'visitor_email'), 'through' => 'verifiedIndividual2Emails',  'order' => 'date_signed_in DESC'),
 			'mentorSessions' => array(self::HAS_MANY, 'MentorSession', array('user_email' => 'mentee_email'), 'through' => 'verifiedIndividual2Emails',  'order' => 'mentorSessions.id DESC'),
 
+			'individualMergeSource' => array(self::HAS_ONE, 'IndividualMergeHistory', 'src_individual_id'),
+			'individualMergeDestination' => array(self::HAS_MANY, 'IndividualMergeHistory', 'dest_individual_id'),
+
 			// tags
 			'tag2Individuals' => array(self::HAS_MANY, 'Tag2Individual', 'individual_id'),
 			'tags' => array(self::HAS_MANY, 'Tag', array('tag_id' => 'id'), 'through' => 'tag2Individuals'),
@@ -111,7 +114,7 @@ class Individual extends IndividualBase
 			array('image_photo', 'length', 'max' => 255),
 			array('country_code', 'length', 'max' => 2),
 			array('ic_number', 'length', 'max' => 64),
-			array('text_address_residential, tag_backend, inputPersonas', 'safe'),
+			array('text_address_residential, country_code, tag_backend, inputPersonas', 'safe'),
 			array('imageFile_photo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -154,10 +157,12 @@ class Individual extends IndividualBase
 		// ...
 		$users = $this->getIndividualUser();
 		foreach ($users as $user) {
-			$interest = Neo4jInterest::model()->findOneByAttributes(array('user_id' => $user->id));
-			if (!empty($interest)) {
-				$interest->deletePersonas();
-				$interest->addPersona($this->inputPersonas);
+			if (Yii::app()->params['NEO4J_ENABLE']) {
+				$interest = Neo4jInterest::model()->findOneByAttributes(array('user_id' => $user->id));
+				if (!empty($interest)) {
+					$interest->deletePersonas();
+					$interest->addPersona($this->inputPersonas);
+				}
 			}
 		}
 
@@ -281,6 +286,20 @@ class Individual extends IndividualBase
 		return false;
 	}
 
+	public function setIndividualEmail($userEmail, $isVerified = '1')
+	{
+		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+			$i2e = new Individual2Email;
+			$i2e->individual_id = $this->id;
+			$i2e->user_email = $userEmail;
+			$i2e->is_verify = $isVerified;
+
+			return $i2e->save();
+		}
+
+		return false;
+	}
+
 	//
 	public function getDefaultImagePhoto()
 	{
@@ -369,6 +388,8 @@ class Individual extends IndividualBase
 			$criteria->mergeWith($criteriaInputBackendTag, $params['compareOperator']);
 		}
 
+		$criteria->group = 't.id';
+
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
 			'pagination' => array('pageSize' => 30),
@@ -449,5 +470,15 @@ class Individual extends IndividualBase
 	public function getActiveComments($limit = 100)
 	{
 		return HubComment::getActiveIndividualComments($this, $limit);
+	}
+
+	public function getHasMergeTo()
+	{
+		return !empty($this->individualMergeSource) ? true : false;
+	}
+
+	public function getBeenMergeWith()
+	{
+		return !empty($this->individualMergeDestination) ? true : false;
 	}
 }

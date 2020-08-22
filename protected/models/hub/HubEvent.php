@@ -14,7 +14,7 @@
 * @copyright 2017-2020 Malaysian Global Innovation & Creativity Centre Bhd and Contributors
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
-class HubEvent
+class HubEvent extends Component
 {
 	public static function getOrCreateEvent($title, $params = array())
 	{
@@ -26,6 +26,11 @@ class HubEvent
 
 		if ($event === null) {
 			$event = self::createEvent($title, $params);
+		} else {
+			// update attributes
+			$params['event']['title'] = $title;
+			$event->attributes = $params['event'];
+			$event->save(false);
 		}
 
 		return $event;
@@ -93,6 +98,29 @@ class HubEvent
 	public static function getEventRegistrationByID($registration_code)
 	{
 		return EventRegistration::model()->findByAttributes(array('registration_code' => $registration_code));
+	}
+
+	public static function createEventRegistration($event, $registrationCode, $params = array())
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$eventRegistration = new EventRegistration();
+			$eventRegistration->registration_code = $registrationCode;
+			$eventRegistration->event_id = $event->id;
+			$eventRegistration->attributes = $params;
+
+			if ($eventRegistration->save()) {
+				$transaction->commit();
+			} else {
+				throw new Exception(Yii::app()->controller->modelErrors2String($eventRegistration->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
+
+		return $eventRegistration;
 	}
 
 	public function syncEventToResource($dateStart = '', $dateEnd = '', $limit = 1000000)
@@ -278,7 +306,7 @@ class HubEvent
 		return $eventParticipants;
 	}
 
-	public function getSurveyForm($eventId, $surveyType)
+	public static function getSurveyForm($eventId, $surveyType)
 	{
 		$surveyTypes = self::getSurveyTypes($eventId);
 		$slug = $surveyTypes[$surveyType]['formSlug'];
@@ -287,15 +315,16 @@ class HubEvent
 		return $form;
 	}
 
-	public function getSurveyFormUrl($eventId, $surveyType)
+	public static function getSurveyFormUrl($eventId, $surveyType)
 	{
 		$form = self::getSurveyForm($eventId, $surveyType);
-		$url = $form->getPublicUrl(array('eid' => $eventId));
+		$event = Event::model()->findByPk($eventId);
+		$url = $form->getPublicUrl(array('preset[inputtext-eventId]' => $eventId, 'preset[inputtext-eventTitle]' => $event->title));
 
 		return $url;
 	}
 
-	public function getSurveyTypes($eventId)
+	public static function getSurveyTypes($eventId)
 	{
 		return array(
 			'1Day' => array('numberOfDays' => '1', 'formSlug' => 'Feedback1', 'participantsMode' => 'attended'),
@@ -303,7 +332,7 @@ class HubEvent
 		);
 	}
 
-	public function getSurveyTypesForeignReferList($eventId)
+	public static function getSurveyTypesForeignReferList($eventId)
 	{
 		$result = array();
 		$types = self::getSurveyTypes($eventId);

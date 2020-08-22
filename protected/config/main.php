@@ -151,12 +151,12 @@ $return = array(
 		),
 		'esLog' => array(
 			'class' => 'application.yeebase.components.EsLog',
-			'esLogRegion' => '',
-			'enableEsLog' => true,
-			'esLogIndexCode' => 'log-default',
-			'esLogEndpoint' => '',
-			'esLogKey' => '',
-			'esLogSecret' => '',
+			'esLogRegion' => getenv('ESLOG_REGION', ''),
+			'enableEsLog' => filter_var(getenv('ESLOG_ENABLE', false), FILTER_VALIDATE_BOOLEAN),
+			'esLogIndexCode' => getenv('ESLOG_INDEX_CODE', 'log-default'),
+			'esLogEndpoint' => getenv('ESLOG_ENDPOINT', ''),
+			'esLogKey' => getenv('ESLOG_KEY', ''),
+			'esLogSecret' => getenv('ESLOG_SECRET', ''),
 			'esTestVar' => '123',
 		),
 		'neo4j' => array(
@@ -221,7 +221,7 @@ if (!array_key_exists('moduleDisableNoneCore', $return['params']) || (array_key_
 	$modules_dir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR;
 	$handle = opendir($modules_dir);
 	while (false !== ($file = readdir($handle))) {
-		if ($file != '.' && $file != '..' && is_dir($modules_dir . $file)) {
+		if ($file != '.' && $file != '..' && is_dir($modules_dir . $file) && file_exists($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php')) {
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'base.php'));
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.base.php'));
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php'));
@@ -233,7 +233,7 @@ if (!array_key_exists('moduleDisableNoneCore', $return['params']) || (array_key_
 $return['components']['urlManager']['rules'] = CMap::mergeArray($return['components']['urlManager']['rules'], require(dirname(__FILE__) . '/route.php'));
 
 // domain specific override
-$domainSettings = sprintf('%s/config/domain.php', Yii::getPathOfAlias('overrides'));
+$domainSettings = include_once sprintf('%s/config/domain.php', Yii::getPathOfAlias('overrides'));
 if (!empty($domainSettings) && is_array($domainSettings)) {
 	if (array_key_exists($_SERVER['SERVER_NAME'], $domainSettings)) {
 		$return = CMap::mergeArray($return, $domainSettings[$_SERVER['SERVER_NAME']]);
@@ -248,7 +248,7 @@ if ($return['components']['cache']['class'] == 'CRedisCache') {
 // override
 $overrideMainFilePath = sprintf('%s/config/main.php', Yii::getPathOfAlias('overrides'));
 if (file_exists($overrideMainFilePath)) {
-	$overrideMain = include $overrideMainFilePath;
+	$overrideMain = include_once $overrideMainFilePath;
 	$return = CMap::mergeArray($return, $overrideMain);
 }
 

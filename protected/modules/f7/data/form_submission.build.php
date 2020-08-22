@@ -32,6 +32,8 @@ return array(
 	'json' => array(
 		'data' => array(
 		),
+		'extra' => array(
+		),
 	),
 	'foreignKey' => array(
 		'form_code' => array('relationName' => 'form', 'model' => 'Form', 'foreignReferAttribute' => 'title'),

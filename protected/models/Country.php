@@ -55,4 +55,15 @@ class Country extends CountryBase
 			'iso3' => $this->iso3,
 		);
 	}
+
+	public function code2name($code)
+	{
+		$model = self::model()->find('t.code=:code', array(':code' => $code));
+
+		$value = '';
+		if (!empty($model)) {
+			$value = $model->name;
+		}
+		return $value;
+	}
 }

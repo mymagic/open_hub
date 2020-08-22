@@ -104,6 +104,7 @@ class MemberController extends Controller
 							// create connect account
 							if ($result == true) {
 								// connect have no such user
+								// todo: detach MaGIC Connect
 								if (!$this->magicConnect->isUserExists($user->username)) {
 									$result = $this->magicConnect->createUser($model->username, $model->first_name, $model->last_name, $newPassword);
 									if ($result != true) {

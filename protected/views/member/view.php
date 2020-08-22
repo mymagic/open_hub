@@ -114,13 +114,13 @@ $this->menu = array(
 <div class="px-8 py-6 shadow-panel mt-4">
 	<ul class="nav nav-tabs nav-new new-dash-tab" role="tablist">
 		<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-		<li role="presentation" class="tab-noborder <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>"><a href="#<?php echo $tabModule['key'] ?>" aria-controls="<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab"><?php echo $tabModule['title'] ?></a></li>
+		<li role="presentation" class="tab-noborder <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>"><a href="#tab-<?php echo $tabModule['key'] ?>" aria-controls="tab-<?php echo $tabModule['key'] ?>" role="tab" data-toggle="tab" data-tab-history="true" data-tab-history-changer="push" data-tab-history-update-url="true"><?php echo $tabModule['title'] ?></a></li>
 		<?php endforeach; ?><?php endforeach; ?>
 	</ul>
 	<!-- Tab panes -->
 	<div class="tab-content padding-lg white-bg">
 		<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
-		<div role="tabpanel" class="tab-pane <?php echo ($tab == $tabModule['key']) ? 'active' : '' ?>" id="<?php echo $tabModule['key'] ?>">
+		<div role="tabpanel" class="tab-pane <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>" id="tab-<?php echo $tabModule['key'] ?>">
 			<?php echo $this->renderPartial($tabModule['viewPath'], array('model' => $model, 'member' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab)) ?>
 		</div>
 		<?php endforeach; ?><?php endforeach; ?>

@@ -6,6 +6,9 @@
 $return['modules']['sys'] = array(
 	'class' => 'application.yeebase.modules.sys.SysModule',
 );
+$return['modules']['i18n'] = array(
+	'class' => 'application.yeebase.modules.i18n.I18nModule',
+);
 $return['modules']['language'] = array(
 	'class' => 'application.yeebase.modules.language.LanguageModule',
 	'ipFilters' => array('127.0.0.1', '::1'),

@@ -324,7 +324,7 @@ class User extends UserBase
 	// Terminate Account
 
 	// Terminate Account
-
+	// todo: detach MaGIC Connect
 	public function isUserTerminatedInConnect()
 	{
 		$httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
@@ -345,6 +345,7 @@ class User extends UserBase
 		return $return->message;
 	}
 
+	// todo: detach MaGIC Connect
 	public function setStatusToTerminateInConnect()
 	{
 		$httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
@@ -368,6 +369,7 @@ class User extends UserBase
 		}
 	}
 
+	// todo: detach MaGIC Connect
 	public function setStatusToEnableInConnect()
 	{
 		$httpOrHttps = Yii::app()->getRequest()->isSecureConnection ? 'https:' : 'http:';
@@ -392,6 +394,7 @@ class User extends UserBase
 
 	//This call will completely remove the user in connect db
 	//IT also ensure the user will be able to register using this email
+	// todo: detach MaGIC Connect
 	public function destroyRemoteConnectUser()
 	{
 		try {

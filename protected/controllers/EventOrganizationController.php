@@ -349,7 +349,7 @@ class EventOrganizationController extends Controller
 
 						// add individual_organization if organization do not have this individual
 						if (!$organization->hasIndividualOrganization($individual->id, 'founder')) {
-							$organization->addIndividualOrganization($individual->id, 'founder');
+							$organization->addIndividualOrganization($individual, 'founder');
 						}
 
 						// add individual2email if email is set
