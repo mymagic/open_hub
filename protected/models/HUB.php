@@ -55,7 +55,7 @@ class HUB extends Component
 		return $model;
 	}
 
-	public function createLocalMember($email, $fullName, $signupType = 'default')
+	public static function createLocalMember($email, $fullName, $signupType = 'default', $input = array())
 	{
 		$newPassword = ysUtil::generateRandomPassword();
 
@@ -70,6 +70,7 @@ class HUB extends Component
 
 		try {
 			// create user
+			$user->setAttributes($input['user'], false);
 			$user->username = $email;
 			$user->password = $newPassword;
 			$user->signup_type = $signupType;
@@ -82,6 +83,7 @@ class HUB extends Component
 
 			// create profile
 			if ($result == true) {
+				$user->profile->setAttributes($input['profile'], false);
 				$user->profile->user_id = $user->id;
 				$user->profile->full_name = $fullName;
 				$user->profile->image_avatar = 'uploads/profile/avatar.default.jpg';
@@ -90,6 +92,7 @@ class HUB extends Component
 
 				if ($result == true) {
 					$member = new Member();
+					$member->setAttributes($input['member'], false);
 					$member->user_id = $user->id;
 					$member->username = $user->username;
 					$member->date_joined = time();
@@ -110,15 +113,20 @@ class HUB extends Component
 			$transaction->rollBack();
 		}
 
+		$status = 'fail';
+		if ($result == true) {
+			$status = 'success';
+		}
 		// successfully finish the registration step of the subscription process
-		return $result;
+		return array('status' => $status, 'msg' => $exceptionMessage, 'data' => array('user' => $user));
 	}
 
 	public static function getOrCreateUser($username, $extra = array())
 	{
 		$user = User::model()->username2obj($username);
 		if ($user === null) {
-			if (self::createLocalMember($username, $extra['fullname'])) {
+			$result = self::createLocalMember($username, $extra['fullname']);
+			if ($result['status'] == 'success') {
 				$user = User::model()->username2obj($username);
 			}
 		}

@@ -98,7 +98,6 @@ class HauthController extends Controller
 		if (!empty($redirect)) {
 			Yii::app()->user->returnUrl = $redirect;
 		}
-
 		if (!Yii::app()->user->isGuest || !Yii::app()->hybridAuth->isAllowedProvider($provider)) {
 			Notice::flash(Yii::t('app', 'Either you are already login or the provider is invalid or disabled'), Notice_ERROR);
 			$this->redirect(Yii::app()->homeUrl);
@@ -134,9 +133,17 @@ class HauthController extends Controller
 							$input['email'] = $hauthSocialUser->emailVerified;
 							$input['cemail'] = $hauthSocialUser->emailVerified;
 
-							$result = Emanyan::createNewMember($input);
+							$result = HUB::createLocalMember($hauthSocialUser->emailVerified, $hauthSocialUser->displayName, 'social', array('user' => array(
+								'social_provider' => strtolower($provider),
+								'social_identifier' => $hauthSocialUser->identifier, 'json_social_params' => $jsonSocialParams)
+							));
+
 							if ($result['status'] == 'success') {
 								$user = $result['data']['user'];
+								/*$user->social_provider = strtolower($provider);
+								$user->social_identifier = $hauthSocialUser->identifier;
+								$user->json_social_params = $jsonSocialParams;
+								$user->save();*/
 								$isNewSignup = true;
 							} else {
 								Notice::page(Yii::t('app', 'Failed to create user locally.'), Notice_ERROR);

@@ -162,7 +162,8 @@ class SiteController extends Controller
 					// todo:
 					//echo "user not found, create one in local"; exit;
 					//Notice::page('failed to create local user base on connect');
-					if (HUB::createLocalMember($connectEmail, $userdata['firstname'] . ' ' . $userdata['lastname'], 'connect')) {
+					$result = HUB::createLocalMember($connectEmail, $userdata['firstname'] . ' ' . $userdata['lastname'], 'connect');
+					if ($result['status'] == 'success') {
 						$user = User::username2obj($connectEmail);
 					} else {
 						echo 'Failed to create local user base on connect';
