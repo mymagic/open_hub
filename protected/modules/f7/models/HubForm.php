@@ -212,7 +212,7 @@ class HubForm
 				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
 				break;
 			case 'label':
-				$htmlTag = self::getLabelTag($formType, $value, $realm);
+				$htmlTag = self::getLabelTag($value, $formType);
 				break;
 			case 'headline':
 				$htmlTag = self::getHeadlineTag($value, $realm);
@@ -264,6 +264,9 @@ class HubForm
 				break;
 			case 'rating':
 				$htmlTag = self::getRatingTag($isEnabled, $value, $decodedData);
+				break;
+			case 'tabular':
+				$htmlTag = self::getTabularTag($isEnabled, $formType, $value, $decodedData, $realm);
 				break;
 			default:
 				throw new Exception('Item is not supported');
@@ -464,7 +467,7 @@ class HubForm
 		return $html;
 	}
 
-	protected function getLabelTag($formType, $params, $realm = 'frontend')
+	protected function getLabelTag($params, $formType = 'horizontal')
 	{
 		if ($formType === 'horizontal') {
 			if ($params['required'] === 1) {
@@ -693,7 +696,7 @@ class HubForm
 		$params['value'] : $decodedData[$params['name']] : $mappedModelValue;
 		$html = '';
 
-		$html .= sprintf('<input %s type="number" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
+		$html .= sprintf('<input %s type="number" step="any" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
 
 		if (!empty($linkText)) {
 			$modalID = sprintf('%s-Modal', $modelClass);
@@ -763,7 +766,7 @@ class HubForm
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 		$html = '';
 
-		$html .= sprintf('<textarea %s rows="5" style="%s" class="form-control %s" rows="5"  name="%s" id="%s">%s</textarea>', $disable, $params['style'], $params['css'], $params['name'], $params['name'], $value);
+		$html .= sprintf('<textarea %s rows="%s" style="%s" class="form-control %s"name="%s" id="%s">%s</textarea>', $disable, isset($params['rows']) ? $params['rows'] : 5, $params['style'], $params['css'], $params['name'], $params['name'], $value);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
@@ -982,7 +985,7 @@ class HubForm
 		}
 
 		$html = $radioHTML;
-		
+
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
@@ -1169,47 +1172,149 @@ class HubForm
 		return $html;
 	}
 
-	public function validateCustomForm($jsonForm, $postedData)
+	public function getTabularTag($isEnabled, $formType, $params, $decodedData, $realm)
+	{
+		$disable = $isEnabled ? '' : 'disabled';
+		$seed = explode('-', $params['name'])[1];
+		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
+		$html = '';
+
+		if (!empty($params['hint'])) {
+			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
+		}
+		$html .= '<table class="table table-bordered">';
+		$html .= '<thead><tr>';
+		for ($i = 0; $i < count($params['headers']); $i++) {
+			$html .= sprintf('<th class="%s">', $params['headers'][$i]['css']);
+			$html .= $params['headers'][$i]['text'];
+			if ($params['headers'][$i]['required'] == 1) {
+				$html .= '<font color="red">*</font>';
+			}
+			if (isset($params['headers'][$i]['hint'])) {
+				$html .= sprintf('<div class="text-normal" style="font-weight:normal"><small>%s</small></div>', $params['headers'][$i]['hint']);
+			}
+			$html .= '</th>';
+		}
+		$html .= '</tr></thead>';
+		$html .= '<tbody>';
+		for ($i = 0; $i < count($params['members']); $i++) {
+			$html .= '<tr>';
+			for ($j = 0; $j < count($params['headers']); $j++) {
+				$html .= '<td>';
+
+				$item = $params['members'][$i]['members'][$j];
+				$key = $item['tag'];
+				$itemParams = $item['prop'];
+
+				switch ($key) {
+					case 'label':
+						$htmlTag = self::getLabelTag($itemParams, $formType);
+						break;
+					case 'url':
+						$htmlTag = self::getUrlTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'email':
+						$htmlTag = self::getEmailTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'phone':
+						$htmlTag = self::getPhoneTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'textbox':
+						$htmlTag = self::getTextboxTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'number':
+						$htmlTag = self::getNumberTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'textarea':
+						$htmlTag = self::getTextareaTag($isEnabled, $itemParams, $decodedData);
+						break;
+					case 'list':
+						$htmlTag = self::getListTag($isEnabled, $itemParams, $decodedData, $realm);
+						break;
+					case 'booleanButton':
+						$htmlTag = self::getBooleanButtonTag($isEnabled, $itemParams, $decodedData);
+						break;
+					default:
+						throw new Exception('Item is not supported in tabular field');
+						break;
+				}
+				$html .= $htmlTag;
+				$html .= '</td>';
+			}
+			$html .= '</tr>';
+		}
+		$html .= '</tbody>';
+		$html .= '</table>';
+
+		return $html;
+	}
+
+	public function validateForm($jsonForm, $postedData)
 	{
 		$errors = array();
 
-		$formObject = json_decode($jsonForm, true);
-		$jScripts = $formObject['jscripts'];
+		$formObjects = json_decode($jsonForm, true);
+		$jScripts = $formObjects['jscripts'];
 
-		foreach ($formObject as $value) {
-			if ($value['tag'] === 'break' || $value['tag'] === 'divider' || $value['tag'] === 'label' || $value['tag'] === 'YII_CSRF_TOKEN' || $value['tag'] === 'button' || $value['tag'] === 'label') {
+		foreach ($formObjects as $formObject) {
+			if ($formObject['tag'] === 'break' || $formObject['tag'] === 'divider' || $formObject['tag'] === 'label' || $formObject['tag'] === 'headline' || $formObject['tag'] === 'YII_CSRF_TOKEN' || $formObject['tag'] === 'button') {
 				continue;
 			}
 
-			if ($value['tag'] === 'section') {
-				$members = $value['members'];
+			if ($formObject['tag'] === 'section') {
+				$members = $formObject['members'];
 				foreach ($members as $member) {
-					if (array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
-						$error = self::validate($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts);
+					if ($member['tag'] == 'tabular') {
+						$errors = array_merge($errors, self::validateTabular($member, $postedData, $jScripts));
+					} else {
+						if (array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
+							$error = self::validateComponent($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts, $member['prop']['csv_label']);
 
-						if (!empty($error)) {
-							$errors[] = $error;
+							if (!empty($error)) {
+								$errors[] = $error;
+							}
 						}
 					}
 				}
-			} elseif ($value['tag'] === 'group') {
-				$members = $value['members'];
+			} elseif ($formObject['tag'] === 'group') {
+				$members = $formObject['members'];
 				foreach ($members as $member) {
-					if ($member['tag'] === 'label') {
-						continue;
-					}
+					if ($member['tag'] == 'tabular') {
+						$errors = array_merge($errors, self::validateTabular($member, $postedData, $jScripts));
+					} else {
+						if (array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
+							$error = self::validateComponent($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts, $member['prop']['csv_label']);
 
-					if (array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
-						$error = self::validate($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts);
-
-						if (!empty($error)) {
-							$errors[] = $error;
+							if (!empty($error)) {
+								$errors[] = $error;
+							}
 						}
 					}
 				}
 			} else {
-				if (array_key_exists('required', $value['prop']) && $value['prop']['required'] === 1) {
-					$error = self::validate($value['tag'], $value['prop']['name'], $value['prop']['error'], $member['prop']['validation'], $postedData, $jScripts);
+				if ($formObject['tag'] == 'tabular') {
+					$errors = array_merge($errors, self::validateTabular($formObject, $postedData, $jScripts));
+				} else {
+					if (array_key_exists('required', $formObject['prop']) && $formObject['prop']['required'] === 1) {
+						$error = self::validateComponent($formObject['tag'], $formObject['prop']['name'], $formObject['prop']['error'], $formObject['prop']['validation'], $postedData, $jScripts);
+
+						if (!empty($error)) {
+							$errors[] = $error;
+						}
+					}
+				}
+			}
+		}
+
+		return array(empty($errors), $errors);
+	}
+
+	protected static function validateTabular($member, $postedData, $jScripts)
+	{
+		foreach ($member['prop']['members'] as $tabularRow) {
+			foreach ($tabularRow['members'] as $member) {
+				if ($member['tag'] !== 'label' && array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
+					$error = self::validateComponent($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts, $member['prop']['csv_label']);
 
 					if (!empty($error)) {
 						$errors[] = $error;
@@ -1218,7 +1323,7 @@ class HubForm
 			}
 		}
 
-		return array(empty($errors), $errors);
+		return $errors;
 	}
 
 	//Either the text of error should be identified in json as error property
@@ -1231,9 +1336,9 @@ class HubForm
 	// postedData: array of data from POST
 	// jScripts:
 	// csvLabel: csv label, optional
-	protected function validate($element, $value, $error, $validation, $postedData, $jScripts, $csvLabel = '')
+	protected static function validateComponent($tag, $value, $error, $validation, $postedData, $jScripts, $csvLabel = '')
 	{
-		if ($element === 'label' || $element === 'headline' || $element === 'upload') {
+		if ($tag === 'section' || $tag === 'group' || $tag === 'label' || $tag === 'headline' || $tag === 'break' || $tag === 'divider' || $tag === 'upload') {
 			return;
 		}
 
@@ -1243,15 +1348,15 @@ class HubForm
 
 		$labelTitle = !empty($csvLabel) ? $csvLabel : $value;
 
-		if ($element === 'radio') {
+		if ($tag === 'radio') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
-		} elseif ($element === 'checkbox') {
+		} elseif ($tag === 'checkbox') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? sprintf("At least one item must be checked for field '%s'.", $labelTitle) : $error;
 			}
-		} elseif ($element === 'email') {
+		} elseif ($tag === 'email') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
@@ -1259,7 +1364,7 @@ class HubForm
 			if (empty(filter_var($postedData[$value], FILTER_VALIDATE_EMAIL))) {
 				return 'Please provide a valid email.';
 			}
-		} elseif ($element === 'phone') {
+		} elseif ($tag === 'phone') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
@@ -1271,11 +1376,12 @@ class HubForm
 			if (strlen($postedData[$value]) < 7) {
 				return 'Please provide a valid Contact/Phone number (7-15 digits). ';
 			}
-		} elseif ($element === 'textbox' && !empty($validation)) {
+		} elseif ($tag === 'textbox' && !empty($validation)) {
 			if (strtolower($validation) === 'url' && !filter_var($postedData[$value], FILTER_VALIDATE_URL)) {
 				return "Please enter a valid URL for the field $labelTitle.";
 			}
-		} /*elseif ($element === 'upload') {
+		}
+		/*elseif ($tag === 'upload') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
@@ -1303,7 +1409,7 @@ class HubForm
 		return false;
 	}
 
-	protected static function getMappedModelData($model, $mappingParams = '')
+	public static function getMappedModelData($model, $mappingParams = '')
 	{
 		if (empty($model)) {
 			return '';
@@ -1340,6 +1446,10 @@ class HubForm
 			$startupStages = array_map(create_function('$t', 'return $t[title];'), StartupStage::model()->isActive()->findAll(array('order' => 'ordering ASC')));
 
 			return $startupStages;
+		} elseif (strtolower($model) == 'legalform') {
+			$legalForms = array_map(create_function('$t', 'return $t[title];'), Legalform::model()->isActive()->findAll(array('order' => 'title ASC')));
+
+			return $legalForms;
 		} elseif (strtolower($model) == 'heard') {
 			return array(
 				'Social Media',

@@ -812,7 +812,7 @@ h6,
 }
 textarea.form-control{
     line-height:normal !important;
-    height:8em;
+    /*height:8em; ys: do not hardcode textarea height */
     padding:5px 5px;
 }
 

@@ -1700,6 +1700,10 @@ function getHtmlActionButtons(aIdDel, aIdEdit)
       {
         json = '{"tag":"group","prop":{"css":""},"members":[{"tag":"label","prop":{"required":'+ required +',"for":"inputtext-'+controlID+'","value":"'+ label +'"}},{"tag":"list","prop":{"css":"'+className+'","style":"'+style+'","required":'+ required +',"showinbackendlist":"'+isShowDuringExport+'","csv_label":"'+ csvLabel +'","hint":"'+ helpText + '","value":"","name":"gender","error":"'+validationError+'","text":"choose your gender","others":'+ isOthersChecked +',"items":"","model_mapping":{"gender":"' + modelMapping + '"}}}]},';
       }
+      else if (modelMapping.toLowerCase() == 'legalform')
+      {
+        json = '{"tag":"group","prop":{"css":""},"members":[{"tag":"label","prop":{"required":'+ required +',"for":"inputtext-'+controlID+'","value":"'+ label +'"}},{"tag":"list","prop":{"css":"'+className+'","style":"'+style+'","required":'+ required +',"showinbackendlist":"'+isShowDuringExport+'","csv_label":"'+ csvLabel +'","hint":"'+ helpText + '","value":"","name":"legalform","error":"'+validationError+'","text":"choose your company type","others":'+ isOthersChecked +',"items":"","model_mapping":{"legalform":"' + modelMapping + '"}}}]},';
+      }
     }
     
     return json;

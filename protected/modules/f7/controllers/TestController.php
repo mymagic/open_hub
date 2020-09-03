@@ -41,6 +41,21 @@ class TestController extends Controller
 		$this->render('index', array('actions' => $actions));
 	}
 
+	public function actionX12()
+	{
+		$data = HubForm::getMappedModelData('legalform');
+		print_r($data);
+	}
+
+	public function actionLegalForm()
+	{
+		$legalForms = array_map(create_function('$t', 'return $t[title];'), Legalform::model()->isActive()->findAll(array('order' => 'title ASC')));
+		print_r($legalForms);
+
+		$personas = array_map(create_function('$t', 'return $t[title];'), Persona::model()->isActive()->findAll(array('order' => 'title ASC')));
+		print_r($personas);
+	}
+
 	public function actionExecHook($fid)
 	{
 		$form = Form::model()->findByPk($fid);
