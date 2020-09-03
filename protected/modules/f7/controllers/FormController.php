@@ -92,6 +92,7 @@ class FormController extends Controller
 	{
 		$model = new Form();
 		$model->json_structure = '{}';
+		$model->json_stage = '[{"key":"application","title":"Application"},{"key":"screening","title":"Screening"},{"key":"accepted","title":"Accepted"},{"key":"rejected","title":"Rejected"}]';
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);

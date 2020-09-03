@@ -57,6 +57,9 @@ class PublishController extends Controller
 		if (!isset($form)) {
 			throw new Exception('Form not exists');
 		}
+		if (!isset($form->jsonArray_stage)) {
+			throw new Exception('Stages pipeline must be defined in form');
+		}
 		$this->pageTitle = Yii::t('app', $form->title);
 
 		$this->layout = 'publish';
@@ -350,6 +353,8 @@ class PublishController extends Controller
 
 			$this->redirect(array('/f7/publish/edit', 'slug' => $submission->form->slug, 'sid' => $submission->id));
 		} else {
+			print_r($submission->getErrors());
+			exit;
 			throw new Exception(Yii::t('f7', 'Failed to rever submission back to draft mode due to unknown error'));
 		}
 	}
@@ -459,7 +464,7 @@ class PublishController extends Controller
 	{
 		$isEnabled = true;
 
-		list($status, $errors) = HubForm::validateCustomForm($model->json_structure, $postedData, $formData);
+		list($status, $errors) = HubForm::validateForm($model->json_structure, $postedData, $formData);
 
 		foreach ($errors as $error) {
 			$model->addError($error, $error);
