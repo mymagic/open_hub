@@ -76,8 +76,12 @@ $this->menu = array(
 
 
 <div class="btn-group btn-group-xs pull-right">
+	<?php if(HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'syncForm2Event'], 'module' => (object)['id' => 'f7']])): ?>
 	<a class="btn btn-primary" href="<?php echo $this->createUrl('/f7/backend/syncForm2Event', array('id' => $model->id)) ?>"><?php echo Yii::t('f7', 'Sync to Event') ?></a>
+	<?php endif; ?>
+	<?php if(HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'export')): ?>
 	<a class="btn  btn-success" href="<?php echo $this->createUrl('export', array('id' => $model->id)) ?>"><?php echo Yii::t('f7', 'Export All') ?>&nbsp;<span class="badge badge-primary"><?php echo count($model->formSubmissions) ?></span></a>
+	<?php endif; ?>
 </div>
 
 <h3><?php echo Html::faIcon('fa fa-file-alt') ?> Submissions</h3>
@@ -101,8 +105,18 @@ $this->menu = array(
 			'class' => 'application.components.widgets.ButtonColumn',
 				'template' => '{view}{update}',
 				'buttons' => array(
-					'view' => array('url' => 'Yii::app()->controller->createUrl("/f7/submission/view", array("id"=>$data->id))'),
-					'update' => array('url' => 'Yii::app()->controller->createUrl("/f7/submission/update", array("id"=>$data->id))'),
+					'view' => array(
+						'visible' => function () { 
+							return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'submission', 'action' => (object)['id' => 'view'], 'module' => (object)['id' => 'f7']]); 
+						},
+						'url' => 'Yii::app()->controller->createUrl("/f7/submission/view", array("id"=>$data->id))'
+					),
+					'update' => array(
+						'visible' => function () { 
+							return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'submission', 'action' => (object)['id' => 'update'], 'module' => (object)['id' => 'f7']]); 
+						},
+						'url' => 'Yii::app()->controller->createUrl("/f7/submission/update", array("id"=>$data->id))'
+					),
 				),
 		),
 	)

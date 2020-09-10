@@ -44,6 +44,22 @@ class HUB extends Component
 	}
 
 	//
+	//
+	public static function getMasterOrganization()
+	{
+		$masterOrganizationCode = Setting::code2value('organization-master-code');
+		if (!empty($masterOrganizationCode)) {
+			$masterOrganization = Organization::code2obj($masterOrganizationCode);
+		}
+
+		if (!empty($masterOrganization)) {
+			return $masterOrganization;
+		} else {
+			throw new Exception('Master Organization not found!');
+		}
+	}
+
+	//
 	// user
 	public static function getUserByUsername($username)
 	{
@@ -442,7 +458,6 @@ class HUB extends Component
 
 	public static function getOrganizationAllActive($page = '', $filter = '', $limitPerPage = 10)
 	{
-		// todo: implement cache
 		if ($limitPerPage > 30) {
 			$limitPerPage = 30;
 		}
@@ -456,9 +471,11 @@ class HUB extends Component
 			'industries' => self::getOrganizationIndustries(true),
 		];
 
+		$masterOrganizationCode = Setting::code2value('organization-master-code');
+
 		// do cache
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getOrganizationAllActive', sha1(json_encode(array('v1', $page, $filter, $limitPerPage))));
+		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getOrganizationAllActive', sha1(json_encode(array('v2', $page, $filter, $limitPerPage, $masterOrganizationCode))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
 			if (!empty($filter) && is_array($filter)) {
@@ -530,7 +547,7 @@ class HUB extends Component
 			}
 
 			// is it magic alumni?
-			// todo: filter magic alumni by event only owned by magic
+			// filter magic alumni by event only owned by master organization (magic)
 			if ($filter['magic'] == 1) {
 				$sqlCount = sprintf("SELECT COUNT(*) FROM (SELECT o.id FROM organization as `o`
 				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
@@ -540,8 +557,9 @@ class HUB extends Component
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
 				JOIN event_organization as eo ON (eo.organization_id=o.id)
+				JOIN event_owner as eown ON (eown.event_code=eo.event_code)
 
-				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter);
+				WHERE %s AND eo.as_role_code='selectedParticipant' AND eown.organization_code='%s' GROUP BY o.id ORDER BY o.title ASC) tmp", $bufferFilter, $masterOrganizationCode);
 
 				$sql = sprintf("SELECT o.* FROM organization as `o`
 				LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
@@ -551,8 +569,9 @@ class HUB extends Component
 				LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
 				JOIN event_organization as eo ON (eo.organization_id=o.id)
+				JOIN event_owner as eown ON (eown.event_code=eo.event_code)
 
-				WHERE %s AND eo.as_role_code='selectedParticipant' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
+				WHERE %s AND eo.as_role_code='selectedParticipant' AND eown.organization_code='%s' GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $masterOrganizationCode, $offset, $limitPerPage);
 			}
 			// is it magic sea?
 			elseif ($filter['sea'] == 1 || $filter['sebasic'] == 1) {
@@ -656,8 +675,7 @@ class HUB extends Component
 				WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ", $bufferFilter, $offset, $limitPerPage);
 			}
 
-			// echo $sql;exit;
-			//die(123);
+			// echo $sql; exit;
 			$return['sql'] = str_replace(array("\t", "\n"), ' ', $sql);
 			$return['filters'] = $filters;
 			$return['items'] = Organization::model()->findAllBySql($sql);
@@ -669,116 +687,6 @@ class HUB extends Component
 			// cache for 5min
 			Yii::app()->cache->set($cacheId, $return, 300);
 		}
-
-		return $return;
-	}
-
-	public static function getOrganizationAllActiveForAutoComplete($filter = '', $limit = 10)
-	{
-		// todo: implement cache
-		$bufferFilter = 'o.is_active=1';
-		$filters = array();
-		$tempSql = '';
-
-		$slugTitleArray = [
-			'personas' => self::getOrganizationPersonas(true),
-			'industries' => self::getOrganizationIndustries(true),
-		];
-
-		if (!empty($filter) && is_array($filter)) {
-			// searchTitle
-			// filter out unwanted characters for security purpose
-			$filter['searchTitle'] = preg_replace('/[^A-Za-z0-9]/', '', $filter['searchTitle']);
-			if (!empty($filter['searchTitle'])) {
-				$filterSearchTitles = array_map('trim', explode(',', $filter['searchTitle']));
-				$bufferSubFilter = '';
-				foreach ($filterSearchTitles as $keyword) {
-					$bufferSubFilter .= sprintf("o.title LIKE '%%%s%%' OR ", $keyword);
-				}
-				$bufferSubFilter = substr($bufferSubFilter, 0, -1 * strlen('OR '));
-				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
-			}
-
-			// searchAlpha
-			// filter out unwanted characters for security
-			if ($filter['searchAlpha'] !== '0-9') {
-				$filter['searchAlpha'] = preg_replace('/[^A-Za-z0-9]/', '', $filter['searchAlpha']);
-			}
-			if (!empty($filter['searchAlpha'])) {
-				$filterSearchAlpha = $filter['searchAlpha'];
-
-				if (empty($filter['searchTitle'])) {
-					$bufferSubFilter .= sprintf("o.title LIKE '%s%%'", $filterSearchAlpha);
-				} else {
-					$bufferSubFilter .= sprintf(" AND o.title LIKE '%s%%'", $filterSearchAlpha);
-				}
-
-				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
-				//die($bufferFilter);
-			}
-
-			// persona
-			$filter['persona'] = preg_replace('/[^A-Za-z0-9\,]/', '', $filter['persona']);
-			if (!empty($filter['persona'])) {
-				$filterPersonas = array_map('trim', explode(',', $filter['persona']));
-				$bufferSubFilter = '';
-				foreach ($filterPersonas as $keyword) {
-					$bufferSubFilter .= sprintf("persona.slug='%s' OR ", $keyword);
-					$filters[] = array('type' => 'persona', 'code' => $keyword, 'title' => $slugTitleArray['personas'][$keyword]);
-				}
-				$bufferSubFilter = substr($bufferSubFilter, 0, -1 * strlen('OR '));
-				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
-			}
-
-			// industry
-			$filter['industry'] = preg_replace('/[^A-Za-z0-9\,]/', '', $filter['industry']);
-			if (!empty($filter['industry'])) {
-				$filterIndustries = array_map('trim', explode(',', $filter['industry']));
-				$bufferSubFilter = '';
-				foreach ($filterIndustries as $keyword) {
-					$bufferSubFilter .= sprintf("industry.slug='%s' OR ", $keyword);
-					$filters[] = array('type' => 'industry', 'code' => $keyword, 'title' => $slugTitleArray['industries'][$keyword]);
-				}
-				$bufferSubFilter = substr($bufferSubFilter, 0, -1 * strlen('OR '));
-				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
-			}
-		}
-		$filter['magic'] = preg_replace('/[^A-Za-z0-9]/', '', $filter['magic']);
-		if ($filter['magic'] === 1) {
-			$tempSql .= 'SELECT o.* FROM organization as `o`
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
-                    LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
-                    LEFT JOIN industry as industry ON i2o.industry_id=industry.id
-
-                    JOIN event_organization as eo ON eo.organization_id=o.id
-
-                    WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s';
-
-			$sql = sprintf($tempSql, $bufferFilter, $limit);
-		} else {
-			$tempSql .= 'SELECT o.* FROM organization as `o`
-                    LEFT JOIN persona2organization as `p2o` ON p2o.organization_id=o.id
-                    LEFT JOIN persona as persona ON p2o.persona_id=persona.id
-
-                    LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id
-                    LEFT JOIN industry as industry ON i2o.industry_id=industry.id
-
-                    WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s';
-
-			$sql = sprintf($tempSql, $bufferFilter, $limit);
-		}
-
-		//echo $sql;
-		//die(123);
-		$return['sql'] = $sql;
-		$return['filters'] = $filters;
-		$return['items'] = Organization::model()->findAllBySql($sql);
-		$return['countPageItems'] = count($return['items']);
-		$return['limit'] = $limit;
-		$return['totalItems'] = $limit;
-		$return['totalPages'] = ceil($return['totalItems'] / $limit);
 
 		return $return;
 	}
