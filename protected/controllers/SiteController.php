@@ -349,7 +349,7 @@ class SiteController extends Controller
 		}
 	}
 
-	public function actionLocalSignup()
+	public function actionLocalSignup($returnUrl = '')
 	{
 		$model['form'] = new SignupForm;
 
@@ -363,19 +363,18 @@ class SiteController extends Controller
 				$input['fullname'] = $model['form']['fullname'];
 
 				$return = HUB::createLocalMember($model['form']['email'], $model['form']['fullname'], $signupType = 'default', $input);
-
 				if ($return['status'] == 'success') {
 					$user = $return['data']['user'];
 
-					$params['username'] = $user->username;
+					$params['email'] = $input['email'];
 					$params['password'] = $return['data']['newPassword'];
 					$params['link'] = $this->createAbsoluteUrl('site/login');
-					$receivers[] = array('email' => $user->username, 'name' => $user->profile->full_name);
+					$receivers[] = array('email' => $input['email'], 'name' => $input['fullname']);
 
-					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Welcome to join in the {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createUser');
+					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Welcome to {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createMember');
 
 					// continue to the welcome page
-					$this->redirect(array('site/welcome', 'id' => $user->id));
+					$this->redirect(array('site/welcome', 'id' => $user->id, 'returnUrl' => $returnUrl));
 				} else {
 					Notice::page("Failed to register due to unexpected reason: '{$exceptionMessage}'.", Notice_ERROR);
 				}
@@ -385,7 +384,7 @@ class SiteController extends Controller
 	}
 
 	// create a specific signup success page for google analytics tracking
-	public function actionWelcome($id)
+	public function actionWelcome($id, $returnUrl = '')
 	{
 		$user = User::model()->findByPk($id);
 		if (empty($user)) {
@@ -394,7 +393,7 @@ class SiteController extends Controller
 
 		// after initAccount
 		if (Yii::app()->user->id == $user->id) {
-			$url = (!empty(Yii::app()->user->returnUrl)) ? Yii::app()->user->returnUrl : $this->createUrl('cpanel/index');
+			$url = (!empty($returnUrl)) ? $returnUrl : $this->createUrl('cpanel/index');
 			Notice::page(
 				Yii::t(
 					'app',
@@ -409,6 +408,8 @@ class SiteController extends Controller
 		}
 		// traditional signup
 		else {
+			$url = (!empty($returnUrl)) ? $returnUrl : (($user->signup_type == 'social' ? $this->createUrl('hauth/login') : $this->createUrl('site/login', array('email' => $user->username))));
+
 			Notice::page(
 				Yii::t(
 					'app',
@@ -417,7 +418,7 @@ class SiteController extends Controller
 				),
 				Notice_SUCCESS,
 				array(
-					'urlLabel' => 'Login Now', 'url' => ($user->signup_type == 'social' ? $this->createUrl('hauth/login') : $this->createUrl('site/login', array('email' => $user->username))),
+					'urlLabel' => 'Login Now', 'url' => $url,
 				)
 			);
 		}

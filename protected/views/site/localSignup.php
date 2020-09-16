@@ -68,16 +68,16 @@ $this->breadcrumbs = array(
 		<div class="form-group">
 			<?php echo $form->bsLabelEx3($model['form'], '');?>
 			<div class="col-sm-9">
-				<?php echo Html::htmlArea('tocContent', $model['form']->tocContent, array('rows' => 3, 'style' => 'height:100px'))?>
+				<?php echo Html::htmlArea('tncContent', $model['form']->tncContent, array('rows' => 3, 'style' => 'height:100px'))?>
 			</div>
 		</div>
 
-		<div class="form-group <?php echo $model['form']->hasErrors('agreeToc') ? 'has-error' : ''?>">
+		<div class="form-group <?php echo $model['form']->hasErrors('agreeTnc') ? 'has-error' : ''?>">
 			<div class="col-sm-offset-3 col-sm-9">
 				<label>
-					<?php echo $form->checkbox($model['form'], 'agreeToc');?> <?php echo $form->labelEx($model['form'], 'agreeToc')?>
+					<?php echo $form->checkbox($model['form'], 'agreeTnc');?> <?php echo $form->labelEx($model['form'], 'agreeTnc')?>
 				</label>
-				<?php echo $form->bsError($model['form'], 'agreeToc');?>
+				<?php echo $form->bsError($model['form'], 'agreeTnc');?>
 			
 			</div>
 		</div>

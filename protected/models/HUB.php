@@ -118,7 +118,7 @@ class HUB extends Component
 			$status = 'success';
 		}
 		// successfully finish the registration step of the subscription process
-		return array('status' => $status, 'msg' => $exceptionMessage, 'data' => array('user' => $user));
+		return array('status' => $status, 'msg' => $exceptionMessage, 'data' => array('user' => $user, 'newPassword'=>$newPassword));
 	}
 
 	public static function getOrCreateUser($username, $extra = array())

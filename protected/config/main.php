@@ -260,24 +260,26 @@ if (getenv('AUTH_ADAPTER') == 'local') {
 		'enabled' => true, // enable or disable this component
 		'config' => array(
 			 'base_url' => 'https://' . $_SERVER['HTTP_HOST'] . '/hauth/endpoint',
-			 'providers' => array(
-				'Google' => array(
-					'enabled' => true,
-					'keys' => array('id' => getenv('GOOGLE_HAUTH_ID'), 'secret' => getenv('GOOGLE_HAUTH_SECRET')),
-					'scope' => 'https://www.googleapis.com/auth/userinfo.profile ' . // optional
-						'https://www.googleapis.com/auth/userinfo.email', // optional
-				),
-				'Facebook' => array(
-					'enabled' => true,
-					'keys' => array('id' => getenv('FB_APP_ID'), 'secret' => getenv('FB_APP_SECRET')),
-					'scope' => 'email, public_profile',
-					'trustForwarded' => true,
-				),
-				'debug_mode' => true,
-				'debug_file' => '',
-			)
 		),
 	); //end hybridAuth
+
+	if (!empty(getenv('GOOGLE_HAUTH_ID')) && !empty(getenv('GOOGLE_HAUTH_SECRET'))) {
+		$return['components']['hybridAuth']['config']['providers']['Google'] = array(
+			'enabled' => true,
+			'keys' => array('id' => getenv('GOOGLE_HAUTH_ID'), 'secret' => getenv('GOOGLE_HAUTH_SECRET')),
+			'scope' => 'https://www.googleapis.com/auth/userinfo.profile ' . // optional
+				'https://www.googleapis.com/auth/userinfo.email', // optional
+		);
+	}
+
+	if (!empty(getenv('FB_APP_ID')) && !empty(getenv('FB_APP_SECRET'))) {
+		$return['components']['hybridAuth']['config']['providers']['Facebook'] = array(
+			'enabled' => true,
+			'keys' => array('id' => getenv('FB_APP_ID'), 'secret' => getenv('FB_APP_SECRET')),
+			'scope' => 'email, public_profile',
+			'trustForwarded' => true,
+		);
+	}
 }
 
 return $return;

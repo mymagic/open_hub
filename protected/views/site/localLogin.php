@@ -9,6 +9,8 @@ $this->breadcrumbs = array(
 );
 ?>
 
+
+
 <div class="row bg-white">
 	<div class="col-xs-12 white-bg padding-md">
 	<br />
@@ -17,9 +19,14 @@ $this->breadcrumbs = array(
 		<p><?php echo Yii::t('app', 'Use your social account! One click access with no sign-up required.') ?></p>
 		<br />
 		<div class="btn-group-justified btn-group text-center" role="group">
+
+			<?php if (Yii::app()->hybridAuth->isAllowedProvider('Facebook')): ?>
 			<a class="btn btn-success" href="<?php echo $this->createUrl('hauth/login', array('provider' => 'Facebook'))?>"><?php echo Html::faIcon('fa-facebook-square', array('class' => 'fa-lg')) ?> <?php echo Yii::t('app', 'Facebook') ?></a>
+			<?php endif; ?>
 			
+			<?php if (Yii::app()->hybridAuth->isAllowedProvider('Google')): ?>
 			<a class="btn btn-danger" href="<?php echo $this->createUrl('hauth/login', array('provider' => 'Google'))?>"><?php echo Html::faIcon('fa-google-plus', array('class' => 'fa-lg')) ?> <?php echo Yii::t('app', 'Google') ?></a>
+			<?php endif; ?>
 		</div>
 
 		<hr class="margin-top-2x margin-bottom-lg" style="border-color:#bbb" />

@@ -26,15 +26,15 @@ class SignupForm extends CFormModel
 	public $cemail;
 	public $fullname;
 
-	public $tocContent;
-	public $agreeToc;
+	public $tncContent;
+	public $agreeTnc;
 
 	public $verifyCode;
 
 	public function init()
 	{
 		parent::init();
-		//$this->tocContent = file_get_contents(Yii::getPathOfAlias('static').'/toc.htm');
+		$this->tncContent = Embed::code2value('signup-tncContent', 'html_content');
 	}
 
 	/**
@@ -43,12 +43,12 @@ class SignupForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('email, cemail, fullname, verifyCode, agreeToc', 'required'),
+			array('email, cemail, fullname, verifyCode, agreeTnc', 'required'),
 			// email has to be a valid email address and matched confirmed email
 			array('email', 'emailIsUnique'),
 			array('email', 'email'),
 			array('cemail', 'compare', 'compareAttribute' => 'email'),
-			array('agreeToc', 'compare', 'compareValue' => true, 'message' => Yii::t('app', 'Must agree to Terms and conditions')),
+			array('agreeTnc', 'compare', 'compareValue' => true, 'message' => Yii::t('app', 'Must agree to Terms and conditions')),
 
 			// verifyCode needs to be entered correctly
 			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
@@ -67,7 +67,7 @@ class SignupForm extends CFormModel
 			'cemail' => Yii::t('app', 'Retype Email'),
 			'fullname' => Yii::t('app', 'Full Name'),
 			'toc' => Yii::t('app', 'Terms &amp; Conditions'),
-			'agreeToc' => Yii::t('app', 'I have read and agree to terms and conditions'),
+			'agreeTnc' => Yii::t('app', 'I have read and agree to terms and conditions'),
 			'verifyCode' => Yii::t('app', 'I am not a robot'),
 		);
 	}
