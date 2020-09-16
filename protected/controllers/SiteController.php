@@ -376,7 +376,9 @@ class SiteController extends Controller
 					// continue to the welcome page
 					$this->redirect(array('site/welcome', 'id' => $user->id, 'returnUrl' => $returnUrl));
 				} else {
-					Notice::page("Failed to register due to unexpected reason: '{$exceptionMessage}'.", Notice_ERROR);
+					$exceptionMessage = $return['msg'];
+
+					Notice::page("Failed to register due to: '{$exceptionMessage}'.", Notice_ERROR);
 				}
 			}
 		}
@@ -426,12 +428,106 @@ class SiteController extends Controller
 
 	public function actionLostPassword()
 	{
-		throw new CHttpException(404, 'Page not found.');
+		if (!Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must first logout to retrieve lost password'));
+		}
+		$model['embedLostPassword'] = Embed::model()->getByCode('lost-password');
+		$model['form'] = new User('lostPassword');
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if (isset($_POST['User'])) {
+			$model['form']->attributes = $_POST['User'];
+			$model['form']->validate();
+
+			if (!empty($model['form']->username)) {
+				$modelToRetrievePassword = HUB::getUserByUsername($model['form']->username);
+
+				if (!empty($modelToRetrievePassword) && $modelToRetrievePassword->is_active && ysUtil::isEmailAddress($modelToRetrievePassword->username)) {
+					// generate reset password key and save
+					$modelToRetrievePassword->reset_password_key = md5($modelToRetrievePassword->username . $modelToRetrievePassword->password);
+					$modelToRetrievePassword->save();
+
+					// send rest password link
+					$params['link'] = $this->createAbsoluteUrl('site/resetLostPassword', array('username' => $modelToRetrievePassword->username, 'key' => $modelToRetrievePassword->reset_password_key));
+					$receivers[] = array('email' => $modelToRetrievePassword->username, 'name' => $modelToRetrievePassword->profile->full_name);
+					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Retrieve Password Confirmation'), $params, '_lostPasswordRequest');
+
+					if ($result === true) {
+						Notice::page(Yii::t('app', 'Successfully received your request and sent a confrimation email to {email}.', array('{email}' => $modelToRetrievePassword->username)), Notice_SUCCESS, array('url' => $this->createUrl('site/login')));
+					} else {
+						Notice::page(Yii::t('app', 'Failed to receive your request due to {error}', array('{error}' => $result)), Notice_ERROR, array('url' => $this->createUrl('site/login')));
+					}
+				} else {
+					// user is not active or email is invalid
+					$model['form']->addError('username', Yii::t('app', 'User not found or inactive'));
+				}
+			}
+		}
+
+		$this->render('lostPassword', array(
+			'model' => $model,
+		));
 	}
 
 	public function actionResetLostPassword()
 	{
-		throw new CHttpException(404, 'Page not found.');
+		if (!Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must first logout to reset lost password'));
+		}
+		$model = new User('resetLostPassword');
+
+		if (isset($_GET['username']) && isset($_GET['key'])) {
+			$model->attributes = array('username' => $_GET['username'], 'reset_password_key' => $_GET['key']);
+			$model->validate();
+
+			if (!empty($model->username)) {
+				$modelToResetPassword = HUB::getUserByUsername($model->username);
+
+				if (!empty($modelToResetPassword) && $modelToResetPassword->is_active && ysUtil::isEmailAddress($modelToResetPassword->username)) {
+					// matching reset password key
+					$keyToMatch = md5($modelToResetPassword->username . $modelToResetPassword->password);
+
+					// check the reset password key is match with current username and password
+					if (
+						$modelToResetPassword->username == $model->username &&
+						$modelToResetPassword->reset_password_key == $model->reset_password_key
+						&& $keyToMatch == $model->reset_password_key
+					) {
+						// generate a new random password
+						$newPassword = ysUtil::generateRandomPassword();
+						$modelToResetPassword->password = $newPassword;
+						$modelToResetPassword->reset_password_key = '';
+
+						// send new password
+						$params['username'] = $modelToResetPassword->username;
+						$params['password'] = $newPassword;
+						$params['link'] = $this->createAbsoluteUrl('site/login');
+						$receivers[] = array('email' => $modelToResetPassword->username, 'name' => $modelToResetPassword->profile->full_name);
+						$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Your new password'), $params, '_lostPasswordReset');
+
+						if ($result === true) {
+							$modelToResetPassword->save();
+
+							Notice::page(Yii::t('app', 'Successfully received your request and reset your password, new password has been email to {email}.', array('{email}' => $modelToResetPassword->username)), Notice_SUCCESS, array('url' => $this->createUrl('site/login')));
+						} else {
+							Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => $result)), Notice_ERROR);
+						}
+					} else {
+						// unmatch reset key
+						Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'unmatch reset key'))), Notice_ERROR, array('url' => $this->createUrl('site/lostPassword')));
+					}
+				} else {
+					// user is not active or email is invalid
+					Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'User not found or inactive'))), Notice_ERROR);
+				}
+			} else {
+				Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'User not found'))), Notice_ERROR);
+			}
+		} else {
+			Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'Required Parameter not found'))), Notice_ERROR);
+		}
 	}
 
 	public function actionTerminateAccount()
