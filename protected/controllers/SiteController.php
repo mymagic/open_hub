@@ -50,11 +50,6 @@ class SiteController extends Controller
 		$this->redirect(array('/cpanel'));
 	}
 
-	public function actionWelcome()
-	{
-		$this->render('welcome');
-	}
-
 	public function actionBooking()
 	{
 		$this->redirect(array('/mentor'));
@@ -345,9 +340,87 @@ class SiteController extends Controller
 		}
 	}
 
-	public function actionSignup()
+	public function actionSignup($returnUrl = '')
 	{
-		throw new CHttpException(404, 'Page not found.');
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/localSignup', 'returnUrl' => $returnUrl));
+		}
+	}
+
+	public function actionLocalSignup()
+	{
+		$model['form'] = new SignupForm;
+
+		if (isset($_POST['SignupForm'])) {
+			$model['form']->attributes = $_POST['SignupForm'];
+
+			// if the model is validated
+			if ($model['form']->validate()) {
+				$input['email'] = $model['form']['email'];
+				$input['cemail'] = $model['form']['cemail'];
+				$input['fullname'] = $model['form']['fullname'];
+
+				$return = HUB::createLocalMember($model['form']['email'], $model['form']['fullname'], $signupType = 'default', $input);
+
+				if ($return['status'] == 'success') {
+					$user = $return['data']['user'];
+
+					$params['username'] = $user->username;
+					$params['password'] = $return['data']['newPassword'];
+					$params['link'] = $this->createAbsoluteUrl('site/login');
+					$receivers[] = array('email' => $user->username, 'name' => $user->profile->full_name);
+
+					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Welcome to join in the {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createUser');
+
+					// continue to the welcome page
+					$this->redirect(array('site/welcome', 'id' => $user->id));
+				} else {
+					Notice::page("Failed to register due to unexpected reason: '{$exceptionMessage}'.", Notice_ERROR);
+				}
+			}
+		}
+		$this->render('localSignup', array('model' => $model));
+	}
+
+	// create a specific signup success page for google analytics tracking
+	public function actionWelcome($id)
+	{
+		$user = User::model()->findByPk($id);
+		if (empty($user)) {
+			$this->redirect(array('error'));
+		}
+
+		// after initAccount
+		if (Yii::app()->user->id == $user->id) {
+			$url = (!empty(Yii::app()->user->returnUrl)) ? Yii::app()->user->returnUrl : $this->createUrl('cpanel/index');
+			Notice::page(
+				Yii::t(
+					'app',
+					'Hello {nickname}, your profile is updated successfully.',
+					array('{nickname}' => $user->nickname, '{email}' => $user->username)
+				),
+				Notice_SUCCESS,
+				array(
+					'urlLabel' => 'Continue', 'url' => $url,
+				)
+			);
+		}
+		// traditional signup
+		else {
+			Notice::page(
+				Yii::t(
+					'app',
+					"Successfully registered your account '{username}'. Your password has been sent to the desinated email address '{email}'.",
+					array('{username}' => $user->username, '{email}' => $user->username)
+				),
+				Notice_SUCCESS,
+				array(
+					'urlLabel' => 'Login Now', 'url' => ($user->signup_type == 'social' ? $this->createUrl('hauth/login') : $this->createUrl('site/login', array('email' => $user->username))),
+				)
+			);
+		}
 	}
 
 	public function actionLostPassword()
@@ -358,11 +431,6 @@ class SiteController extends Controller
 	public function actionResetLostPassword()
 	{
 		throw new CHttpException(404, 'Page not found.');
-	}
-
-	public function actionStampede()
-	{
-		$this->render('stampede');
 	}
 
 	public function actionTerminateAccount()
