@@ -9,8 +9,6 @@ $this->breadcrumbs = array(
 );
 ?>
 
-
-
 <div class="row bg-white">
 	<div class="col-xs-12 white-bg padding-md">
 	<br />
@@ -84,6 +82,10 @@ $this->breadcrumbs = array(
 
 		<hr class="margin-top-lg margin-bottom-2x visible-xs" style="border-color:#bbb" />
 		
+	</div>
+	<div class="col-md-5">
+		<h3 class="text-highlight nopadding margin-bottom-lg"><?php echo Embed::code2value('member-entryContent', 'title') ?></h3>
+		<div><?php echo Embed::code2value('member-entryContent', 'html_content')?></div>
 	</div>
 </div>
 </div>

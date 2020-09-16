@@ -431,7 +431,7 @@ class SiteController extends Controller
 		if (!Yii::app()->user->isGuest) {
 			throw new CException(Yii::t('app', 'You must first logout to retrieve lost password'));
 		}
-		$model['embedLostPassword'] = Embed::model()->getByCode('lost-password');
+
 		$model['form'] = new User('lostPassword');
 
 		// Uncomment the following line if AJAX validation is needed

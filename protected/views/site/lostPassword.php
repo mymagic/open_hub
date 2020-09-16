@@ -47,7 +47,7 @@ $this->breadcrumbs = array(
 		</div>
 	</div>
 	<div class="col-md-4">
-		<h3 class="text-highlight nopadding margin-bottom-lg"><?php echo $model['embedLostPassword']->getAttrData('title') ?></h3>
-		<div><?php echo $model['embedLostPassword']->getAttrData('html_content') ?></div>
+		<h3 class="text-highlight nopadding margin-bottom-lg"><?php echo Embed::code2value('lost-password', 'title') ?></h3>
+		<div><?php echo Embed::code2value('lost-password', 'html_content')?></div>
 	</div>
 </div>

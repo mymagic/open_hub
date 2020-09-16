@@ -28,6 +28,22 @@ class m200916_065808_agree_tnc extends CDbMigration
 				<li>We strongly suggest you to change password after login.</li>
 			</ol>',
 		));
+
+		$embed = Embed::setEmbed('member-entryContent', array(
+			'is_title_enabled' => true,
+			'is_text_description_enabled' => false,
+			'is_html_content_enabled' => true,
+			'is_image_main_enabled' => false,
+			'is_default' => true,
+			'title_en' => 'Member Control Panel',
+			'html_content_en' => '
+			<p>Login or create an account to access member control panel.</p>
+			<ul>
+				<li>Manage your startup profile</li>
+				<li>Activity feed for all events</li>
+				<li>Personalized recommendation</li>
+			</ul>',
+		));
 	}
 
 	public function down()
@@ -35,6 +51,8 @@ class m200916_065808_agree_tnc extends CDbMigration
 		return Embed::deleteEmbed('signup-tncContent');
 
 		return Embed::deleteEmbed('lost-password');
+
+		return Embed::deleteEmbed('member-entryContent');
 	}
 
 	/*
