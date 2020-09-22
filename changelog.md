@@ -1,3 +1,8 @@
+## 0.6.343
+- completed #9 detach authentication & authorization from MaGIC connect
+- fixed #28 embed code need longer char length than 32 chars
+- completed #38 [f7] add tabular field 
+
 ## 0.5.218
 - fixed #32: Saving individual model will trigger error repository() not found 
 - fixed #31: cloudflare error when saving module config
