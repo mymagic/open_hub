@@ -14,6 +14,7 @@ $this->breadcrumbs = array(
 	<br />
 	<div class="col-md-7 col-sm-12">
 		<h3><?php echo Yii::t('app', 'Welcome!') ?></h3>
+		<?php if (Yii::app()->hybridAuth->isAllowedProvider('Facebook') || Yii::app()->hybridAuth->isAllowedProvider('Google')): ?>
 		<p><?php echo Yii::t('app', 'Use your social account! One click access with no sign-up required.') ?></p>
 		<br />
 		<div class="btn-group-justified btn-group text-center" role="group">
@@ -28,6 +29,7 @@ $this->breadcrumbs = array(
 		</div>
 
 		<hr class="margin-top-2x margin-bottom-lg" style="border-color:#bbb" />
+		<?php endif; ?>
 
 		<!-- traditional login -->
 		<div class="margin-bottom-2x">
