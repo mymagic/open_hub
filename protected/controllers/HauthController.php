@@ -140,10 +140,6 @@ class HauthController extends Controller
 
 							if ($result['status'] == 'success') {
 								$user = $result['data']['user'];
-								/*$user->social_provider = strtolower($provider);
-								$user->social_identifier = $hauthSocialUser->identifier;
-								$user->json_social_params = $jsonSocialParams;
-								$user->save();*/
 								$isNewSignup = true;
 							} else {
 								Notice::page(Yii::t('app', 'Failed to create user locally.'), Notice_ERROR);
@@ -185,7 +181,9 @@ class HauthController extends Controller
 					else {
 						// login user
 						$identity = new UserIdentity($userSocial->username, $userSocial->social_identifier);
+						$identity->socialProvider = strtolower($provider);
 						$identity->authenticate('social');
+
 						if ($identity->errorCode === UserIdentity::ERROR_NONE) {
 							$duration = 0;
 							if (Yii::app()->user->login($identity, $duration)) {
