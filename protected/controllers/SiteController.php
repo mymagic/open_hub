@@ -302,10 +302,10 @@ class SiteController extends Controller
 	 */
 	public function actionLogin($returnUrl = '')
 	{
-		if (Yii::app()->params['authAdapter'] == 'connect') {
-			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
-		} else {
+		if (Yii::app()->params['authAdapter'] == 'local') {
 			$this->redirect(array('/site/localLogin', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
 		}
 	}
 
@@ -332,20 +332,20 @@ class SiteController extends Controller
 			$returnUrl = sprintf('http:%s', urlencode(Yii::app()->params['baseUrl']));
 		}
 
-		if (Yii::app()->params['authAdapter'] == 'connect') {
+		if (Yii::app()->params['authAdapter'] == 'local') {
+			$this->redirect(Yii::app()->params['baseUrl']);
+		} else {
 			$urlConnectLogout = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], $returnUrl);
 			$this->redirect($urlConnectLogout);
-		} else {
-			$this->redirect(Yii::app()->params['baseUrl']);
 		}
 	}
 
 	public function actionSignup($returnUrl = '')
 	{
-		if (Yii::app()->params['authAdapter'] == 'connect') {
-			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
-		} else {
+		if (Yii::app()->params['authAdapter'] == 'local') {
 			$this->redirect(array('/site/localSignup', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
 		}
 	}
 

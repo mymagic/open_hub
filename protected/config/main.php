@@ -253,7 +253,7 @@ if (file_exists($overrideMainFilePath)) {
 }
 
 // hybridAuth
-if (getenv('AUTH_ADAPTER') == 'local') {
+if ($return['params']['authAdapter'] == 'local') {
 	$return['components']['hybridAuth'] = array(
 		'class' => 'application.yeebase.extensions.HybridAuth.CHybridAuth',
 		'vendorPath' => Yii::getPathOfAlias('vendor'),
