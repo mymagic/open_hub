@@ -83,13 +83,13 @@ class LoginForm extends CFormModel
 		Notice::debugFlash('LoginForm.login()');
 
 		if ($this->_identity === null) {
-			Notice::debugFlash(Yii::t('notice', 'username:{username}, password:{password}', ['username' => $this->username, 'password' => $this->password]));
+			Notice::debugFlash(Yii::t('notice', 'username:{username}, password:{password}', ['{username}' => $this->username, '{password}' => $this->password]));
 
 			$this->_identity = new UserIdentity($this->username, $this->password);
 			$this->_identity->authenticate();
 		}
 
-		Notice::debugFlash(Yii::t('notice', 'login error code: {error}', ['error' => $this->_identity->errorCode]));
+		Notice::debugFlash(Yii::t('notice', 'login error code: {error}', ['{error}' => $this->_identity->errorCode]));
 
 		// login decision
 		if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
