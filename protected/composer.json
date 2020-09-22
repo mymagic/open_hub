@@ -41,6 +41,7 @@
         "josegonzalez/dotenv": "^3.2",
         "michelf/php-markdown": "^1.9",
         "intervention/httpauth": "^3.0",
+        "hybridauth/hybridauth": "^2.9",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {

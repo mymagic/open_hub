@@ -196,6 +196,8 @@ class EventOrganizationController extends Controller
 
 	public function actionBulkInsert($eventId = '')
 	{
+		set_time_limit(0);
+
 		$settingTemplateFile = Setting::code2value('eventOrganization-bulkInsertTemplateFile');
 		$model = new EventOrganizationBulkInsertForm;
 
@@ -237,7 +239,7 @@ class EventOrganizationController extends Controller
 				[E] Description
 				[F] One Linear
 				[G] Industry (skip)
-				[H] Logo Link (skip)
+				[H] Logo URL
 				[I] Year Founded
 				[J] as_role_code
 				[K] Fundraised (Before) (skip)
@@ -259,109 +261,76 @@ class EventOrganizationController extends Controller
 
 			$count = 0;
 			foreach ($sheetRows as $row) {
-				$count++;
-				if ($count == 1) {
-					continue;
-				}
+				if ($count != 0) {
+					unset($params);
+					reset($params);
+					$params = array();
 
-				$asRoleCode = $row['J'];
-				$dateAction = $row['A'];
-				$organizationTitle = trim($row['B']);
+					$asRoleCode = $row['J'];
+					$dateAction = $row['A'];
 
-				// check if organization exists by title, if yes use the existing, else create new
-				if ($existingId = Organization::isTitleExists($organizationTitle)) {
-					$organization = Organization::model()->findByPk($existingId);
-					if (!empty($organization)) {
-						if (empty($organization->year_founded)) {
-							$organization->year_founded = $row['I'];
-						}
-						if (empty($organization->url_website)) {
-							$organization->url_website = $row['C'];
-						}
-						if (empty($organization->text_oneliner)) {
-							$organization->text_oneliner = $row['E'];
-						}
-						if (empty($organization->text_short_description)) {
-							$organization->text_short_description = $row['F'];
-						}
-						$organization->save();
-					}
-				} else {
+					$organizationTitle = trim($row['B']);
+					$params['organization']['url_website'] = $row['C'];
 					$params['organization']['one_liner'] = $row['F'];
 					$params['organization']['text_short_description'] = $row['E'];
-					//$params['emailContact'] ;
 					$params['organization']['year_founded'] = $row['I'];
-					$params['organization']['url_website'] = $row['C'];
-					$organization = HUB::createOrganization($organizationTitle, $params);
-					$organization->save();
-				}
+					$organization = HubOrganization::getOrCreateOrganization($organizationTitle, $params);
 
-				// add event_organization
-				if (!$organization->hasEventOrganization($event->code, $asRoleCode)) {
-					$organization->addEventOrganization($event->code, $asRoleCode, array(
+					// load remote image
+					if (!empty(trim($row['H']))) {
+						$ruf = new RemoteUploadedFile;
+						$ruf->setUrl(trim($row['H']));
+						$organization->imageRemote_logo = $ruf;
+
+						if ($organization->save()) {
+							if (!empty($organization->imageRemote_logo)) {
+								RemoteUploadManager::storeImage($organization, 'logo', $organization->tableName());
+							}
+						}
+					}
+
+					// add event_organization
+					if (!$organization->hasEventOrganization($event->code, $asRoleCode)) {
+						$organization->addEventOrganization($event->code, $asRoleCode, array(
 						'eventId' => $event->id,
 						'eventVendorCode' => 'manual',
 						'registrationCode' => '',
 						'dateAction' => strtotime($dateAction),
 					));
-				}
+					}
 
-				$founders = array();
-				// founder 1
-				if (!empty($row['O'])) {
-					$founders[] = array('name' => $row['O'], 'email' => $row['P'], 'contact' => $row['Q']);
-				}
-				// founder 2
-				if (!empty($row['R'])) {
-					$founders[] = array('name' => $row['R'], 'email' => $row['S'], 'contact' => $row['T']);
-				}
-				// founder 3
-				if (!empty($row['U'])) {
-					$founders[] = array('name' => $row['U'], 'email' => $row['V'], 'contact' => $row['W']);
-				}
+					unset($founders);
+					reset($founders);
+					$founders = array();
+					// founder 1
+					if (!empty($row['O'])) {
+						$founders[] = array('name' => $row['O'], 'email' => $row['P'], 'contact' => $row['Q']);
+					}
+					// founder 2
+					if (!empty($row['R'])) {
+						$founders[] = array('name' => $row['R'], 'email' => $row['S'], 'contact' => $row['T']);
+					}
+					// founder 3
+					if (!empty($row['U'])) {
+						$founders[] = array('name' => $row['U'], 'email' => $row['V'], 'contact' => $row['W']);
+					}
 
-				// foreach founder
-				if (!empty($founders)) {
-					foreach ($founders as $founder) {
-						// add organization2email
-						// add access if email is set and organization do not have such user email yet
-						if (!empty($founder['email']) && YsUtil::isEmailAddress($founder['email']) && !$organization->hasUserEmail($founder['email'])) {
-							$o2e = new Organization2Email;
-							$o2e->organization_id = $organization->id;
-							$o2e->user_email = $founder['email'];
-							$o2e->status = 'approve';
-							$o2e->save();
-						}
+					// foreach founder
+					if (!empty($founders)) {
+						foreach ($founders as $founder) {
+							$individual = HubIndividual::getOrCreateIndividual($founder['name'], array('individual' => array('mobile_number' => $founder['contact']), 'userEmail' => $founder['email']));
 
-						// check if individual exists by name, if yes use existing, else create new
-						if ($idvId = Individual::isFullnameExists($founder['name'])) {
-							$individual = HubIndividual::getIndividual($idvId);
-							if (empty($individual->mobile_number)) {
-								$individual->mobile_number = $founder['contact'];
-							}
-							$individual->save();
-						} else {
-							$individual = new Individual;
-							$individual->full_name = $founder['name'];
-							$individual->mobile_number = $founder['contact'];
-							$individual->save();
-						}
-
-						// add individual_organization if organization do not have this individual
-						if (!$organization->hasIndividualOrganization($individual->id, 'founder')) {
+							// add individual_organization if organization do not have this individual
 							$organization->addIndividualOrganization($individual, 'founder');
-						}
 
-						// add individual2email if email is set
-						if (!empty($founder['email']) && !$individual->hasUserEmail($founder['email'])) {
-							$i2o = new Individual2Email;
-							$i2o->individual_id = $individual->id;
-							$i2o->user_email = $founder['email'];
-							$i2o->is_verify = 0;
-							$i2o->save();
+							// add access if email is set and organization do not have such user email yet
+							if (!empty($founder['email'])) {
+								$organization->setOrganizationEmail($founder['email']);
+							}
 						}
 					}
 				}
+				$count++;
 			}
 
 			Notice::page(

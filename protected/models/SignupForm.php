@@ -24,16 +24,17 @@ class SignupForm extends CFormModel
 {
 	public $email;
 	public $cemail;
+	public $fullname;
 
-	//public $tocContent;
-	//public $agreetoc;
+	public $tncContent;
+	public $agreeTnc;
 
 	public $verifyCode;
 
 	public function init()
 	{
 		parent::init();
-		//$this->tocContent = file_get_contents(Yii::getPathOfAlias('static').'/toc.htm');
+		$this->tncContent = Embed::code2value('signup-tncContent', 'html_content');
 	}
 
 	/**
@@ -42,19 +43,12 @@ class SignupForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			// name, email, subject and body are required
-			////array('email, cemail, agreetoc', 'required'),
-			array('email, cemail, verifyCode', 'required'),
+			array('email, cemail, fullname, verifyCode, agreeTnc', 'required'),
 			// email has to be a valid email address and matched confirmed email
 			array('email', 'emailIsUnique'),
 			array('email', 'email'),
 			array('cemail', 'compare', 'compareAttribute' => 'email'),
-			// nickname from 5-12 characters, must only contains alphabetic value
-			//array('nickname', 'length', 'min'=>5, 'max'=>12),
-			//array('nickname', 'match', 'pattern'=>'/^([a-z0-9_-])+$/', 'message'=>Yii::t('app', '{attribute} only accept valid character set like a-z, 0-9, - and _')),
-			// must check
-			////array('agreetoc', 'required', 'requiredValue'=>1, 'message'=>"You must have read and agree to the terms and conditions to proceed."),
-			//array('gender, address_line2, town', 'safe'),
+			array('agreeTnc', 'compare', 'compareValue' => true, 'message' => Yii::t('app', 'Must agree to Terms and conditions')),
 
 			// verifyCode needs to be entered correctly
 			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
@@ -70,10 +64,10 @@ class SignupForm extends CFormModel
 	{
 		return array(
 			'email' => Yii::t('app', 'Email'),
-			'cemail' => Yii::t('app', 'Confirm Email'),
-			//'nickname' => Yii::t('app','Nick Name'),
-			//'toc' => Yii::t('app','Terms &amp; Conditions'),
-			//'agreetoc' => Yii::t('app','I have read and agree to terms and conditions'),
+			'cemail' => Yii::t('app', 'Retype Email'),
+			'fullname' => Yii::t('app', 'Full Name'),
+			'toc' => Yii::t('app', 'Terms &amp; Conditions'),
+			'agreeTnc' => Yii::t('app', 'I have read and agree to terms and conditions'),
 			'verifyCode' => Yii::t('app', 'I am not a robot'),
 		);
 	}

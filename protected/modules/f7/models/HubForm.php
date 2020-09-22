@@ -4,6 +4,8 @@ use function GuzzleHttp\json_decode;
 
 class HubForm
 {
+	public static $limitTabularDynamicRow = 100;
+
 	public static function getOrCreateIntake($title, $params = array())
 	{
 		try {
@@ -217,6 +219,9 @@ class HubForm
 			case 'headline':
 				$htmlTag = self::getHeadlineTag($value, $realm);
 				break;
+			case 'html':
+				$htmlTag = self::getCustomHtmlTag($value, $realm);
+				break;
 			case 'break':
 				$htmlTag = self::getBreakTag($value, $realm);
 				break;
@@ -269,7 +274,7 @@ class HubForm
 				$htmlTag = self::getTabularTag($isEnabled, $formType, $value, $decodedData, $realm);
 				break;
 			default:
-				throw new Exception('Item is not supported');
+				throw new Exception('Item is not supported: ' . $key);
 				break;
 		}
 
@@ -307,6 +312,9 @@ class HubForm
 					break;
 				case 'check':
 					$tags .= self::getJsTagForCheckCondition($caller, $condition['check'], $action, $items);
+					break;
+				case 'radio':
+					$tags .= self::getJsTagForRadioCondition($caller, $condition['radio'], $action, $items);
 					break;
 				default:
 					throw new Exception('condition is not supported.');
@@ -413,8 +421,8 @@ class HubForm
 		$tag = sprintf('
           
             %s
-          $( "input:radio[name=\"%s\"]" ).change(function() {
-            var checked = $("input:radio[name=\"%s\"]:checked").val();
+          $( "input:checkbox[name=\"%s\"]" ).change(function() {
+            var checked = $("input:checkbox[name=\"%s\"]:checked").val();
             
             if(checked == "%s") 
             {
@@ -430,6 +438,65 @@ class HubForm
 		return $tag;
 	}
 
+	protected function getJsTagForRadioCondition($caller, $condition, $action, $items)
+	{
+		$content = '';
+		$negate = '';
+		foreach ($items as $item) {
+			if ($action === 'disable') {
+				$content .= sprintf('
+                $( "#%s" ).attr(\'disabled\',\'disabled\');
+                ', $item);
+				$negate .= sprintf('
+                $( "#%s" ).removeAttr(\'disabled\');
+                ', $item);
+			} elseif ($action === 'enable') {
+				$content .= sprintf('
+                $( "#%s" ).removeAttr(\'disabled\');
+                ', $item);
+				$negate .= sprintf('
+                $( "#%s" ).attr(\'disabled\',\'disabled\');
+                ', $item);
+			} elseif ($action === 'hide') {
+				$content .= sprintf('
+                $( "label[for=\'%s\']" ).closest("div.form-group").hide();
+                ', $item);
+				$negate .= sprintf('
+                $( "label[for=\'%s\']" ).closest("div.form-group").show();
+                ', $item);
+			} elseif ($action === 'show') {
+				$content .= sprintf('
+                $( "label[for=\'%s\']" ).closest("div.form-group").show();
+                ', $item);
+				$negate .= sprintf('
+                $( "label[for=\'%s\']" ).closest("div.form-group").hide();
+                ', $item);
+			}
+		}
+		$tag = '';
+		// if ($condition === "No")
+		// {
+
+		$tag = sprintf('  
+        %s
+        $( "input:radio[name=\"%s\"]" ).change(function() {
+			var checked = $("input:radio[name=\"%s\"]:checked").val();
+			
+			if(checked == "%s") 
+			{
+				%s
+			}
+			else
+			{
+				%s
+			}
+		});
+		$( "input:radio[name=\"%s\"]" ).trigger("change");
+      ', $negate, $caller, $caller, $condition, $content, $negate, $caller);
+
+		return $tag;
+	}
+
 	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
 		$innerHtml = '';
@@ -437,7 +504,9 @@ class HubForm
 			$key = $element['tag'];
 			$value = $element['prop'];
 			if ($key === 'group') {
-				throw new Exception('We dont support multiple level of groupping!');
+				// throw new Exception('We dont support multiple level of groupping!');
+				$members = $element['members'];
+				$innerElements = $element['members'];
 			}
 
 			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
@@ -499,6 +568,13 @@ class HubForm
 		} else {
 			$html = sprintf('<h%s style="%s" class="form-header %s">%s</h%s>', $params['size'], $params['style'], $params['css'], $params['text'], $params['size']);
 		}
+
+		return $html;
+	}
+
+	protected function getCustomHtmlTag($params, $realm = 'frontend')
+	{
+		$html = sprintf('<div>%s</div>', $params['value']);
 
 		return $html;
 	}
@@ -1019,6 +1095,10 @@ class HubForm
 			$members = null;
 			if ($key === 'section') {
 				$members = $element['members'];
+			} elseif ($key == 'group') {
+				// throw new Exception('We dont support multiple level of groupping!');
+				$members = $element['members'];
+				$innerElements = $element['members'];
 			}
 
 			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
@@ -1177,12 +1257,18 @@ class HubForm
 		$disable = $isEnabled ? '' : 'disabled';
 		$seed = explode('-', $params['name'])[1];
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
+		$isDynamicRow = self::isTabularWithDRow($params);
+		$limitTabularDynamicRow = self::$limitTabularDynamicRow;
+		if (!empty($params['limitTabularDynamicRow'])) {
+			$limitTabularDynamicRow = $params['limitTabularDynamicRow'];
+		}
+
 		$html = '';
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
-		$html .= '<table class="table table-bordered">';
+		$html .= sprintf('<table class="table table-bordered" id="tabular-%s">', $params['name']);
 		$html .= '<thead><tr>';
 		for ($i = 0; $i < count($params['headers']); $i++) {
 			$html .= sprintf('<th class="%s">', $params['headers'][$i]['css']);
@@ -1195,6 +1281,11 @@ class HubForm
 			}
 			$html .= '</th>';
 		}
+		// for last action column: trash in dynamic row
+		if ($isEnabled && $isDynamicRow) {
+			$html .= '<th></th>';
+		}
+
 		$html .= '</tr></thead>';
 		$html .= '<tbody>';
 		for ($i = 0; $i < count($params['members']); $i++) {
@@ -1241,12 +1332,153 @@ class HubForm
 				$html .= $htmlTag;
 				$html .= '</td>';
 			}
+
+			if ($isDynamicRow && $isEnabled) {
+				$html .= sprintf('<td class="text-center"><a class="btn btn-md btn-white btn-deleteRow">%s</a></td>', Html::faIcon('fa-trash', array('class' => '')));
+			}
+
 			$html .= '</tr>';
 		}
+
+		if ($isDynamicRow) {
+			// todo: currently `k` is hard code to max limit row `limitTabularDynamicRow` x 2 for the list size to process to find submitted value of a dynamic tabular field. It's possible that some submitted row data got truncated, especially when user deleted and added row too frequent. a proper way is to look thru the json_data with regex and find the largest count of value eg: shareholders7-amountInvested -> 7
+			for ($k = 1; $k <= $limitTabularDynamicRow * 2; $k++) {
+				if (!self::isTabularTagDRowFilled($k, $params, $decodedData)) {
+					continue;
+				}
+				$html .= sprintf('<tr class="drow" data-index="%s">', $k);
+				for ($j = 0; $j < count($params['headers']); $j++) {
+					$item = $params['members'][0]['members'][$j];
+					$item['prop']['name'] = str_replace('%%N%%', $k, $item['prop']['name']);
+					$item['prop']['value'] = str_replace('%%N%%', $k, $item['prop']['value']);
+					$item['prop']['hint'] = str_replace('%%N%%', $k, $item['prop']['hint']);
+					$key = $item['tag'];
+					$itemParams = $item['prop'];
+
+					$varName = sprintf('%s%s-%s', $params['name'], $k, $item['prop']['name']);
+
+					$htmlTag = $varName;
+
+					switch ($key) {
+						case 'label':
+							$htmlTag = self::getLabelTag($itemParams, $formType);
+							break;
+						case 'url':
+							$htmlTag = self::getUrlTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'email':
+							$htmlTag = self::getEmailTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'phone':
+							$htmlTag = self::getPhoneTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'textbox':
+							$htmlTag = self::getTextboxTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'number':
+							$htmlTag = self::getNumberTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'textarea':
+							$htmlTag = self::getTextareaTag($isEnabled, $itemParams, $decodedData);
+							break;
+						case 'list':
+							$htmlTag = self::getListTag($isEnabled, $itemParams, $decodedData, $realm);
+							break;
+						case 'booleanButton':
+							$htmlTag = self::getBooleanButtonTag($isEnabled, $itemParams, $decodedData);
+							break;
+						default:
+							throw new Exception('Item is not supported in tabular field');
+							break;
+					}
+					$html .= sprintf('<td>%s</td>', $htmlTag);
+				}
+				if ($isEnabled) {
+					$html .= sprintf('<td class="text-center"><a class="btn btn-md btn-white btn-deleteRow">%s</a></td>', Html::faIcon('fa-trash', array('class' => '')));
+				}
+
+				$html .= '</tr>';
+			}
+
+			if ($isEnabled) {
+				$html .= sprintf('<tr class="text-right"><td colspan="%s"><a class="btn btn-xs btn-success btn-addRow">%s %s</a></td></tr>', $j + 1, Html::faIcon('fa-plus'), Yii::t('f7', 'Add Row'));
+			}
+		}
+
 		$html .= '</tbody>';
 		$html .= '</table>';
 
+		if ($isDynamicRow) {
+			$html .= sprintf('<script>
+			$( document ).ready(function() {
+				$("#tabular-%s tbody").children("tr:first").addClass("drow").attr("data-index", 0).hide();
+
+				$("#tabular-%s .btn-addRow").click(function(e){
+					var newRowIndex = parseInt($("#tabular-%s .drow:last").data("index"))+1;
+					var totalRow = $(this).closest("tbody").children(".drow").length-1;
+					if(totalRow < %s){
+						sampleRow = $(this).closest("tbody").children("tr:first").html();
+						sampleRow = sampleRow.replace(/%%%%N%%%%/g, newRowIndex);
+						$("#tabular-%s tr:last").before("<tr class=\"drow\" data-index=\""+(newRowIndex)+"\">"+sampleRow+"</tr>");
+					}
+					else
+					{
+						toastr.options = {
+							"closeButton": true,
+							"preventDuplicates": true,
+							"positionClass" : "toast-top-center",
+						};
+						toastr.warning("Limit Reached");
+					}
+				});
+				$("#tabular-%s").on("click", ".btn-deleteRow", function(e){
+					$(this).closest("tr.drow").remove();
+				});
+
+				var totalRow = parseInt($("#tabular-%s .drow:last").data("index"))
+				if(totalRow < 1)
+				{
+					$("#tabular-%s .btn-addRow").trigger("click");
+				}
+			}); 
+			</script>', $params['name'], $params['name'], $params['name'], $limitTabularDynamicRow, $params['name'], $params['name'], $params['name'], $params['name']);
+		}
+
 		return $html;
+	}
+
+	// check is a specific dynamic row has at least one field filled with value in stored decoded data
+	protected static function isTabularTagDRowFilled($count, $params, $decodedData)
+	{
+		for ($j = 0; $j < count($params['headers']); $j++) {
+			$item = $params['members'][0]['members'][$j];
+			$item['prop']['name'] = str_replace('%%N%%', $count, $item['prop']['name']);
+
+			if (!empty($item['prop']['name'])) {
+				$item['prop']['value'] = str_replace('%%N%%', $count, $item['prop']['value']);
+				$item['prop']['hint'] = str_replace('%%N%%', $count, $item['prop']['hint']);
+				$key = $item['tag'];
+				$itemParams = $item['prop'];
+
+				if (isset($decodedData[$item['prop']['name']])) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	// check is the tabular field is a dynamic row type
+	protected static function isTabularWithDRow($params)
+	{
+		for ($i = 0; $i < count($params['members']); $i++) {
+			if ($params['members'][$i]['tag'] == 'drow') {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function validateForm($jsonForm, $postedData)
@@ -1313,7 +1545,7 @@ class HubForm
 	{
 		foreach ($member['prop']['members'] as $tabularRow) {
 			foreach ($tabularRow['members'] as $member) {
-				if ($member['tag'] !== 'label' && array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1) {
+				if ($member['tag'] !== 'label' && array_key_exists('required', $member['prop']) && $member['prop']['required'] === 1 && !strstr($member['prop']['name'], '%%N%%')) {
 					$error = self::validateComponent($member['tag'], $member['prop']['name'], $member['prop']['error'], $member['prop']['validation'], $postedData, $jScripts, $member['prop']['csv_label']);
 
 					if (!empty($error)) {

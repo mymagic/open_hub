@@ -373,7 +373,7 @@ class PublishController extends Controller
 
 		if ($ext === 'pdf') {
 			$contentType = 'application/pdf';
-		} elseif ($ext === 'jpeg' || $ext === 'jpg' || $ext === 'png' || $ext === 'bmp' || $ext === 'gif' || $ext === 'doc' || $ext === 'zip') {
+		} elseif ($ext === 'jpeg' || $ext === 'jpg' || $ext === 'png' || $ext === 'bmp' || $ext === 'gif' || $ext === 'doc' || $ext === 'zip' || $ext === 'xls' || $ext === 'xlsx') {
 			$contentType = mime_content_type($downloadFile);
 		} else {
 			throw new Exception('File type is not supported');

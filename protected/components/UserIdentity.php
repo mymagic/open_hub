@@ -27,6 +27,7 @@ class UserIdentity extends CUserIdentity
 	private $_id;
 	public $user;
 	public $availableAttempts;
+	public $socialProvider; // social media provider
 
 	/**
 	 * Authenticates a user.
@@ -42,7 +43,10 @@ class UserIdentity extends CUserIdentity
 
 		if ($type == 'social') {
 			// password in this case is not real password, but social_identifier (provider code)
-			$user = User::model()->findByAuthSocial($this->username, $this->password);
+			$userSocial = UserSocial::getObjByProviderId($this->username, $this->socialProvider, $this->password);
+			if (!empty($userSocial)) {
+				$user = $userSocial->user;
+			}
 		} else {
 			$user = User::model()->username2Obj($this->username);
 		}
@@ -53,7 +57,7 @@ class UserIdentity extends CUserIdentity
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 		}
 		// password unmatch
-		elseif ($user->password !== sha1($this->password) && ($type == 'default')) {
+		elseif (!$user->matchPassword($this->password) && ($type == 'default')) {
 			$user->stat_login_count++;
 			$user->save(false);
 			$this->errorCode = self::ERROR_PASSWORD_INVALID;

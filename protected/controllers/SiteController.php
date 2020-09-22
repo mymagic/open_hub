@@ -50,11 +50,6 @@ class SiteController extends Controller
 		$this->redirect(array('/cpanel'));
 	}
 
-	public function actionWelcome()
-	{
-		$this->render('welcome');
-	}
-
 	public function actionBooking()
 	{
 		$this->redirect(array('/mentor'));
@@ -64,6 +59,57 @@ class SiteController extends Controller
 	{
 		$this->activeMenuMain = 'about';
 		$this->render('about');
+	}
+
+	public function actionLocalLogin($returnUrl = '', $email = '')
+	{
+		Notice::debugFlash('SiteController.actionLogin()');
+		if (!Yii::app()->user->isGuest) {
+			Notice::Page(Yii::t('app', 'Please logout from your account before making a new login'), Notice_INFO, array('url' => $this->createUrl('site/logout'), 'urlLabel' => Yii::t('app', 'Logout Now')));
+		}
+
+		$model['form'] = new LoginForm;
+		if (!empty($email)) {
+			$model['form']->username = $email;
+		}
+
+		// if it is ajax validation request
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
+			echo CActiveForm::validate($model['form']);
+			Yii::app()->end();
+		}
+		// collect user input data
+		if (isset($_POST['LoginForm'])) {
+			$model['form']->attributes = $_POST['LoginForm'];
+			// $model['form']->validate() &&
+			// validate user input and redirect to the previous page if valid
+			if ($model['form']->login()) {
+				$redirectUrl = base64_decode($_GET['redirectUrl']);
+				if (!empty($redirectUrl)) {
+					$this->redirect($redirectUrl);
+				}
+
+				// if can access cpanel
+				if (Yii::app()->user->accessCpanel && $_POST['LoginForm']['from'] == 'frontend') {
+					//$this->redirect(array('cpanel/index'));
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
+
+				// if can access backend
+				elseif (Yii::app()->user->accessBackend) {
+					$this->redirect(array('backend/index'));
+				}
+
+				//  others
+				else {
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
+			} else {
+				// form will automatically display error msg
+			}
+		}
+		// display the login form
+		$this->render('localLogin', array('model' => $model));
 	}
 
 	// todo: detach MaGIC Connect
@@ -111,7 +157,8 @@ class SiteController extends Controller
 					// todo:
 					//echo "user not found, create one in local"; exit;
 					//Notice::page('failed to create local user base on connect');
-					if (HUB::createLocalMember($connectEmail, $userdata['firstname'] . ' ' . $userdata['lastname'], 'connect')) {
+					$result = HUB::createLocalMember($connectEmail, $userdata['firstname'] . ' ' . $userdata['lastname'], 'connect');
+					if ($result['status'] == 'success') {
 						$user = User::username2obj($connectEmail);
 					} else {
 						echo 'Failed to create local user base on connect';
@@ -255,7 +302,11 @@ class SiteController extends Controller
 	 */
 	public function actionLogin($returnUrl = '')
 	{
-		$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/localLogin', 'returnUrl' => $returnUrl));
+		}
 	}
 
 	/**
@@ -277,31 +328,206 @@ class SiteController extends Controller
 	{
 		Notice::flash(Yii::t('notice', 'You have successfully logout from the system!'), Notice_SUCCESS);
 		if (empty($returnUrl)) {
+			// todo: potential https issue
 			$returnUrl = sprintf('http:%s', urlencode(Yii::app()->params['baseUrl']));
 		}
 
-		$urlConnectLogout = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], $returnUrl);
-		$this->redirect($urlConnectLogout);
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$urlConnectLogout = sprintf('%s/logoutRedirectUrl/?url=%s', Yii::app()->params['connectUrl'], $returnUrl);
+			$this->redirect($urlConnectLogout);
+		} else {
+			$this->redirect(Yii::app()->params['baseUrl']);
+		}
 	}
 
-	public function actionSignup()
+	public function actionSignup($returnUrl = '')
 	{
-		throw new CHttpException(404, 'Page not found.');
+		if (Yii::app()->params['authAdapter'] == 'connect') {
+			$this->redirect(array('/site/connectLogin', 'returnUrl' => $returnUrl));
+		} else {
+			$this->redirect(array('/site/localSignup', 'returnUrl' => $returnUrl));
+		}
+	}
+
+	public function actionLocalSignup($returnUrl = '')
+	{
+		$model['form'] = new SignupForm;
+
+		if (isset($_POST['SignupForm'])) {
+			$model['form']->attributes = $_POST['SignupForm'];
+
+			// if the model is validated
+			if ($model['form']->validate()) {
+				$input['email'] = $model['form']['email'];
+				$input['cemail'] = $model['form']['cemail'];
+				$input['fullname'] = $model['form']['fullname'];
+
+				$return = HUB::createLocalMember($model['form']['email'], $model['form']['fullname'], $signupType = 'default', $input);
+				if ($return['status'] == 'success') {
+					$user = $return['data']['user'];
+
+					$params['email'] = $input['email'];
+					$params['password'] = $return['data']['newPassword'];
+					$params['link'] = $this->createAbsoluteUrl('site/login');
+					$receivers[] = array('email' => $input['email'], 'name' => $input['fullname']);
+
+					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Welcome to {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createMember');
+
+					// continue to the welcome page
+					$this->redirect(array('site/welcome', 'id' => $user->id, 'returnUrl' => $returnUrl));
+				} else {
+					$exceptionMessage = $return['msg'];
+
+					Notice::page("Failed to register due to: '{$exceptionMessage}'.", Notice_ERROR);
+				}
+			}
+		}
+		$this->render('localSignup', array('model' => $model));
+	}
+
+	// create a specific signup success page for google analytics tracking
+	public function actionWelcome($id, $returnUrl = '')
+	{
+		$user = User::model()->findByPk($id);
+		if (empty($user)) {
+			$this->redirect(array('error'));
+		}
+
+		// after initAccount
+		if (Yii::app()->user->id == $user->id) {
+			$url = (!empty($returnUrl)) ? $returnUrl : $this->createUrl('cpanel/index');
+			Notice::page(
+				Yii::t(
+					'app',
+					'Hello {nickname}, your profile is updated successfully.',
+					array('{nickname}' => $user->nickname, '{email}' => $user->username)
+				),
+				Notice_SUCCESS,
+				array(
+					'urlLabel' => 'Continue', 'url' => $url,
+				)
+			);
+		}
+		// traditional signup
+		else {
+			$url = (!empty($returnUrl)) ? $returnUrl : (($user->signup_type == 'social' ? $this->createUrl('hauth/login') : $this->createUrl('site/login', array('email' => $user->username))));
+
+			Notice::page(
+				Yii::t(
+					'app',
+					"Successfully registered your account '{username}'. Your password has been sent to the desinated email address '{email}'.",
+					array('{username}' => $user->username, '{email}' => $user->username)
+				),
+				Notice_SUCCESS,
+				array(
+					'urlLabel' => 'Login Now', 'url' => $url,
+				)
+			);
+		}
 	}
 
 	public function actionLostPassword()
 	{
-		throw new CHttpException(404, 'Page not found.');
+		if (!Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must first logout to retrieve lost password'));
+		}
+
+		$model['form'] = new User('lostPassword');
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if (isset($_POST['User'])) {
+			$model['form']->attributes = $_POST['User'];
+			$model['form']->validate();
+
+			if (!empty($model['form']->username)) {
+				$modelToRetrievePassword = HUB::getUserByUsername($model['form']->username);
+
+				if (!empty($modelToRetrievePassword) && $modelToRetrievePassword->is_active && ysUtil::isEmailAddress($modelToRetrievePassword->username)) {
+					// generate reset password key and save
+					$modelToRetrievePassword->reset_password_key = md5($modelToRetrievePassword->username . $modelToRetrievePassword->password);
+					$modelToRetrievePassword->save();
+
+					// send rest password link
+					$params['link'] = $this->createAbsoluteUrl('site/resetLostPassword', array('username' => $modelToRetrievePassword->username, 'key' => $modelToRetrievePassword->reset_password_key));
+					$receivers[] = array('email' => $modelToRetrievePassword->username, 'name' => $modelToRetrievePassword->profile->full_name);
+					$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Retrieve Password Confirmation'), $params, '_lostPasswordRequest');
+
+					if ($result === true) {
+						Notice::page(Yii::t('app', 'Successfully received your request and sent a confrimation email to {email}.', array('{email}' => $modelToRetrievePassword->username)), Notice_SUCCESS, array('url' => $this->createUrl('site/login')));
+					} else {
+						Notice::page(Yii::t('app', 'Failed to receive your request due to {error}', array('{error}' => $result)), Notice_ERROR, array('url' => $this->createUrl('site/login')));
+					}
+				} else {
+					// user is not active or email is invalid
+					$model['form']->addError('username', Yii::t('app', 'User not found or inactive'));
+				}
+			}
+		}
+
+		$this->render('lostPassword', array(
+			'model' => $model,
+		));
 	}
 
 	public function actionResetLostPassword()
 	{
-		throw new CHttpException(404, 'Page not found.');
-	}
+		if (!Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must first logout to reset lost password'));
+		}
+		$model = new User('resetLostPassword');
 
-	public function actionStampede()
-	{
-		$this->render('stampede');
+		if (isset($_GET['username']) && isset($_GET['key'])) {
+			$model->attributes = array('username' => $_GET['username'], 'reset_password_key' => $_GET['key']);
+			$model->validate();
+
+			if (!empty($model->username)) {
+				$modelToResetPassword = HUB::getUserByUsername($model->username);
+
+				if (!empty($modelToResetPassword) && $modelToResetPassword->is_active && ysUtil::isEmailAddress($modelToResetPassword->username)) {
+					// matching reset password key
+					$keyToMatch = md5($modelToResetPassword->username . $modelToResetPassword->password);
+
+					// check the reset password key is match with current username and password
+					if (
+						$modelToResetPassword->username == $model->username &&
+						$modelToResetPassword->reset_password_key == $model->reset_password_key
+						&& $keyToMatch == $model->reset_password_key
+					) {
+						// generate a new random password
+						$newPassword = ysUtil::generateRandomPassword();
+						$modelToResetPassword->password = $newPassword;
+						$modelToResetPassword->reset_password_key = '';
+
+						// send new password
+						$params['username'] = $modelToResetPassword->username;
+						$params['password'] = $newPassword;
+						$params['link'] = $this->createAbsoluteUrl('site/login');
+						$receivers[] = array('email' => $modelToResetPassword->username, 'name' => $modelToResetPassword->profile->full_name);
+						$result = ysUtil::sendTemplateMail($receivers, Yii::t('app', 'Your new password'), $params, '_lostPasswordReset');
+
+						if ($result === true) {
+							$modelToResetPassword->save();
+
+							Notice::page(Yii::t('app', 'Successfully received your request and reset your password, new password has been email to {email}.', array('{email}' => $modelToResetPassword->username)), Notice_SUCCESS, array('url' => $this->createUrl('site/login')));
+						} else {
+							Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => $result)), Notice_ERROR);
+						}
+					} else {
+						// unmatch reset key
+						Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'unmatch reset key'))), Notice_ERROR, array('url' => $this->createUrl('site/lostPassword')));
+					}
+				} else {
+					// user is not active or email is invalid
+					Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'User not found or inactive'))), Notice_ERROR);
+				}
+			} else {
+				Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'User not found'))), Notice_ERROR);
+			}
+		} else {
+			Notice::page(Yii::t('app', 'Failed to confirm your request due to {error}', array('{error}' => Yii::t('app', 'Required Parameter not found'))), Notice_ERROR);
+		}
 	}
 
 	public function actionTerminateAccount()

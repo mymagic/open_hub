@@ -533,6 +533,16 @@ main:
                     default: 
                     datatype: password
                     getter: "Yii::app()->params['saltSecret'];"
+                -   var: params.authAdapter
+                    varInstaller: authAdapter
+                    env: AUTH_ADAPTER
+                    title: Authentication Adapter
+                    hint: "Which Adapter to use for authentication: 'connect' (default) or 'local'"
+                    example: 
+                    default: 
+                    datatype: enum
+                    datatype_value: "local|connect"
+                    getter: "Yii::app()->params['authAdapter'];"
                 -   var: params.connectUrl
                     varInstaller: connectUrl
                     env: CONNECT_URL
@@ -568,6 +578,38 @@ main:
                     default: 
                     datatype: password
                     getter: "Yii::app()->params['connectSecretKeyApi'];"
+                -   var: components.hybridAuth.config.providers.Google.keys.id
+                    env: GOOGLE_HAUTH_ID
+                    title: Google Auth ID
+                    hint: "Google App ID, more info at https://hybridauth.github.io/hybridauth/userguide/IDProvider_info_Google.html"
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->hybridAuth->config[providers][Google][keys][id]"
+                -   var: components.hybridAuth.config.providers.Google.keys.secret
+                    env: GOOGLE_HAUTH_SECRET
+                    title: Google Auth Secret
+                    hint: "Google App Secret, more info at https://hybridauth.github.io/hybridauth/userguide/IDProvider_info_Google.html"
+                    example: 
+                    default: 
+                    datatype: password
+                    getter: "Yii::app()->hybridAuth->config[providers][Google][keys][secret]"
+                -   var: components.hybridAuth.config.providers.Facebook.keys.id
+                    env: FB_APP_ID
+                    title: Facebook Auth ID
+                    hint: "Facebook App ID, more info at https://hybridauth.github.io/hybridauth/userguide/IDProvider_info_Facebook.html"
+                    example: 
+                    default: 
+                    datatype: string
+                    getter: "Yii::app()->hybridAuth->config[providers][Facebook][keys][id]"
+                -   var: components.hybridAuth.config.providers.Facebook.keys.secret
+                    env: FB_APP_SECRET
+                    title: Facebook Auth Secret
+                    hint: "Facebook App Secret, more info at https://hybridauth.github.io/hybridauth/userguide/IDProvider_info_Facebook.html"
+                    example: 
+                    default: 
+                    datatype: password
+                    getter: "Yii::app()->hybridAuth->config[providers][Facebook][keys][secret]"
         -   key: contact
             title: "Contact"
             items:

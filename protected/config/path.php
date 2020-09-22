@@ -18,3 +18,4 @@ Yii::setPathOfAlias('modules', dirname(__DIR__) . '/modules');
 Yii::setPathOfAlias('views', dirname(__DIR__) . '/views');
 Yii::setPathOfAlias('messages', dirname(__DIR__) . '/messages');
 Yii::setPathOfAlias('overrides', dirname(__DIR__) . '/overrides');
+Yii::setPathOfAlias('vendor', dirname(__DIR__) . '/vendor');

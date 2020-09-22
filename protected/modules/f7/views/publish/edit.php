@@ -122,7 +122,7 @@ $( document ).ready(function() {
 	
     ////////////// Form autosave End///////////////    
     if (!$('select[data-class="industry"]').find(":selected").text().toLowerCase().startsWith('other'))
-     $('#industry-other').hide();
+     $('#industry-other, label[for=industry-other]').hide();
 	
 	$(document).on('change', 'select', function(data){
 
@@ -152,9 +152,12 @@ $( document ).ready(function() {
         else if (model == 'industry')
         {
             if (selectedItem.toLowerCase().startsWith('other'))
-                $('#industry-other').show();
-            else
-                $('#industry-other').hide();
+                $('#industry-other, label[for=industry-other]').show();
+			else
+			{
+                $('#industry-other, label[for=industry-other]').hide();
+				$('#industry-other').val('');
+			}
         }
 	});	
 } ); 
