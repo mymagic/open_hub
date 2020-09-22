@@ -10,6 +10,6 @@
 <?php Yii::app()->clientScript->registerScript('f7-publish-view', "
 	$('#auto-save-span').hide();
 	if ($('#industry-other').val() == '')
-		$('#industry-other').hide();
+		$('#industry-other, label[for=industry-other]').hide();
 ");
 ?>

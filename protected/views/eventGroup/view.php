@@ -80,9 +80,9 @@ $this->menu = [
 			'dataProvider' => $modelEventActiveList->searchActiveOrInactiveEvent(),
 			'enableSorting' => false,
 			'columns' => [
-				['name' => 'id', 'value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
+				['value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
 				['name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'standard\', false)', 'headerHtmlOptions' => ['class' => 'date'], 'filter' => false],
-				['header' => 'Code', 'value' => '$data->code'],
+				//['header' => 'Code', 'value' => '$data->code'],
 				['header' => 'Title', 'value' => '$data->title'],
 				['header' => 'Email', 'value' => '$data->email_contact'],
 				['header' => 'Vendor', 'value' => '$data->vendor'],
@@ -133,9 +133,9 @@ $this->menu = [
 			'dataProvider' => $modelEventInactiveList->searchActiveOrInactiveEvent(),
 			'enableSorting' => false,
 			'columns' => [
-				['name' => 'id', 'value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
+				['value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
 				['name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'standard\', false)', 'headerHtmlOptions' => ['class' => 'date'], 'filter' => false],
-				['header' => 'Code', 'value' => '$data->code'],
+				//['header' => 'Code', 'value' => '$data->code'],
 				['header' => 'Title', 'value' => '$data->title'],
 				['header' => 'Email', 'value' => '$data->email_contact'],
 				['header' => 'Vendor', 'value' => '$data->vendor'],

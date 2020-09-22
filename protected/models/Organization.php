@@ -405,7 +405,6 @@ class Organization extends OrganizationBase
 
 	public function search($params = null)
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 		if (empty($params['compareOperator'])) {
 			$params['compareOperator'] = 'AND';
 		}
