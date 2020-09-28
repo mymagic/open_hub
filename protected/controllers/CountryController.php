@@ -69,8 +69,12 @@ class CountryController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Country '%s'", $model->printable_name), 'country', array('trigger' => 'CountryController::actionView', 'model' => 'Country', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -89,6 +93,8 @@ class CountryController extends Controller
 			$model->attributes = $_POST['Country'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Country '%s'", $model->printable_name), 'country', array('trigger' => 'CountryController::actionCreate', 'model' => 'Country', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -114,6 +120,8 @@ class CountryController extends Controller
 			$model->attributes = $_POST['Country'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Country '%s'", $model->printable_name), 'country', array('trigger' => 'CountryController::actionUpdate', 'model' => 'Country', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -130,8 +138,12 @@ class CountryController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
 
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Country '%s'", $copy->printable_name), 'country', array('trigger' => 'CountryController::actionDelete', 'model' => 'Country', 'action' => 'delete', 'id' => $copy->id));
+		}
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));

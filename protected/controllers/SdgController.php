@@ -68,8 +68,11 @@ class SdgController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+		Yii::app()->esLog->log(sprintf("viewed SDG '%s'", $model->title), 'sdg', array('trigger' => 'SdgController::actionView', 'model' => 'SDG', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -91,6 +94,9 @@ class SdgController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("created SDG '%s'", $model->title), 'sdg', array('trigger' => 'SdgController::actionCreate', 'model' => 'SDG', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -119,6 +125,9 @@ class SdgController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("updated SDG '%s'", $model->title), 'sdg', array('trigger' => 'SdgController::actionUpdate', 'model' => 'SDG', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

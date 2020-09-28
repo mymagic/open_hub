@@ -68,8 +68,12 @@ class LegalformController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Legal Form '%s'", $model->title), 'legalForm', array('trigger' => 'LegalFormController::actionView', 'model' => 'LegalForm', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -88,6 +92,8 @@ class LegalformController extends Controller
 			$model->attributes = $_POST['Legalform'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Legal Form '%s'", $model->title), 'legalForm', array('trigger' => 'LegalFormController::actionCreate', 'model' => 'LegalForm', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -113,6 +119,8 @@ class LegalformController extends Controller
 			$model->attributes = $_POST['Legalform'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Legal Form '%s'", $model->title), 'legalForm', array('trigger' => 'LegalFormController::actionUpdate', 'model' => 'LegalForm', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

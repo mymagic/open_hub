@@ -123,7 +123,7 @@ class Controller extends BaseController
 					array(
 						'label' => Yii::t('app', 'Connect'), 'url' => Yii::app()->createUrl('backend/connect'),
 						// 'visible' => Yii::app()->user->getState('isSuperAdmin') || Yii::app()->user->getState('isDeveloper')
-						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'connect']])
+						'visible' => Yii::app()->params['authAdapter'] != 'local' && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'connect']])
 					)
 				),
 			),

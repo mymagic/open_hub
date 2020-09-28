@@ -75,8 +75,12 @@ class IndustryController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Industry '%s'", $model->title), 'industry', array('trigger' => 'IndustryController::actionView', 'model' => 'Industry', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -95,6 +99,8 @@ class IndustryController extends Controller
 			$model->attributes = $_POST['Industry'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Industry '%s'", $model->title), 'industry', array('trigger' => 'IndustryController::actionCreate', 'model' => 'Industry', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -120,6 +126,8 @@ class IndustryController extends Controller
 			$model->attributes = $_POST['Industry'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Industry '%s'", $model->title), 'industry', array('trigger' => 'IndustryController::actionUpdate', 'model' => 'Industry', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

@@ -89,7 +89,8 @@ class EventGroup extends EventGroupBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		// $return['title'] = Yii::t('app', 'Custom Name');
+		$return['text_short_description'] = Yii::t('app', 'Short Description');
+		$return['url_website'] = Yii::t('app', 'Website URL');
 
 		return $return;
 	}

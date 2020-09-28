@@ -134,7 +134,7 @@ class HUB extends Component
 			$status = 'success';
 		}
 		// successfully finish the registration step of the subscription process
-		return array('status' => $status, 'msg' => $exceptionMessage, 'data' => array('user' => $user, 'newPassword'=>$newPassword));
+		return array('status' => $status, 'msg' => $exceptionMessage, 'data' => array('user' => $user, 'newPassword' => $newPassword));
 	}
 
 	public static function getOrCreateUser($username, $extra = array())
@@ -734,14 +734,6 @@ class HUB extends Component
 	public static function getUserOrganizationsCanJoin($keyword, $email)
 	{
 		return HubOrganization::getUserOrganizationsCanJoin($keyword, $email);
-	}
-
-	/*
-	 * do save the organization after merging for history
-	 */
-	public static function createOrganizationMergeHistory($source, $target)
-	{
-		return HubOrganization::createOrganizationMergeHistory($source, $target);
 	}
 
 	//

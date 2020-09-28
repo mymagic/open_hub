@@ -71,7 +71,7 @@ class HubOrganization
 					$o2e = $organization->setOrganizationEmail($params['userEmail']);
 				}
 
-				$log = Yii::app()->esLog->log(sprintf("created '%s'", $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
+				$log = Yii::app()->esLog->log(sprintf("'%s' created '%s'", Yii::app()->user->username, $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
 
 				$transaction->commit();
 			} else {

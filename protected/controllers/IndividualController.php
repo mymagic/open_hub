@@ -120,6 +120,8 @@ class IndividualController extends Controller
 
 		$tabs = self::composeIndividualViewTabs($model, $realm);
 
+		Yii::app()->esLog->log(sprintf("viewed individual '%s'", $model->full_name), 'individual', array('trigger' => 'IndividualController::actionView', 'model' => 'Individual', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
 			'model' => $model,
 			'actions' => $actions,

@@ -69,8 +69,11 @@ class CityController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+		Yii::app()->esLog->log(sprintf("viewed City '%s'", $model->title), 'city', array('trigger' => 'CityController::actionView', 'model' => 'City', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -89,6 +92,8 @@ class CityController extends Controller
 			$model->attributes = $_POST['City'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created City '%s'", $model->title), 'city', array('trigger' => 'CityController::actionCreate', 'model' => 'City', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -114,6 +119,8 @@ class CityController extends Controller
 			$model->attributes = $_POST['City'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated City '%s'", $model->title), 'city', array('trigger' => 'CityController::actionUpdate', 'model' => 'City', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -130,7 +137,12 @@ class CityController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
+
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted City '%s'", $copy->title), 'city', array('trigger' => 'CityController::actionDelete', 'model' => 'City', 'action' => 'delete', 'id' => $copy->id));
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {

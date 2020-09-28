@@ -70,8 +70,12 @@ class AdminController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Admin '%s'", $model->username), 'admin', array('trigger' => 'AdminController::actionView', 'model' => 'Admin', 'action' => 'view', 'id' => $model->user->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -104,6 +108,8 @@ class AdminController extends Controller
 		$admin->user->stat_reset_password_count = $admin->user->stat_reset_password_count + 1;
 
 		if ($admin->user->save()) {
+			Yii::app()->esLog->log(sprintf("reseted password for Admin '%s'", $admin->username), 'admin', array('trigger' => 'AdminController::actionResetPasswordConfirmed', 'model' => 'Admin', 'action' => 'resetPasswordConfirmed', 'id' => $admin->user->id));
+
 			Notice::page(Yii::t('notice', "Password has been reset successfully. Admin user '{username}' new password is '{password}'.", ['{username}' => $admin->user->username, '{password}' => $newPassword]), Notice_WARNING, array('url' => $this->createUrl('view', array('id' => $id))));
 		} else {
 			Notice::flash(Yii::t('notice', "Failed to reset password for admin user '{username}' due to unknown reason.", ['{username}' => $admin->user->username]), Notice_ERROR);
@@ -140,6 +146,8 @@ class AdminController extends Controller
 		$admin->user->is_active = 0;
 
 		if ($admin->user->save()) {
+			Yii::app()->esLog->log(sprintf("blocked Admin '%s'", $admin->username), 'admin', array('trigger' => 'AdminController::actionBlockConfirmed', 'model' => 'Admin', 'action' => 'blockConfirmed', 'id' => $admin->user->id));
+
 			Notice::flash(Yii::t('notice', "Admin user '{username}' is successfully blocked.", ['{username}' => $admin->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', "Failed to block admin user '{username}' due to unknown reason.", ['{username}' => $admin->user->username]), Notice_ERROR);
@@ -177,6 +185,8 @@ class AdminController extends Controller
 		$admin->user->is_active = 1;
 
 		if ($admin->user->save()) {
+			Yii::app()->esLog->log(sprintf("unblocked Admin '%s'", $admin->username), 'admin', array('trigger' => 'AdminController::actionUnblockConfirmed', 'model' => 'Admin', 'action' => 'unblockConfirmed', 'id' => $admin->user->id));
+
 			Notice::flash(Yii::t('notice', "Admin user '{username}' is successfully unblocked.", ['{username}' => $admin->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', "Failed to unblock admin user '{username}' due to unknown reason.", ['{username}' => $admin->user->username]), Notice_ERROR);
@@ -212,6 +222,8 @@ class AdminController extends Controller
 		}
 
 		if ($admin->user->removeRole($roleCode)) {
+			Yii::app()->esLog->log(sprintf("removed Role '%s' from Admin '%s'", $roleCode, $admin->username), 'admin', array('trigger' => 'AdminController::actionRemoveRoleConfirmed', 'model' => 'Admin', 'action' => 'removeRoleConfirmed', 'id' => $admin->user->id));
+
 			Notice::flash(Yii::t('notice', "Role '{role}' is now removed from admin user '{username}' successfully. Changes will effect when the user relogin to the system.", ['{role}' => $roleCode, '{username}' => $admin->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', "Failed to remove role '{role}' from admin user '{username}' due to unknown reason.", ['role' => $roleCode, '{username}' => $admin->user->username]), Notice_ERROR);
@@ -239,6 +251,8 @@ class AdminController extends Controller
 	{
 		$admin = $this->loadModel($id);
 		if ($admin->user->addRole($roleCode)) {
+			Yii::app()->esLog->log(sprintf("added Role '%s' for Admin '%s'", $roleCode, $admin->username), 'admin', array('trigger' => 'AdminController::actionAddRoleConfirmed', 'model' => 'Admin', 'action' => 'addRoleConfirmed', 'id' => $admin->user->id));
+
 			Notice::flash(Yii::t('notice', "Role '{role}' is now added to admin user '{username}' successfully. Changes will effect when the user relogin to the system.", ['{role}' => $roleCode, '{username}' => $admin->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', "Failed to add role '{role}' to admin user '{username}' due to unknown reason.", ['{role}' => $roleCode, '{username}' => $admin->user->username]), Notice_ERROR);
@@ -335,6 +349,8 @@ class AdminController extends Controller
 
 			// successfully finish the registration step of the subscription process
 			if ($result == true) {
+				Yii::app()->esLog->log(sprintf("created Admin '%s' and linked to connect", $model->username), 'admin', array('trigger' => 'AdminController::actionCreateConnect', 'model' => 'Admin', 'action' => 'createConnect', 'id' => $model->user_id));
+
 				// continue to the login
 				Notice::page(
 					Yii::t('notice', "Successfully created admin account with username '{username}'. Login password has been sent to the desinated email address '{email}'. Please remember to add role to the admin user.", array('{username}' => $model->username, '{email}' => $model->username)),
@@ -354,8 +370,9 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		// magic connect
-
-		$this->redirect('createConnect');
+		if (Yii::app()->params['authAdapter'] != 'local') {
+			$this->redirect('createConnect');
+		}
 
 		$model = new Admin('create');
 
@@ -425,6 +442,8 @@ class AdminController extends Controller
 					$params['link'] = $this->createAbsoluteUrl('backend/login');
 					$receivers[] = array('email' => $user->username, 'name' => $user->profile->full_name);
 					$result = ysUtil::sendTemplateMail($receivers, Yii::t('default', 'Welcome to {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createAdmin');
+
+					Yii::app()->esLog->log(sprintf("created Admin '%s'", $model->username), 'admin', array('trigger' => 'AdminController::actionCreate', 'model' => 'Admin', 'action' => 'create', 'id' => $model->user_id));
 
 					// continue to the login
 					Notice::page(

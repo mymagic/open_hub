@@ -70,8 +70,12 @@ class EmbedController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Embed '#%s'", $model->id), 'embed', array('trigger' => 'EmbedController::actionView', 'model' => 'Embed', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -89,6 +93,8 @@ class EmbedController extends Controller
 		if (isset($_POST['Embed'])) {
 			$model->attributes = $_POST['Embed'];
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Embed '#%s'", $model->id), 'embed', array('trigger' => 'EmbedController::actionCreate', 'model' => 'Embed', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -131,6 +137,9 @@ class EmbedController extends Controller
 					UploadManager::storeImage($model, 'main_zh', $model->tableName(), null, '', 'image_main_zh');
 					$model->save();
 				}
+
+				Yii::app()->esLog->log(sprintf("updated Embed '#%s'", $model->id), 'embed', array('trigger' => 'EmbedController::actionUpdate', 'model' => 'Embed', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -163,10 +172,14 @@ class EmbedController extends Controller
 	public function actionDeleteConfirmed($id)
 	{
 		$embed = $this->loadModel($id);
+		$copy = clone $embed;
+
 		if ($embed === null) {
 			throw new CHttpException(404, 'The requested record does not exist.');
 		}
 		if ($embed->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Embed '#%s'", $copy->id), 'embed', array('trigger' => 'EmbedController::actionDeleteConfirmed', 'model' => 'Embed', 'action' => 'deleteConfirmed', 'id' => $copy->id));
+
 			Notice::flash(Yii::t('notice', 'Embed content {code} is successfully deleted.', ['{code}' => $embed->code]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to delete embed content {code} due to unknown reason.', ['{code}' => $embed->code]), Notice_ERROR);

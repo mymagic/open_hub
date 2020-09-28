@@ -64,8 +64,12 @@ class ImpactController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Impact '%s'", $model->title), 'impact', array('trigger' => 'ImpactController::actionView', 'model' => 'Impact', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -87,6 +91,9 @@ class ImpactController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("created Impact '%s'", $model->title), 'impact', array('trigger' => 'ImpactController::actionCreate', 'model' => 'Impact', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -115,6 +122,9 @@ class ImpactController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("updated Impact '%s'", $model->title), 'impact', array('trigger' => 'ImpactController::actionUpdate', 'model' => 'Impact', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

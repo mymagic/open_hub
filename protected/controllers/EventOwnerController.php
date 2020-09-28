@@ -93,6 +93,8 @@ class EventOwnerController extends Controller
 			$model->attributes = $_POST['EventOwner'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Event Owner '%s' to Event '%s'", $model->organization->title, $model->event->title), 'eventOwner', array('trigger' => 'EventOwnerController::actionCreate', 'model' => 'EventOwner', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('event/view', 'id' => $model->event->id));
 			}
 		}
@@ -118,6 +120,8 @@ class EventOwnerController extends Controller
 			$model->attributes = $_POST['EventOwner'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Event Owner '%s' to Event '%s'", $model->organization->title, $model->event->title), 'eventOwner', array('trigger' => 'EventOwnerController::actionUpdate', 'model' => 'EventOwner', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('event/view', 'id' => $model->event->id));
 			}
 		}
@@ -172,7 +176,10 @@ class EventOwnerController extends Controller
 	{
 		$model = $this->loadModel($id);
 		$copy = clone $model;
+
 		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Event Owner '%s' to Event '%s'", $copy->organization->title, $copy->event->title), 'eventOwner', array('trigger' => 'EventOwnerController::actionDelete', 'model' => 'EventOwner', 'action' => 'delete', 'id' => $copy->id));
+
 			Notice::flash(Yii::t('notice', "'{organizationTitle}' has been unlinked from this event", array('{organizationTitle}' => $model->organization->title)), Notice_SUCCESS);
 		}
 		$this->redirect(array('event/view', 'id' => $copy->event->id));

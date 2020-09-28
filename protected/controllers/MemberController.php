@@ -130,6 +130,8 @@ class MemberController extends Controller
 
 				// successfully finish the registration step of the subscription process
 				if ($result == true) {
+					Yii::app()->esLog->log(sprintf("created member '%s' and linked to connect", $model->username), 'member', array('trigger' => 'MemberController::actionCreateConnect', 'model' => 'Member', 'action' => 'createConnect', 'id' => $model->user->id));
+
 					// continue to the login
 					Notice::page(
 						Yii::t('notice', "Successfully created member account with username '{username}'. Login password has been sent to the desinated email address '{email}'.", ['{username}' => $model->username, '{email}' => $model->username]),
@@ -150,8 +152,9 @@ class MemberController extends Controller
 	public function actionCreate()
 	{
 		// magic connect
-
-		$this->redirect('createConnect');
+		if (Yii::app()->params['authAdapter'] != 'local') {
+			$this->redirect('createConnect');
+		}
 
 		$model = new Member('create');
 
@@ -217,6 +220,8 @@ class MemberController extends Controller
 					$receivers[] = array('email' => $user->username, 'name' => $user->profile->full_name);
 					$result = ysUtil::sendTemplateMail($receivers, Yii::t('default', 'Welcome to {site}', array('{site}' => Yii::app()->params['baseDomain'])), $params, '_createMember');
 
+					Yii::app()->esLog->log(sprintf("created member '%s'", $model->username), 'member', array('trigger' => 'MemberController::actionCreate', 'model' => 'Member', 'action' => 'create', 'id' => $model->user->id));
+
 					// continue to the login
 					Notice::page(
 						Yii::t('notice', "Successfully created member account with username '{username}'. Login password has been sent to the desinated email address '{email}'.", ['{username}' => $model->username, '{email}' => $model->username]),
@@ -277,6 +282,8 @@ class MemberController extends Controller
 
 		$tabs = self::composeMemberViewTabs($model, $realm);
 
+		Yii::app()->esLog->log(sprintf("viewed member '%s'", $model->username), 'member', array('trigger' => 'MemberController::actionView', 'model' => 'Member', 'action' => 'view', 'id' => $model->user->id));
+
 		$this->render('view', array(
 			'model' => $member,
 			'member' => $model,
@@ -316,6 +323,8 @@ class MemberController extends Controller
 		$member->log_admin_remark = $logBackend . "\n" . $member->log_admin_remark;
 
 		if ($member->user->save() && $member->save(false)) {
+			Yii::app()->esLog->log(sprintf("reseted Password for member '%s'", $member->username), 'member', array('trigger' => 'MemberController::actionResetPasswordConfirmed', 'model' => 'Member', 'action' => 'resetPasswordConfirmed', 'id' => $member->user->id));
+
 			Notice::page(Yii::t('notice', 'Password has been reset successfully. Member user {username} new password is {password}.', ['{username}' => $member->user->username, '{password}' => $newPassword]), Notice_WARNING, array('url' => $this->createUrl('view', array('id' => $id))));
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to reset password for member user {username} due to unknown reason.', ['{username}' => $member->user->username]), Notice_ERROR);
@@ -346,6 +355,8 @@ class MemberController extends Controller
 		$member->log_admin_remark = $logBackend . "\n" . $member->log_admin_remark;
 
 		if ($member->user->save(false) && $member->save(false)) {
+			Yii::app()->esLog->log(sprintf("blocked member '%s'", $member->username), 'member', array('trigger' => 'MemberController::actionBlockConfirmed', 'model' => 'Member', 'action' => 'blockConfirmed', 'id' => $member->user->id));
+
 			Notice::flash(Yii::t('notice', 'Member user {username} is successfully blocked.', ['{username}' => $member->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to block member user {username} due to unknown reason.', ['{username}' => $member->user->username]), Notice_ERROR);
@@ -377,6 +388,8 @@ class MemberController extends Controller
 		$member->log_admin_remark = $logBackend . "\n" . $member->log_admin_remark;
 
 		if ($member->user->save(false) && $member->save(false)) {
+			Yii::app()->esLog->log(sprintf("unblocked member '%s'", $member->username), 'member', array('trigger' => 'MemberController::actionUnblockConfirmed', 'model' => 'Member', 'action' => 'unblockConfirmed', 'id' => $member->user->id));
+
 			Notice::flash(Yii::t('notice', 'Member user {username} is successfully unblocked.', ['{username}' => $member->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to unblock member user {username} due to unknown reason.', ['{username}' => $member->user->username]), Notice_ERROR);
@@ -422,6 +435,8 @@ class MemberController extends Controller
 				$request->save();
 			}
 
+			Yii::app()->esLog->log(sprintf("terminated member '%s'", $member->user->username), 'member', array('trigger' => 'MemberController::actionTerminateConfirmed', 'model' => 'Member', 'action' => 'terminateConfirmed', 'id' => $member->user->id));
+
 			Notice::flash(Yii::t('notice', 'Member user {username} is successfully terminated.', ['{username}' => $member->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to terminate member user {username} due to unknown reason.', ['{username}' => $member->user->username]), Notice_ERROR);
@@ -455,6 +470,8 @@ class MemberController extends Controller
 		$member->log_admin_remark = $logBackend . "\n" . $member->log_admin_remark;
 
 		if ($member->user->save(false) && $member->save(false) && $member->user->setStatusToEnableInConnect()) {
+			Yii::app()->esLog->log(sprintf("permited member '%s'", $member->user->username), 'member', array('trigger' => 'MemberController::actionPermitConfirmed', 'model' => 'Member', 'action' => 'permitConfirmed', 'id' => $member->user->id));
+
 			Notice::flash(Yii::t('notice', 'Member user {username} is successfully enabled.', ['{username}' => $member->user->username]), Notice_SUCCESS);
 		} else {
 			Notice::flash(Yii::t('notice', 'Failed to enable member user {username} due to unknown reason.', ['{username}' => $member->user->username]), Notice_ERROR);

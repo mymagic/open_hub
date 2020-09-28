@@ -2,6 +2,7 @@
 - completed #9 detach authentication & authorization from MaGIC connect
 - fixed #28 embed code need longer char length than 32 chars
 - completed #38 [f7] add tabular field 
+- added audit trail for default functionality like admin, member, organization, individual, country, state, city, cluster, industry, impact, legalForm, persona, sdg, startupStage, embed, event, eventGroup, eventOwner, milestone
 
 ## 0.5.218
 - fixed #32: Saving individual model will trigger error repository() not found 
