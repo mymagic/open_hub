@@ -54,6 +54,32 @@
 
 <div class="row">
 <div class="col-8">
+    <h4>Authentication</h4>
+    <div class="row">
+        <div class="col">
+        <div class="form-group">
+            <?php echo CHtml::activeLabel($model, 'authAdapter'); ?>
+            <?php echo CHtml::activeDropDownList($model, 'authAdapter', array(
+				'local' => Yii::t('installer', 'Local'),
+				'connect' => Yii::t('installer', 'MaGIC Connect'),
+			), array('class' => 'form-control', 'required' => 'required')) ?>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="col-4">
+    <small class="form-text text-muted">
+        <p>You can choose either want to use MaGIC Connect or Local for Authentication</p>
+    </small>
+</div>
+</div>
+
+
+
+<hr />
+
+<div class="row authAdapter-connect">
+<div class="col-8">
     <h4>MaGIC Connect</h4>
     <div class="row">
     <div class="col-10">
@@ -80,13 +106,13 @@
 </div>
 <div class="col-4">
     <small class="form-text text-muted">
-        <p>Open Hub used MaGIC Connect for Single Sign On. This will be replaced by a build-in credential adapter in near future.</p>
+        <p>Used MaGIC Connect for Single Sign On.</p>
         <p>Email tech@mymagic.my (please include your installation's domain name) to acquire a client ID and secret key.</p>
     </small>
 </div>
 </div>
 
-<hr />
+<hr class="authAdapter-connect" />
 
 <div class="row">
 <div class="col-8">
@@ -505,6 +531,19 @@
 <?php
 Yii::app()->clientScript->registerScript('check-form', "
 $(document).ready(function(){
+    $('[id$=_authAdapter]').on('change', function(){
+        $('.authAdapter-connect, .authAdapter-local').hide();
+        $('.authAdapter-' + $(this).val()).show();
+        if($(this).val()=='connect')
+        {
+            $('[id$=_connectUrl], [id$=_connectClientId], [id$=_connectSecretKey]').attr('required',true);
+        }
+        else
+        {
+            $('[id$=_connectUrl], [id$=_connectClientId], [id$=_connectSecretKey]').attr('required',false).val('');
+        }
+    }).trigger('change');
+
     $('[id$=_storageMode]').on('change', function(){
         if($(this).val()=='local')
         {

@@ -8,6 +8,8 @@ class SetupForm extends CFormModel
 	public $environment;
 	public $domainName;
 	public $publicEmail;
+	
+	public $authAdapter;
 
 	public $connectUrl;
 	public $connectClientId;
@@ -64,7 +66,7 @@ class SetupForm extends CFormModel
 	{
 		return array(
 			// name, email, subject and body are required
-			array('appName, environment, domainName, publicEmail, connectUrl, connectClientId, connectSecretKey, adminUsername, dbName, dbHost, dbPort, dbUsername, dbPassword, storageMode, s3AccessKey, s3SecretKey, s3Region, s3PublicBucketName, s3PublicBucketUrl, s3SecureBucketName, s3SecureBucketUrl, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpOutgoingEmail, cacheEnabled, esEnabled, neo4jEnabled, googleMapApiKey, openExchangeRatesAppId', 'required'),
+			array('appName, environment, domainName, publicEmail, authAdapter, connectUrl, connectClientId, connectSecretKey, adminUsername, dbName, dbHost, dbPort, dbUsername, dbPassword, storageMode, s3AccessKey, s3SecretKey, s3Region, s3PublicBucketName, s3PublicBucketUrl, s3SecureBucketName, s3SecureBucketUrl, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpOutgoingEmail, cacheEnabled, esEnabled, neo4jEnabled, googleMapApiKey, openExchangeRatesAppId', 'required'),
 			array('connectClientId, dbPort, smtpPort', 'numerical', 'integerOnly' => true),
 			// email has to be a valid email address
 			array('publicEmail, adminUsername, smtpOutgoingEmail', 'email'),
@@ -79,6 +81,8 @@ class SetupForm extends CFormModel
 			'environment' => Yii::t('installer', 'For Environment'),
 			'domainName' => Yii::t('installer', 'What\'s the domain name pointing to this installation?'),
 			'publicEmail' => Yii::t('installer', 'What\'s your organisation\'s public email'),
+
+			'authAdapter' => Yii::t('installer', 'Authentication Adapter'),
 
 			'connectUrl' => Yii::t('installer', 'Server URL'),
 			'connectClientId' => Yii::t('installer', 'Client ID'),
