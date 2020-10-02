@@ -92,15 +92,34 @@ class CpanelController extends Controller
 
 		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
 		if ($modelIndividual === null) {
-			// todo: detach MaGIC Connect
-			$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
-			$gender = null;
-			if ($account->gender === 'M') {
-				$gender = 'male';
-			} elseif ($account->gender === 'F') {
-				$gender = 'female';
+
+			if(Yii::app()->params['authAdapter'] == 'connect') {
+				$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
+				$fullname = $account->firstname . ' ' . $account->lastname;
 			}
-			$fullname = $account->firstname . ' ' . $account->lastname;
+			else { 
+				// if using local authAdapter, check for social login first
+				$userSocial = UserSocial::model()->findByAttributes(['username' => Yii::app()->user->username]);
+				if($userSocial!==null) {
+					$account = $userSocial->jsonArray_socialParams;
+					$fullname = $account->firstName . ' ' . $account->lastName;
+				}
+			}
+
+			$gender = null;
+
+			if(!empty($account)) {
+				if ($account->gender === 'M') {
+					$gender = 'male';
+				} elseif ($account->gender === 'F') {
+					$gender = 'female';
+				}
+			}
+			
+			if(!isset($fullname)) {
+				$fullname = $model->profile->full_name;
+			}
+
 			$modelIndividual = new Individual();
 			$modelIndividual->full_name = $fullname;
 			$modelIndividual->image_photo = Individual::getDefaultImagePhoto();
