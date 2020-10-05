@@ -38,7 +38,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'individual_id', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'individual_id', array('nullable' => true)); ?>
+			<?php $this->widget('application.components.widgets.IndividualSelector', array('form' => $form, 'model' => $model, 'attribute' => 'individual_id', 'urlAjax' => $this->createUrl('individualOrganization/ajaxIndividual'), 'htmlOptions' => array('style' => 'width:100%'))) ?>
 		</div>
 	</div>
 	
@@ -50,7 +50,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'organization_code', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => true)); ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('individualOrganization/ajaxOrganization'), 'htmlOptions' => array('style' => 'width:100%'))) ?>
 		</div>
 	</div>
 	
@@ -108,20 +108,6 @@
 			<?php echo $form->bsDateTextField($model, 'edate_ended', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
 	</div>
-
-	
-
-
-		
-	<div class="form-group">
-		<?php echo $form->bsLabelFx2($model, 'json_extra', array('required' => false)); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'json_extra', array('rows' => 5)); ?>
-		</div>
-	</div>
-	
-		
-	
 
 
 	<div class="form-group">

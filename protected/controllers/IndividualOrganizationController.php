@@ -53,7 +53,7 @@ class IndividualOrganizationController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'ajaxOrganization', 'ajaxIndividual'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -87,11 +87,13 @@ class IndividualOrganizationController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		if (!empty($individualId)) {
+		if (!empty($individualId) && $presetIndividual = Individual::model()->findByPk($individualId)) {
 			$model->individual_id = $individualId;
+			$model->individualTitle = $presetIndividual->full_name;
 		}
-		if (!empty($organizationCode)) {
+		if (!empty($organizationCode) && $presetOrganization = Organization::code2obj($organizationCode)) {
 			$model->organization_code = $organizationCode;
+			$model->organizationTitle = $presetOrganization->title;
 		}
 
 		if (isset($_POST['IndividualOrganization'])) {
@@ -186,6 +188,76 @@ class IndividualOrganizationController extends Controller
 		$this->render('admin', array(
 			'model' => $model,
 		));
+	}
+
+	public function actionAjaxOrganization($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('code as id, title as text')->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$organization = Organization::code2obj($result['id']);
+			if ($organization->code == $selected->organization->code) {
+				$result['selected'] = true;
+			}
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	public function actionAjaxIndividual($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('id as id, full_name as text')->from('individual')->where(array('like', 'full_name', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('full_name ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$individual = Individual::model()->findByPk($result['id']);
+			if ($individual->id == $selected->individual->id) {
+				$result['selected'] = true;
+			}
+			$result['imagePhotoThumbUrl'] = $individual->getImagePhotoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
 	}
 
 	/**

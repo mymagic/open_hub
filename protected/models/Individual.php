@@ -196,6 +196,8 @@ class Individual extends IndividualBase
 		// custom code here
 		$return['organizations'] = Yii::t('app', 'Companies');
 		$return['text_address_residential'] = Yii::t('app', 'Residential Address');
+		$return['country_code'] = Yii::t('app', 'Country');
+		$return['state_code'] = Yii::t('app', 'State');
 
 		$return['searchBackendTags'] = Yii::t('app', 'Backend Tags');
 		$return['inputBackendTags'] = Yii::t('app', 'Backend Tags');

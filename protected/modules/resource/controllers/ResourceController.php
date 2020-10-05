@@ -53,7 +53,7 @@ class ResourceController extends Controller
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'adminByOrganization'),
+				'actions' => array('list', 'view', 'create', 'update', 'adminByOrganization', 'ajaxOrganization'),
 				'users' => array('@'),
 			),
 			array(
@@ -159,6 +159,7 @@ class ResourceController extends Controller
 		$model = new Resource;
 		if (!empty($organization_id)) {
 			$organization = Organization::model()->findByPk($organization_id);
+			$model->inputOrganizations = array($organization->id);
 		}
 
 		// Uncomment the following line if AJAX validation is needed
@@ -174,6 +175,8 @@ class ResourceController extends Controller
 			*/
 			$model->attributes = $_POST['Resource'];
 
+			// force setting owner organization to user's one
+			// user can only create resource for their own organization
 			if ($realm == 'cpanel') {
 				if (!empty($organization->id)) {
 					$model->inputOrganizations = array($organization->id);
@@ -500,5 +503,41 @@ class ResourceController extends Controller
 		}
 
 		return $tabs;
+	}
+
+	public function actionAjaxOrganization($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('id as id, title as text')->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+		$results = array_merge($results, $command->queryAll());
+
+		foreach ($results as &$result) {
+			$organization = Organization::model()->findByPk($result['id']);
+			if (in_array($organization->id, $selected->inputOrganizations)) {
+				$result['selected'] = true;
+			}
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
 	}
 }

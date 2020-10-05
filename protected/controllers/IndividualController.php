@@ -58,7 +58,7 @@ class IndividualController extends Controller
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('overview', 'list', 'view', 'admin', 'getTagsBackend', 'getIndividual2Emails'),
+				'actions' => array('overview', 'list', 'view', 'admin', 'getTagsBackend', 'getIndividual2Emails', 'ajaxIndividual', 'ajaxIndividualActive'),
 				'users' => array('@'),
 				// 'expression' => '$user->isEcosystem==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -272,6 +272,69 @@ class IndividualController extends Controller
 		}
 
 		return $model;
+	}
+
+	public function actionAjaxIndividual($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('id as id, full_name as text')->from('individual')->where(array('like', 'full_name', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('full_name ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$individual = Individual::model()->findByPk($result['id']);
+			if ($individual->id == $selected->id) {
+				$result['selected'] = true;
+			}
+			$result['imagePhotoThumbUrl'] = $individual->getImagePhotoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	// selected can be either id or code
+	public function actionAjaxIndividualActive($term = '', $selected = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		$command = $command->select('id as id, full_name as text');
+		$command = $command->from('individual')->where(array('like', 'full_name', '%' . $term . '%'));
+		// only active organization can be use
+		$command = $command->andWhere('is_active=1');
+		$command = $command->order('full_name ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$individual = Individual::model()->findByPk($result['id']);
+			if ($individual->id == $selected) {
+				$result['selected'] = true;
+			}
+
+			$result['imagePhotoThumbUrl'] = $individual->getImagePhotoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
 	}
 
 	/**

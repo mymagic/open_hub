@@ -89,7 +89,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'text_note', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'text_note', array('rows' => 2)); ?>
+			<?php echo $form->bsTextField($model, 'text_note'); ?>
 		</div>
 	</div>
 	

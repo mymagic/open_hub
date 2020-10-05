@@ -90,7 +90,7 @@
 	<div class="form-group <?php echo $model->hasErrors('url_website') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'url_website'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'url_website'); ?>
+			<?php echo $form->bsUrlTextField($model, 'url_website'); ?>
 			<?php echo $form->bsError($model, 'url_website'); ?>
 		</div>
 	</div>

@@ -455,4 +455,15 @@ class Resource extends ResourceBase
 			return $controller->createUrl('/resource/frontend/view', $urlParams);
 		}
 	}
+
+	public function inputOrganizations2ListData()
+	{
+		$return = array();
+		foreach ($this->inputOrganizations as $inputOrganization) {
+			$organization = Organization::model()->findByPk($inputOrganization);
+			$return[] = array($inputOrganization => $organization->title);
+		}
+
+		return $return;
+	}
 }

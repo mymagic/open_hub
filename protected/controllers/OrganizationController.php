@@ -848,7 +848,9 @@ class OrganizationController extends Controller
 		}
 	}
 
-	public function actionAjaxOrganization($term = '', $id = '')
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxOrganization($term = '', $selected = '', $key = 'id')
 	{
 		$results = array();
 		$command = Yii::app()->db->createCommand();
@@ -857,12 +859,12 @@ class OrganizationController extends Controller
 			$this->outputJsonRaw(array('results' => array()));
 		}
 
-		// update
-		if (!empty($id)) {
-			$selected = $this->loadModel($id);
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
 		}
-
-		$command = $command->select('id as id, title as text')->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		$command = $command->from('organization')->where(array('like', 'title', '%' . $term . '%'));
 		// create
 		if (empty($selected)) {
 			// only active organization can be use
@@ -872,10 +874,18 @@ class OrganizationController extends Controller
 
 		$results = array_merge($results, $command->queryAll());
 		foreach ($results as &$result) {
-			$organization = Organization::model()->findByPk($result['id']);
-			if ($organization->id == $selected->id) {
-				$result['selected'] = true;
+			if ($key == 'id') {
+				$organization = Organization::model()->findByPk($result['id']);
+				if ($organization->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$organization = Organization::code2obj($result['id']);
+				if ($organization->key == $selected) {
+					$result['selected'] = true;
+				}
 			}
+
 			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
 			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
 			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();

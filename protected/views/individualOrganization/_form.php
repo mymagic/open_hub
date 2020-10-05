@@ -30,7 +30,11 @@
 	<div class="form-group <?php echo $model->hasErrors('individual_id') ? 'has-error' : ''; ?>">
 		<?php echo $form->bsLabelEx2($model, 'individual_id'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'individual_id', array('nullable' => true, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActive'), 'disabled' => !empty(Yii::app()->request->getParam('individualId')) ? 'disabled' : '')); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.IndividualSelector', array('form' => $form, 'model' => $model, 'data' => array($model->individual_id => $model->individualTitle), 'attribute' => 'individual_id', 'urlAjax' => $this->createUrl('individualOrganization/ajaxIndividual'))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.IndividualSelector', array('form' => $form, 'model' => $model, 'data' => array($model->individual_id => $model->individual->full_name), 'attribute' => 'individual_id', 'urlAjax' => $this->createUrl('individualOrganization/ajaxIndividual', array('id' => $model->id)))) ?>
+			<?php endif; ?>	
 			<?php echo $form->bsError($model, 'individual_id'); ?>
 		</div>
 	</div>
@@ -39,12 +43,11 @@
 		<?php echo $form->bsLabelEx2($model, 'organization_code'); ?>
 		<div class="col-sm-10">
 		<?php if ($model->isNewRecord): ?>
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => true, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActiveCode'))); ?>
-			<?php echo $form->bsError($model, 'organization_code'); ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->organization_code => $model->organizationTitle), 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('individualOrganization/ajaxOrganization'))) ?>
 		<?php else: ?>
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => true, 'class' => 'chosen form-control', 'params' => array('mode' => 'code'))); ?>
-			<?php echo $form->bsError($model, 'organization_code'); ?>
-<?php endif; ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->organization_code => $model->organization->title), 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('individualOrganization/ajaxOrganization', array('id' => $model->id)))) ?>
+		<?php endif; ?>
+		<?php echo $form->bsError($model, 'organization_code'); ?>
 		</div>
 	</div>
 

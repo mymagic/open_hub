@@ -17,6 +17,9 @@
 
 class IndividualOrganization extends IndividualOrganizationBase
 {
+	public $organizationTitle = '';
+	public $individualTitle = '';
+
 	public static function model($class = __CLASS__)
 	{
 		return parent::model($class);
@@ -110,7 +113,7 @@ class IndividualOrganization extends IndividualOrganizationBase
 		return $return;
 	}
 
-	public function toApi($params = '')
+	public function toApi($params = array())
 	{
 		$this->fixSpatial();
 
@@ -160,10 +163,9 @@ class IndividualOrganization extends IndividualOrganizationBase
 	public function getDateServed()
 	{
 		$return = '';
-		if(!empty($this->date_ended)){
+		if (!empty($this->date_ended)) {
 			$date_served = [];
-			if(!empty($this->date_started))
-			{
+			if (!empty($this->date_started)) {
 				$date_served[] = Html::formatDateTime($this->date_started, 'medium', '', '');
 			}
 			$date_served[] = ucwords(Yii::t('app', 'until'));
@@ -171,6 +173,7 @@ class IndividualOrganization extends IndividualOrganizationBase
 
 			$return = implode(' ', $date_served);
 		}
+
 		return $return;
 	}
 }

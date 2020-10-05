@@ -38,10 +38,15 @@
 			<?php echo $form->bsLabelEx2($model, 'inputOrganizations'); ?>
 			<div class="col-sm-10">
 				<?php if (!$model->isNewRecord) : ?>
-					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList()), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
+
+					<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'inputOrganizations', 'data' => $model->inputOrganizations2ListData(), 'htmlOptions' => array('multiple' => true), 'urlAjax' => $this->createUrl('resource/ajaxOrganization', array('id' => $model->id)))) ?>
+
+					<?php //echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList()), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple'));?>
+					
 				<?php else : // only those active one for new record
 				?>
-					<?php echo $form->dropDownList($model, 'inputOrganizations', Html::listData(Organization::getForeignReferList(false, false, array('params' => array('mode' => 'isActiveId')))), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
+					<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'inputOrganizations', 'data' => $model->inputOrganizations2ListData(), 'htmlOptions' => array('multiple' => true), 'urlAjax' => $this->createUrl('resource/ajaxOrganization', array('id' => $model->id)))) ?>
+
 				<?php endif; ?>
 				<?php echo $form->bsError($model, 'inputOrganizations'); ?>
 			</div>
@@ -92,7 +97,7 @@
 	<div class="form-group <?php echo $model->hasErrors('url_website') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'url_website'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'url_website'); ?>
+			<?php echo $form->bsUrlTextField($model, 'url_website'); ?>
 			<?php echo $form->bsError($model, 'url_website'); ?>
 		</div>
 	</div>
