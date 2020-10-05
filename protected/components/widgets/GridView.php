@@ -216,7 +216,7 @@ class GridView extends CGridView
 				$start = $end - $count + 1;
 			}
 			if (($summaryText = $this->summaryText) === null) {
-				$summaryText = Yii::t('zii', 'Displaying {start}-{end} of 1 result.|Displaying {start}-{end} of {count} results.', $total);
+				$summaryText = Yii::t('zii', 'Displaying {start}-{end} of {count} results.');
 			}
 			echo strtr($summaryText, array(
 				'{start}' => $start,
@@ -227,7 +227,7 @@ class GridView extends CGridView
 			));
 		} else {
 			if (($summaryText = $this->summaryText) === null) {
-				$summaryText = Yii::t('zii', 'Total 1 result.|Total {count} results.', $count);
+				$summaryText = Yii::t('zii', 'Total {count} results.');
 			}
 			echo strtr($summaryText, array(
 				'{count}' => $count,
