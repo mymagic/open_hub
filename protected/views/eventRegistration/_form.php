@@ -31,7 +31,11 @@
 	<div class="form-group <?php echo $model->hasErrors('event_code') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'event_code'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'event_code'); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('event/ajaxEventActive', array('key' => 'code')))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'data' => array($model->event_code => $model->event->title), 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('event/ajaxEvent', array('id' => $model->id, 'key' => 'code')))) ?>
+			<?php endif; ?>
 			<?php echo $form->bsError($model, 'event_code'); ?>
 		</div>
 	</div>

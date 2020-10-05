@@ -54,7 +54,7 @@ class EventController extends Controller
 				'users' => ['*'],
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
+				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration', 'ajaxEvent', 'ajaxEventActive'],
 				'users' => ['@'],
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -450,6 +450,96 @@ class EventController extends Controller
 			Notice_INFO,
 			['url' => $this->createUrl('event/view', ['id' => $eventId])]
 		);
+	}
+
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxEvent($term = '', $selected = '', $key = 'id')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
+		}
+		$command = $command->from('event')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			if ($key == 'id') {
+				$event = Event::model()->findByPk($result['id']);
+				if ($event->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$event = Event::code2obj($result['id']);
+				if ($event->code == $selected) {
+					$result['selected'] = true;
+				}
+			}
+
+			$result['at'] = !empty($event->at) ? ysUtil::truncate($event->at) : '-';
+			$result['dateStarted'] = $event->renderDateStarted();
+			$result['dateEnded'] = $event->renderDateEnded();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxEventActive($term = '', $selected = '', $key = 'id')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
+		}
+
+		$command = $command->from('event')->where(array('like', 'title', '%' . $term . '%'));
+		// only active organization can be use
+		$command = $command->andWhere('is_active=1');
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			if ($key == 'id') {
+				$event = Event::model()->findByPk($result['id']);
+				if ($event->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$event = Event::code2obj($result['id']);
+				if ($event->code == $selected) {
+					$result['selected'] = true;
+				}
+			}
+
+			$result['at'] = !empty($event->at) ? ysUtil::truncate($event->at) : '-';
+			$result['dateStarted'] = $event->renderDateStarted();
+			$result['dateEnded'] = $event->renderDateEnded();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
 	}
 
 	/**

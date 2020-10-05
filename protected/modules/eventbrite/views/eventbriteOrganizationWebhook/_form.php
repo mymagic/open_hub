@@ -30,8 +30,11 @@
 	<div class="form-group <?php echo $model->hasErrors('organization_code') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'organization_code'); ?>
 		<div class="col-sm-10">
-			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('/organization/ajaxOrganization', array('key' => 'code')))) ?>
-
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('/organization/ajaxOrganization', array('key' => 'code')))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->organization_code => $model->organization->title), 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('/organization/ajaxOrganization', array('key' => 'code')))) ?>
+			<?php endif; ?>
 			<?php echo $form->bsError($model, 'organization_code'); ?>
 		</div>
 	</div>
