@@ -409,6 +409,14 @@ class Event extends EventBase
 		return Yii::app()->db->createCommand($sql)->queryAll();
 	}
 
+	public function code2obj($code)
+	{
+		$obj = self::model()->find('t.code=:code', array(':code' => $code));
+		if (!empty($obj)) {
+			return $obj;
+		}
+	}
+
 	public function toApi($params = null)
 	{
 		$this->fixSpatial();

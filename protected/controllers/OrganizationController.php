@@ -881,7 +881,7 @@ class OrganizationController extends Controller
 				}
 			} else {
 				$organization = Organization::code2obj($result['id']);
-				if ($organization->key == $selected) {
+				if ($organization->code == $selected) {
 					$result['selected'] = true;
 				}
 			}
@@ -925,7 +925,7 @@ class OrganizationController extends Controller
 				}
 			} else {
 				$organization = Organization::code2obj($result['id']);
-				if ($organization->key == $selected) {
+				if ($organization->code == $selected) {
 					$result['selected'] = true;
 				}
 			}

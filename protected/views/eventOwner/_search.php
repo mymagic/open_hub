@@ -38,7 +38,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'event_code', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'event_code', array('nullable' => true)); ?>
+			<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent'))) ?>
 		</div>
 	</div>
 	
@@ -50,7 +50,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'organization_code', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxOrganization'))) ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'htmlOptions' => array('style' => 'width:100%'), 'urlAjax' => $this->createUrl('eventOwner/ajaxOrganization'))) ?>
 		</div>
 	</div>
 	

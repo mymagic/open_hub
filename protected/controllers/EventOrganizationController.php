@@ -51,7 +51,7 @@ class EventOrganizationController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'bulkInsert', 'delete', 'ajaxOrganization'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'bulkInsert', 'delete', 'ajaxOrganization', 'ajaxEvent'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -392,6 +392,42 @@ class EventOrganizationController extends Controller
 			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
 			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
 			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	public function actionAjaxEvent($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('id as id, title as text')->from('event')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$event = Event::model()->findByPk($result['id']);
+			if ($event->id == $selected->event->id) {
+				$result['selected'] = true;
+			}
+			$result['at'] = !empty($event->at) ? ysUtil::truncate($event->at) : '-';
+			$result['dateStarted'] = $event->renderDateStarted();
+			$result['dateEnded'] = $event->renderDateEnded();
 		}
 		$return['results'] = $results;
 		$this->outputJsonRaw($return);

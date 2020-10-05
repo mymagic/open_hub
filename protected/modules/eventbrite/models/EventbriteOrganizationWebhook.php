@@ -74,7 +74,8 @@ class EventbriteOrganizationWebhook extends EventbriteOrganizationWebhookBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		// $return['title'] = Yii::t('app', 'Custom Name');
+		$return['organization_code'] = Yii::t('app', 'Organization');
+		$return['as_role_code'] = Yii::t('app', 'As Role (coded)');
 
 		return $return;
 	}

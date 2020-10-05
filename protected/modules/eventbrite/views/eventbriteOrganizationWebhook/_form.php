@@ -30,7 +30,8 @@
 	<div class="form-group <?php echo $model->hasErrors('organization_code') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'organization_code'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'organization_code'); ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('/organization/ajaxOrganization', array('key' => 'code')))) ?>
+
 			<?php echo $form->bsError($model, 'organization_code'); ?>
 		</div>
 	</div>
@@ -62,7 +63,7 @@
 		</div>
 	</div>
 
-
+	<?php if (!$model->isNewRecord): ?>
 	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
 		<div class="col-sm-10">
@@ -70,9 +71,7 @@
 			<?php echo $form->bsError($model, 'is_active'); ?>
 		</div>
 	</div>
-
-
-
+	<?php endif; ?>
 
 		
 	<!-- many2many -->

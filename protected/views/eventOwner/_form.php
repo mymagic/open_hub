@@ -30,7 +30,11 @@
 	<div class="form-group <?php echo $model->hasErrors('event_code') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'event_code'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'event_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActive'), 'disabled' => !empty(Yii::app()->request->getParam('eventCode')) ? 'disabled' : '')); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent'))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'data' => array($model->event_code => $model->event->title), 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent', array('id' => $model->id)))) ?>
+			<?php endif; ?>
 			<?php echo $form->bsError($model, 'event_code'); ?>
 		</div>
 	</div>
