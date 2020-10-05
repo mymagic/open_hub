@@ -133,7 +133,7 @@ class HauthController extends Controller
 							$input['email'] = $hauthSocialUser->emailVerified;
 							$input['cemail'] = $hauthSocialUser->emailVerified;
 
-							$result = HUB::createLocalMember($hauthSocialUser->emailVerified, $hauthSocialUser->displayName, 'social', array('user' => array(
+							$result = HUB::createLocalMember($hauthSocialUser->emailVerified, $hauthSocialUser->displayName, strtolower($provider), array('user' => array(
 								'social_provider' => strtolower($provider),
 								'social_identifier' => $hauthSocialUser->identifier, 'json_social_params' => $jsonSocialParams)
 							));

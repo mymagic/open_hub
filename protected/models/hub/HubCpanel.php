@@ -64,6 +64,13 @@ class HubCpanel
 							'icon' => 'fa-users'
 						),
 						array(
+							'label' => Yii::t('app', 'Change Password'),
+							'url' => Yii::app()->createUrl('/cpanel/changePassword'),
+							'active' => $controller->activeMenuCpanel == 'changePassword' ? true : false,
+							'visible' => Yii::app()->params['authAdapter']=='local',
+							'icon' => 'fa-key'
+						),
+						array(
 							'label' => Yii::t('app', 'Notification'),
 							'url' => Yii::app()->createUrl('/cpanel/notification'),
 							'active' => $controller->activeMenuCpanel == 'notification' ? true : false,

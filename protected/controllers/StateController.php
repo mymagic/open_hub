@@ -69,8 +69,12 @@ class StateController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed State '%s'", $model->title), 'state', array('trigger' => 'StateController::actionView', 'model' => 'State', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -89,6 +93,8 @@ class StateController extends Controller
 			$model->attributes = $_POST['State'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created State '%s'", $model->title), 'state', array('trigger' => 'StateController::actionCreate', 'model' => 'State', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -114,6 +120,8 @@ class StateController extends Controller
 			$model->attributes = $_POST['State'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated State '%s'", $model->title), 'state', array('trigger' => 'StateController::actionUpdate', 'model' => 'State', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -130,7 +138,12 @@ class StateController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
+
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted State '%s'", $copy->title), 'state', array('trigger' => 'StateController::actionDelete', 'model' => 'State', 'action' => 'delete', 'id' => $copy->id));
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {

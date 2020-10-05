@@ -62,8 +62,8 @@
  	public function attributeLabels()
  	{
  		$return = array(
-		'industry_id' => Yii::t('app', 'Industry'),
-		'challenge_id' => Yii::t('app', 'Challenge'),
+		'industry_id' => Yii::t('challenge', 'Industry'),
+		'challenge_id' => Yii::t('challenge', 'Challenge'),
 		);
 
  		return $return;

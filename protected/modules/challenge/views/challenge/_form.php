@@ -35,6 +35,19 @@
 		</div>
 	</div>
 
+	<div class="form-group <?php echo $model->hasErrors('owner_organization_id') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'owner_organization_id'); ?>
+		<div class="col-sm-10">
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'owner_organization_id', 'urlAjax' => $this->createUrl('challenge/ajaxOrganization'))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->owner_organization_id => $model->ownerOrganization->title), 'attribute' => 'owner_organization_id', 'urlAjax' => $this->createUrl('challenge/ajaxOrganization', array('id' => $model->id)))) ?>
+			<?php endif; ?>
+			<?php echo $form->bsError($model, 'owner_organization_id'); ?>
+		</div>
+	</div>
+
+
 
 	<div class="form-group <?php echo $model->hasErrors('text_short_description') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'text_short_description'); ?>
@@ -43,57 +56,6 @@
 			<?php echo $form->bsError($model, 'text_short_description'); ?>
 		</div>
 	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('image_cover') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'image_cover'); ?>
-		<div class="col-sm-10">
-		<div class="row">
-			<div class="col-sm-2 text-left">
-			<?php echo Html::activeThumb($model, 'image_cover'); ?>
-			</div>
-			<div class="col-sm-8">
-			<?php echo Html::activeFileField($model, 'imageFile_cover'); ?>
-			<?php echo $form->bsError($model, 'image_cover'); ?>
-			</div>
-		</div>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('image_header') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'image_header'); ?>
-		<div class="col-sm-10">
-		<div class="row">
-			<div class="col-sm-2 text-left">
-			<?php echo Html::activeThumb($model, 'image_header'); ?>
-			</div>
-			<div class="col-sm-8">
-			<?php echo Html::activeFileField($model, 'imageFile_header'); ?>
-			<?php echo $form->bsError($model, 'image_header'); ?>
-			</div>
-		</div>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('url_video') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'url_video'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'url_video'); ?>
-			<?php echo $form->bsError($model, 'url_video'); ?>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('url_application_form') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'url_application_form'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsTextField($model, 'url_application_form'); ?>
-			<?php echo $form->bsError($model, 'url_application_form'); ?>
-		</div>
-	</div>
-
 
 	<div class="form-group <?php echo $model->hasErrors('html_content') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'html_content'); ?>
@@ -156,7 +118,6 @@
 		</div>
 	</div>
 
-
 	<div class="form-group <?php echo $model->hasErrors('timezone') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'timezone'); ?>
 		<div class="col-sm-10">
@@ -164,25 +125,6 @@
 			<?php echo $form->bsError($model, 'timezone'); ?>
 		</div>
 	</div>
-
-	<div class="form-group <?php echo $model->hasErrors('owner_organization_id') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'owner_organization_id'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'owner_organization_id'); ?>
-			<?php echo $form->bsError($model, 'owner_organization_id'); ?>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('creator_user_id') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'creator_user_id'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'creator_user_id'); ?>
-			<?php echo $form->bsError($model, 'creator_user_id'); ?>
-		</div>
-	</div>
-
-
 
 	<!-- many2many -->
 
@@ -194,29 +136,54 @@
 		</div>
 	</div>
 	<!-- /many2many -->
+
 	
-	<div class="form-group <?php echo $model->hasErrors('text_remark') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'text_remark'); ?>
+
+	<div class="form-group <?php echo $model->hasErrors('url_application_form') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'url_application_form'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsTextArea($model, 'text_remark', array('rows' => 2)); ?>
-			<?php echo $form->bsError($model, 'text_remark'); ?>
+			<?php echo $form->bsTextField($model, 'url_application_form'); ?>
+			<?php echo $form->bsError($model, 'url_application_form'); ?>
+		</div>
+	</div>
+	
+	<div class="form-group <?php echo $model->hasErrors('url_video') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'url_video'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextField($model, 'url_video'); ?>
+			<?php echo $form->bsError($model, 'url_video'); ?>
 		</div>
 	</div>
 
 
-	<div class="form-group <?php echo $model->hasErrors('status') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'status'); ?>
+	<div class="form-group <?php echo $model->hasErrors('image_cover') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'image_cover'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsEnumDropDownList($model, 'status'); ?>
-			<?php echo $form->bsError($model, 'status'); ?>
+		<div class="row">
+			<div class="col-sm-2 text-left">
+			<?php echo Html::activeThumb($model, 'image_cover'); ?>
+			</div>
+			<div class="col-sm-8">
+			<?php echo Html::activeFileField($model, 'imageFile_cover'); ?>
+			<?php echo $form->bsError($model, 'image_cover'); ?>
+			</div>
+		</div>
 		</div>
 	</div>
 
-	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
+
+	<div class="form-group <?php echo $model->hasErrors('image_header') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'image_header'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_active'); ?>
-			<?php echo $form->bsError($model, 'is_active'); ?>
+		<div class="row">
+			<div class="col-sm-2 text-left">
+			<?php echo Html::activeThumb($model, 'image_header'); ?>
+			</div>
+			<div class="col-sm-8">
+			<?php echo Html::activeFileField($model, 'imageFile_header'); ?>
+			<?php echo $form->bsError($model, 'image_header'); ?>
+			</div>
+		</div>
 		</div>
 	</div>
 
@@ -238,14 +205,21 @@
 		</div>
 	</div>
 
-
-
 			
 	<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>
 		<div class="col-sm-10">
 			<?php echo $form->bsTextField($model, 'tag_backend', array('id' => 'Challenge-tag_backend', 'class' => 'form-control csv_tags')) ?>
 			<?php echo $form->bsError($model, 'tag_backend') ?>
+		</div>
+	</div>
+
+	
+	<div class="form-group <?php echo $model->hasErrors('text_remark') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'text_remark'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsTextArea($model, 'text_remark', array('rows' => 2)); ?>
+			<?php echo $form->bsError($model, 'text_remark'); ?>
 		</div>
 	</div>
 

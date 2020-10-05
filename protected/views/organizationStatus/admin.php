@@ -50,7 +50,7 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		array('name' => 'organization_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->organization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Organization::model()->getForeignReferList(false, true, array('params' => array('mode' => 'isActiveId')))),
+		array('name' => 'organization_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->organization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
 		array('name' => 'date_reported', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_reported, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 		'status',
 		'source',

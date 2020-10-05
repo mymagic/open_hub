@@ -68,8 +68,11 @@ class PersonaController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+		Yii::app()->esLog->log(sprintf("viewed Persona '%s'", $model->title), 'persona', array('trigger' => 'PersonaController::actionView', 'model' => 'Persona', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model
 		));
 	}
 
@@ -88,6 +91,8 @@ class PersonaController extends Controller
 			$model->attributes = $_POST['Persona'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Persona '%s'", $model->title), 'persona', array('trigger' => 'PersonaController::actionCreate', 'model' => 'Persona', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -113,6 +118,8 @@ class PersonaController extends Controller
 			$model->attributes = $_POST['Persona'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Persona '%s'", $model->title), 'persona', array('trigger' => 'PersonaController::actionUpdate', 'model' => 'Persona', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

@@ -46,8 +46,8 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		array('name' => 'individual_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->individual->full_name', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Individual::model()->getForeignReferList(false, true)),
-		array('name' => 'organization_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->organization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Organization::model()->getForeignReferList(false, true)),
+		array('name' => 'individual_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->individual->full_name', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
+		array('name' => 'organization_code', 'cssClassExpression' => 'foreignKey', 'value' => '$data->organization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
 		array('name' => 'as_role_code', 'value' => '$data->as_role_code'),
 		'job_position',
 

@@ -73,8 +73,12 @@ class MilestoneController extends Controller
 			$year = date('Y');
 		}
 
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Milestone '%s'", $model->title), 'milestone', array('trigger' => 'MilestoneController::actionView', 'model' => 'Milestone', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 			'year' => $year
 		));
 	}
@@ -99,6 +103,8 @@ class MilestoneController extends Controller
 			$model->username = Yii::app()->user->username;
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Milestone '%s'", $model->title), 'milestone', array('trigger' => 'MilestoneController::actionCreate', 'model' => 'Milestone', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -124,6 +130,8 @@ class MilestoneController extends Controller
 			$model->attributes = $_POST['Milestone'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Milestone '%s'", $model->title), 'milestone', array('trigger' => 'MilestoneController::actionUpdate', 'model' => 'Milestone', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -140,7 +148,12 @@ class MilestoneController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
+
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Milestone '%s'", $copy->title), 'milestone', array('trigger' => 'MilestoneController::actionDelete', 'model' => 'Milestone', 'action' => 'delete', 'id' => $copy->id));
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {

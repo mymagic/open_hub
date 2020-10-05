@@ -38,7 +38,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'owner_organization_id', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'owner_organization_id', array('nullable' => true)); ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'owner_organization_id', 'urlAjax' => $this->createUrl('challenge/ajaxOrganization'), 'htmlOptions' => array('style' => 'width:100%'))) ?>
 		</div>
 	</div>
 	
@@ -120,11 +120,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_open', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_open', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_open', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
@@ -135,11 +135,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_close', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_close', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_close', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
@@ -246,11 +246,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_submit', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_submit', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_submit', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
@@ -261,11 +261,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_process', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_process', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_process', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
@@ -276,11 +276,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_added', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_added', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_added', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>
@@ -291,11 +291,11 @@
 
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'date_modified', array('required' => false)); ?>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'Start') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'Start') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'sdate_modified', array('nullable' => true, 'class' => 'dateRange-start')); ?>
 		</div>
-		<label class="control-label col-sm-1"><?php echo Yii::t('backend', 'End') ?></label>
+		<label class="control-label col-sm-1"><?php echo Yii::t('challenge', 'End') ?></label>
 		<div class="col-sm-4">
 			<?php echo $form->bsDateTextField($model, 'edate_modified', array('nullable' => true, 'class' => 'dateRange-end')); ?>
 		</div>

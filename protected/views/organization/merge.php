@@ -34,8 +34,10 @@ $this->menu = array(
     <div class="col-sm-6">
         <div class="well">
         <h3><?php echo Yii::t('backend', 'Merge this')?> <span class="pull-right" id="switch" style="cursor:pointer"><?php echo Html::faIcon('fa fa-exchange') ?></span></h3>
-
-        <?php echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class' => 'form-control ', 'v-model' => 'sourceKeyword', 'nullable' => true)); ?>
+        
+        <?php $this->widget('application.components.widgets.OrganizationSelector', array('model' => 'Organization', 'attribute' => 'sourceKeyword', 'selected' => $sourceKeyword, 'urlAjax' => $this->createUrl('organization/ajaxOrganizationActive'), 'htmlOptions' => array('v-model' => 'sourceKeyword'))) ?>
+        
+        <?php // echo Html::foreignKeyDropDownList('sourceKeyword', 'Organization', $sourceKeyword, array('class' => 'form-control ', 'v-model' => 'sourceKeyword', 'nullable' => true));?>
 
         <div class="margin-top-lg" v-html="previewSource"></div>
         </div>
@@ -44,7 +46,10 @@ $this->menu = array(
     <div class="col-sm-6">
         <div class="well">
         <h3><?php echo Yii::t('backend', 'Into this')?></h3>
-        <?php echo Html::foreignKeyDropDownList('targetKeyword', 'Organization', $targetKeyword, array('class' => 'form-control ', 'v-model' => 'targetKeyword', 'nullable' => true)); ?>
+
+        <?php $this->widget('application.components.widgets.OrganizationSelector', array('model' => 'Organization', 'attribute' => 'targetKeyword', 'selected' => $targetKeyword, 'urlAjax' => $this->createUrl('organization/ajaxOrganizationActive'), 'htmlOptions' => array('v-model' => 'targetKeyword'))) ?>
+
+        <?php //echo Html::foreignKeyDropDownList('targetKeyword', 'Organization', $targetKeyword, array('class' => 'form-control ', 'v-model' => 'targetKeyword', 'nullable' => true));?>
         <div class="margin-top-lg" v-html="previewTarget"></div>
         </div>
     </div>
@@ -103,15 +108,24 @@ var vue = new Vue({
         }
     }
 });
-$('#sourceKeyword').chosen().change(function() {vue.\$data.sourceKeyword = $('#sourceKeyword').val()});
-$('#targetKeyword').chosen().change(function() {vue.\$data.targetKeyword = $('#targetKeyword').val()});
+
+$('#sourceKeyword').change(function() {vue.\$data.sourceKeyword = $('#sourceKeyword').val()});
+$('#targetKeyword').change(function() {vue.\$data.targetKeyword = $('#targetKeyword').val()});
 
 $('#switch').click(function(){
-    var source = $('#sourceKeyword').val();
-    var target = $('#targetKeyword').val();
+    var source = $('#sourceKeyword').select2('data');
+    var sourceVal = source[0].id; var sourceText = source[0].text;
+    var target = $('#targetKeyword').select2('data');
+    var targetVal = target[0].id; var targetText = target[0].text;
 
-    $('#sourceKeyword').val(target).trigger('chosen:updated').trigger('change');
-    $('#targetKeyword').val(source).trigger('chosen:updated').trigger('change');
+    $('#targetKeyword').empty().trigger('change');
+    $('#targetKeyword').append('<option value=\"'+sourceVal+'\">'+sourceText+'</option>');
+    $('#targetKeyword').val(sourceVal).trigger('change');
+
+    $('#sourceKeyword').empty().trigger('change');
+    $('#sourceKeyword').append('<option value=\"'+targetVal+'\">'+targetText+'</option>');
+    $('#sourceKeyword').val(targetVal).trigger('change');
+
 });
 "
 			); ?>

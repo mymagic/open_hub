@@ -3,13 +3,13 @@
 /* @var $model Challenge */
 
 $this->breadcrumbs = array(
-	Yii::t('backend', 'Challenges') => array('index'),
-	Yii::t('backend', 'Manage'),
+	Yii::t('challenge', 'Challenges') => array('index'),
+	Yii::t('challenge', 'Manage'),
 );
 
 $this->menu = YeeModule::composeNavItems('challengeAdminSideNav', Yii::app()->controller, array(
 	array(
-		'label' => Yii::t('app', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
+		'label' => Yii::t('challenge', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 ));
 
@@ -23,7 +23,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1><?php echo Yii::t('backend', 'Manage Challenges'); ?></h1>
+<h1><?php echo Yii::t('challenge', 'Manage Challenges'); ?></h1>
 
 
 <div class="panel panel-default">
@@ -46,7 +46,7 @@ $('.search-form form').submit(function(){
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'title',
-		array('name' => 'owner_organization_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->ownerOrganization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Organization::model()->getForeignReferList(false, true)),
+		array('name' => 'owner_organization_id', 'cssClassExpression' => 'foreignKey', 'value' => '$data->ownerOrganization->title', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
 		array('name' => 'date_open', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_open, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 		array('name' => 'date_close', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_close, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),

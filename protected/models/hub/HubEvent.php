@@ -56,7 +56,8 @@ class HubEvent extends Component
 			}
 
 			if ($event->save()) {
-				$log = Yii::app()->esLog->log(sprintf("created '%s'", $event->title), 'event', array('trigger' => 'HubEvent::createEvent', 'model' => 'Event', 'action' => 'create', 'id' => $event->id, 'eventId' => $event->id), '', array());
+				$log = Yii::app()->esLog->log(sprintf("created Event '%s'", $event->title), 'event', array('trigger' => 'HubEvent::createEvent', 'model' => 'Event', 'action' => 'create', 'id' => $event->id, 'eventId' => $event->id), '', array());
+
 				$transaction->commit();
 			} else {
 				throw new Exception(Yii::app()->controller->modelErrors2String($event->getErrors()));

@@ -143,43 +143,43 @@
  	public function attributeLabels()
  	{
  		$return = array(
-		'id' => Yii::t('app', 'ID'),
-		'owner_organization_id' => Yii::t('app', 'Owner Organization'),
-		'creator_user_id' => Yii::t('app', 'Creator User'),
-		'title' => Yii::t('app', 'Title'),
-		'text_short_description' => Yii::t('app', 'Text Short Description'),
-		'html_content' => Yii::t('app', 'Html Content'),
-		'image_cover' => Yii::t('app', 'Image Cover'),
-		'image_header' => Yii::t('app', 'Image Header'),
-		'url_video' => Yii::t('app', 'Url Video'),
-		'url_application_form' => Yii::t('app', 'Url Application Form'),
-		'html_deliverable' => Yii::t('app', 'Html Deliverable'),
-		'html_criteria' => Yii::t('app', 'Html Criteria'),
-		'prize_title' => Yii::t('app', 'Prize Title'),
-		'html_prize_detail' => Yii::t('app', 'Html Prize Detail'),
-		'date_open' => Yii::t('app', 'Date Open'),
-		'date_close' => Yii::t('app', 'Date Close'),
-		'ordering' => Yii::t('app', 'Ordering'),
-		'text_remark' => Yii::t('app', 'Text Remark'),
-		'json_extra' => Yii::t('app', 'Json Extra'),
-		'status' => Yii::t('app', 'Status'),
-		'timezone' => Yii::t('app', 'Timezone'),
-		'is_active' => Yii::t('app', 'Is Active'),
-		'is_publish' => Yii::t('app', 'Is Publish'),
-		'is_highlight' => Yii::t('app', 'Is Highlight'),
-		'process_by' => Yii::t('app', 'Process By'),
-		'date_submit' => Yii::t('app', 'Date Submit'),
-		'date_process' => Yii::t('app', 'Date Process'),
-		'date_added' => Yii::t('app', 'Date Added'),
-		'date_modified' => Yii::t('app', 'Date Modified'),
+		'id' => Yii::t('challenge', 'ID'),
+		'owner_organization_id' => Yii::t('challenge', 'Owner Organization'),
+		'creator_user_id' => Yii::t('challenge', 'Creator User'),
+		'title' => Yii::t('challenge', 'Title'),
+		'text_short_description' => Yii::t('challenge', 'Text Short Description'),
+		'html_content' => Yii::t('challenge', 'Html Content'),
+		'image_cover' => Yii::t('challenge', 'Image Cover'),
+		'image_header' => Yii::t('challenge', 'Image Header'),
+		'url_video' => Yii::t('challenge', 'Url Video'),
+		'url_application_form' => Yii::t('challenge', 'Url Application Form'),
+		'html_deliverable' => Yii::t('challenge', 'Html Deliverable'),
+		'html_criteria' => Yii::t('challenge', 'Html Criteria'),
+		'prize_title' => Yii::t('challenge', 'Prize Title'),
+		'html_prize_detail' => Yii::t('challenge', 'Html Prize Detail'),
+		'date_open' => Yii::t('challenge', 'Date Open'),
+		'date_close' => Yii::t('challenge', 'Date Close'),
+		'ordering' => Yii::t('challenge', 'Ordering'),
+		'text_remark' => Yii::t('challenge', 'Text Remark'),
+		'json_extra' => Yii::t('challenge', 'Json Extra'),
+		'status' => Yii::t('challenge', 'Status'),
+		'timezone' => Yii::t('challenge', 'Timezone'),
+		'is_active' => Yii::t('challenge', 'Is Active'),
+		'is_publish' => Yii::t('challenge', 'Is Publish'),
+		'is_highlight' => Yii::t('challenge', 'Is Highlight'),
+		'process_by' => Yii::t('challenge', 'Process By'),
+		'date_submit' => Yii::t('challenge', 'Date Submit'),
+		'date_process' => Yii::t('challenge', 'Date Process'),
+		'date_added' => Yii::t('challenge', 'Date Added'),
+		'date_modified' => Yii::t('challenge', 'Date Modified'),
 		);
 
- 		$return['inputIndustries'] = Yii::t('app', 'Industries');
+ 		$return['inputIndustries'] = Yii::t('challenge', 'Industries');
 
  		// meta
  		$return = array_merge((array)$return, array_keys($this->_dynamicFields));
  		foreach ($this->_metaStructures as $metaStruct) {
- 			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('app', $metaStruct->label);
+ 			$return["_dynamicData[{$metaStruct->code}]"] = Yii::t('challenge', $metaStruct->label);
  		}
 
  		return $return;
@@ -625,17 +625,17 @@
  	public function formatEnumStatus($code)
  	{
  		switch ($code) {
-			case 'new': {return Yii::t('app', 'New'); break;}
+			case 'new': {return Yii::t('challenge', 'New'); break;}
 
-			case 'pending': {return Yii::t('app', 'Pending'); break;}
+			case 'pending': {return Yii::t('challenge', 'Pending'); break;}
 
-			case 'processing': {return Yii::t('app', 'Processing'); break;}
+			case 'processing': {return Yii::t('challenge', 'Processing'); break;}
 
-			case 'reject': {return Yii::t('app', 'Reject'); break;}
+			case 'reject': {return Yii::t('challenge', 'Reject'); break;}
 
-			case 'approved': {return Yii::t('app', 'Approved'); break;}
+			case 'approved': {return Yii::t('challenge', 'Approved'); break;}
 
-			case 'completed': {return Yii::t('app', 'Completed'); break;}
+			case 'completed': {return Yii::t('challenge', 'Completed'); break;}
 			default: {return ''; break;}
 		}
  	}

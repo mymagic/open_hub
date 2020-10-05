@@ -49,4 +49,12 @@ class Cluster extends ClusterBase
 
 		return parent::afterSave();
 	}
+
+	public function attributeLabels()
+	{
+		$return = parent::attributeLabels();
+		$return['text_short_description'] = Yii::t('app', 'Short Description');
+
+		return $return;
+	}
 }

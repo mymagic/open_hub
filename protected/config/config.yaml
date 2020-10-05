@@ -585,7 +585,7 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    getter: "Yii::app()->hybridAuth->config[providers][Google][keys][id]"
+                    getter: "isset(Yii::app()->hybridAuth)?Yii::app()->hybridAuth->config[providers][Google][keys][id]:''"
                 -   var: components.hybridAuth.config.providers.Google.keys.secret
                     env: GOOGLE_HAUTH_SECRET
                     title: Google Auth Secret
@@ -593,7 +593,7 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    getter: "Yii::app()->hybridAuth->config[providers][Google][keys][secret]"
+                    getter: "isset(Yii::app()->hybridAuth)?Yii::app()->hybridAuth->config[providers][Google][keys][secret]:''"
                 -   var: components.hybridAuth.config.providers.Facebook.keys.id
                     env: FB_APP_ID
                     title: Facebook Auth ID
@@ -601,7 +601,7 @@ main:
                     example: 
                     default: 
                     datatype: string
-                    getter: "Yii::app()->hybridAuth->config[providers][Facebook][keys][id]"
+                    getter: "isset(Yii::app()->hybridAuth)?Yii::app()->hybridAuth->config[providers][Facebook][keys][id]:''"
                 -   var: components.hybridAuth.config.providers.Facebook.keys.secret
                     env: FB_APP_SECRET
                     title: Facebook Auth Secret
@@ -609,7 +609,7 @@ main:
                     example: 
                     default: 
                     datatype: password
-                    getter: "Yii::app()->hybridAuth->config[providers][Facebook][keys][secret]"
+                    getter: "isset(Yii::app()->hybridAuth)?Yii::app()->hybridAuth->config[providers][Facebook][keys][secret]:''"
         -   key: contact
             title: "Contact"
             items:

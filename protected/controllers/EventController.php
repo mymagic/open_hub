@@ -168,6 +168,8 @@ class EventController extends Controller
 
 		$tabs = self::composeEventViewTabs($model, $realm);
 
+		Yii::app()->esLog->log(sprintf("viewed Event '%s'", $model->title), 'event', array('trigger' => 'EventController::actionView', 'model' => 'Event', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', [
 			'model' => $model,
 			'realm' => $realm,
@@ -238,6 +240,8 @@ class EventController extends Controller
 			}
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Event '%s'", $model->title), 'event', array('trigger' => 'EventController::acteionUpdat', 'model' => 'Event', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(['view', 'id' => $model->id]);
 			}
 		}
@@ -253,9 +257,15 @@ class EventController extends Controller
 	 *
 	 * @param int $id the ID of the model to be deleted
 	 */
+	// delete an event is not allowed at the moment
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
+
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Event '%s'", $copy->title), 'event', array('trigger' => 'EventController::actionDelete', 'model' => 'Event', 'action' => 'delete', 'id' => $copy->id));
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {

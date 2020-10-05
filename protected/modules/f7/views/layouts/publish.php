@@ -12,7 +12,7 @@
 				
 				<p class="small">This form is open from <strong><?php echo Html::formatDateTimezone($model->date_open, 'standard', 'short', '', $model->getTimezone()) ?></strong> to <strong><?php echo Html::formatDateTimezone($model->date_close, 'standard', 'short', '', $model->getTimezone()) ?></strong>.<span class="hidden text-warning">You will be blocked from submitting outside this date range.</span></p>
 				
-				<p><?php echo $model->text_short_description ?></p>
+				<p><?php echo Html::encodeDisplay(strip_tags($model->text_short_description)) ?></p>
                 
                 <?php echo $content; ?>
 

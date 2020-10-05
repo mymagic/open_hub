@@ -74,8 +74,11 @@ class StartupStageController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+		Yii::app()->esLog->log(sprintf("viewed Startup Stage '%s'", $model->title), 'startupStage', array('trigger' => 'StartupStageController::actionView', 'model' => 'StartupStage', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -94,6 +97,8 @@ class StartupStageController extends Controller
 			$model->attributes = $_POST['StartupStage'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Startup Stage '%s'", $model->title), 'startupStage', array('trigger' => 'StartupStageController::actionCreate', 'model' => 'StartupStage', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -119,6 +124,8 @@ class StartupStageController extends Controller
 			$model->attributes = $_POST['StartupStage'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Startup Stage '%s'", $model->title), 'startupStage', array('trigger' => 'StartupStageController::actionUpdate', 'model' => 'StartupStage', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}

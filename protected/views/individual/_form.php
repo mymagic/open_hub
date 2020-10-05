@@ -60,25 +60,6 @@
 		</div>
 	</div>
 
-
-	<div class="form-group <?php echo $model->hasErrors('country_code') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'country_code'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'country_code', array('nullable' => true)); ?>
-			<?php echo $form->bsError($model, 'country_code'); ?>
-		</div>
-	</div>
-
-
-	<div class="form-group <?php echo $model->hasErrors('state_code') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'state_code'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'state_code', array('nullable' => true)); ?>
-			<?php echo $form->bsError($model, 'state_code'); ?>
-		</div>
-	</div>
-
-
 	<div class="form-group <?php echo $model->hasErrors('ic_number') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'ic_number'); ?>
 		<div class="col-sm-10">
@@ -101,6 +82,25 @@
 		<div class="col-sm-10">
 			<?php echo $form->bsTextArea($model, 'text_address_residential', array('rows' => 2)); ?>
 			<?php echo $form->bsError($model, 'text_address_residential'); ?>
+		</div>
+	</div>
+
+	
+
+	<div class="form-group <?php echo $model->hasErrors('country_code') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'country_code'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsForeignKeyDropDownList($model, 'country_code', array('nullable' => true)); ?>
+			<?php echo $form->bsError($model, 'country_code'); ?>
+		</div>
+	</div>
+
+
+	<div class="form-group <?php echo $model->hasErrors('state_code') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'state_code'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsForeignKeyDropDownList($model, 'state_code', array('nullable' => true)); ?>
+			<?php echo $form->bsError($model, 'state_code'); ?>
 		</div>
 	</div>
 

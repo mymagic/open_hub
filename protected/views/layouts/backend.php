@@ -2,9 +2,6 @@
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/app.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/backend.js', CClientScript::POS_END); ?>
 
-<?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css'); ?>
-<?php Yii::app()->getClientScript()->registerScriptFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js'); ?>
-
 
 <?php
 $modules = YeeModule::getActiveParsableModules();

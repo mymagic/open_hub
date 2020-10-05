@@ -17,16 +17,16 @@
 
             </div>
             <div class="form-group margin-bottom">
-                    <label for="form-label org-name-modal"><?php echo Yii::t('f7', 'Organization / Company / Project Name') ?></label>
-                    <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="Enter organization/company/project name">
+                <label for="form-label org-name-modal required"><?php echo !empty($modifier['title']['label']) ? $modifier['title']['label'] : Yii::t('f7', 'Organization / Company / Project Name') ?></label>
+                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="<?php echo !empty($modifier['title']['placeholder']) ? $modifier['title']['placeholder'] : Yii::t('f7', 'Insert Organization / Company / Project Name here') ?>" />
             </div>
             <div class="form-group margin-bottom">
-                    <label for="form-label org-url-modal"><?php echo Yii::t('f7', 'Website') ?></label>
-                    <input type="text" class="form-control" id="org-url-modal" name="org-url-modal" placeholder="Enter website">
+                <label for="form-label org-url-modal"><?php echo !empty($modifier['url_website']['label']) ? $modifier['url_website']['label'] : Yii::t('f7', 'Website URL') ?></label>
+                <input type="text" class="form-control" id="org-url-modal" name="org-url-modal" placeholder="<?php echo !empty($modifier['url_website']['label']) ? $modifier['url_website']['label'] : 'http://' ?>" />
             </div>
             <div class="form-group margin-bottom">
-                    <label for="form-label org-oneliner-modal"><?php echo Yii::t('f7', 'One Liner') ?></label>
-                    <input type="text" class="form-control" id="org-oneliner-modal" name="org-oneliner-modal" placeholder="Enter oneliner">
+                <label for="form-label org-oneliner-modal"><?php echo !empty($modifier['text_oneliner']['label']) ? $modifier['text_oneliner']['label'] : Yii::t('f7', 'One liner') ?></label>
+                <input type="text" class="form-control" id="org-oneliner-modal" name="org-oneliner-modal" placeholder="<?php echo !empty($modifier['text_oneliner']['placeholder']) ? $modifier['text_oneliner']['label'] : Yii::t('f7', 'Insert one liner description here') ?>" />
             </div>
                 <button name="org-button-modal" id="org-button-modal" class="btn btn-primary btn-block"><?php echo Yii::t('f7', 'Create') ?></button>
             </div>

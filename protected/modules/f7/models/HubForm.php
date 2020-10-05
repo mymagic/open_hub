@@ -709,7 +709,7 @@ class HubForm
 
 		$html = '';
 
-		$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
+		$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s" placeholder="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], $params['placeholder']);
 
 		if (!empty($linkText)) {
 			$modalID = sprintf('%s-Modal', $modelClass);
@@ -772,7 +772,7 @@ class HubForm
 		$params['value'] : $decodedData[$params['name']] : $mappedModelValue;
 		$html = '';
 
-		$html .= sprintf('<input %s type="number" step="any" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
+		$html .= sprintf('<input %s type="number" step="any" style="%s" class="form-control %s" value="%s" name="%s" id="%s" placeholder="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], $params['placeholder']);
 
 		if (!empty($linkText)) {
 			$modalID = sprintf('%s-Modal', $modelClass);
@@ -823,14 +823,14 @@ class HubForm
 		return $html;
 	}
 
-	protected function getOrganizationModalForm($isEnabled, $modelClass, $linkText = 'Create')
+	protected function getOrganizationModalForm($isEnabled, $modelClass, $linkText = 'Create', $params = null)
 	{
 		if (!$isEnabled) {
 			return '';
 		}
 
 		$modelId = sprintf('%s-Modal', $modelClass);
-		$html = Yii::app()->controller->renderPartial('application.modules.f7.views.hubForm._getOrganizationModalForm', array('modelId' => $modelId, 'linkText' => $linkText), true);
+		$html = Yii::app()->controller->renderPartial('application.modules.f7.views.hubForm._getOrganizationModalForm', array('modelId' => $modelId, 'linkText' => $linkText, 'modifier' => $params['model_mapping']['modifier']), true);
 
 		return $html;
 	}
@@ -842,7 +842,7 @@ class HubForm
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 		$html = '';
 
-		$html .= sprintf('<textarea %s rows="%s" style="%s" class="form-control %s"name="%s" id="%s">%s</textarea>', $disable, isset($params['rows']) ? $params['rows'] : 5, $params['style'], $params['css'], $params['name'], $params['name'], $value);
+		$html .= sprintf('<textarea %s rows="%s" style="%s" class="form-control %s"name="%s" id="%s" placeholder="%s">%s</textarea>', $disable, isset($params['rows']) ? $params['rows'] : 5, $params['style'], $params['css'], $params['name'], $params['name'], $params['placeholder'], $value);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
@@ -902,7 +902,7 @@ class HubForm
 			$html = sprintf('<div><select %s data-class="%s" style="%s" class="form-control %s" text="%s" name="%s" id="%s">%s</select></div>', $disable, strtolower($dataClass), $params['style'], $params['css'], $params['text'], $params['name'], $params['name'], $options);
 
 			if (strtolower($dataClass) === 'organization') {
-				$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here');
+				$html .= self::getOrganizationModalForm($isEnabled, $dataClass, 'or, Create a new one here', $params);
 			}
 		}
 
@@ -1155,6 +1155,10 @@ class HubForm
 
 	public function getRatingTag($isEnabled, $params, $decodedData)
 	{
+		if (substr($params['name'], 0, strlen('voted-')) != 'voted-') {
+			$params['name'] = sprintf('voted-%s', $params['name']);
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 		$seed = explode('-', $params['name'])[1];
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
@@ -1237,10 +1241,9 @@ class HubForm
                     }
                 });
                 
-                
-                    $(\'#voted-%s\').val(num);
-                    $(\'#\' + e.target.id).css("background-color", "black");
-                    $(\'#\' + e.target.id).css("color", "white");
+				$(\'#voted-%s\').val(num);
+				$(\'#\' + e.target.id).css("background-color", "black");
+				$(\'#\' + e.target.id).css("color", "white");
             }
             });
         </script>', $seed, $cells, $labelLow, $labelHigh, $seed, $seed, $value, $seed, $seed);

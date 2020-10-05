@@ -113,6 +113,8 @@ class EventGroupController extends Controller
 
 		$tabs = self::composeEventGroupViewTabs($model, $realm);
 
+		Yii::app()->esLog->log(sprintf("viewed Event Group '%s'", $model->title), 'eventGroup', array('trigger' => 'EventGroupController::actionView', 'model' => 'EventGroup', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', [
 			'model' => $model,
 			'modelEventActiveList' => $modelEventActiveList,
@@ -149,6 +151,9 @@ class EventGroupController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("created Event Group '%s'", $model->title), 'eventGroup', array('trigger' => 'EventGroupController::actionCreate', 'model' => 'EventGroup', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(['view', 'id' => $model->id]);
 			}
 		}
@@ -185,6 +190,9 @@ class EventGroupController extends Controller
 
 			if ($model->save()) {
 				UploadManager::storeImage($model, 'cover', $model->tableName());
+
+				Yii::app()->esLog->log(sprintf("updated Event Group '%s'", $model->title), 'eventGroup', array('trigger' => 'EventGroupController::actionUpdate', 'model' => 'EventGroup', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(['view', 'id' => $model->id]);
 			}
 		}
@@ -202,7 +210,12 @@ class EventGroupController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$copy = clone $model;
+
+		if ($model->delete()) {
+			Yii::app()->esLog->log(sprintf("deleted Event Group '%s'", $copy->title), 'eventGroup', array('trigger' => 'EventGroupController::actionDelete', 'model' => 'EventGroup', 'action' => 'delete', 'id' => $copy->id));
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if (!isset($_GET['ajax'])) {

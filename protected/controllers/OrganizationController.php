@@ -74,7 +74,7 @@ class OrganizationController extends Controller
 				'allow',
 				'actions' => array(
 					'view', 'create', 'update', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'deleteUserOrganization2Email', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list', 'ajaxOrganization', 'ajaxOrganizationActive'
 				),
 				'users' => array('@'),
 			),
@@ -154,6 +154,8 @@ class OrganizationController extends Controller
 		}
 
 		$tabs = self::composeOrganizationViewTabs($model, $realm);
+
+		Yii::app()->esLog->log(sprintf("viewed Organization '%s'", $model->title), 'organization', array('trigger' => 'OrganizationController::actionView', 'model' => 'Organization', 'action' => 'view', 'id' => $model->id));
 
 		$this->render('view', array(
 			'model' => $model,
@@ -279,7 +281,7 @@ class OrganizationController extends Controller
 
 				Notice::flash(Yii::t('notice', "{title}' updated successfully", ['{title}' => $model->title]), Notice_SUCCESS);
 
-				$log = Yii::app()->esLog->log(sprintf("updated organization '%s'", $model->title), 'organization', array('trigger' => 'OrgranizationController::actionUpdate', 'model' => 'Organization', 'action' => 'update', 'id' => $model->id, 'organizationId' => $model->id));
+				$log = Yii::app()->esLog->log(sprintf("updated Organization '%s'", $model->title), 'organization', array('trigger' => 'OrgranizationController::actionUpdate', 'model' => 'Organization', 'action' => 'update', 'id' => $model->id, 'organizationId' => $model->id));
 
 				if (!empty($returnUrl)) {
 					$this->redirect(urldecode($returnUrl));
@@ -472,7 +474,7 @@ class OrganizationController extends Controller
 			$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($copy);
 			HUB::sendEmail($copy->user_email, $copy->user_email, $notifMaker['title'], $notifMaker['content']);
 
-			$log = Yii::app()->esLog->log(sprintf("deleted '%s' access to organization '%s'", $copy->user_email, $copy->organization->title), 'organization', array('trigger' => 'OrgranizationController::actionDeleteOrganization2Email', 'model' => 'Organization', 'action' => 'deleteOrganization2Email', 'id' => $copy->organization->id, 'organizationId' => $copy->organization->id));
+			$log = Yii::app()->esLog->log(sprintf("deleted '%s' access to Organization '%s'", $copy->user_email, $copy->organization->title), 'organization', array('trigger' => 'OrgranizationController::actionDeleteOrganization2Email', 'model' => 'Organization', 'action' => 'deleteOrganization2Email', 'id' => $copy->organization->id, 'organizationId' => $copy->organization->id));
 
 			if ($realm == 'cpanel') {
 				Notice::flash(Yii::t('notice', "Successfully revoke request from email '{email}' to join '{organizationTitle}'", ['{email}' => $copy->user_email, '{organizationTitle}' => $copy->organization->title]), Notice_SUCCESS);
@@ -538,7 +540,7 @@ class OrganizationController extends Controller
 
 				Notice::flash(Yii::t('notice', "Successfully added email '{email}' to organization '{organizationTitle}'", ['{email}' => $model->user_email, '{organizationTitle}' => $model->organization->title]), Notice_SUCCESS);
 
-				$log = Yii::app()->esLog->log(sprintf("added '%s' access to organization '%s'", $model->user_email, $organization->title), 'organization', array('trigger' => 'OrgranizationController::actionAddOrganization2Email', 'model' => 'Organization', 'action' => 'addOrganization2Email', 'id' => $organization->id, 'organizationId' => $organization->id));
+				$log = Yii::app()->esLog->log(sprintf("added '%s' access to Organization '%s'", $model->user_email, $organization->title), 'organization', array('trigger' => 'OrgranizationController::actionAddOrganization2Email', 'model' => 'Organization', 'action' => 'addOrganization2Email', 'id' => $organization->id, 'organizationId' => $organization->id));
 			} else {
 				Notice::flash(Yii::t('notice', "Failed to add email '{email}' to organization '{organizationTitle}'", ['{email}' => $model->user_email, '{organizationTitle}' => $model->organization->title]), Notice_ERROR);
 			}
@@ -580,6 +582,8 @@ class OrganizationController extends Controller
 			}
 
 			Notice::flash(Yii::t('notice', "Successfully changed status to '{status}'", ['{status}' => $model->formatEnumStatus($model->status)]), Notice_SUCCESS);
+
+			$log = Yii::app()->esLog->log(sprintf("changed '%s' access to '%s' for Organization '%s'", $model->user_email, $model->renderStatus(), $model->organization->title), 'organization', array('trigger' => 'OrgranizationController::actionToggleOrganization2EmailStatus', 'model' => 'Organization', 'action' => 'toggleOrganization2EmailStatus', 'id' => $model->organization->id, 'organizationId' => $model->organization->id));
 		}
 
 		if ($scenario === 'join') {
@@ -742,7 +746,7 @@ class OrganizationController extends Controller
 
 		if ($success) {
 			/* save history of merging */
-			HUB::createOrganizationMergeHistory($source, $target);
+			HubOrganization::createOrganizationMergeHistory($source, $target);
 
 			Notice::page(Yii::t('backend', "Successfully merged '{source}' into '{target}'", ['{source}' => $source->title, '{target}' => $target->title]), Notice_SUCCESS, array('url' => $this->createUrl('organization/view', array('id' => $target->id))));
 		} else {
@@ -783,7 +787,9 @@ class OrganizationController extends Controller
 			//$tmp = HubOrganization::getOrganizationAllActive(1);
 			//$organizations = $tmp['items'];
 			foreach ($organizations as $organization) {
-				$organization->save();
+				if ($organization->save()) {
+					Yii::app()->esLog->log(sprintf("housekeeping for Organization '%s'", $organization->title), 'organization', array('trigger' => 'OrganizationController::actionHousekeeping', 'model' => 'Organization', 'action' => 'housekeeping', 'id' => $organization->id));
+				}
 			}
 		}
 
@@ -842,6 +848,96 @@ class OrganizationController extends Controller
 		}
 	}
 
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxOrganization($term = '', $selected = '', $key = 'id')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
+		}
+		$command = $command->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			if ($key == 'id') {
+				$organization = Organization::model()->findByPk($result['id']);
+				if ($organization->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$organization = Organization::code2obj($result['id']);
+				if ($organization->key == $selected) {
+					$result['selected'] = true;
+				}
+			}
+
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxOrganizationActive($term = '', $selected = '', $key = 'id')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
+		}
+
+		$command = $command->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// only active organization can be use
+		$command = $command->andWhere('is_active=1');
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			if ($key == 'id') {
+				$organization = Organization::model()->findByPk($result['id']);
+				if ($organization->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$organization = Organization::code2obj($result['id']);
+				if ($organization->key == $selected) {
+					$result['selected'] = true;
+				}
+			}
+
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
 	/**
 	 * Performs the AJAX validation.
 	 * @param Organization $model the model to be validated
@@ -885,28 +981,5 @@ class OrganizationController extends Controller
 		}
 
 		return $tabs;
-	}
-
-	/**
-	 * Shows S3 sore of particular startup.
-	 */
-	public function actionScore($id)
-	{
-		// Get name of organization
-		$this->pageTitle = Yii::t('app', 'View Organization');
-		$model = $this->loadModel($id);
-		$this->pageTitle = Yii::t('app', "View '{OrganizationTitle}' Score", array('{OrganizationTitle}' => $model->title));
-		$org_name = $model->title;
-
-		$application = HubAtas::getApplicationFromStartupName($org_name);
-		$application_id = $application['map_application_id'];
-		$this->render('score', array(
-			'model' => $model,
-			'organization' => $model,
-			'application_id' => $application_id
-		));
-		// Get startup_id
-		// Get map_application id
-		// $this->render('score', array());
 	}
 }

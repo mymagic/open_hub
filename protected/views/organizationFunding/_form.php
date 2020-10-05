@@ -30,7 +30,11 @@
 	<div class="form-group <?php echo $model->hasErrors('organization_id') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'organization_id'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_id', array('class' => 'chosen', 'params' => array('mode' => $model->isNewRecord ? 'isActiveId' : ''))); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_id', 'urlAjax' => $this->createUrl('organizationFunding/ajaxOrganization'))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->organization_id => $model->organization->title), 'attribute' => 'organization_id', 'urlAjax' => $this->createUrl('organizationFunding/ajaxOrganization', array('id' => $model->id)))) ?>
+			<?php endif; ?>
 			<?php echo $form->bsError($model, 'organization_id'); ?>
 		</div>
 	</div>
@@ -48,7 +52,11 @@
 	<div class="form-group <?php echo $model->hasErrors('vc_organization_id') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'vc_organization_id'); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'vc_organization_id', array('nullable' => true, 'class' => 'chosen')); ?>
+			<?php if ($model->isNewRecord): ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'vc_organization_id', 'urlAjax' => $this->createUrl('organizationFunding/ajaxOrganization'))) ?>
+			<?php else: ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->vc_organization_id => $model->vcOrganization->title), 'attribute' => 'vc_organization_id', 'urlAjax' => $this->createUrl('organizationFunding/ajaxOrganization', array('id' => $model->id)))) ?>
+			<?php endif; ?>
 			<?php echo $form->bsError($model, 'vc_organization_id'); ?>
 		</div>
 	</div>

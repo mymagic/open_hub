@@ -74,8 +74,12 @@ class ClusterController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+		Yii::app()->esLog->log(sprintf("viewed Cluster '%s'", $model->title), 'cluster', array('trigger' => 'ClusterController::actionView', 'model' => 'Cluster', 'action' => 'view', 'id' => $model->id));
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $model,
 		));
 	}
 
@@ -94,6 +98,8 @@ class ClusterController extends Controller
 			$model->attributes = $_POST['Cluster'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("created Cluster '%s'", $model->title), 'cluster', array('trigger' => 'ClusterController::actionCreate', 'model' => 'Cluster', 'action' => 'create', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -119,6 +125,8 @@ class ClusterController extends Controller
 			$model->attributes = $_POST['Cluster'];
 
 			if ($model->save()) {
+				Yii::app()->esLog->log(sprintf("updated Cluster '%s'", $model->title), 'cluster', array('trigger' => 'ClusterController::actionUpdate', 'model' => 'Cluster', 'action' => 'update', 'id' => $model->id));
+
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
