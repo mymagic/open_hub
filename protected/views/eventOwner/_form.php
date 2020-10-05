@@ -35,13 +35,15 @@
 		</div>
 	</div>
 
+	
+
 	<div class="form-group <?php echo $model->hasErrors('organization_code') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'organization_code'); ?>
 		<div class="col-sm-10">
 			<?php if ($model->isNewRecord): ?>
-				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'isActiveCode'))); ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxOrganization'))) ?>
 			<?php else: ?>
-				<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => false, 'class' => 'chosen form-control', 'params' => array('mode' => 'code'))); ?>
+				<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'data' => array($model->organization_code => $model->organization->title), 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxOrganization', array('id' => $model->id)))) ?>
 			<?php endif; ?>
 			<?php echo $form->bsError($model, 'organization_code'); ?>
 		</div>

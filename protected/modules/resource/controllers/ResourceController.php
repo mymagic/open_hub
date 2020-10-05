@@ -165,6 +165,13 @@ class ResourceController extends Controller
 		// $this->performAjaxValidation($model);
 
 		if (isset($_POST['Resource'])) {
+			/*
+			[inputOrganizations] => Array
+			(
+				[0] => 4128
+				[1] => 4131
+			)
+			*/
 			$model->attributes = $_POST['Resource'];
 
 			if ($realm == 'cpanel') {

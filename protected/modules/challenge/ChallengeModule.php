@@ -128,7 +128,7 @@ class ChallengeModule extends WebModule
 
 				return array(
 					array(
-						'label' => Yii::t('backend', 'Open Innovation Challenge'), 'url' => '#',
+						'label' => Yii::t('challenge', 'Challenge'), 'url' => '#',
 						// 'visible' => Yii::app()->user->getState('accessBackend') == true,
 						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'index'], 'module' => (object)['id' => 'challenge']]),
 						'active' => $controller->activeMenuMain == 'challenge' ? true : false,
@@ -136,7 +136,7 @@ class ChallengeModule extends WebModule
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 						'items' => array(
 							array(
-								'label' => Yii::t('app', 'Challenge Overview'), 'url' => array('/challenge/backend/index'),
+								'label' => Yii::t('challenge', 'Manage'), 'url' => array('/challenge/backend/index'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true),
 								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'backend', 'action' => (object)['id' => 'index'], 'module' => (object)['id' => 'challenge']])
 							),

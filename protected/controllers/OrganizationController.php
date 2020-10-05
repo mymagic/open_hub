@@ -74,7 +74,7 @@ class OrganizationController extends Controller
 				'allow',
 				'actions' => array(
 					'view', 'create', 'update', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'deleteUserOrganization2Email', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
+					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list', 'ajaxOrganization', 'ajaxOrganizationActive'
 				),
 				'users' => array('@'),
 			),
@@ -846,6 +846,86 @@ class OrganizationController extends Controller
 			echo Html::activeThumb($model, 'image_logo');
 			Yii::app()->end();
 		}
+	}
+
+	public function actionAjaxOrganization($term = '', $id = '')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		// update
+		if (!empty($id)) {
+			$selected = $this->loadModel($id);
+		}
+
+		$command = $command->select('id as id, title as text')->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// create
+		if (empty($selected)) {
+			// only active organization can be use
+			$command = $command->andWhere('is_active=1');
+		}
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			$organization = Organization::model()->findByPk($result['id']);
+			if ($organization->id == $selected->id) {
+				$result['selected'] = true;
+			}
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
+	}
+
+	// selected can be either id or code
+	// key is either id or code
+	public function actionAjaxOrganizationActive($term = '', $selected = '', $key = 'id')
+	{
+		$results = array();
+		$command = Yii::app()->db->createCommand();
+
+		if (strlen($term) < 3) {
+			$this->outputJsonRaw(array('results' => array()));
+		}
+
+		if ($key == 'id') {
+			$command = $command->select('id as id, title as text');
+		} else {
+			$command = $command->select('code as id, title as text');
+		}
+
+		$command = $command->from('organization')->where(array('like', 'title', '%' . $term . '%'));
+		// only active organization can be use
+		$command = $command->andWhere('is_active=1');
+		$command = $command->order('title ASC')->limit(30);
+
+		$results = array_merge($results, $command->queryAll());
+		foreach ($results as &$result) {
+			if ($key == 'id') {
+				$organization = Organization::model()->findByPk($result['id']);
+				if ($organization->id == $selected) {
+					$result['selected'] = true;
+				}
+			} else {
+				$organization = Organization::code2obj($result['id']);
+				if ($organization->key == $selected) {
+					$result['selected'] = true;
+				}
+			}
+
+			$result['textOneliner'] = !empty($organization->text_oneliner) ? ysUtil::truncate($organization->text_oneliner) : '-';
+			$result['urlWebsite'] = !empty($organization->url_website) ? $organization->url_website : '-';
+			$result['imageLogoThumbUrl'] = $organization->getImageLogoThumbUrl();
+		}
+		$return['results'] = $results;
+		$this->outputJsonRaw($return);
 	}
 
 	/**

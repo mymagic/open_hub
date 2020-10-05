@@ -9,16 +9,16 @@ $this->breadcrumbs = array(
 
 $this->menu = array(
 	array(
-		'label' => Yii::t('app', 'Manage Challenge'), 'url' => array('/challenge/challenge/admin'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
+		'label' => Yii::t('challenge', 'Manage Challenge'), 'url' => array('/challenge/challenge/admin'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'admin')
 	),
 	array(
-		'label' => Yii::t('app', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
+		'label' => Yii::t('challenge', 'Create Challenge'), 'url' => array('/challenge/challenge/create'), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'create')
 	),
 	array(
-		'label' => Yii::t('app', 'Update Challenge'), 'url' => array('/challenge/challenge/update', 'id' => $model->id), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
+		'label' => Yii::t('challenge', 'Update Challenge'), 'url' => array('/challenge/challenge/update', 'id' => $model->id), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update')
 	),
 	array(
-		'label' => Yii::t('app', 'Delete Challenge'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
+		'label' => Yii::t('challenge', 'Delete Challenge'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'csrf' => Yii::app()->request->enableCsrfValidation, 'confirm' => Yii::t('core', 'Are you sure you want to delete this item?')), 'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete')
 	),
 );
 ?>
@@ -29,7 +29,7 @@ $this->menu = array(
 	<?php $inputIndustries .= sprintf('<span class="label">%s</span>&nbsp;', $industry->title) ?>
 <?php endforeach; ?>
 
-<h1><?php echo Yii::t('backend', 'View Challenge'); ?></h1>
+<h1><?php echo Yii::t('challenge', 'View Challenge'); ?></h1>
 
 <div class="crud-view">
 <?php $this->widget('application.components.widgets.DetailView', array(

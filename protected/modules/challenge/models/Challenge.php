@@ -81,7 +81,7 @@ class Challenge extends ChallengeBase
 
 		// custom code here
 		$return['text_short_description'] = Yii::t('challenge', 'Short Description');
-		$return['image_cover'] = Yii::t('challenge', 'header Image');
+		$return['image_cover'] = Yii::t('challenge', 'Cover Image');
 		$return['image_header'] = Yii::t('challenge', 'Header Image');
 		$return['url_video'] = Yii::t('challenge', 'Video URL');
 		$return['url_application_form'] = Yii::t('challenge', 'Application URL');

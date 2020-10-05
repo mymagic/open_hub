@@ -92,7 +92,8 @@ class EventOwner extends EventOwnerBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		// $return['title'] = Yii::t('app', 'Custom Name');
+		$return['organization_code'] = Yii::t('app', 'Organization');
+		$return['event_code'] = Yii::t('app', 'Event');
 
 		return $return;
 	}

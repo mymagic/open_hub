@@ -50,7 +50,7 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'organization_code', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_code', array('nullable' => true)); ?>
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxOrganization'))) ?>
 		</div>
 	</div>
 	
