@@ -147,7 +147,7 @@ class RecommendationModule extends WebModule
 						'label' => Yii::t('app', 'Recommendation'),
 						'url' => '/recommendation',
 						'active' => $controller->activeMenuCpanel == 'recommendation' ? true : false,
-						'visible' => true,
+						'visible' => (Yii::app()->neo4j->enable),
 						'icon' => 'fa-cog'
 					)
 				);
