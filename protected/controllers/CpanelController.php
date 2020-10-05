@@ -42,7 +42,8 @@ class CpanelController extends Controller
 					'index', 'services', 'setUserService', 'setting', 'download', 'requestDownloadUserData', 'downloadUserDataFile', 'deleteUserAccount',
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
-					'test', 'activity', 'getTimeline', 'profile', 'organization'
+					'test', 'activity', 'getTimeline', 'profile', 'organization',
+					'changePassword'
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
@@ -79,6 +80,49 @@ class CpanelController extends Controller
 	public function actionServices()
 	{
 		$this->redirect(array('activity'));
+	}
+
+	public function actionChangePassword()
+	{
+		if (Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must login to update your password.'));
+		}
+
+		if (Yii::app()->params['authAdapter']!='local') {
+			throw new CException(Yii::t('app', 'You not allowed to update your password.'));
+		}
+
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->pageTitle = Yii::t('cpanel', 'Change Password');
+		$this->cpanelMenuInterface = 'cpanelNavSetting';
+		$this->activeMenuCpanel = 'changePassword';
+
+		$model = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+		$model->scenario = 'changePassword';
+
+		if (isset($_POST['User'])) {
+			$model->attributes = $_POST['User'];
+			
+			$model->validate();
+			
+			if (!empty($model->opassword) && !$model->matchPassword($model->opassword)) {
+				$model->addError('opassword', Yii::t('app', 'Please insert the correct current password'));
+			}
+
+			if(empty($model->getErrors())) {
+				$model->password = $model->npassword;
+				
+				if($model->save(false)) {
+					Yii::app()->esLog->log(sprintf("password changed for username: '%s'", $model->username), 'user', array('trigger' => 'CpanelController::actionChangePassword', 'model' => 'User', 'action' => 'changePassword', 'id' => $model->id, 'userId' => $model->id));
+
+					$this->redirect('profile');
+				}
+			}
+		}
+
+		$this->render('changePassword', array(
+			'model' => $model
+		));
 	}
 
 	public function actionProfile()
