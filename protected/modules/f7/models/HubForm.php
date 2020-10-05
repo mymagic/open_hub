@@ -709,7 +709,7 @@ class HubForm
 
 		$html = '';
 
-		$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
+		$html .= sprintf('<input %s type="text" style="%s" class="form-control %s" value="%s" name="%s" id="%s" placeholder="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], $params['placeholder']);
 
 		if (!empty($linkText)) {
 			$modalID = sprintf('%s-Modal', $modelClass);
@@ -772,7 +772,7 @@ class HubForm
 		$params['value'] : $decodedData[$params['name']] : $mappedModelValue;
 		$html = '';
 
-		$html .= sprintf('<input %s type="number" step="any" style="%s" class="form-control %s" value="%s" name="%s" id="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name']);
+		$html .= sprintf('<input %s type="number" step="any" style="%s" class="form-control %s" value="%s" name="%s" id="%s" placeholder="%s">', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], $params['placeholder']);
 
 		if (!empty($linkText)) {
 			$modalID = sprintf('%s-Modal', $modelClass);
@@ -842,7 +842,7 @@ class HubForm
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 		$html = '';
 
-		$html .= sprintf('<textarea %s rows="%s" style="%s" class="form-control %s"name="%s" id="%s">%s</textarea>', $disable, isset($params['rows']) ? $params['rows'] : 5, $params['style'], $params['css'], $params['name'], $params['name'], $value);
+		$html .= sprintf('<textarea %s rows="%s" style="%s" class="form-control %s"name="%s" id="%s" placeholder="%s">%s</textarea>', $disable, isset($params['rows']) ? $params['rows'] : 5, $params['style'], $params['css'], $params['name'], $params['name'], $params['placeholder'], $value);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
