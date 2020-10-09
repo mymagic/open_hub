@@ -28,4 +28,10 @@ return array(
 	'foreignKey' => array(
 		//'state_code'=>array( 'relationName'=>'state', 'model'=>'State', 'foreignReferAttribute'=>'title'),
 	),
+	'neo4j' => array(
+		'attributes' => array(
+			'id' => 'string',
+			'title_en' => 'string'
+		)
+	)
 );
