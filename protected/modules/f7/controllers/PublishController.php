@@ -243,25 +243,28 @@ class PublishController extends Controller
 		$submission->date_added = empty($submission->date_added) ? time() : $submission->date_added;
 		$submission->date_modified = time();
 
+		$url = $this->createUrl('/f7/publish/view/', array('slug' => $slug, 'sid' => $submission->id));
+
 		if ($submission->save(false)) {
-			if ($form->hasHook('onNotifyAfterSubmitForm') != false) {
-				$form->execHook('onNotifyAfterSubmitForm', array('submission' => $submission));
-			} else {
-				$notifMaker = HubForm::notifyMaker_user_afterSubmitForm($submission);
-				HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
-			}
-
-			// $message = 'Thank you for your valuable input. You have successfuly submitted the survery.';
-
-			$url = $this->createUrl('/f7/publish/view/', array('slug' => $slug, 'sid' => $submission->id));
-
-			if ($submission->status == 'submit') {
-				Notice::Page(Yii::t('f7', 'You have successfully submitted your entry.'), Notice_SUCCESS, array('url' => $url));
-			} else {
+			if($submission->status == 'submit'){
+				if ($form->hasHook('onNotifyAfterSubmitForm') != false) {
+					$form->execHook('onNotifyAfterSubmitForm', array('submission' => $submission));
+				} else {
+					$notifMaker = HubForm::notifyMaker_user_afterSubmitForm($submission);
+					HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
+				}
+				Notice::Page(Yii::t('f7', 'You have successfully submitted your entry.'), Notice_SUCCESS, array('url' => $url));	
+			}else {
+				if ($form->hasHook('onNotifyAfterSubmitDraft') != false) {
+					$form->execHook('onNotifyAfterSubmitDraft', array('submission' => $submission));
+				} else {
+					$notifMaker = HubForm::notifyMaker_user_afterSubmitDraft($submission);
+					HUB::sendNotify('member', $submission->user->username, $notifMaker['message'], $notifMaker['title'], $notifMaker['content'], 3);
+				}
 				Notice::flash(Yii::t('f7', 'You have successfully saved your entry as draft.'), Notice_SUCCESS);
-
 				$this->redirect(array('/f7/publish/edit', 'slug' => $slug, 'sid' => $submission->id));
 			}
+
 		} else {
 			throw new Exception(Yii::t('f7', 'Opps, something wrong, we failed to update your application due'));
 		}
