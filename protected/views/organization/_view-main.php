@@ -31,7 +31,7 @@
 
 	<!-- profile -->
 	<div class="panel panel-default margin-bottom-2x">
-		<div class="panel-heading"><?php echo Yii::t('backend', 'Profile') ?></div>
+		<div class="panel-heading"><?php echo Yii::t('backend', 'Organization Profile') ?></div>
 		<div class="crud-view">
 		<?php $this->widget('application.components.widgets.DetailView', array(
 			'data' => $model,
@@ -48,6 +48,7 @@
 				array('name' => 'text_short_description', 'type' => 'raw', 'value' => Html::encodeDisplay($model->text_short_description)),
 				array('name' => 'inputPersonas', 'type' => 'raw', 'value' => $inputPersonas),
 				array('name' => 'inputIndustries', 'type' => 'raw', 'value' => $inputIndustries),
+				array('name' => 'inputClassifications', 'type' => 'raw', 'value' => $inputClassifications),
 				array('name' => 'inputImpacts', 'type' => 'raw', 'value' => $inputImpacts),
 				array('name' => 'inputSdgs', 'type' => 'raw', 'value' => $inputSdgs),
 			),
@@ -241,6 +242,7 @@
 			array('name' => 'text_short_description', 'type' => 'raw', 'value' => Html::encodeDisplay($model->text_short_description)),
 			array('name' => 'inputPersonas', 'type' => 'raw', 'value' => $inputPersonas),
 			array('name' => 'inputIndustries', 'type' => 'raw', 'value' => $inputIndustries),
+			array('name' => 'inputClassifications', 'type' => 'raw', 'value' => $inputClassifications),
 			array('name' => 'inputImpacts', 'type' => 'raw', 'value' => $inputImpacts),
 			array('name' => 'inputSdgs', 'type' => 'raw', 'value' => $inputSdgs),
 		),

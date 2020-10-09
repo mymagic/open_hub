@@ -29,8 +29,11 @@ if ($realm == 'backend') {
 	<?php foreach ($model->industries as $industry) : ?>
 		<?php $inputIndustries .= sprintf('<span class="label">%s</span>&nbsp;', $industry->title) ?>
 	<?php endforeach; ?>
+	<?php foreach ($model->classifications as $classification) : ?>
+		<?php $inputClassifications .= sprintf('<span class="label">%s</span>&nbsp;', $classification->getAttrData('title'))?>
+	<?php endforeach; ?>
 
-	<?php $this->renderPartial('_view-main', array('model' => $model, 'organization' => $model, 'actions' => $actions, 'realm' => $realm, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries)) ?>
+	<?php $this->renderPartial('_view-main', array('model' => $model, 'organization' => $model, 'actions' => $actions, 'realm' => $realm, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries, 'inputClassifications' => $inputClassifications)) ?>
 
 <?php endif; ?>
 
@@ -105,6 +108,14 @@ if ($realm == 'backend') {
 					<div>
 						<?php foreach ($model->industries as $industry) : ?>
 							<span class="label"><?php echo $industry->title ?></span>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<div class="mt-4">
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'Classification') ?></h5>
+					<div>
+						<?php foreach ($model->classifications as $classification) : ?>
+							<span class="label"><?php echo $classification->getAttrData('title') ?></span>
 						<?php endforeach; ?>
 					</div>
 				</div>

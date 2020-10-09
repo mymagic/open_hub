@@ -374,13 +374,6 @@
 
  	protected function afterSave()
  	{
- 		$this->saveInputImpact();
- 		$this->saveInputSdg();
- 		$this->saveInputIndustry();
- 		$this->saveInputPersona();
-
- 		$this->setTags($this->tag_backend);
-
  		return parent::afterSave();
  	}
 
