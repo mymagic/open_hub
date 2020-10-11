@@ -31,6 +31,9 @@ class EventSelector extends CWidget
 
 		// active model with form
 		if (!empty($this->form) && !empty($this->model)) {
+			if (empty($this->data)) {
+				$this->data = array($this->attribute => $this->model->{$this->attribute});
+			}
 			$this->render('activeEventSelector', array('form' => $this->form, 'model' => $this->model, 'attribute' => $this->attribute, 'data' => $this->data, 'htmlOptions' => $this->htmlOptions, 'urlAjax' => $this->urlAjax));
 		} else {
 			$this->htmlOptions['class'] .= ' form-control';

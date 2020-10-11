@@ -123,7 +123,7 @@
 			<?php $this->endWidget(); ?></div>
 
 			<p class="text-muted">
-			You can add new user to manage this organization along with you by insert his/her email address here. If this email belongs to not registered user, he/she will automatically grant access after signup.
+			<?php echo Yii::t('app', 'You can add new user to manage this organization along with you by insert his/her email address here. If this email belongs to not registered user, he/she will automatically grant access after signup.') ?>
 			</p>
 
 			<hr />
@@ -287,7 +287,7 @@
 			<?php $this->endWidget(); ?></div>
 
 			<p class="text-muted">
-			You can add new user to manage this organization along with you by insert his/her email address here. If this email belongs to not registered user, he/she will automatically grant access after signup.
+			<?php echo Yii::t('app', 'You can add new user to manage this organization along with you by insert his/her email address here. If this email belongs to not registered user, he/she will automatically grant access after signup.') ?>
 			</p>
 
 			<hr />
