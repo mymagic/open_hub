@@ -28,7 +28,7 @@ $this->breadcrumbs = array(
         </ul>
         <div class="tab-content padding-top-lg">
             <div class="tab-pane fade in active" id="tab-public">
-                <?php if (!empty('publicNewsletters')): ?>
+                <?php if (!empty($publicNewsletters)): ?>
                 <?php foreach ($publicNewsletters as $list) : ?>
 
                     <div class="flex items-center mailchimpListItem border-bottom margin-bottom-md" data-list-id="<?php echo $list['id'] ?>">
@@ -43,11 +43,11 @@ $this->breadcrumbs = array(
 
                 <?php endforeach; ?>
                 <?php else: ?>
-                    <?php Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
+                    <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
                 <?php endif; ?>
             </div>
             <div class="tab-pane fade" id="tab-private">
-                <?php if (!empty('privateNewsletters')): ?>
+                <?php if (!empty($privateNewsletters)): ?>
                 <?php foreach ($privateNewsletters as $list) : ?>
 
                     <div class="flex items-center mailchimpListItem border-bottom margin-bottom-md" data-list-id="<?php echo $list['id'] ?>">
@@ -62,7 +62,7 @@ $this->breadcrumbs = array(
 
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <?php Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
+                    <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
                 <?php endif; ?>
             </div>
         </div>
