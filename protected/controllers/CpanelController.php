@@ -88,7 +88,7 @@ class CpanelController extends Controller
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
 
-		if (Yii::app()->params['authAdapter']!='local') {
+		if (Yii::app()->params['authAdapter'] != 'local') {
 			throw new CException(Yii::t('app', 'You not allowed to update your password.'));
 		}
 
@@ -102,17 +102,17 @@ class CpanelController extends Controller
 
 		if (isset($_POST['User'])) {
 			$model->attributes = $_POST['User'];
-			
+
 			$model->validate();
-			
+
 			if (!empty($model->opassword) && !$model->matchPassword($model->opassword)) {
 				$model->addError('opassword', Yii::t('app', 'Please insert the correct current password'));
 			}
 
-			if(empty($model->getErrors())) {
+			if (empty($model->getErrors())) {
 				$model->password = $model->npassword;
-				
-				if($model->save(false)) {
+
+				if ($model->save(false)) {
 					Yii::app()->esLog->log(sprintf("password changed for username: '%s'", $model->username), 'user', array('trigger' => 'CpanelController::actionChangePassword', 'model' => 'User', 'action' => 'changePassword', 'id' => $model->id, 'userId' => $model->id));
 
 					$this->redirect('profile');
@@ -136,15 +136,13 @@ class CpanelController extends Controller
 
 		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
 		if ($modelIndividual === null) {
-
-			if(Yii::app()->params['authAdapter'] == 'connect') {
+			if (Yii::app()->params['authAdapter'] == 'connect') {
 				$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 				$fullname = $account->firstname . ' ' . $account->lastname;
-			}
-			else { 
+			} else {
 				// if using local authAdapter, check for social login first
 				$userSocial = UserSocial::model()->findByAttributes(['username' => Yii::app()->user->username]);
-				if($userSocial!==null) {
+				if ($userSocial !== null) {
 					$account = $userSocial->jsonArray_socialParams;
 					$fullname = $account->firstName . ' ' . $account->lastName;
 				}
@@ -152,15 +150,15 @@ class CpanelController extends Controller
 
 			$gender = null;
 
-			if(!empty($account)) {
+			if (!empty($account)) {
 				if ($account->gender === 'M') {
 					$gender = 'male';
 				} elseif ($account->gender === 'F') {
 					$gender = 'female';
 				}
 			}
-			
-			if(!isset($fullname)) {
+
+			if (!isset($fullname)) {
 				$fullname = $model->profile->full_name;
 			}
 
@@ -491,11 +489,25 @@ class CpanelController extends Controller
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'notification';
 
-		$lists['magicNewsletter'] = HubMailchimp::getOneMailchimpList(Yii::app()->params['mailchimpLists']['magicNewsletter']);
+		$masterNewsletter = HubMailchimp::getOneMailchimpList(Yii::app()->params['mailchimpLists']['masterNewsletter']);
+		$tmps = HubMailchimp::getAllMailchimpList(100);
+		foreach ($tmps as &$tmp) {
+			if ($tmp['id'] == $masterNewsletter['id']) {
+				unset($tmp);
+			}
+
+			if ($tmp['visibility'] == 'pub') {
+				$publicNewsletters[] = $tmp;
+			} elseif ($tmp['visibility'] == 'prv') {
+				if (HubMailchimp::isEmailExistsMailchimpList(Yii::app()->user->username, $tmp['id'])) {
+					$privateNewsletters[] = $tmp;
+				}
+			}
+		}
 
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('notification', array('lists' => $lists));
+		$this->render('notification', array('masterNewsletter' => $masterNewsletter, 'publicNewsletters' => $publicNewsletters, 'privateNewsletters' => $privateNewsletters));
 	}
 
 	public function actionGetSubscriptionStatus($listId)
