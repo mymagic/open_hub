@@ -279,12 +279,12 @@ class HubIndividual
 		return $model;
 	}
 
-	// return a link of related individual matched by emails and is not currently linked to the organization
-	public static function getRelatedEmailIndividual($organization)
+	// return a list of related individuals matched by emails and is not currently linked to the organization
+	public static function getRelatedEmailIndividuals($organization)
 	{
 		// get all organization2email from organization
 		foreach ($organization->organization2Emails as $organization2Email) {
-			// find individual that matching these emails
+			// find individuals that matching these emails
 			$individuals = self::getIndividualsByEmail($organization2Email->user_email);
 			if (!empty($individuals)) {
 				$result[$organization2Email->user_email] = $individuals;
@@ -306,6 +306,7 @@ class HubIndividual
 		return $return;
 	}
 
+	// only the verified one is return
 	public static function getIndividualsByEmail($userEmail)
 	{
 		$criteria = new CDbCriteria;
