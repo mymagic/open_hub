@@ -460,10 +460,14 @@ class CpanelController extends Controller
 
 			HUB::sendEmail($email, $userObj->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
 
-			//Try to unsubscribe user from MaGIC newsletter
+			//Try to unsubscribe user from all newsletters
 			try {
-				$listId = Yii::app()->params['mailchimpLists']['magicNewsletter'];
-				$result = HubMailchimp::unsubscribeMailchimpList($email, $listId);
+				$newsletters = HubMailchimp::getAllMailchimpList(100);
+				if (!empty($newsletters)) {
+					foreach ($newsletters as &$newsletter) {
+						$result = HubMailchimp::unsubscribeMailchimpList($email, $newsletter['id']);
+					}
+				}
 			} catch (Exception $e) {
 			}
 
@@ -489,18 +493,20 @@ class CpanelController extends Controller
 		$this->cpanelMenuInterface = 'cpanelNavSetting';
 		$this->activeMenuCpanel = 'notification';
 
-		$masterNewsletter = HubMailchimp::getOneMailchimpList(Yii::app()->params['mailchimpLists']['masterNewsletter']);
-		$tmps = HubMailchimp::getAllMailchimpList(100);
-		foreach ($tmps as &$tmp) {
-			if ($tmp['id'] == $masterNewsletter['id']) {
-				unset($tmp);
-			}
+		if (Yii::app()->params['mailchimpApiKey'] && Yii::app()->params['mailchimpLists']['masterNewsletter']) {
+			$masterNewsletter = HubMailchimp::getOneMailchimpList(Yii::app()->params['mailchimpLists']['masterNewsletter']);
+			$tmps = HubMailchimp::getAllMailchimpList(100);
+			foreach ($tmps as &$tmp) {
+				if ($tmp['id'] == $masterNewsletter['id']) {
+					unset($tmp);
+				}
 
-			if ($tmp['visibility'] == 'pub') {
-				$publicNewsletters[] = $tmp;
-			} elseif ($tmp['visibility'] == 'prv') {
-				if (HubMailchimp::isEmailExistsMailchimpList(Yii::app()->user->username, $tmp['id'])) {
-					$privateNewsletters[] = $tmp;
+				if ($tmp['visibility'] == 'pub') {
+					$publicNewsletters[] = $tmp;
+				} elseif ($tmp['visibility'] == 'prv') {
+					if (HubMailchimp::isEmailExistsMailchimpList(Yii::app()->user->username, $tmp['id'])) {
+						$privateNewsletters[] = $tmp;
+					}
 				}
 			}
 		}

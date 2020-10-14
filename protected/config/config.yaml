@@ -1121,7 +1121,7 @@ defaultModules:
                 env: MAILCHIMP_LISTS
                 title: Mailchimp List
                 hint: List of Mailchimp newsletter subscription group to highlight in member control panel. In format of key:value
-                example: magicNewsletter:a99abcd123
+                example: masterNewsletter:a99abcd123
                 default:
                 datatype: string
                 datatype_value:
