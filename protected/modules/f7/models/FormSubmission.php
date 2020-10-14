@@ -46,7 +46,7 @@ class FormSubmission extends FormSubmissionBase
 
 		$criteria = new CDbCriteria;
 		$criteria->with = array('user');
-		$criteria->compare('id', $this->id);
+		$criteria->compare('t.id', $this->id);
 		$criteria->compare('code', $this->code, true);
 		$criteria->compare('form_code', $this->form_code, true);
 		$criteria->compare('user.username', $this->username, true);

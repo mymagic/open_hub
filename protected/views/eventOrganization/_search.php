@@ -38,9 +38,18 @@
 	<div class="form-group">
 		<?php echo $form->bsLabelFx2($model, 'event_id', array('required' => false)); ?>
 		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'event_id', array('nullable' => true, 'params' => array('mode' => 'idAsKey'))); ?>
+			<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_id', 'htmlOptions' => array('style' => 'width:100%'), 'urlAjax' => $this->createUrl('eventOrganization/ajaxEvent'))) ?>
 		</div>
 	</div>
+
+			
+	<div class="form-group">
+		<?php echo $form->bsLabelFx2($model, 'organization_id', array('required' => false)); ?>
+		<div class="col-sm-10">
+			<?php $this->widget('application.components.widgets.OrganizationSelector', array('form' => $form, 'model' => $model, 'attribute' => 'organization_id', 'htmlOptions' => array('style' => 'width:100%'), 'urlAjax' => $this->createUrl('eventOrganization/ajaxOrganization'))) ?>
+		</div>
+	</div>
+
 	
 		
 	
@@ -69,15 +78,6 @@
 		
 	
 
-
-		
-	<div class="form-group">
-		<?php echo $form->bsLabelFx2($model, 'organization_id', array('required' => false)); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'organization_id', array('nullable' => true)); ?>
-		</div>
-	</div>
-	
 		
 	
 

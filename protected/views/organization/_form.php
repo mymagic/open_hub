@@ -192,6 +192,15 @@
 	</div>
 
 
+	<div class="form-group <?php echo $model->hasErrors('inputClassifications') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx2($model, 'inputClassifications'); ?>
+		<div class="col-sm-10">
+			<?php echo $form->dropDownList($model, 'inputClassifications', Html::listData(Classification::getForeignReferList()), array('class' => 'chosen form-control', 'multiple' => 'multiple')); ?>
+			<?php echo $form->bsError($model, 'inputClassifications'); ?>
+		</div>
+	</div>
+
+
 	<?php if (Yii::app()->user->accessBackend && HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'superAdmin']])):?>
 	<div class="form-group <?php echo $model->hasErrors('tag_backend') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'tag_backend'); ?>

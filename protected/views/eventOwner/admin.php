@@ -46,7 +46,8 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
-		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->event->title, Yii::app()->createUrl("/event/view", array("id"=>$data->event->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => Event::model()->getForeignReferList(false, true)),
+		array('name' => 'event_code', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->event->title, Yii::app()->createUrl("/event/view", array("id"=>$data->event->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
+		array('name' => 'organization_code', 'cssClassExpression' => 'foreignKey', 'value' => 'Html::link($data->organization->title, Yii::app()->createUrl("/organization/view", array("id"=>$data->organization->id)))', 'type' => 'html', 'headerHtmlOptions' => array('class' => 'foreignKey'), 'filter' => false),
 		'department',
 		'as_role_code',
 		array(

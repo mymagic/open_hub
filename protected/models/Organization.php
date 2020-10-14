@@ -27,6 +27,7 @@ class Organization extends OrganizationBase
 	public $imageRemote_logo;
 	public $inputPersonas;
 	public $inputIndustries;
+	public $inputClassifications;
 	public $inputCountries;
 	public $searchAccessEmails;
 	public $inputBackendTags;
@@ -88,7 +89,7 @@ class Organization extends OrganizationBase
 			array('address_zip', 'length', 'max' => 16),
 			array('address_country_code', 'length', 'max' => 2),
 			array('image_logo, url_website, email_contact, full_address', 'length', 'max' => 255),
-			array('text_oneliner, text_short_description, html_content, inputImpacts, inputSdgs, inputPersonas, inputIndustries, tag_backend', 'safe'),
+			array('text_oneliner, text_short_description, html_content, inputImpacts, inputSdgs, inputPersonas, inputIndustries, inputClassifications, tag_backend', 'safe'),
 			array('imageFile_logo', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 
 			/*array('title', 'validateTitle', 'on'=>array('create', 'createIdeaPartner', 'createIdeaEnterprise', 'createIdeaOrganization')),
@@ -98,7 +99,7 @@ class Organization extends OrganizationBase
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, code, slug, timezone, title, text_oneliner, text_short_description, html_content, legalform_id, year_founded, company_number, image_logo, url_website, email_contact, is_active, date_added, date_modified, legal_name, full_address, address_line1, address_line2, address_zip, address_city, address_state, address_country_code, latlong_address, score_completeness, sdate_added, edate_added, sdate_modified, edate_modified,
-			inputPersonas, inputIndustries, inputImpacts, inputSdgs, inputCountries, searchAccessEmails, searchBackendTags, inputBackendTags, searchIndividual', 'safe', 'on' => 'search'),
+			inputPersonas, inputIndustries, inputClassifications, inputImpacts, inputSdgs, inputCountries, searchAccessEmails, searchBackendTags, inputBackendTags, searchIndividual', 'safe', 'on' => 'search'),
 		);
 		// meta
 		$return[] = array('_dynamicData', 'safe');
@@ -132,6 +133,7 @@ class Organization extends OrganizationBase
 			'sdgs' => array(self::MANY_MANY, 'Sdg', 'sdg2organization(organization_id, sdg_id)'),
 			'personas' => array(self::MANY_MANY, 'Persona', 'persona2organization(organization_id, persona_id)'),
 			'industries' => array(self::MANY_MANY, 'Industry', 'industry2organization(organization_id, industry_id)'),
+			'classifications' => array(self::MANY_MANY, 'Classification', 'classification2organization(organization_id, classification_id)'),
 
 			// meta
 			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
@@ -190,6 +192,7 @@ class Organization extends OrganizationBase
 		$return['inputSdgs'] = Yii::t('app', 'Sdgs');
 		$return['inputPersonas'] = Yii::t('app', 'Personas');
 		$return['inputIndustries'] = Yii::t('app', 'Industries');
+		$return['inputClassifications'] = Yii::t('app', 'Classifications');
 		$return['inputCountries'] = Yii::t('app', 'Countries');
 		$return['searchAccessEmails'] = Yii::t('app', 'Emails');
 		$return['searchBackendTags'] = Yii::t('app', 'Backend Tags');
@@ -266,6 +269,14 @@ class Organization extends OrganizationBase
 
 	public function afterSave()
 	{
+		$this->saveInputImpact();
+		$this->saveInputSdg();
+		$this->saveInputIndustry();
+		$this->saveInputClassification();
+		$this->saveInputPersona();
+
+		$this->setTags($this->tag_backend);
+
 		return parent::afterSave();
 	}
 
@@ -381,6 +392,9 @@ class Organization extends OrganizationBase
 		foreach ($this->industries as $industry) {
 			$this->inputIndustries[] = $industry->id;
 		}
+		foreach ($this->classifications as $classification) {
+			$this->inputClassifications[] = $classification->id;
+		}
 
 		parent::afterFind();
 	}
@@ -468,6 +482,16 @@ class Organization extends OrganizationBase
 				$criteriaIndustry->addCondition(sprintf('industries.id=%s', trim($industry)), 'OR');
 			}
 			$criteria->mergeWith($criteriaIndustry, $params['compareOperator']);
+		}
+
+		if ($this->inputClassifications !== null) {
+			$criteriaClassification = new CDbCriteria;
+			$criteriaClassification->together = true;
+			$criteriaClassification->with = array('classifications');
+			foreach ($this->inputClassifications as $classification) {
+				$criteriaClassification->addCondition(sprintf('industries.id=%s', trim($classification)), 'OR');
+			}
+			$criteria->mergeWith($criteriaClassification, $params['compareOperator']);
 		}
 
 		if ($this->inputImpacts !== null) {
@@ -1024,6 +1048,83 @@ class Organization extends OrganizationBase
 				// if currently dont have
 				if ($this->hasNoIndustry($inputIndustry)) {
 					$this->addIndustry($inputIndustry);
+				}
+			}
+		}
+	}
+
+	//
+	// classification
+	public function getAllClassificationsKey()
+	{
+		$return = array();
+		if (!empty($this->classifications)) {
+			foreach ($this->classifications as $classification) {
+				$return[] = $classification->id;
+			}
+		}
+
+		return $return;
+	}
+
+	public function hasClassification($key)
+	{
+		if (in_array($key, $this->getAllClassificationsKey())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function hasNoClassification($key)
+	{
+		if (!in_array($key, $this->getAllClassificationsKey())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function removeClassification($key)
+	{
+		if ($this->hasClassification($key)) {
+			$many2many = Classification2Organization::model()->findByAttributes(array('organization_id' => $this->id, 'classification_id' => $key));
+
+			return $many2many->delete();
+		}
+
+		return false;
+	}
+
+	public function addClassification($key)
+	{
+		if ($this->hasNoClassification($key)) {
+			$many2many = new Classification2Organization;
+			$many2many->organization_id = $this->id;
+			$many2many->classification_id = $key;
+
+			return $many2many->save();
+		}
+
+		return false;
+	}
+
+	protected function saveInputClassification()
+	{
+		// loop thru existing
+		foreach ($this->classifications as $classification) {
+			// remove extra
+			if (!in_array($classification->id, $this->inputClassifications)) {
+				$this->removeClassification($classification->id);
+			}
+		}
+
+		// loop thru each input
+		if (!empty($this->inputClassifications)) {
+			foreach ($this->inputClassifications as $inputClassification) {
+				// if currently dont have
+				if ($this->hasNoClassification($inputClassification)) {
+					$this->addClassification($inputClassification);
 				}
 			}
 		}

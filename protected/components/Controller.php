@@ -234,6 +234,7 @@ class Controller extends BaseController
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'cluster', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'persona', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'industry', 'action' => (object)['id' => 'admin']]) ||
+					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'classification', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'impact', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'sdg', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'startupStage', 'action' => (object)['id' => 'admin']]) ||
@@ -266,6 +267,11 @@ class Controller extends BaseController
 						'label' => Yii::t('app', 'Industry'), 'url' => array('/industry/admin'),
 						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
 						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'industry', 'action' => (object)['id' => 'admin']])
+					),
+					array(
+						'label' => Yii::t('app', 'Classification'), 'url' => array('/classification/admin'),
+						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
+						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'classification', 'action' => (object)['id' => 'admin']])
 					),
 					array(
 						'label' => Yii::t('app', 'Impact'), 'url' => array('/impact/admin'),

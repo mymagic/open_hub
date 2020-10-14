@@ -95,7 +95,7 @@ class EventRegistration extends EventRegistrationBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		// $return['title'] = Yii::t('app', 'Custom Name');
+		$return['event_code'] = Yii::t('app', 'Event');
 
 		return $return;
 	}

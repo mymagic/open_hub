@@ -15,7 +15,7 @@
 * @license https://opensource.org/licenses/BSD-3-Clause
 */
 
-class IndividualSelector extends CWidget
+class EventSelector extends CWidget
 {
 	public $form;
 	public $model;
@@ -34,11 +34,11 @@ class IndividualSelector extends CWidget
 			if (empty($this->data)) {
 				$this->data = array($this->attribute => $this->model->{$this->attribute});
 			}
-			$this->render('activeIndividualSelector', array('form' => $this->form, 'model' => $this->model, 'attribute' => $this->attribute, 'data' => $this->data, 'htmlOptions' => $this->htmlOptions, 'urlAjax' => $this->urlAjax));
+			$this->render('activeEventSelector', array('form' => $this->form, 'model' => $this->model, 'attribute' => $this->attribute, 'data' => $this->data, 'htmlOptions' => $this->htmlOptions, 'urlAjax' => $this->urlAjax));
 		} else {
 			$this->htmlOptions['class'] .= ' form-control';
 
-			$this->render('individualSelector', array('model' => $this->model, 'attribute' => $this->attribute, 'selected' => $this->selected, 'data' => $this->data, 'htmlOptions' => $this->htmlOptions, 'urlAjax' => $this->urlAjax));
+			$this->render('eventSelector', array('model' => $this->model, 'attribute' => $this->attribute, 'selected' => $this->selected, 'data' => $this->data, 'htmlOptions' => $this->htmlOptions, 'urlAjax' => $this->urlAjax));
 		}
 	}
 }
