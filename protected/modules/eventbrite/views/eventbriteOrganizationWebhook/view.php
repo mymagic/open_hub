@@ -35,7 +35,7 @@ $this->menu = array(
 	'data' => $model,
 	'attributes' => array(
 		'id',
-		array('name' => 'organization_code', 'value' => $model->organization->title),
+		array('name' => 'organization_code', 'value' => Html::link($model->organization->title, $this->createUrl('/organization/view', array('id' => $model->organization->id))), 'type' => 'html'),
 		array('name' => 'as_role_code', 'value' => $model->as_role_code),
 		array('name' => 'eventbrite_account_id', 'value' => $model->eventbrite_account_id),
 		'eventbrite_oauth_secret',

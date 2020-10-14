@@ -527,4 +527,20 @@ class User extends UserBase
 
 		return password_verify(hash_hmac('sha256', $userInputPassword, $salt), $this->password);
 	}
+
+	public function searchAssignedUsers()
+	{
+
+ 		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria = new CDbCriteria;
+		$criteria->with = ['roles' => ['together' => true]];
+
+ 		$criteria->compare('roles.id', $this->id);
+ 		$criteria->compare('username', $this->username, true);
+
+ 		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
+		));
+	}
 }

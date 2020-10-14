@@ -219,6 +219,18 @@ class HubOrganization
 				$bufferSubFilter = substr($bufferSubFilter, 0, -1 * strlen('OR '));
 				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
 			}
+
+			// classification
+			if (!empty($filter['classification'])) {
+				$filterClassifications = array_map('trim', explode(',', $filter['classification']));
+				$bufferSubFilter = '';
+				foreach ($filterClassifications as $keyword) {
+					$bufferSubFilter .= sprintf("classification.slug='%s' OR ", $keyword);
+					$filters[] = array('type' => 'classification', 'code' => $keyword, 'title' => $slugTitleArray['classifications'][$keyword]);
+				}
+				$bufferSubFilter = substr($bufferSubFilter, 0, -1 * strlen('OR '));
+				$bufferFilter .= sprintf(' AND (%s)', $bufferSubFilter);
+			}
 		}
 
 		if ($filter['magic'] == 1) {
@@ -228,6 +240,9 @@ class HubOrganization
 			
 			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
 			LEFT JOIN industry as industry ON i2o.industry_id=industry.id
+
+			LEFT JOIN classification2organization as `c2o` ON c2o.organization_id=o.id 
+			LEFT JOIN classification as classification ON c2o.classification_id=classification.id
 
 			JOIN event_organization as eo ON eo.organization_id=o.id
 		
@@ -239,6 +254,9 @@ class HubOrganization
 			
 			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
 			LEFT JOIN industry as industry ON i2o.industry_id=industry.id
+			
+			LEFT JOIN classification2organization as `c2o` ON c2o.organization_id=o.id 
+			LEFT JOIN classification as classification ON c2o.classification_id=classification.id
 
 			JOIN event_organization as eo ON eo.organization_id=o.id
 		
@@ -251,6 +269,9 @@ class HubOrganization
 			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
 			LEFT JOIN industry as industry ON i2o.industry_id=industry.id
 
+			LEFT JOIN classification2organization as `c2o` ON c2o.organization_id=o.id 
+			LEFT JOIN classification as classification ON c2o.classification_id=classification.id
+
 			WHERE %s GROUP BY o.id ORDER BY o.title ASC) tmp', $bufferFilter);
 
 			$sql = sprintf('SELECT o.* FROM organization as `o` 
@@ -259,6 +280,9 @@ class HubOrganization
 			
 			LEFT JOIN industry2organization as `i2o` ON i2o.organization_id=o.id 
 			LEFT JOIN industry as industry ON i2o.industry_id=industry.id
+
+			LEFT JOIN classification2organization as `c2o` ON c2o.organization_id=o.id 
+			LEFT JOIN classification as classification ON c2o.classification_id=classification.id
 		
 			WHERE %s GROUP BY o.id ORDER BY o.title ASC LIMIT %s, %s ', $bufferFilter, $offset, $limitPerPage);
 		}
@@ -297,6 +321,31 @@ class HubOrganization
 		$return = array();
 
 		$tmps = Industry::model()->findAllBySql($sql);
+
+		foreach ($tmps as $tmp) {
+			if (!strstr($tmp->slug, '.')) {
+				$childs = array();
+				foreach ($tmps as $tmp2) {
+					if (substr($tmp2->slug, 0, strlen($tmp->slug . '.')) == $tmp->slug . '.') {
+						$assocArray[$tmp2->slug] = $tmp2->title;
+						$childs[] = array('slug' => $tmp2->slug, 'title' => $tmp2->title, 'textShortDescription' => '');
+					}
+				}
+				$assocArray[$tmp->slug] = $tmp->title;
+				$return[] = array('slug' => $tmp->slug, 'title' => $tmp->title, 'textShortDescription' => '', 'childs' => $childs);
+			}
+		}
+
+		return $returnOneAssocArray ? $assocArray : $return;
+	}
+
+	public static function getOrganizationClassifications($returnOneAssocArray = false)
+	{
+		$sql = 'SELECT c.* FROM `classification` as c, organization as o, classification2organization as c2o WHERE c2o.organization_id=o.id AND c2o.classification_id=c.id AND o.is_active=1 AND c.is_active=1 GROUP BY c.id ORDER BY c.title ASC';
+		$assocArray = array();
+		$return = array();
+
+		$tmps = Classification::model()->findAllBySql($sql);
 
 		foreach ($tmps as $tmp) {
 			if (!strstr($tmp->slug, '.')) {
@@ -546,6 +595,12 @@ class HubOrganization
 			$sql = sprintf('UPDATE IGNORE industry2organization SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
 			Yii::app()->db->createCommand($sql)->execute();
 			$sql = sprintf('DELETE FROM industry2organization WHERE organization_id=%s', $source->id);
+			Yii::app()->db->createCommand($sql)->execute();
+
+			// process classification2Organization
+			$sql = sprintf('UPDATE IGNORE classification2organization SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
+			Yii::app()->db->createCommand($sql)->execute();
+			$sql = sprintf('DELETE FROM classification2organization WHERE organization_id=%s', $source->id);
 			Yii::app()->db->createCommand($sql)->execute();
 
 			// process persona2Organization

@@ -1,8 +1,9 @@
 <?php
 
-function upgrade_module_1_2($about)
+function upgrade_module_1_3($about)
 {
 	$migration = Yii::app()->db->createCommand();
+	$migration = new Migration();
 	$migration->createTable('eventbrite_organization_webhook', [
 		'id' => 'pk',
 		'organization_code' => 'varchar(64) NOT NULL ',
@@ -21,5 +22,5 @@ function upgrade_module_1_2($about)
 
 	$migration->addForeignKey('fk_eventbrite_organization_webhook-organization_code', 'eventbrite_organization_webhook', 'organization_code', 'organization', 'code', 'CASCADE', 'CASCADE');
 
-	return "Upgraded to version 1.2\n";
+	return "Upgraded to version 1.3\n";
 }

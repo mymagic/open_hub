@@ -264,6 +264,9 @@ class OrganizationController extends Controller
 			if (empty($_POST['Organization']['inputIndustries'])) {
 				$model->inputIndustries = null;
 			}
+			if (empty($_POST['Organization']['inputClassifications'])) {
+				$model->inputClassifications = null;
+			}
 			if (empty($_POST['Organization']['inputPersonas'])) {
 				$model->inputPersonas = null;
 			}
@@ -659,6 +662,11 @@ class OrganizationController extends Controller
 			$stat['industry'][$industry->title] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN industry2organization as i2o ON i2o.organization_id=o.id JOIN industry as i ON i2o.industry_id=i.id WHERE o.is_active=1 AND i.id=%s', $industry->id))->queryScalar();
 		}
 
+		$classifications = Classification::model()->isActive()->findAll(array('order' => 'title ASC'));
+		foreach ($classifications as $classification) {
+			$stat['classification'][$classification->title] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN classification2organization as c2o ON c2o.organization_id=o.id JOIN classification as c ON c2o.classification_id=c.id WHERE o.is_active=1 AND c.id=%s', $classification->id))->queryScalar();
+		}
+
 		$impacts = Impact::model()->isActive()->findAll(array('order' => 'title ASC'));
 		foreach ($impacts as $impact) {
 			$stat['impact'][$impact->title] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN impact2organization as i2o ON i2o.organization_id=o.id JOIN impact as i ON i2o.impact_id=i.id WHERE o.is_active=1 AND i.id=%s', $impact->id))->queryScalar();
@@ -689,6 +697,8 @@ class OrganizationController extends Controller
 
 		// organization without any industry
 		$stat['quality']['noIndustry'] = Yii::app()->db->createCommand(sprintf('select COUNT(o.id) from organization o left outer join industry2organization i2o on i2o.organization_id = o.id where o.is_active=1 AND i2o.organization_id is null'))->queryScalar();
+
+		// organization without any classification is fine
 
 		// organization without any impact
 		$stat['quality']['noImpact'] = Yii::app()->db->createCommand(sprintf('select COUNT(o.id) from organization o left outer join impact2organization i2o on i2o.organization_id = o.id where o.is_active=1 AND i2o.organization_id is null'))->queryScalar();
@@ -881,7 +891,7 @@ class OrganizationController extends Controller
 				}
 			} else {
 				$organization = Organization::code2obj($result['id']);
-				if ($organization->key == $selected) {
+				if ($organization->code == $selected) {
 					$result['selected'] = true;
 				}
 			}
@@ -925,7 +935,7 @@ class OrganizationController extends Controller
 				}
 			} else {
 				$organization = Organization::code2obj($result['id']);
-				if ($organization->key == $selected) {
+				if ($organization->code == $selected) {
 					$result['selected'] = true;
 				}
 			}

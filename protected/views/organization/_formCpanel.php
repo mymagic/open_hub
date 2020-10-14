@@ -82,6 +82,14 @@
 		</div>
 	</div>
 
+	<div class="form-group <?php echo $model->hasErrors('inputSdgs') ? 'has-error' : '' ?>">
+		<?php echo $form->bsLabelEx3($model, 'inputSdgs'); ?>
+		<div class="col-sm-9">
+			<?php echo $form->dropDownList($model, 'inputSdgs', Html::listData(Sdg::getForeignReferList()), array('class' => 'js-multi-select js-states form-control', 'multiple' => 'multiple')); ?>
+			<?php echo $form->bsError($model, 'inputSdgs'); ?>
+		</div>
+	</div>
+
 	<hr />
 
 	<div class="form-group <?php echo $model->hasErrors('legalform_id') ? 'has-error' : '' ?>">

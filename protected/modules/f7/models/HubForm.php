@@ -189,6 +189,20 @@ class HubForm
 		return $notifyMaker;
 	}
 
+	public static function notifyMaker_user_afterSubmitDraft($submission)
+	{
+		$form = $submission->form;
+
+		$params['dateExpiredFormatted'] = Html::formatDateTimezone($form->date_close, 'standard', 'standard', '-', $form->timezone);
+		$params['url'] = Yii::app()->createAbsoluteUrl('f7/publish/view', array('slug' => $form->slug, 'sid' => $submission->id));
+
+		$notifyMaker['title'] = 'Your application was saved as draft.';
+		$notifyMaker['message'] = 'Your application was saved as draft.';
+		$notifyMaker['content'] = Yii::app()->getController()->renderPartial('application.modules.f7.views._email.user_afterSubmitDraft', $params, true);
+
+		return $notifyMaker;
+	}
+
 	public static function notifyMaker_user_afterChangedSubmit2Draft($submission)
 	{
 		$form = $submission->form;

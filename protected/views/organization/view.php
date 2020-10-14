@@ -29,8 +29,11 @@ if ($realm == 'backend') {
 	<?php foreach ($model->industries as $industry) : ?>
 		<?php $inputIndustries .= sprintf('<span class="label">%s</span>&nbsp;', $industry->title) ?>
 	<?php endforeach; ?>
+	<?php foreach ($model->classifications as $classification) : ?>
+		<?php $inputClassifications .= sprintf('<span class="label">%s</span>&nbsp;', $classification->getAttrData('title'))?>
+	<?php endforeach; ?>
 
-	<?php $this->renderPartial('_view-main', array('model' => $model, 'organization' => $model, 'actions' => $actions, 'realm' => $realm, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries)) ?>
+	<?php $this->renderPartial('_view-main', array('model' => $model, 'organization' => $model, 'actions' => $actions, 'realm' => $realm, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries, 'inputClassifications' => $inputClassifications)) ?>
 
 <?php endif; ?>
 
@@ -108,6 +111,14 @@ if ($realm == 'backend') {
 						<?php endforeach; ?>
 					</div>
 				</div>
+				<div class="mt-4">
+					<h5 class="muted text-uppercase"><?php echo Yii::t('app', 'SDG') ?></h5>
+					<div>
+						<?php foreach ($model->sdgs as $sdg) : ?>
+							<span class="label"><?php echo $sdg->title ?></span>
+						<?php endforeach; ?>
+					</div>
+				</div>
 			</div>
 		</div>
 	
@@ -126,7 +137,7 @@ if ($realm == 'backend') {
 			<div class="tab-content padding-lg white-bg">
 				<?php foreach ($tabs as $tabModuleKey => $tabModules) : ?><?php foreach ($tabModules as $tabModule) : ?>
 				<div role="tabpanel" class="tab-pane <?php echo ($tab == 'tab-' . $tabModule['key']) ? 'active' : '' ?>" id="tab-<?php echo $tabModule['key'] ?>">
-					<?php echo $this->renderPartial($tabModule['viewPath'], array('model' => $model, 'organization' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries)) ?>
+					<?php echo $this->renderPartial($tabModule['viewPath'], array('model' => $model, 'organization' => $model, 'user' => $user, 'actions' => $actions, 'realm' => $realm, 'tab' => $tab, 'inputImpacts' => $inputImpacts, 'inputSdgs' => $inputSdgs, 'inputPersonas' => $inputPersonas, 'inputIndustries' => $inputIndustries, 'inputClassifications' => $inputClassifications)) ?>
 				</div>
 				<?php endforeach; ?><?php endforeach; ?>
 			</div>

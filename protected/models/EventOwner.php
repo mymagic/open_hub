@@ -94,6 +94,7 @@ class EventOwner extends EventOwnerBase
 		// custom code here
 		$return['organization_code'] = Yii::t('app', 'Organization');
 		$return['event_code'] = Yii::t('app', 'Event');
+		$return['as_role_code'] = Yii::t('app', 'As Role (coded)');
 
 		return $return;
 	}
