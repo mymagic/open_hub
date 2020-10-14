@@ -43,7 +43,14 @@ class ButtonColumn extends CButtonColumn
 	protected function renderFilterCellContent()
 	{
 		if ($this->isResetFilterEnabled) {
-			echo Html::link(sprintf('%s %s', Html::faIcon('fa-undo'), Yii::t('core', 'Reset Filter')), Yii::app()->createUrl(Yii::app()->controller->route, array('clearFilters' => '1')), array('class' => 'btn btn-xs btn-warning'));
+
+			$arrParams = ['clearFilters' => '1'];
+			// adding extra parameters from GET method if there is any  
+			if(!empty($_GET)){
+				$arrParams = array_merge($_GET, $arrParams);
+			}
+
+			echo Html::link(sprintf('%s %s', Html::faIcon('fa-undo'), Yii::t('core', 'Reset Filter')), Yii::app()->createUrl(Yii::app()->controller->route, $arrParams), array('class' => 'btn btn-xs btn-warning'));
 		}
 	}
 
