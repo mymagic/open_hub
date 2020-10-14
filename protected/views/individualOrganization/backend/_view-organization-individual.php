@@ -16,7 +16,7 @@
         <h3><?php echo Yii::t('backend', 'Individual Involved') ?></h3>
     </div>
 </div>
-<div class="row">
+<div class="row container-flex">
     <?php if (!empty($model->individualOrganizations)): ?>
     <?php foreach ($model->individualOrganizations as $individualOrganization):?>
         <?php if (!$individualOrganization->individual->is_active) {

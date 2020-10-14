@@ -11,7 +11,7 @@
 <?php endif; ?>
 
 
-<div class="row">
+<div class="row container-flex">
     <?php if (!empty($model->individualOrganizations)): ?>
             <?php foreach ($model->individualOrganizations as $individualOrganization):?>
                 <?php if (!$individualOrganization->organization->is_active) {
