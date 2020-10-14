@@ -33,8 +33,8 @@
 
                 <p class="font-bold"><?php echo ucwords($individualOrganization->as_role_code) ?></p>
 
-                <?php if(!empty($individualOrganization->getDateServed())): ?>
-                <p><small><?php echo "(". $individualOrganization->getDateServed() .")"; ?></small></p>
+                <?php if (!empty($individualOrganization->getDateServed())): ?>
+                <p><small><?php echo '(' . $individualOrganization->getDateServed() . ')'; ?></small></p>
                 <?php endif; ?>
             </div>
             <div class="ibox-content border text-center gray-bg">
@@ -48,7 +48,7 @@
     <?php endif; ?>
 </div>
 
-<?php $result = HubIndividual::getRelatedEmailIndividual($model); ?>
+<?php $result = HubIndividual::getRelatedEmailIndividuals($model); ?>
 <?php if (!empty($result)): ?>
 <div class="row">
     <div class="col col-xs-12 margin-top-3x"> 

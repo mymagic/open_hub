@@ -307,4 +307,25 @@ class JourneyModule extends WebModule
 
 		return $notices;
 	}
+
+	public function getMemberViewTabs($model, $realm = 'backend')
+	{
+		$tabs = array();
+		if ($realm == 'backend') {
+			if (Yii::app()->user->accessBackend) {
+				$tabs['organization'][] = array(
+					'key' => 'organization',
+					'title' => 'Organization',
+					'viewPath' => 'modules.journey.views.backend._view-member-organization',
+				);
+				$tabs['individual'][] = array(
+					'key' => 'individual',
+					'title' => 'Individual',
+					'viewPath' => 'modules.journey.views.backend._view-member-individual',
+				);
+			}
+		}
+
+		return $tabs;
+	}
 }
