@@ -7,7 +7,12 @@ return array(
 
 	'modules' => array(
 		'journey' => array(
-			'emailTeam' => ''
+			'emailTeam' => '',
+			'modelBehaviors' => array(
+				'Member' => array(
+					'class' => 'application.modules.journey.components.JourneyMemberBehavior',
+				),
+			)
 		),
 	),
 );

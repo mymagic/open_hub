@@ -411,6 +411,42 @@ class HubOrganization
 		);
 	}
 
+	// return a list of related organizations matched by emails (verified and link to individual profile) and is not currently linked to the individual
+	public static function getRelatedEmailOrganizations($individual)
+	{
+		// get all individual2Emails from individual
+		foreach ($individual->individual2Emails as $individual2Email) {
+			// find organizations that matching these emails
+			$organizations = self::getOrganizationsByEmail($individual2Email->user_email);
+			if (!empty($organizations)) {
+				// $result[$individual2Email->user_email] = $organizations;
+				// loop thru the list of organizations
+				foreach ($organizations as $organization) {
+					// if organization is not linked to individual, add to result
+					if (!$organization->isIndividualLinked($individual)) {
+						$result[$individual2Email->user_email][] = $organization;
+					}
+				}
+			}
+		}
+
+		$return = $result;
+
+		return $return;
+	}
+
+	// only the approved one is return
+	public static function getOrganizationsByEmail($userEmail)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->select = 't.*';
+		$criteria->join = 'LEFT JOIN `organization2email` AS `o2e` ON t.id = o2e.organization_id';
+		$criteria->addCondition('o2e.user_email LIKE :userEmail AND o2e.status="approve"');
+		$criteria->params[':userEmail'] = $userEmail;
+
+		return Organization::model()->findAll($criteria);
+	}
+
 	// pass in keyword of the organization title, email of the owner
 	// return list of organizations where title matching, and is joinable by the email provided, limit to 10
 	public static function getUserOrganizationsCanJoin($keyword, $email)

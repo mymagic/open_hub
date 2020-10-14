@@ -49,4 +49,18 @@ class HubMember
 
 		return array('status' => $status, 'msg' => $msg, 'data' => $data);
 	}
+
+	// get individual thru email
+	// only the verified one is return
+	public function getIndividuals($member)
+	{
+		return HubIndividual::getIndividualsByEmail($member->username);
+	}
+
+	// get organization thru email
+	// only approved organizations are return
+	public function getOrganizations($member)
+	{
+		return HubOrganization::getUserActiveOrganizations($member->username);
+	}
 }

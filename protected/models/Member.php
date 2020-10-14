@@ -69,7 +69,7 @@ class Member extends MemberBase
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-			'portfolio' => array(self::HAS_ONE, 'Portfolio', array('user_id' => 'user_id')),
+			// 'portfolio' => array(self::HAS_ONE, 'Portfolio', array('user_id' => 'user_id')),
 		);
 	}
 

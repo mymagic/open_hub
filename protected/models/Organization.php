@@ -1206,6 +1206,19 @@ class Organization extends OrganizationBase
 		return $return;
 	}
 
+	public function isIndividualLinked($individual)
+	{
+		if (!empty($this->individualOrganizations)) {
+			foreach ($this->individualOrganizations as $eo) {
+				if ($eo->individual_id == $individual->id) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public function hasNoIndividualOrganization($individualId, $asRoleCode)
 	{
 		$key = sprintf('%s-%s', $individualId, $asRoleCode);

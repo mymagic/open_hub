@@ -4,6 +4,8 @@
 - completed #38 [f7] add tabular field 
 - added audit trail for default functionality like admin, member, organization, individual, country, state, city, cluster, industry, impact, legalForm, persona, sdg, startupStage, embed, event, eventGroup, eventOwner, milestone
 - added classification master data to organization
+- added #40: in backend, member page has individual tab displaying how many individual profile linked to a specific member
+- added #41: in backend, member page has organization tab displaying how many organization profile linked to a specific member
 
 ## 0.5.218
 - fixed #32: Saving individual model will trigger error repository() not found 
