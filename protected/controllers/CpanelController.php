@@ -49,7 +49,7 @@ class CpanelController extends Controller
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
 			),
-			array('allow', 'actions' => array('verifyUser2Email')),
+			array('allow', 'actions' => array('verifyUser2Email', 'cancelUser2Email')),
 			array(
 				'deny',  // deny all users
 				'users' => array('*'),
@@ -250,6 +250,8 @@ class CpanelController extends Controller
 		$user = $model->user;
 		$copy = clone $model;
 		if ($model->delete()) {
+			// todo: esLog
+
 			// todo
 			// notify the email about his access to this individual
 			//$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($copy);
@@ -264,12 +266,45 @@ class CpanelController extends Controller
 	// todo
 	public function actionResendLinkEmailVerification()
 	{
+		// todo: esLog
 	}
 
-	// todo
+	//
 	public function actionVerifyUser2Email($email, $key)
 	{
-		echo sprintf('%s-%s', $email, $key);
+		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'verification_key' => $key, 'is_verify' => 0));
+			if ($model === null) {
+				Notice::page(Yii::t('cpanel', 'Unmatched verification details'));
+			}
+
+			$model->is_verify = 1;
+			if ($model->save()) {
+				// todo: esLog
+
+				Notice::page(Yii::t('cpanel', "Successfully verified and linked email '{email}' to your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
+	}
+
+	public function actionCancelUser2Email($email, $key)
+	{
+		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'delete_key' => $key));
+			if ($model === null) {
+				Notice::page(Yii::t('cpanel', 'Unmatched details'));
+			}
+
+			$copy = clone $model;
+			if ($model->delete()) {
+				// todo: esLog
+				Notice::page(Yii::t('cpanel', "Successfully unlinked email '{email}' from your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
 	}
 
 	public function actionAddEmail()
@@ -291,11 +326,15 @@ class CpanelController extends Controller
 				Notice::flash(Yii::t('notice', "You are not allowed to add '{email}' identical to your user account", ['{email}' => $model->user_email]), Notice_ERROR);
 			} else {
 				if ($model->save()) {
-					// todo: send verification email
+					// send verification email
+					$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
+					HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
 
-					Notice::flash(Yii::t('notice', "Successfully added email '{email}' to user '{username}'. Please check for email to verify it.", ['{email}' => $model->user_email, '{username}' => $user->username]), Notice_SUCCESS);
+					// todo: esLog
+
+					Notice::flash(Yii::t('notice', "Successfully added email '{email}' to your user account. Please check for email to verify it.", ['{email}' => $model->user_email, '{username}' => $user->username]), Notice_SUCCESS);
 				} else {
-					Notice::flash(Yii::t('notice', "Failed to add email '{email}' to user '{username}'", ['{email}' => $model->user_email, '{username}' => $model->username]), Notice_ERROR);
+					Notice::flash(Yii::t('notice', "Failed to add email '{email}' to your user account", ['{email}' => $model->user_email, '{username}' => $model->username]), Notice_ERROR);
 				}
 			}
 		}

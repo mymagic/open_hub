@@ -39,6 +39,22 @@ class NotifyMaker
 		return $return;
 	}
 
+	public static function member_user_linkUserEmail($user, $user2email)
+	{
+		$return['title'] = Yii::t('notify', 'Please verify this email address');
+		$return['message'] = Yii::t('notify', 'Please verify this email address.');
+
+		$params['email'] = $user2email->user_email;
+		$params['username'] = $user->username;
+		$params['urlVerify'] = Yii::app()->createAbsoluteUrl('/cpanel/verifyUser2Email', array('email' => $user2email->user_email, 'key' => $user2email->verification_key));
+		$params['urlDelete'] = Yii::app()->createAbsoluteUrl('/cpanel/cancelUser2Email', array('email' => $user2email->user_email, 'key' => $user2email->delete_key));
+
+		// always start with views folder
+		$return['content'] = HUB::renderPartial('/emails/_user_linkUserEmail', $params, true);
+
+		return $return;
+	}
+
 	//
 	// mentor
 	// to mentor
