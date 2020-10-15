@@ -43,11 +43,13 @@ class CpanelController extends Controller
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
 					'test', 'activity', 'getTimeline', 'profile', 'organization',
-					'changePassword'
+					'changePassword',
+					'manageEmails', 'addEmail', 'getUser2Emails', 'deleteUser2Email', 'resendLinkEmailVerification'
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
 			),
+			array('allow', 'actions' => array('verifyUser2Email')),
 			array(
 				'deny',  // deny all users
 				'users' => array('*'),
@@ -88,7 +90,7 @@ class CpanelController extends Controller
 			throw new CException(Yii::t('app', 'You must login to update your password.'));
 		}
 
-		if (Yii::app()->params['authAdapter']!='local') {
+		if (Yii::app()->params['authAdapter'] != 'local') {
 			throw new CException(Yii::t('app', 'You not allowed to update your password.'));
 		}
 
@@ -102,17 +104,17 @@ class CpanelController extends Controller
 
 		if (isset($_POST['User'])) {
 			$model->attributes = $_POST['User'];
-			
+
 			$model->validate();
-			
+
 			if (!empty($model->opassword) && !$model->matchPassword($model->opassword)) {
 				$model->addError('opassword', Yii::t('app', 'Please insert the correct current password'));
 			}
 
-			if(empty($model->getErrors())) {
+			if (empty($model->getErrors())) {
 				$model->password = $model->npassword;
-				
-				if($model->save(false)) {
+
+				if ($model->save(false)) {
 					Yii::app()->esLog->log(sprintf("password changed for username: '%s'", $model->username), 'user', array('trigger' => 'CpanelController::actionChangePassword', 'model' => 'User', 'action' => 'changePassword', 'id' => $model->id, 'userId' => $model->id));
 
 					$this->redirect('profile');
@@ -136,15 +138,13 @@ class CpanelController extends Controller
 
 		$modelIndividual = Individual::getIndividualByEmail(Yii::app()->user->username);
 		if ($modelIndividual === null) {
-
-			if(Yii::app()->params['authAdapter'] == 'connect') {
+			if (Yii::app()->params['authAdapter'] == 'connect') {
 				$account = $this->magicConnect->getUser($_COOKIE['x-token-access'], $_COOKIE['x-token-refresh'], Yii::app()->params['connectClientId'], Yii::app()->params['connectSecretKey']);
 				$fullname = $account->firstname . ' ' . $account->lastname;
-			}
-			else { 
+			} else {
 				// if using local authAdapter, check for social login first
 				$userSocial = UserSocial::model()->findByAttributes(['username' => Yii::app()->user->username]);
-				if($userSocial!==null) {
+				if ($userSocial !== null) {
 					$account = $userSocial->jsonArray_socialParams;
 					$fullname = $account->firstName . ' ' . $account->lastName;
 				}
@@ -152,15 +152,15 @@ class CpanelController extends Controller
 
 			$gender = null;
 
-			if(!empty($account)) {
+			if (!empty($account)) {
 				if ($account->gender === 'M') {
 					$gender = 'male';
 				} elseif ($account->gender === 'F') {
 					$gender = 'female';
 				}
 			}
-			
-			if(!isset($fullname)) {
+
+			if (!isset($fullname)) {
 				$fullname = $model->profile->full_name;
 			}
 
@@ -210,6 +210,97 @@ class CpanelController extends Controller
 			'model' => $model,
 			'modelIndividual' => $modelIndividual
 		));
+	}
+
+	public function actionManageEmails()
+	{
+		if (Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must login first.'));
+		}
+
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->pageTitle = Yii::t('cpanel', 'Other emails');
+		$this->cpanelMenuInterface = 'cpanelNavSetting';
+		$this->activeMenuCpanel = 'email';
+
+		$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+		$this->render('manageEmails', array(
+			'model' => $user
+		));
+	}
+
+	public function actionGetUser2Emails($userId, $User2Emails_page = 0, $realm = 'backend')
+	{
+		$model['realm'] = $realm;
+		$model['list'] = HubMember::getUser2Emails($userId, $User2Emails_page);
+
+		Yii::app()->clientScript->scriptMap = array('jquery.min.js' => false);
+		$this->renderPartial('_getUser2Emails', $model, false, true);
+	}
+
+	public function actionDeleteUser2Email($id, $realm = 'cpanel')
+	{
+		$model = HubMember::getUser2Email($id);
+
+		if ($model->user->username != Yii::app()->user->username) {
+			Notice::page(Yii::t('notice', 'Invalid Access'));
+		}
+
+		$user = $model->user;
+		$copy = clone $model;
+		if ($model->delete()) {
+			// todo
+			// notify the email about his access to this individual
+			//$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($copy);
+			//HUB::sendEmail($copy->user_email, $copy->user_email, $notifMaker['title'], $notifMaker['content']);
+		}
+
+		Notice::flash(Yii::t('notice', "Successfully unlinked email '{email}' from user '{username}'", ['{email}' => $copy->user_email, '{username}' => $copy->user->username]), Notice_SUCCESS);
+
+		$this->redirect(array('cpanel/manageEmails'));
+	}
+
+	// todo
+	public function actionResendLinkEmailVerification()
+	{
+	}
+
+	// todo
+	public function actionVerifyUser2Email($email, $key)
+	{
+		echo sprintf('%s-%s', $email, $key);
+	}
+
+	public function actionAddEmail()
+	{
+		$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+		$model = new User2Email;
+
+		if (isset($_POST['User2Email'])) {
+			$model->attributes = $_POST['User2Email'];
+			$model->user_id = $user->id;
+			$model->user_email = trim($model->user_email);
+			$model->is_verify = 0;
+			$model->verification_key = sha1(rand());
+			$model->delete_key = sha1(rand());
+
+			// user cannot add same email to the user account
+			if ($model->user_email == $user->username) {
+				Notice::flash(Yii::t('notice', "You are not allowed to add '{email}' identical to your user account", ['{email}' => $model->user_email]), Notice_ERROR);
+			} else {
+				if ($model->save()) {
+					// todo: send verification email
+
+					Notice::flash(Yii::t('notice', "Successfully added email '{email}' to user '{username}'. Please check for email to verify it.", ['{email}' => $model->user_email, '{username}' => $user->username]), Notice_SUCCESS);
+				} else {
+					Notice::flash(Yii::t('notice', "Failed to add email '{email}' to user '{username}'", ['{email}' => $model->user_email, '{username}' => $model->username]), Notice_ERROR);
+				}
+			}
+		}
+
+		$this->redirect('manageEmails');
 	}
 
 	public function actionSetUserService()

@@ -63,4 +63,51 @@ class HubMember
 	{
 		return HubOrganization::getUserActiveOrganizations($member->username);
 	}
+
+	public static function getUser2Email($id)
+	{
+		$model = User2Email::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested data does not exist.');
+		}
+
+		return $model;
+	}
+
+	public static function getUser2EmailUserId($userId, $userEmail)
+	{
+		$model = User2Email::model()->findByAttributes(array('user_id' => $userId, 'user_email' => $userEmail));
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested data does not exist.');
+		}
+
+		return $model->id;
+	}
+
+	public static function getUser2Emails($userId, $pagi = '')
+	{
+		$pagi['auto'] = isset($pagi['auto']) ? $pagi['auto'] : false;
+		$pagi['currentPage'] = isset($pagi['currentPage']) ? $pagi['currentPage'] : 0;
+		$pagi['pageSize'] = isset($pagi['pageSize']) ? $pagi['pageSize'] : 10;
+
+		$criteria = new CDbCriteria();
+		$criteria->compare('user_id', $userId);
+
+		if ($pagi['auto'] == false) {
+			$pagination = array('pageSize' => $pagi['pageSize'], 'currentPage' => $pagi['currentPage'], 'validateCurrentPage' => false);
+		}
+
+		$dataProvider = new CActiveDataProvider('User2Email', array(
+			'criteria' => $criteria,
+			'sort' => array('defaultOrder' => 't.date_added DESC'),
+			'pagination' => $pagination,
+		));
+
+		return array(
+			'model' => $dataProvider->getData(),
+			'dataProvider' => $dataProvider,
+			'totalItemCount' => intval($dataProvider->totalItemCount),
+			'pages' => $dataProvider->pagination,
+		);
+	}
 }
