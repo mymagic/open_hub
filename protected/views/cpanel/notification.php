@@ -6,22 +6,83 @@ $this->breadcrumbs = array(
 
 <section>
     <div class="px-8 py-6 shadow-panel" id="vue-manageUserEmailSubscription">
-        <h2>Notifications</h2>
-        <p>We’ll always let you know about important changes, but you pick what else you want to hear about</p>
-        <br>
-        <?php foreach ($lists as $list) : ?>
+        <h2><?php echo Yii::t('app', 'Notifications') ?></h2>
+        <p><?php echo Yii::t('app', 'We’ll always let you know about important changes, but you pick what else you want to hear about') ?></p>
 
-            <div class="flex items-center mailchimpListItem" data-list-id="<?php echo $list['id'] ?>">
+        <?php if (!empty($masterNewsletter)):?>
+        <div class="flex items-center mailchimpListItem margin-top-lg margin-bottom-lg" data-list-id="<?php echo $masterNewsletter['id'] ?>">
 
-                <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $list['id'] ?>', $event)" /></span>
+            <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $masterNewsletter['id'] ?>', $event)" /></span>
 
-                <div class="ml-4">
-                    <b><?php echo $list['name'] ?></b><br>
-                    <p><?php echo $list['permission_reminder'] ?></p>
-                </div>
+            <div class="ml-4">
+                <b><?php echo $masterNewsletter['name'] ?></b><br>
+                <p><?php echo $masterNewsletter['permission_reminder'] ?></p>
             </div>
 
-        <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (Yii::app()->params['newsletterShowPublic'] || Yii::app()->params['newsletterShowPrivate']): ?>
+        <ul class="nav nav-tabs">
+            <?php if (Yii::app()->params['newsletterShowPublic']): ?>
+            <li role="presentation" class="active"><a data-toggle="tab" href="#tab-public"><?php echo Yii::t('app', 'Public') ?></a></li>
+            <?php endif; ?>
+            <?php if (Yii::app()->params['newsletterShowPrivate']): ?>
+            <li role="presentation" class="<?php echo (!Yii::app()->params['newsletterShowPublic']) ? 'active' : '' ?>"><a data-toggle="tab" href="#tab-private"><?php echo Yii::t('app', 'Private') ?></a></li>
+            <?php endif; ?>
+        </ul>
+        <div class="tab-content padding-top-lg">
+
+            <?php if (Yii::app()->params['newsletterShowPublic']): ?>
+            <div class="tab-pane fade <?php echo (Yii::app()->params['newsletterShowPublic']) ? 'in active' : '' ?>" id="tab-public">
+                <?php if (!empty($publicNewsletters)): ?>
+                <?php foreach ($publicNewsletters as $list) : ?>
+
+                    <div class="flex items-center mailchimpListItem border-bottom margin-bottom-md" data-list-id="<?php echo $list['id'] ?>">
+
+                        <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $list['id'] ?>', $event)" /></span>
+
+                        <div class="ml-4">
+                            <b><?php echo $list['name'] ?></b><br>
+                            <p><?php echo $list['permission_reminder'] ?></p>
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (Yii::app()->params['newsletterShowPrivate']): ?>
+            <div class="tab-pane fade <?php echo (!Yii::app()->params['newsletterShowPublic']) ? 'in active' : '' ?>" id="tab-private">
+                <?php if (!empty($privateNewsletters)): ?>
+                <?php foreach ($privateNewsletters as $list) : ?>
+
+                    <div class="flex items-center mailchimpListItem border-bottom margin-bottom-md" data-list-id="<?php echo $list['id'] ?>">
+
+                        <span class="pull-right"><?php echo Html::faIcon('fa fa-spinner fa-spin') ?><input type="checkbox" class="checkbox-subscribe" disabled="disabled" @click="toggleSubscriptionStatus('<?php echo $list['id'] ?>', $event)" /></span>
+
+                        <div class="ml-4">
+                            <b><?php echo $list['name'] ?></b><br>
+                            <p><?php echo $list['permission_reminder'] ?></p>
+                        </div>
+                    </div>
+
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        
+        
+    </div>
+    
 
 </section>
 
