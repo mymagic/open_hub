@@ -604,7 +604,7 @@ class HubForm
                 <i class="fa fa-link"></i>
             </div>
             <input %s type="url" style="%s" class="form-control %s" value="%s" id="%s" name="%s" %s placeholder="%s" />
-        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['text']);
+        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['placeholder']);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
