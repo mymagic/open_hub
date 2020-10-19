@@ -111,6 +111,8 @@ return array(
 
 	'mailchimpApiKey' => getenv('MAILCHIMP_API_KEY', '0000'),
 	'mailchimpLists' => envKeySplit(getenv('MAILCHIMP_LISTS', '')),
+	'newsletterShowPublic' => filter_var(getenv('NEWSLETTER_SHOW_PUBLIC', true), FILTER_VALIDATE_BOOLEAN),
+	'newsletterShowPrivate' => filter_var(getenv('NEWSLETTER_SHOW_PRIVATE', false), FILTER_VALIDATE_BOOLEAN),
 
 	'piwikTrackerUrl' => getenv('PIWIK_TRACKER_URL', '//domain.tld/piwik/'),
 	'piwikTokenAuth' => getenv('PIWIK_TOKEN_AUTH', '0000'),

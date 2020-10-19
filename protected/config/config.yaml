@@ -1121,11 +1121,31 @@ defaultModules:
                 env: MAILCHIMP_LISTS
                 title: Mailchimp List
                 hint: List of Mailchimp newsletter subscription group to highlight in member control panel. In format of key:value
-                example: magicNewsletter:a99abcd123
+                example: masterNewsletter:a99abcd123
                 default:
                 datatype: string
                 datatype_value:
                 getter: "urldecode(http_build_query(Yii::app()->params['mailchimpLists'], '', ';'));"
+            -   var: params.newsletterShowPublic
+                file: params.php
+                env: NEWSLETTER_SHOW_PUBLIC
+                title: Show Public Newsletter List
+                hint: List of public Mailchimp newsletter subscription group in member control panel.
+                example: 
+                default:
+                datatype: boolean
+                datatype_value:
+                getter: "Yii::app()->params['newsletterShowPublic'];"
+            -   var: params.newsletterShowPrivate
+                file: params.php
+                env: NEWSLETTER_SHOW_PRIVATE
+                title: Show Private Newsletter List
+                hint: List of private Mailchimp newsletter subscription group in member control panel.
+                example: 
+                default:
+                datatype: boolean
+                datatype_value:
+                getter: "Yii::app()->params['newsletterShowPrivate'];"
         -   key: esLog
             title: "Elastic Search Audit Log"
             items:
