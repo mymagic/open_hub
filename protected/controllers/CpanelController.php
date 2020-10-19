@@ -292,6 +292,7 @@ class CpanelController extends Controller
 	{
 		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
 			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'verification_key' => $key, 'is_verify' => 0));
+			;
 			if ($model === null) {
 				Notice::page(Yii::t('cpanel', 'Unmatched verification details'));
 			}
