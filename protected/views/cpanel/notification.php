@@ -22,12 +22,19 @@ $this->breadcrumbs = array(
         </div>
         <?php endif; ?>
 
+        <?php if (Yii::app()->params['newsletterShowPublic'] || Yii::app()->params['newsletterShowPrivate']): ?>
         <ul class="nav nav-tabs">
+            <?php if (Yii::app()->params['newsletterShowPublic']): ?>
             <li role="presentation" class="active"><a data-toggle="tab" href="#tab-public"><?php echo Yii::t('app', 'Public') ?></a></li>
-            <li role="presentation"><a data-toggle="tab" href="#tab-private"><?php echo Yii::t('app', 'Private') ?></a></li>
+            <?php endif; ?>
+            <?php if (Yii::app()->params['newsletterShowPrivate']): ?>
+            <li role="presentation" class="<?php echo (!Yii::app()->params['newsletterShowPublic']) ? 'active' : '' ?>"><a data-toggle="tab" href="#tab-private"><?php echo Yii::t('app', 'Private') ?></a></li>
+            <?php endif; ?>
         </ul>
         <div class="tab-content padding-top-lg">
-            <div class="tab-pane fade in active" id="tab-public">
+
+            <?php if (Yii::app()->params['newsletterShowPublic']): ?>
+            <div class="tab-pane fade <?php echo (Yii::app()->params['newsletterShowPublic']) ? 'in active' : '' ?>" id="tab-public">
                 <?php if (!empty($publicNewsletters)): ?>
                 <?php foreach ($publicNewsletters as $list) : ?>
 
@@ -46,7 +53,10 @@ $this->breadcrumbs = array(
                     <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
                 <?php endif; ?>
             </div>
-            <div class="tab-pane fade" id="tab-private">
+            <?php endif; ?>
+
+            <?php if (Yii::app()->params['newsletterShowPrivate']): ?>
+            <div class="tab-pane fade <?php echo (!Yii::app()->params['newsletterShowPublic']) ? 'in active' : '' ?>" id="tab-private">
                 <?php if (!empty($privateNewsletters)): ?>
                 <?php foreach ($privateNewsletters as $list) : ?>
 
@@ -65,7 +75,9 @@ $this->breadcrumbs = array(
                     <?php echo Notice::inline(Yii::t('app', 'No newsletter found here.')) ?>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
         </div>
+        <?php endif; ?>
 
         
         
