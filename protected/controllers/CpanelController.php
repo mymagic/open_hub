@@ -264,9 +264,27 @@ class CpanelController extends Controller
 	}
 
 	// todo
-	public function actionResendLinkEmailVerification()
+	public function actionResendLinkEmailVerification($email)
 	{
-		// todo: esLog
+		if (YsUtil::isEmailAddress($email)) {
+			$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email));
+
+			if (!empty($model)) {
+				// todo: esLog
+
+				// send verification email
+				$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
+				HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
+
+				Notice::page(Yii::t('cpanel', "Successfully resend verification email to link '{email}' to your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			} else {
+				Notice::page(Yii::t('cpanel', 'Invalid access'));
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
 	}
 
 	//
