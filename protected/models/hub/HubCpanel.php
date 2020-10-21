@@ -67,8 +67,16 @@ class HubCpanel
 							'label' => Yii::t('app', 'Change Password'),
 							'url' => Yii::app()->createUrl('/cpanel/changePassword'),
 							'active' => $controller->activeMenuCpanel == 'changePassword' ? true : false,
-							'visible' => Yii::app()->params['authAdapter']=='local',
+							'visible' => Yii::app()->params['authAdapter'] == 'local',
 							'icon' => 'fa-key'
+						),
+						array(
+							'label' => Yii::t('app', 'Other Emails'),
+							'url' => '/setting/email',
+							'url' => Yii::app()->createUrl('/cpanel/manageEmails'),
+							'active' => $controller->activeMenuCpanel == 'email' ? true : false,
+							'visible' => true,
+							'icon' => 'fa-envelope'
 						),
 						array(
 							'label' => Yii::t('app', 'Notification'),

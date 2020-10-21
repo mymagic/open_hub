@@ -52,6 +52,7 @@ class MemberController extends Controller
 				// 'expression' => '$user->isSuperAdmin==true || $user->isMemberManager==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
+			array('allow', 'actions' => array('getUser2Emails', 'users' => array('@'))),
 			array('deny',  // deny all users
 				'users' => array('*'),
 			),
@@ -293,6 +294,18 @@ class MemberController extends Controller
 			'tabs' => $tabs,
 			'user' => $user,
 		));
+	}
+
+	public function actionGetUser2Emails($userId, $User2Emails_page = 0, $realm = 'backend')
+	{
+		if ($realm == 'cpanel' && $userId != Yii::app()->user->id) {
+			echo Yii::t('app', 'Invalid Access');
+		}
+		$model['realm'] = $realm;
+		$model['list'] = HubMember::getUser2Emails($userId, $User2Emails_page);
+
+		Yii::app()->clientScript->scriptMap = array('jquery.min.js' => false);
+		$this->renderPartial('_getUser2Emails', $model, false, true);
 	}
 
 	public function actionResetPassword($id)

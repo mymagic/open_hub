@@ -43,11 +43,13 @@ class CpanelController extends Controller
 					'terminateAccount', 'terminateConfirmed',
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
 					'test', 'activity', 'getTimeline', 'profile', 'organization',
-					'changePassword'
+					'changePassword',
+					'manageEmails', 'addEmail',  'deleteUser2Email', 'resendLinkEmailVerification'
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
 			),
+			array('allow', 'actions' => array('verifyUser2Email', 'cancelUser2Email')),
 			array(
 				'deny',  // deny all users
 				'users' => array('*'),
@@ -208,6 +210,147 @@ class CpanelController extends Controller
 			'model' => $model,
 			'modelIndividual' => $modelIndividual
 		));
+	}
+
+	public function actionManageEmails()
+	{
+		if (Yii::app()->user->isGuest) {
+			throw new CException(Yii::t('app', 'You must login first.'));
+		}
+
+		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->pageTitle = Yii::t('cpanel', 'Other emails');
+		$this->cpanelMenuInterface = 'cpanelNavSetting';
+		$this->activeMenuCpanel = 'email';
+
+		$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+		$this->render('manageEmails', array(
+			'model' => $user,
+			'realm' => 'cpanel'
+		));
+	}
+
+	public function actionDeleteUser2Email($id, $realm = 'cpanel')
+	{
+		$model = HubMember::getUser2Email($id);
+
+		if ($model->user->username != Yii::app()->user->username) {
+			Notice::page(Yii::t('notice', 'Invalid Access'));
+		}
+
+		$user = $model->user;
+		$copy = clone $model;
+		if ($model->delete()) {
+			// todo: esLog
+
+			// todo
+			// notify the email about his access to this individual
+			//$notifMaker = NotifyMaker::user_hub_revokeEmailAccess($copy);
+			//HUB::sendEmail($copy->user_email, $copy->user_email, $notifMaker['title'], $notifMaker['content']);
+		}
+
+		Notice::flash(Yii::t('notice', "Successfully unlinked email '{email}' from user '{username}'", ['{email}' => $copy->user_email, '{username}' => $copy->user->username]), Notice_SUCCESS);
+
+		$this->redirect(array('cpanel/manageEmails'));
+	}
+
+	// todo
+	public function actionResendLinkEmailVerification($email)
+	{
+		if (YsUtil::isEmailAddress($email)) {
+			$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email));
+
+			if (!empty($model)) {
+				// todo: esLog
+
+				// send verification email
+				$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
+				HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
+
+				Notice::page(Yii::t('cpanel', "Successfully resend verification email to link '{email}' to your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			} else {
+				Notice::page(Yii::t('cpanel', 'Invalid access'));
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
+	}
+
+	//
+	public function actionVerifyUser2Email($email, $key)
+	{
+		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'verification_key' => $key, 'is_verify' => 0));
+			;
+			if ($model === null) {
+				Notice::page(Yii::t('cpanel', 'Unmatched verification details'));
+			}
+
+			$model->is_verify = 1;
+			if ($model->save()) {
+				// todo: esLog
+
+				Notice::page(Yii::t('cpanel', "Successfully verified and linked email '{email}' to your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
+	}
+
+	public function actionCancelUser2Email($email, $key)
+	{
+		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'delete_key' => $key));
+			if ($model === null) {
+				Notice::page(Yii::t('cpanel', 'Unmatched details'));
+			}
+
+			$copy = clone $model;
+			if ($model->delete()) {
+				// todo: esLog
+				Notice::page(Yii::t('cpanel', "Successfully unlinked email '{email}' from your user account.", array('{email}' => $email)), Notice_SUCCESS);
+			}
+		} else {
+			Notice::page(Yii::t('cpanel', 'Invalid verification details'));
+		}
+	}
+
+	public function actionAddEmail()
+	{
+		$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
+
+		$model = new User2Email;
+
+		if (isset($_POST['User2Email'])) {
+			$model->attributes = $_POST['User2Email'];
+			$model->user_id = $user->id;
+			$model->user_email = trim($model->user_email);
+			$model->is_verify = 0;
+			$model->verification_key = sha1(rand());
+			$model->delete_key = sha1(rand());
+
+			// user cannot add same email to the user account
+			if ($model->user_email == $user->username) {
+				Notice::flash(Yii::t('notice', "You are not allowed to add '{email}' identical to your user account", ['{email}' => $model->user_email]), Notice_ERROR);
+			} else {
+				if ($model->save()) {
+					// send verification email
+					$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
+					HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
+
+					// todo: esLog
+
+					Notice::flash(Yii::t('notice', "Successfully added email '{email}' to your user account. Please check for email to verify it.", ['{email}' => $model->user_email, '{username}' => $user->username]), Notice_SUCCESS);
+				} else {
+					Notice::flash(Yii::t('notice', "Failed to add email '{email}' to your user account", ['{email}' => $model->user_email, '{username}' => $model->username]), Notice_ERROR);
+				}
+			}
+		}
+
+		$this->redirect('manageEmails');
 	}
 
 	public function actionSetUserService()

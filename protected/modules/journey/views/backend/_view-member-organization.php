@@ -5,7 +5,7 @@
         <p><?php echo Yii::t('backend', "Member '{name}' has access to the following organization profiles", array('{name}' => $member->user->profile->full_name))?></p>
     </div>
 </div>
-<div class="row">
+<div class="row container-flex">
     <?php $organizations = HubMember::getOrganizations($member); if (!empty($organizations)): ?>
     <?php foreach ($organizations as $organization):?>
         <?php if (!$organization->is_active) {

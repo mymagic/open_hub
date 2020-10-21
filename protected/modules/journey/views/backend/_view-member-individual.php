@@ -5,7 +5,7 @@
         <p><?php echo Yii::t('backend', "Member '{name}' email '{email}' is associated to the following individual profiles", array('{name}' => $member->user->profile->full_name, '{email}' => $member->user->username))?></p>
     </div>
 </div>
-<div class="row">
+<div class="row container-flex">
     <?php $individuals = HubMember::getIndividuals($member); if (!empty($individuals)): ?>
     <?php foreach ($individuals as $individual):?>
         <?php if (!$individual->is_active) {

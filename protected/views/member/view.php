@@ -106,6 +106,34 @@ $this->menu = array(
 		</div>
 		<!-- /profile -->
 
+		<!-- user2email -->
+		<div class="panel panel-default">
+			<div class="panel-heading"><h3 class="panel-title">Other Emails</h3></div>
+			<div class="panel-body">
+				<div class="form"></div>
+
+				<p class="text-muted">
+				<?php echo Yii::t('app', 'Only members themeselves are allowed to manage own email linkages thru Member Control Panel') ?>
+				</p>
+
+				<hr />
+				<div class="row text-muted">
+                    <div class="col-xs-3"><span><?php echo Yii::t('cpanel', 'Legend') ?>:</span></div>
+                    <div class="col-xs-5 text-center"><span class="text-info"><?php echo Html::faIcon('fa-circle-o') ?></span> <small><?php echo Yii::t('cpanel', 'Pending for verfication') ?></small></div>
+                    <div class="col-xs-4 text-center"><span class="text-success"><?php echo Html::faIcon('fa-check-circle') ?></span> <small><?php echo Yii::t('cpanel', 'Verified') ?></small></div>
+                </div>
+			</div>
+		</div>
+
+		<div id="section-user2Emails" class="margin-bottom-3x">
+			<span class="text-muted"><?php echo Html::faIcon('fa-spinner fa-spin') ?> Loading...</span>
+		</div>
+		
+		<?php Yii::app()->clientScript->registerScript(
+						'backend-member-view',
+			sprintf("$('#section-user2Emails').load('%s', function(){});", $this->createAbsoluteUrl('member/getUser2Emails', array('userId' => $model->user_id, 'realm' => $realm)))
+		); ?>
+		<!-- /user2email -->
 
 	</div>
 
