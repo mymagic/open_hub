@@ -36,7 +36,7 @@
 
             <?php Yii::app()->clientScript->registerScript(
 					'cpanel-manageEmails',
-				sprintf("$('#section-user2Emails').load('%s', function(){});", $this->createUrl('cpanel/getUser2Emails', array('userId' => $model->id, 'realm' => $realm)))
+				sprintf("$('#section-user2Emails').load('%s', function(){});", $this->createUrl('member/getUser2Emails', array('userId' => $model->id, 'realm' => $realm)))
 			); ?>
             
         </div>

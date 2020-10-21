@@ -44,7 +44,7 @@ class CpanelController extends Controller
 					'notification', 'toggleSubscriptionStatus', 'getSubscriptionStatus',
 					'test', 'activity', 'getTimeline', 'profile', 'organization',
 					'changePassword',
-					'manageEmails', 'addEmail', 'getUser2Emails', 'deleteUser2Email', 'resendLinkEmailVerification'
+					'manageEmails', 'addEmail',  'deleteUser2Email', 'resendLinkEmailVerification'
 				),
 				'users' => array('@'),
 				'expression' => '$user->accessCpanel===true',
@@ -226,17 +226,9 @@ class CpanelController extends Controller
 		$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
 
 		$this->render('manageEmails', array(
-			'model' => $user
+			'model' => $user,
+			'realm' => 'cpanel'
 		));
-	}
-
-	public function actionGetUser2Emails($userId, $User2Emails_page = 0, $realm = 'backend')
-	{
-		$model['realm'] = $realm;
-		$model['list'] = HubMember::getUser2Emails($userId, $User2Emails_page);
-
-		Yii::app()->clientScript->scriptMap = array('jquery.min.js' => false);
-		$this->renderPartial('_getUser2Emails', $model, false, true);
 	}
 
 	public function actionDeleteUser2Email($id, $realm = 'cpanel')
