@@ -8,7 +8,7 @@ class m201015_024904_user2email extends CDbMigration
 			'id' => 'pk',
 			'user_id' => 'integer NOT NULL',
 			'user_email' => 'string NOT NULL',
-			'is_verified' => 'boolean NOT NULL DEFAULT 0',
+			'is_verify' => 'boolean NOT NULL DEFAULT 0',
 			'verification_key' => 'string NULL',
 			'delete_key' => 'string NULL',
 			'date_added' => 'integer',
@@ -17,7 +17,7 @@ class m201015_024904_user2email extends CDbMigration
 
 		$this->alterColumn('user2email', 'user_email', 'varchar(128) NOT NULL');
 
-		$this->createIndex('is_verified', 'user2email', 'is_verified', false);
+		$this->createIndex('is_verify', 'user2email', 'is_verify', false);
 		$this->createIndex('user2email-user_id-user_email', 'user2email', array('user_id', 'user_email'), true);
 
 		$this->addForeignKey('fk_user2email-user_id', 'user2email', 'user_id', 'user', 'id', 'CASCADE', 'CASCADE');
