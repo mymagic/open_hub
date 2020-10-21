@@ -142,9 +142,6 @@ class Access extends AccessBase
 						}
 					}
 				}
-				else {
-					return false;
-				}
 			}
 		}
 		return true;
