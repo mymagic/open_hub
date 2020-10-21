@@ -31,7 +31,7 @@
 		<?php echo $form->bsLabelEx2($model, 'event_code'); ?>
 		<div class="col-sm-10">
 			<?php if ($model->isNewRecord): ?>
-				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent'))) ?>
+				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'attribute' => 'event_code', 'data' => array($model->event_code => $model->event->title), 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent'))) ?>
 			<?php else: ?>
 				<?php $this->widget('application.components.widgets.EventSelector', array('form' => $form, 'model' => $model, 'data' => array($model->event_code => $model->event->title), 'attribute' => 'event_code', 'urlAjax' => $this->createUrl('eventOwner/ajaxEvent', array('id' => $model->id)))) ?>
 			<?php endif; ?>
