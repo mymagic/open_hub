@@ -108,6 +108,8 @@ class User extends UserBase
 			'profile' => array(self::HAS_ONE, 'Profile', 'user_id'),
 			'roles' => array(self::MANY_MANY, 'Role', 'role2user(user_id, role_id)'),
 			'sessions' => array(self::HAS_MANY, 'UserSession', 'user_id'),
+			'user2Emails' => array(self::HAS_MANY, 'User2Email', 'user_id'),
+			'verifiedUser2Emails' => array(self::HAS_MANY, 'User2Email', 'user_id', 'condition' => 'is_verify=1'),
 		);
 	}
 
@@ -530,16 +532,15 @@ class User extends UserBase
 
 	public function searchAssignedUsers()
 	{
-
- 		// @todo Please modify the following code to remove attributes that should not be searched.
+		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria = new CDbCriteria;
 		$criteria->with = ['roles' => ['together' => true]];
 
- 		$criteria->compare('roles.id', $this->id);
- 		$criteria->compare('username', $this->username, true);
+		$criteria->compare('roles.id', $this->id);
+		$criteria->compare('username', $this->username, true);
 
- 		return new CActiveDataProvider($this, array(
+		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
 		));
 	}

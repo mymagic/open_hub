@@ -3,8 +3,8 @@
 
 
 <div id="v-timeline">
-    <h2>Activity Feed</h2>
-    <p>Keeping track of your milestones and news of your selected services</p>
+    <h2><?php echo Yii::t('cpanel', 'Activity Feed') ?></h2>
+    <p><?php echo Yii::t('cpanel', 'Keeping track of your milestones and news of your selected services') ?></p>
 
     <div class="row">
         <div class="col-md-2">
@@ -31,8 +31,8 @@
             <div v-for="(timelineData, time) in timeline" :key="time">
                 <div class="vertical-timeline-content" v-for="(data, key) in timelineData" :key="key">
                     <h2>{{data.serviceTitle | capitalize}}</h2>
-                    <p>{{data.msg}}</p>
                     <a :href="data.actionUrl" class="btn btn-sm btn-primary" v-if="data.actionUrl">{{data.actionLabel}}</a>
+                    <p>{{data.msg}} <span v-if="data.email"><br /><small>{{data.email}}</small></span></p>
                     <span class="vertical-date">
                         <small>{{time}}</small>
                     </span>

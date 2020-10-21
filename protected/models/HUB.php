@@ -221,7 +221,7 @@ class HUB extends Component
 			$timestampEnd = mktime(0, 0, 0, 1, 1, $year + 1);
 
 			// filter all event by email to this year
-			$eventRegistrations = self::getAllEventRegistrationsByEmail($user, $timestampStart, $timestampEnd);
+			$eventRegistrations = self::getAllEventRegistrationsByEmail($user->username, $timestampStart, $timestampEnd);
 
 			foreach ($eventRegistrations as $er) {
 				$json['eventRegistrations'][$year][] = array(
@@ -1503,9 +1503,9 @@ class HUB extends Component
 		return HubEvent::syncEventToResource($dateStart, $dateEnd, $limit);
 	}
 
-	public static function getAllEventRegistrationsByEmail($user, $timestampStart, $timestampEnd)
+	public static function getAllEventRegistrationsByEmail($email, $timestampStart, $timestampEnd)
 	{
-		$sql = sprintf("SELECT er.* FROM event as e LEFT JOIN event_registration as er ON er.event_code=e.code WHERE e.is_active=1 AND e.is_cancelled=0 AND er.email='%s' AND e.date_started>=%s AND e.date_started <%s GROUP BY e.id ORDER BY e.date_started DESC", trim($user->username), $timestampStart, $timestampEnd);
+		$sql = sprintf("SELECT er.* FROM event as e LEFT JOIN event_registration as er ON er.event_code=e.code WHERE e.is_active=1 AND e.is_cancelled=0 AND er.email='%s' AND e.date_started>=%s AND e.date_started <%s GROUP BY e.id ORDER BY e.date_started DESC", trim($email), $timestampStart, $timestampEnd);
 
 		$eventRegistrations = EventRegistration::model()->findAllBySql($sql);
 
@@ -1576,7 +1576,8 @@ class HUB extends Component
 		$organizations = self::getActiveOrganizations($user->username, 'approve');
 
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getUserActFeed', sha1(json_encode(array('v4', $user->username, $pYear, $pServices, serialize($registeredServices)))));
+		$useCache = false;
+		$cacheId = sprintf('%s::%s-%s', 'HUB', 'getUserActFeed', sha1(json_encode(array('v5', $user->username, $pYear, $pServices, serialize($registeredServices)))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
 			// loop thru each available service
