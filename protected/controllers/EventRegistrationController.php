@@ -369,13 +369,15 @@ class EventRegistrationController extends Controller
 					continue;
 				}
 
-				$sql = 'INSERT INTO event_registration (event_id, event_code, event_vendor_code, date_registered, date_payment, full_name, email, is_attended, paid_fee, nationality, persona, phone, organization, date_added, date_modified) VALUES (:event_id, :event_code, :event_vendor_code, :date_registered, :date_payment, :full_name, :email, :is_attended, :paid_fee, :nationality, :persona, :phone, :organization, :date_added, :date_modified) ON DUPLICATE KEY UPDATE event_vendor_code=event_vendor_code, date_registered=date_registered, date_payment=date_payment, full_name=full_name, email=email, is_attended=is_attended, paid_fee=paid_fee, nationality=nationality, persona=persona, phone=phone, organization=organization, date_modified=date_modified';
+				if (!empty($row['B']) || !empty($row['C']) && $row['B'] != 'Email') {
+					$sql = 'INSERT INTO event_registration (event_id, event_code, event_vendor_code, date_registered, date_payment, full_name, email, is_attended, paid_fee, nationality, persona, phone, organization, date_added, date_modified) VALUES (:event_id, :event_code, :event_vendor_code, :date_registered, :date_payment, :full_name, :email, :is_attended, :paid_fee, :nationality, :persona, :phone, :organization, :date_added, :date_modified) ON DUPLICATE KEY UPDATE event_vendor_code=event_vendor_code, date_registered=date_registered, date_payment=date_payment, full_name=full_name, email=email, is_attended=is_attended, paid_fee=paid_fee, nationality=nationality, persona=persona, phone=phone, organization=organization, date_modified=date_modified';
 
-				$command = Yii::app()->db->createCommand($sql)->bindValues(
-					array(':event_id' => $event->id, ':event_code' => $event->code, ':event_vendor_code' => 'manual',
-					':full_name' => $row['C'], ':email' => $row['B'], ':is_attended' => $row['D'], ':paid_fee' => $row['E'], ':nationality' => $row['F'], ':persona' => $row['G'], ':phone' => $row['H'], ':organization' => $row['I'], ':date_registered' => strtotime($row['A']), ':date_payment' => strtotime($row['A']),
-					':date_added' => time(), ':date_modified' => time(), )
-				)->execute();
+					$command = Yii::app()->db->createCommand($sql)->bindValues(
+						array(':event_id' => $event->id, ':event_code' => $event->code, ':event_vendor_code' => 'manual',
+						':full_name' => $row['C'], ':email' => $row['B'], ':is_attended' => strval($row['D']), ':paid_fee' => $row['E'], ':nationality' => $row['F'], ':persona' => $row['G'], ':phone' => $row['H'], ':organization' => $row['I'], ':date_registered' => strtotime($row['A']), ':date_payment' => strtotime($row['A']),
+						':date_added' => time(), ':date_modified' => time())
+					)->execute();
+				}
 			}
 
 			Notice::page(

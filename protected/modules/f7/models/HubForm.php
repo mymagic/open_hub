@@ -219,6 +219,8 @@ class HubForm
 
 	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
+		$value = self::switchLanguage($value);
+
 		$htmlTag = null;
 		switch ($key) {
 			case 'section':
@@ -604,7 +606,7 @@ class HubForm
                 <i class="fa fa-link"></i>
             </div>
             <input %s type="url" style="%s" class="form-control %s" value="%s" id="%s" name="%s" %s placeholder="%s" />
-        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['placeholder']);
+        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['text']);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
@@ -2088,5 +2090,20 @@ class HubForm
 		}
 
 		return $cssClass;
+	}
+
+	// UPDATE: f7_multilingual
+	public static function switchLanguage($value)
+	{
+		$language = Yii::app()->language;
+
+		if(isset($language)){
+			// Check if empty before assignning. If empty, fallback to default values
+			$value['value']=$value['value-'.$language]?:$value['value'];
+			$value['text']=$value['text-'.$language]?:$value['text'];
+			$value['hint']=$value['hint-'.$language]?:$value['hint'];
+			$value['error']=$value['error-'.$language]?:$value['error'];
+		}
+		return $value;
 	}
 }

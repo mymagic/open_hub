@@ -662,9 +662,9 @@ class OrganizationController extends Controller
 			$stat['industry'][$industry->title] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN industry2organization as i2o ON i2o.organization_id=o.id JOIN industry as i ON i2o.industry_id=i.id WHERE o.is_active=1 AND i.id=%s', $industry->id))->queryScalar();
 		}
 
-		$classifications = Classification::model()->isActive()->findAll(array('order' => 'title ASC'));
+		$classifications = Classification::model()->isActive()->findAll(array('order' => 'title_en ASC'));
 		foreach ($classifications as $classification) {
-			$stat['classification'][$classification->title] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN classification2organization as c2o ON c2o.organization_id=o.id JOIN classification as c ON c2o.classification_id=c.id WHERE o.is_active=1 AND c.id=%s', $classification->id))->queryScalar();
+			$stat['classification'][$classification->title_en] = Yii::app()->db->createCommand(sprintf('SELECT COUNT(o.id) FROM organization as o JOIN classification2organization as c2o ON c2o.organization_id=o.id JOIN classification as c ON c2o.classification_id=c.id WHERE o.is_active=1 AND c.id=%s', $classification->id))->queryScalar();
 		}
 
 		$impacts = Impact::model()->isActive()->findAll(array('order' => 'title ASC'));

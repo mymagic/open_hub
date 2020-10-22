@@ -188,7 +188,11 @@ class JourneyModule extends WebModule
 		$now = HUB::now();
 
 		// filter all event by email to this year
-		$eventRegistrations = HUB::getAllEventRegistrationsByEmail($user, $timestampStart, $timestampEnd);
+		$eventRegistrations = HUB::getAllEventRegistrationsByEmail($user->username, $timestampStart, $timestampEnd);
+		// include linked email
+		foreach ($user->verifiedUser2Emails as $user2email) {
+			$eventRegistrations = array_merge($eventRegistrations, HUB::getAllEventRegistrationsByEmail($user2email->user_email, $timestampStart, $timestampEnd));
+		}
 
 		if (!empty($eventRegistrations)) {
 			foreach ($eventRegistrations as $er) {
@@ -209,7 +213,7 @@ class JourneyModule extends WebModule
 					$msg = Yii::t('journey', "You are scheduled to attend '{eventName}' with registration code #{regCode} at {eventAt}.", array('{eventName}' => $er->event->title, '{eventAt}' => $er->event->at, '{regCode}' => $er->registration_code));
 				}
 
-				$return[] = array('service' => 'journey', 'timestamp' => $timestampEventStart, 'date' => date('r', $timestampEventStart), 'msg' => $msg, 'actionLabel' => '', 'actionUrl' => '');
+				$return[] = array('service' => 'journey', 'timestamp' => $timestampEventStart, 'date' => date('r', $timestampEventStart), 'msg' => $msg, 'actionLabel' => '', 'actionUrl' => '', 'email' => $er->email);
 			}
 		}
 

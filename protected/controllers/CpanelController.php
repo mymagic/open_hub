@@ -268,7 +268,7 @@ class CpanelController extends Controller
 
 				// send verification email
 				$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
-				HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
+				HUB::sendEmail($email, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
 
 				Notice::page(Yii::t('cpanel', "Successfully resend verification email to link '{email}' to your user account.", array('{email}' => $email)), Notice_SUCCESS);
 			} else {
@@ -339,7 +339,7 @@ class CpanelController extends Controller
 				if ($model->save()) {
 					// send verification email
 					$notifyMaker = NotifyMaker::member_user_linkUserEmail($user, $model);
-					HUB::sendEmail($user->username, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
+					HUB::sendEmail($model->user_email, $user->profile->full_name, $notifyMaker['title'], $notifyMaker['content']);
 
 					// todo: esLog
 
