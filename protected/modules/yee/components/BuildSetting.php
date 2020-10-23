@@ -19,7 +19,7 @@ class BuildSetting
 
 	public function getBuildFilePath()
 	{
-		return $this->buildArray;
+		return $this->buildFilePath;
 	}
 
 	public function loadBuildFile($tableName, $moduleName = '')
