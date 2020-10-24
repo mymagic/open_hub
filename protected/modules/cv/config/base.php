@@ -14,8 +14,8 @@ return array(
 				'Organization' => array(
 					'class' => 'application.modules.cv.components.CvOrganizationBehavior',
 				),
-				'Member' => array(
-					'class' => 'application.modules.cv.components.CvMemberBehavior',
+				'User' => array(
+					'class' => 'application.modules.cv.components.CvUserBehavior',
 				),
 				/*'Individual'=>array(
 					'class'=>'application.modules.cv.components.CvIndividualBehavior',
