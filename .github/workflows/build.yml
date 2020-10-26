@@ -23,7 +23,7 @@ jobs:
     
     - name: Install composer dependencies
       working-directory: ./protected
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install --prefer-lowest --no-progress --no-suggest
   
     - name: Install composer dependencies for module openHub
       working-directory: ./protected/modules/openHub
