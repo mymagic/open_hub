@@ -1,3 +1,4 @@
+## 0.6.420
 ## 0.6.343
 - completed #9 detach authentication & authorization from MaGIC connect
 - fixed #28 embed code need longer char length than 32 chars
