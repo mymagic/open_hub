@@ -117,7 +117,9 @@ class OrganizationRevenueController extends Controller
 	public function actionCreate($organization_id = '')
 	{
 		$model = new OrganizationRevenue();
-		$model->organization_id = $organization_id;
+		if (!empty($organization_id)) {
+			$model->organization_id = $organization_id;
+		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
