@@ -23,11 +23,11 @@ jobs:
     
     - name: Install composer dependencies
       working-directory: ./protected
-      run: composer install --no-progress --no-suggest
+      run: composer self-update --rollback && composer install --prefer-dist --no-progress --no-suggest
   
     - name: Install composer dependencies for module openHub
       working-directory: ./protected/modules/openHub
-      run: composer install --no-progress --no-suggest
+      run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Checkout submodules
       uses: textbook/git-checkout-submodule-action@master
