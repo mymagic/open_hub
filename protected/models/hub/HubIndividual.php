@@ -71,7 +71,7 @@ class HubIndividual
 
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($individual->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($individual->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -268,7 +268,7 @@ class HubIndividual
 			if ($model->save()) {
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($model->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($model->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();

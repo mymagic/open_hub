@@ -43,12 +43,12 @@ class SwaggerController extends Controller
 		// find all api from default /data/api folder
 		$dataPath = Yii::getPathOfAlias('data');
 		$filePath = sprintf('%s/api', $dataPath);
-		$files = YsUtil::listDir($filePath);
+		$files = ysUtil::listDir($filePath);
 
 		if (!empty($files)) {
 			foreach ($files as $file) {
-				$fileFormat = YsUtil::getFileExtension($file);
-				$fileName = YsUtil::getFileName($file);
+				$fileFormat = ysUtil::getFileExtension($file);
+				$fileName = ysUtil::getFileName($file);
 				$fileCode = str_replace('.' . $fileFormat, '', $fileName);
 
 				$apis[$fileCode] = array('code' => $fileCode, 'fileName' => $fileName, 'format' => $fileFormat);
@@ -60,11 +60,11 @@ class SwaggerController extends Controller
 		foreach ($modules as $moduleKey => $moduleParams) {
 			$modulePath = Yii::getPathOfAlias('modules');
 			$filePath = sprintf('%s/%s/data/api', $modulePath, $moduleKey);
-			$files = YsUtil::listDir($filePath);
+			$files = ysUtil::listDir($filePath);
 			if (!empty($files)) {
 				foreach ($files as $file) {
-					$fileFormat = YsUtil::getFileExtension($file);
-					$fileName = YsUtil::getFileName($file);
+					$fileFormat = ysUtil::getFileExtension($file);
+					$fileName = ysUtil::getFileName($file);
 					$fileCode = str_replace('.' . $fileFormat, '', $fileName);
 
 					$apis[$fileCode] = array('code' => $fileCode, 'fileName' => $fileName, 'format' => $fileFormat, 'module' => $moduleKey);

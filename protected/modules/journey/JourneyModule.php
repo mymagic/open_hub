@@ -72,6 +72,11 @@ class JourneyModule extends WebModule
 					'title' => 'Event',
 					'viewPath' => 'modules.journey.views.backend._view-organization-journey',
 				);
+				$tabs['journey'][] = array(
+					'key' => 'eventOwned',
+					'title' => 'Event Owned',
+					'viewPath' => 'modules.journey.views.backend._view-organization-eventOwned',
+				);
 			}
 			// if (Yii::app()->user->isSuperAdmin || (Yii::app()->user->isAdmin && Yii::app()->user->isSensitiveDataAdmin)) {
 			if (HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'custom', 'action' => (object)['id' => 'admin']]) && Yii::app()->user->getState('accessSensitiveData')) {

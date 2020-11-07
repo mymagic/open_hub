@@ -148,7 +148,7 @@ $result = json_decode($data, true);
         console.log(orgID);
         $('#StartForm_keyword').val($(this).data('title'));
         $('#request-access').removeClass('hidden');
-        $('#request-access').attr('href', '" . Yii::app()->params['baseUrl'] . "/resource/frontend/requestJoinEmail?organizationId='+orgID+'&'+'email='+'" . Yii::app()->user->username . "');
+        $('#request-access').attr('href', '" . Yii::app()->params['baseUrl'] . "/resource/frontend/requestJoinEmail?organizationId='+orgID+'&'+'email='+'" . HUB::getSessionUsername() . "');
 
 
 

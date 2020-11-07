@@ -61,7 +61,12 @@ class BackendController extends Controller
 		if ($form) {
 			$result = HubForm::syncSubmissions2Event($form);
 			if ($result['status'] == 'success') {
-				Notice::page(Yii::t('f7', "F7 successfully synced your form to event '{eventTitle}'", array('{eventTitle}' => $result['data']['event']->title)), Notice_SUCCESS, array(
+				Notice::page(Yii::t('f7', "F7 successfully synced your form to event '{eventTitle}': Organization Synced: {totalOrganizationSuccess}, Organization Failed: {totalOrganizationFail}, Registration Synced: {totalRegistrationSuccess}, Registration Failed: {totalRegistrationFail}", array('{eventTitle}' => $result['data']['event']->title,
+				'{totalOrganizationSuccess}' => $result['data']['totalRegistrationSuccess'],
+				'{totalOrganizationFail}' => $result['data']['totalOrganizationFail'],
+				'{totalRegistrationSuccess}' => $result['data']['totalRegistrationSuccess'],
+				'{totalRegistrationFail}' => $result['data']['totalRegistrationFail'],
+				)), Notice_SUCCESS, array(
 					'url' => $this->createUrl('//event/view', array('id' => $result['data']['event']->id)),
 					'urlLabel' => Yii::t('f7', 'View Event'),
 				));

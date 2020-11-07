@@ -542,8 +542,8 @@ body {
 
 body {
     font-family: aller, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 15px;
+    line-height: 1.3em;
     color: #565659;
     font-weight: 300;
     /* padding-top:45px */

@@ -236,14 +236,14 @@ class FrontendController extends Controller
 			Notice::page(Yii::t('resource', 'User is not allow to add new resources as per setting'), Notice_INFO);
 		}
 
-		$tmps = HUB::getUserOrganizationsCanJoin($keyword, Yii::app()->user->username);
+		$tmps = HUB::getUserOrganizationsCanJoin($keyword, HUB::getSessionUsername());
 
 		foreach ($tmps as $tmp) {
 			$result[] = $tmp->toApi(array('-products', '-impacts'));
 		}
 
-		$model['organizations']['approve'] = HUB::getActiveOrganizations(Yii::app()->user->username, 'approve');
-		$model['organizations']['pending'] = HUB::getActiveOrganizations(Yii::app()->user->username, 'pending');
+		$model['organizations']['approve'] = HUB::getActiveOrganizations(HUB::getSessionUsername(), 'approve');
+		$model['organizations']['pending'] = HUB::getActiveOrganizations(HUB::getSessionUsername(), 'pending');
 
 		list($personas, $startupStages, $industries, $categories, $locations) = array_values(self::getCommonData());
 
@@ -343,7 +343,7 @@ class FrontendController extends Controller
 			$model->attributes = $_POST['Organization'];
 
 			$params['organization'] = $_POST['Organization'];
-			$params['userEmail'] = Yii::app()->user->username;
+			$params['userEmail'] = HUB::getSessionUsername();
 			$model = HUB::createOrganization($_POST['Organization']['title'], $params);
 
 			if (!empty($model->id)) {
@@ -382,7 +382,7 @@ class FrontendController extends Controller
 		if (!empty($id)) {
 			$organization = Organization::model()->findByPk($id);
 		}
-		$email = Yii::app()->user->username;
+		$email = HUB::getSessionUsername();
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 

@@ -54,7 +54,7 @@ foreach ($modules as $moduleKey => $moduleParams) {
 			)); ?>
 
 
-			<?php $labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), YsUtil::truncate($this->user->profile->full_name, 8)); ?>
+			<?php $labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), ysUtil::truncate($this->user->profile->full_name, 8)); ?>
 
 			<?php $this->widget('zii.widgets.CMenu', array(
 				'encodeLabel' => false,

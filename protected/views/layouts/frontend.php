@@ -44,7 +44,7 @@ foreach ($this->menuSub as $key => $menu) {
         <?php 
 
 			if (!Yii::app()->user->isGuest) {
-				$labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), YsUtil::truncate($this->user->profile->full_name, 8));
+				$labelMe = sprintf('<img src="%s" class="img-circle" style="width:18px; height:18px" /> %s', ImageHelper::thumb(100, 100, $this->user->profile->image_avatar), ysUtil::truncate($this->user->profile->full_name, 8));
 
 				$this->menuSub['user'] = array(
 					'label' => $labelMe . ' <b class="caret"></b>', 'url' => '#',

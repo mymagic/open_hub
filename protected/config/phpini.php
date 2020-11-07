@@ -29,8 +29,8 @@ error_reporting(E_ERROR);
 //php_flag mbstring.encoding_translation on
 @ini_set('mbstring.encoding_translation', '1');
 
-@ini_set('max_execution_time', '120');
-@ini_set('max_input_time', '60');
+@ini_set('max_execution_time', '360');
+@ini_set('max_input_time', '120');
 @ini_set('memory_limit', '1024M');
 @ini_set('max_input_vars', '10000');
 

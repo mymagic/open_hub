@@ -30,7 +30,7 @@ class HubInterest
 			RETURN resource.id, count(resource) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		', ['username' => Yii::app()->user->username]);
+		', ['username' => HUB::getSessionUsername()]);
 			$resources = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($resources, Resource::model()->findByPk($record->value('resource.id')));
@@ -52,7 +52,7 @@ class HubInterest
 			RETURN event.id, count(event) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		', ['username' => Yii::app()->user->username, 'time' => (string) time()]);
+		', ['username' => HUB::getSessionUsername(), 'time' => (string) time()]);
 			$events = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($events, Event::model()->findByPk($record->value('event.id')));
@@ -74,7 +74,7 @@ class HubInterest
 			RETURN challenge.id, count(challenge) as frequency
 			ORDER BY frequency DESC
 			LIMIT 5
-		', ['username' => Yii::app()->user->username, 'time' => (string) time()]);
+		', ['username' => HUB::getSessionUsername(), 'time' => (string) time()]);
 			$challenges = array();
 			foreach ($records->getRecords() as $record) {
 				array_push($challenges, Challenge::model()->findByPk($record->value('challenge.id')));

@@ -54,10 +54,15 @@ class EventController extends Controller
 				'users' => ['*'],
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration', 'ajaxEvent', 'ajaxEventActive'],
+				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
 				'users' => ['@'],
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+			],
+			// skip action ajax from checking the role for some reason. otherwise need to assign these actions for all roles even for view only role
+			['allow',
+				'actions' => ['ajaxEvent', 'ajaxEventActive'],
+				'users' => ['@'],
 			],
 			['deny',  // deny all users
 				'users' => ['*'],

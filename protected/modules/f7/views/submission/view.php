@@ -66,6 +66,7 @@ $this->menu = array(
 	'attributes' => array(
 		'id',
 		'code',
+		array('name' => 'form_code', 'type' => 'raw', 'value' => sprintf('<a href="%s">%s</a>', Yii::app()->createUrl('//f7/form/view', array('id' => $model->form->id)), $model->form->title)),
 		array('name' => 'username', 'type' => 'raw', 'value' => sprintf('<a href="%s">#%s - %s (%s)</a>', Yii::app()->createUrl('/member/view', array('id' => $model->user->id)), $model->user->id, $model->user->username, $model->user->profile->full_name)),
 		array('name' => 'stage', 'type' => 'raw', 'value' => $model->renderStage()),
 		array('name' => 'status', 'type' => 'raw', 'value' => $model->renderStatus()),

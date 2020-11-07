@@ -312,5 +312,18 @@
  	*/
  	public function fixSpatial()
  	{
- 	}
+	}
+	 
+	 public function renderAsRoleCode($value = '')
+	{
+		if (!empty($value)) {
+			$asRoleCode = $value;
+		} else {
+			$asRoleCode = $this->as_role_code;
+		}
+
+		preg_match_all('/((?:^|[A-Z])[a-z]+)/', $asRoleCode, $matches);
+
+		return ucwords(implode(' ', $matches[0]));
+	}
  }

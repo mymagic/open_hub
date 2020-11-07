@@ -58,10 +58,16 @@ class IndividualController extends Controller
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('overview', 'list', 'view', 'admin', 'getTagsBackend', 'getIndividual2Emails', 'ajaxIndividual', 'ajaxIndividualActive'),
+				'actions' => array('overview', 'list', 'view', 'admin', 'getTagsBackend', 'getIndividual2Emails'),
 				'users' => array('@'),
 				// 'expression' => '$user->isEcosystem==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+			),
+			// skip action ajax from checking the role for some reason. otherwise need to assign these actions for all roles even for view only role
+			array(
+				'allow',
+				'actions' => array('ajaxIndividual', 'ajaxIndividualActive'),
+				'users' => array('@'),
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

@@ -75,7 +75,7 @@ class ResourceController extends Controller
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organizationId);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$org->canAccessByUserEmail(HUB::getSessionUsername())) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
 			}
 
@@ -91,7 +91,7 @@ class ResourceController extends Controller
 
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
-			if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$model->canAccessByUserEmail(HUB::getSessionUsername())) {
 				Notice::page(Yii::t('notice', 'Invalid Access'));
 			}
 		}
@@ -144,7 +144,7 @@ class ResourceController extends Controller
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$org->canAccessByUserEmail(HUB::getSessionUsername())) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
 			}
 
@@ -225,7 +225,7 @@ class ResourceController extends Controller
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$org->canAccessByUserEmail(HUB::getSessionUsername())) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
 			}
 
@@ -317,7 +317,7 @@ class ResourceController extends Controller
 		if ($realm == 'cpanel') {
 			$org = Organization::model()->findByPk($organization_id);
 
-			if (!$org->canAccessByUserEmail(Yii::app()->user->username)) {
+			if (!$org->canAccessByUserEmail(HUB::getSessionUsername())) {
 				$this->redirect(array('/organization/list', 'realm' => $realm));
 			}
 
