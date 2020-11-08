@@ -1,4 +1,4 @@
-<?php foreach ($model as $nav) : ?>
+<?php foreach ($navs as $nav) : ?>
     <?php if ($nav['visible']) : ?>
         <div class="w-full flex <?php echo $nav['active'] ? 'nav-select shadow-panel' : '' ?>">
             <div class="flex-1 list-none">

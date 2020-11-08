@@ -174,11 +174,13 @@ class HubCpanel
 
 	public function cpanelNavItems($controller, $forInterface)
 	{
-		$nav = self::cpanelDefaultNavItems($controller, $controller->cpanelMenuInterface);
+		$nav = (array) self::cpanelDefaultNavItems($controller, $controller->cpanelMenuInterface);
+
 		$modules = YeeModule::getActiveParsableModules();
 		foreach ($modules as $moduleKey => $moduleParams) {
 			if (method_exists(Yii::app()->getModule($moduleKey), 'getNavItems')) {
-				$nav = array_merge($nav, (array) Yii::app()->getModule($moduleKey)->getNavItems($controller, $controller->cpanelMenuInterface));
+				$thisModuleNav = Yii::app()->getModule($moduleKey)->getNavItems($controller, $controller->cpanelMenuInterface);
+				$nav = array_merge($nav, (array) $thisModuleNav);
 			}
 		}
 		switch ($forInterface) {
@@ -191,7 +193,7 @@ class HubCpanel
 					);
 					break;
 				}
-			case 'company-information': {
+			case 'organization-information': {
 					$organization = Organization::model()->findByPk($controller->customParse);
 					$orgName = $organization->title;
 					$nav = array(

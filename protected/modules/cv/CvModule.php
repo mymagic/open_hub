@@ -442,24 +442,38 @@ class CvModule extends WebModule
 		//cpanelNavDashboard , cpanelNavSetting, cpanelNavOrganization, cpanelNavOrganizationInformation
 		switch ($forInterface) {
 			case 'cpanelNavDashboard': {
-					return array(
-						//example
-						// array(
-						// 	'label' => Yii::t('app', 'Boilerplate Test'),
-						// 	'url' => '/cv/cv',
-						// 	'active' => $controller->activeMenuCpanel == 'test' ? true : false,
-						// 	'visible' => true,
-						// 	'icon' => 'fa-edit'
-						// )
-					);
-					break;
-				}
-			case 'cpanelNavSetting': {
-				}
-			case 'cpanelNavOrganization': {
-				}
-			case 'cpanelNavOrganizationInformation': {
-				}
+				return array(
+					//example
+					array(
+						'label' => Yii::t('app', 'My Portfolio'),
+						'url' => '/cv/cpanel',
+						'active' => $controller->activeMenuCpanel == 'cv' ? true : false,
+						'visible' => true,
+						'icon' => 'fa-file-powerpoint-o'
+					)
+				);
+				break;
+			}
+			case 'cpanelNavCV': {
+				return array(
+					//example
+					array(
+						'label' => Yii::t('app', 'My Portfolio'),
+						'url' => '/cv/cpanel/portfolio',
+						'active' => $controller->activeMenuCpanel == 'portfolio' ? true : false,
+						'visible' => true,
+						'icon' => 'fa-file-powerpoint-o'
+					),
+					array(
+						'label' => Yii::t('app', 'My Experiences'),
+						'url' => '/cv/cpanel/experience',
+						'active' => $controller->activeMenuCpanel == 'experience' ? true : false,
+						'visible' => true,
+						'icon' => 'fa-caret-right'
+					),
+				);
+				break;
+			}
 			case 'backendNavService': {
 				return array(
 					array(

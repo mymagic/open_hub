@@ -181,6 +181,8 @@ class CvPortfolio extends CvPortfolioBase
 		'display_name' => Yii::t('app', 'Display Name'),
 		'image_avatar' => Yii::t('app', 'Avatar'),
 		'text_short_description' => Yii::t('app', 'Short Description'),
+		'text_address_residential' => Yii::t('app', 'Current Address'),
+		'text_onliner' => Yii::t('app', 'Oneliner'),
 		//'high_academy_experience_id' => Yii::t('app', 'Highest Academy'),
 		'is_looking_fulltime' => Yii::t('app', 'Fulltime'),
 		'is_looking_contract' => Yii::t('app', 'Contract'),

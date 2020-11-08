@@ -153,5 +153,30 @@ class CvJobposTest extends CDbTestCase
 
 		// check composed experience
 		$composedExperiences = $portfolio->getComposedExperiences();
+		$this->assertNotNull($composedExperiences);
+	}
+
+	public function testGetOrCreateCvPortfolio()
+	{
+		$user = User::model()->findByPk('1');
+		$jobpos = CvJobpos::model()->findByPk('1');
+		$params['cvPortfolio'] = array(
+			'display_name' => 'Foo Bar',
+			'user_id' => $user->id,
+			'jobpos_id' => $jobpos->id,
+			'text_oneliner' => 'Hello World!',
+			'text_short_description' => 'Bla Bla Bla...',
+			'organization_name' => 'MaGIC',
+			'location' => 'Cyberjaya',
+			'text_address_residential' => 'MaGIC, 3730, Persiaran Apec, Cyberjaya, 63000 Cyberjaya, Selangor, Malaysia',
+			'url_facebook' => 'https://www.facebook.com/foobar',
+			'is_looking_cofounder' => '1'
+		);
+
+		$portfolio = HubCv::getOrCreateCvPortfolio($user, $params);
+		$this->assertEquals('Hello World!', $portfolio->text_oneliner);
+		$this->assertEquals('my-sgr', $portfolio->state_code);
+		$this->assertEquals('MY', $portfolio->country_code);
+		$this->assertEquals(0, $portfolio->is_looking_freelance);
 	}
 }

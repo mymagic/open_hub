@@ -28,4 +28,70 @@ class HubCv
 	{
 		return array();
 	}
+
+	public static function getOrCreateCvPortfolio($user, $params = array())
+	{
+		try {
+			$portfolio = self::getCvPortfolioByUser($user);
+		} catch (Exception $e) {
+			$portfolio = null;
+		}
+
+		if ($portfolio === null) {
+			$portfolio = self::createCvPortfolio($user, $params);
+		} else {
+			// update attributes
+			$portfolio->attributes = $params['cvPortfolio'];
+
+			if ($portfolio->save(false)) {
+				UploadManager::storeImage($portfolio, 'avatar', $portfolio->tableName());
+			}
+		}
+
+		return $portfolio;
+	}
+
+	public static function getCvPortfolioByUser($user)
+	{
+		return CvPortfolio::model()->findByAttributes(array('user_id' => $user->id));
+	}
+
+	public static function createCvPortfolio($user, $params = array())
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$portfolio = new CvPortfolio();
+			$portfolio->scenario = 'createCvPortfolio';
+
+			$params['cvPortfolio']['user_id'] = $user->id;
+			$portfolio->attributes = $params['cvPortfolio'];
+			$portfolio->display_name = $user->profile->full_name;
+
+			if (!empty(UploadedFile::getInstance($portfolio, 'imageFile_avatar'))) {
+				$portfolio->imageFile_avatar = UploadedFile::getInstance($portfolio, 'imageFile_avatar');
+			} else {
+				$portfolio->image_avatar = $portfolio->getDefaultImageAvatar();
+			}
+
+			if (!empty($portfolio->text_address_residential)) {
+				$portfolio->resetAddressParts();
+			}
+
+			if ($portfolio->save()) {
+				UploadManager::storeImage($portfolio, 'avatar', $portfolio->tableName());
+
+				//$log = Yii::app()->esLog->log(sprintf("'%s' created '%s'", HUB::getSessionUsername(), $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
+
+				$transaction->commit();
+			} else {
+				throw new Exception(YeeBase::modelErrors2String($portfolio->getErrors()));
+			}
+		} catch (Exception $e) {
+			$transaction->rollBack();
+			$exceptionMessage = $e->getMessage();
+			throw new Exception($exceptionMessage);
+		}
+
+		return $portfolio;
+	}
 }
