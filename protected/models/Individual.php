@@ -290,7 +290,7 @@ class Individual extends IndividualBase
 
 	public function setIndividualEmail($userEmail, $isVerified = '1')
 	{
-		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+		if (!$this->hasUserEmail($userEmail) && ysUtil::isEmailAddress($userEmail)) {
 			$i2e = new Individual2Email;
 			$i2e->individual_id = $this->id;
 			$i2e->user_email = $userEmail;
@@ -315,6 +315,11 @@ class Individual extends IndividualBase
 		}
 
 		return false;
+	}
+
+	public function getDefaultImagePhotoUrl()
+	{
+		return StorageHelper::getUrl($this->getDefaultImagePhoto());
 	}
 
 	public function searchAdvance($keyword)

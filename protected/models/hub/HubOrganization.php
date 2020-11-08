@@ -36,7 +36,7 @@ class HubOrganization
 
 			// add orgnization2email
 			if (!empty($params['userEmail'])) {
-				$o2e = $organization->setIndividualEmail($params['userEmail']);
+				$o2e = $organization->setOrganizationEmail($params['userEmail']);
 			}
 		}
 
@@ -71,11 +71,11 @@ class HubOrganization
 					$o2e = $organization->setOrganizationEmail($params['userEmail']);
 				}
 
-				$log = Yii::app()->esLog->log(sprintf("'%s' created '%s'", Yii::app()->user->username, $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
+				$log = Yii::app()->esLog->log(sprintf("'%s' created '%s'", HUB::getSessionUsername(), $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
 
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($organization->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($organization->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -702,7 +702,7 @@ class HubOrganization
 			if ($model->save()) {
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($model->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($model->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();

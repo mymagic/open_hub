@@ -258,7 +258,7 @@ class CpanelController extends Controller
 	// todo
 	public function actionResendLinkEmailVerification($email)
 	{
-		if (YsUtil::isEmailAddress($email)) {
+		if (ysUtil::isEmailAddress($email)) {
 			$user = User::model()->findByAttributes(['username' => Yii::app()->user->username]);
 
 			$model = User2Email::model()->findByAttributes(array('user_email' => $email));
@@ -282,7 +282,7 @@ class CpanelController extends Controller
 	//
 	public function actionVerifyUser2Email($email, $key)
 	{
-		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+		if (ysUtil::isEmailAddress($email) && ysUtil::isSha1($key)) {
 			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'verification_key' => $key, 'is_verify' => 0));
 			;
 			if ($model === null) {
@@ -302,7 +302,7 @@ class CpanelController extends Controller
 
 	public function actionCancelUser2Email($email, $key)
 	{
-		if (YsUtil::isEmailAddress($email) && YsUtil::isSha1($key)) {
+		if (ysUtil::isEmailAddress($email) && ysUtil::isSha1($key)) {
 			$model = User2Email::model()->findByAttributes(array('user_email' => $email, 'delete_key' => $key));
 			if ($model === null) {
 				Notice::page(Yii::t('cpanel', 'Unmatched details'));

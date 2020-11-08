@@ -13,7 +13,7 @@
 
 <div class="row">
     <div class="col col-md-12">
-        <h3>Events Involved</h3>
+        <h3>Events Participated</h3>
         <?php if (!empty($model->eventOrganizations)): ?>
         <ol>
         <?php foreach ($model->eventOrganizations as $eventOrganization):?>
@@ -23,4 +23,3 @@
         <?php endif; ?>
     </div>
 </div>
-

@@ -98,4 +98,44 @@ class EventOwner extends EventOwnerBase
 
 		return $return;
 	}
+
+	public function renderAsRoleCode($value = '')
+	{
+		if (!empty($value)) {
+			$asRoleCode = $value;
+		} else {
+			$asRoleCode = $this->as_role_code;
+		}
+
+		preg_match_all('/((?:^|[A-Z])[a-z]+)/', $asRoleCode, $matches);
+
+		return ucwords(implode(' ', $matches[0]));
+	}
+
+	public function toApi($params = null)
+	{
+		$this->fixSpatial();
+
+		$return = array(
+			'id' => $this->id,
+			'eventCode' => $this->event_code,
+			'organizationCode' => $this->organization_code,
+			'department' => $this->department,
+			'dateAdded' => $this->date_added,
+			'fDateAdded' => $this->renderDateAdded(),
+			'dateModified' => $this->date_modified,
+			'fDateModified' => $this->renderDateModified(),
+			'asRoleCode' => $this->as_role_code,
+		);
+		if (!in_array('-event', $params) && !empty($this->event)) {
+			$return['event'][] = $this->event->toApi();
+		}
+		if (!in_array('-organization', $params) && !empty($this->organization)) {
+			$return['organization'][] = $this->organization->toApi();
+		}
+
+		// many2many
+
+		return $return;
+	}
 }

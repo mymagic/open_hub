@@ -148,7 +148,7 @@ class HubForm
 		}
 
 		if (!Yii::app()->user->isGuest) {
-			$htmlForm = str_replace('%UserEmail%', Yii::app()->user->username, $htmlForm);
+			$htmlForm = str_replace('%UserEmail%', HUB::getSessionUsername(), $htmlForm);
 		} else {
 			$htmlForm = str_replace('%UserEmail%', '', $htmlForm);
 		}
@@ -219,7 +219,8 @@ class HubForm
 
 	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
 	{
-		$value = self::switchLanguage($value);
+		// exiang: daren code caused issues in form with suddenly appended upload component at bottom of page
+		// $value = self::switchLanguage($value);
 
 		$htmlTag = null;
 		switch ($key) {
@@ -606,7 +607,7 @@ class HubForm
                 <i class="fa fa-link"></i>
             </div>
             <input %s type="url" style="%s" class="form-control %s" value="%s" id="%s" name="%s" %s placeholder="%s" />
-        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['text']);
+        </div>', $disable, $params['style'], $params['css'], $value, $params['name'], $params['name'], !empty($params['pattern']) ? sprintf('pattern="%s"', $params['pattern']) : '', $params['placeholder']);
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
@@ -985,10 +986,6 @@ class HubForm
 			$html .= sprintf('<div>%s</div>', $htmlCheckboxes);
 		} else {
 			//structure is wrong or missing isGroup property.
-		}
-
-		if (!empty($params['hint'])) {
-			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
 		return $html;
@@ -1667,7 +1664,7 @@ class HubForm
 		}
 		$organizations = array();
 		try {
-			$organizations = HubOrganization::getUserActiveOrganizations(Yii::app()->user->username);
+			$organizations = HubOrganization::getUserActiveOrganizations(HUB::getSessionUsername());
 		} catch (Exception $e) {
 		}
 
@@ -2097,13 +2094,22 @@ class HubForm
 	{
 		$language = Yii::app()->language;
 
-		if(isset($language)){
+		if (isset($language)) {
 			// Check if empty before assignning. If empty, fallback to default values
-			$value['value']=$value['value-'.$language]?:$value['value'];
-			$value['text']=$value['text-'.$language]?:$value['text'];
-			$value['hint']=$value['hint-'.$language]?:$value['hint'];
-			$value['error']=$value['error-'.$language]?:$value['error'];
+			if (isset($value['value'])) {
+				$value['value'] = isset($value['value-' . $language]) ? $value['value-' . $language] : $value['value'];
+			}
+			if (isset($value['text'])) {
+				$value['text'] = isset($value['text-' . $language]) ? $value['text-' . $language] : $value['text'];
+			}
+			if (isset($value['hint'])) {
+				$value['hint'] = isset($value['hint-' . $language]) ? $value['hint-' . $language] : $value['hint'];
+			}
+			if (isset($value['error'])) {
+				$value['error'] = isset($value['error-' . $language]) ? $value['error-' . $language] : $value['error'];
+			}
 		}
+
 		return $value;
 	}
 }

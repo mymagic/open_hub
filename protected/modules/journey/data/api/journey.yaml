@@ -20,6 +20,30 @@ tags:
 - name: internal
   description: Internal API calls available to in-house developers only
 paths:
+  /getEventsByOwner:
+    post:
+      tags:
+      - admin
+      summary: 
+      description: Get list of active events of a specific owner
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+        - in: formData
+          name: organizationCode
+          type: string
+          description: Organization Code
+          default: 
+        - in: formData
+          name: page
+          type: integer
+          description: Page number to show
+          default: 1
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
   /getEventSystemActFeed:
     post:
       tags:

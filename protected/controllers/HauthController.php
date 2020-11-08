@@ -73,7 +73,7 @@ class HauthController extends Controller
 					if ($userSocial->validate() && $userSocial->save()) {
 						Notice::flash(Yii::t('app', 'Your user account has been successfully linked up with {provider}', array('{provider}' => ucwords($provider))), Notice_SUCCESS);
 					} else {
-						Notice::flash($this->modelErrors2String($userSocial->getErrors()), Notice_ERROR);
+						Notice::flash(YeeBase::modelErrors2String($userSocial->getErrors()), Notice_ERROR);
 					}
 
 					$this->redirect(array('profile/social'));

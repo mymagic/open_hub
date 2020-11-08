@@ -52,10 +52,16 @@ class EventOwnerController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete', 'ajaxOrganization', 'ajaxEvent'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+			),
+			// skip action ajax from checking the role for some reason. otherwise need to assign these actions for all roles even for view only role
+			array(
+				'allow',
+				'actions' => array('ajaxOrganization', 'ajaxEvent'),
+				'users' => array('@'),
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),

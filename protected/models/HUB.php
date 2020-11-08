@@ -22,6 +22,17 @@ class HUB extends Component
 		return time();
 	}
 
+	public static function getSessionUsername()
+	{
+		$username = '';
+		try {
+			$username = Yii::app()->user->username;
+		} catch (Exception $e) {
+		}
+
+		return $username;
+	}
+
 	public static function renderPartial($viewPath, $data, $return)
 	{
 		// if web
@@ -780,7 +791,7 @@ class HUB extends Component
 
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($product->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($product->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -834,7 +845,7 @@ class HUB extends Component
 
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($product->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($product->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -1014,7 +1025,7 @@ class HUB extends Component
 					$status = 'success';
 					$data = array('id' => $tx->id, 'isValid' => $tx->isValid(), 'amount' => $tx->amount);
 				} else {
-					$msg = Yii::app()->controller->modelErrors2String($tx->getErrors());
+					$msg = YeeBase::modelErrors2String($tx->getErrors());
 				}
 
 				break;
@@ -1159,7 +1170,7 @@ class HUB extends Component
 		if ($industry->validate() && $industry->save(false)) {
 			return $industry;
 		} else {
-			throw new Exception(Yii::app()->controller->modelErrors2String($industry->getErrors()));
+			throw new Exception(YeeBase::modelErrors2String($industry->getErrors()));
 		}
 
 		return null;
@@ -1233,7 +1244,7 @@ class HUB extends Component
 		if ($persona->validate() && $persona->save(false)) {
 			return $persona;
 		} else {
-			throw new Exception(Yii::app()->controller->modelErrors2String($persona->getErrors()));
+			throw new Exception(YeeBase::modelErrors2String($persona->getErrors()));
 		}
 
 		return null;
@@ -1292,7 +1303,7 @@ class HUB extends Component
 		if ($stage->validate() && $stage->save(false)) {
 			return $stage;
 		} else {
-			throw new Exception(Yii::app()->controller->modelErrors2String($stage->getErrors()));
+			throw new Exception(YeeBase::modelErrors2String($stage->getErrors()));
 		}
 
 		return null;

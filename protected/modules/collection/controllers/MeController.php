@@ -33,7 +33,7 @@ class MeController extends Controller
 	public function actionList($id = '')
 	{
 		$this->pageTitle = 'My Collections';
-		$user = HUB::getUserByUsername(Yii::app()->user->username);
+		$user = HUB::getUserByUsername(HUB::getSessionUsername());
 		$collections = HubCollection::getActiveUserCollections($user, 999);
 		$this->render('list', array('collections' => $collections, 'id' => $id));
 	}
@@ -68,7 +68,7 @@ class MeController extends Controller
 		$this->performAjaxValidationCollection($model);
 		if (isset($_POST['AddItem2CollectionForm'])) {
 			try {
-				$user = HUB::getUserByUsername(Yii::app()->user->username);
+				$user = HUB::getUserByUsername(HUB::getSessionUsername());
 				$item = HubCollection::addCollectionItem($user, $tableName, $refId, $_POST['AddItem2CollectionForm']['collection'], $_POST['AddItem2CollectionForm']['collectionSub']);
 				$msg = Yii::t('collection', "Successfully added '{itemTitle}' to collection '{collectionTitle}' \ '{collectionSubTitle}'", array('{itemTitle}' => $item->getItemObjectTitle(), '{collectionTitle}' => $item->collectionSub->collection->title, '{collectionSubTitle}' => $item->collectionSub->title));
 				$status = 'success';
@@ -99,7 +99,7 @@ class MeController extends Controller
 	{
 		$return = $meta = array();
 
-		$user = HUB::getUserByUsername(Yii::app()->user->username);
+		$user = HUB::getUserByUsername(HUB::getSessionUsername());
 		$collections = HubCollection::getActiveUserCollections($user, 999);
 
 		foreach ($collections as $collection) {
@@ -115,7 +115,7 @@ class MeController extends Controller
 		$msg = '';
 		$return = $meta = array();
 
-		$user = HUB::getUserByUsername(Yii::app()->user->username);
+		$user = HUB::getUserByUsername(HUB::getSessionUsername());
 		try {
 			$collections = HubCollection::deleteCollection($user, $id);
 			$status = 'success';

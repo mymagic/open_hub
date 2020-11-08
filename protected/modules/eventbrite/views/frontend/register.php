@@ -4,7 +4,7 @@
   <h1 class="title">Event Registration</h1>
   <?php if (!Yii::app()->user->isGuest): ?>
     <h4 class="title nopadding">You&#x27;re registering for</h4>
-    <h5 class="title"> <span class="text-span"><?php echo Yii::app()->user->username; ?></span><br></h5>
+    <h5 class="title"> <span class="text-span"><?php echo HUB::getSessionUsername(); ?></span><br></h5>
   <?php endif; ?>
   <!-- event-card -->
   <div class="event-card">

@@ -74,7 +74,7 @@ class OrganizationController extends Controller
 				'allow',
 				'actions' => array(
 					'view', 'create', 'update', 'addOrganization2Email', 'deleteOrganization2Email', 'getOrganization2Emails', 'deleteUserOrganization2Email', 'toggleOrganization2EmailStatus', 'requestJoinEmail',
-					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list', 'ajaxOrganization', 'ajaxOrganizationActive'
+					'removeOrganizationLogo', 'join', 'team', 'toggleOrganization2EmailStatusReject', 'list'
 				),
 				'users' => array('@'),
 			),
@@ -90,6 +90,12 @@ class OrganizationController extends Controller
 				'users' => array('@'),
 				// 'expression' => '$user->isEcosystem==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+			),
+			// skip action ajax from checking the role for some reason. otherwise need to assign these actions for all roles even for view only role
+			array(
+				'allow',
+				'actions' => array('ajaxOrganization', 'ajaxOrganizationActive'),
+				'users' => array('@'),
 			),
 			array(
 				'deny',  // deny all users
@@ -486,18 +492,17 @@ class OrganizationController extends Controller
 				Notice::flash(Yii::t('notice', "Successfully revoke '{email}' access to '{organizationTitle}'", ['{email}' => $copy->user_email, '{organizationTitle}' => $copy->organization->title]), Notice_SUCCESS);
 			}
 
+			// delete myself
 			if ($copy->user_email == Yii::app()->user->username) {
-				if ($realm === 'backend') {
-					$this->redirect(array('organization/select', 'realm' => $realm));
-				}
 				if ($realm === 'cpanel') {
 					$this->redirect(array('organization/join'));
 				}
+				if ($realm === 'backend') {
+					$this->redirect(array('organization/view', 'id' => $organization->id, 'realm' => $realm));
+				}
 			}
 
-			if ($realm === 'backend') {
-				$this->redirect(array('organization/view', 'id' => $organization->id, 'realm' => $realm));
-			}
+			// delete others
 			if ($realm === 'cpanel') {
 				if ($scenario === 'join') {
 					$this->redirect(array('join', 'realm' => $realm));
@@ -505,6 +510,9 @@ class OrganizationController extends Controller
 				if ($scenario === 'team') {
 					$this->redirect(array('team', 'id' => $model->organization->id, 'realm' => $realm));
 				}
+			}
+			if ($realm === 'backend') {
+				$this->redirect(array('organization/view', 'id' => $organization->id, 'realm' => $realm));
 			}
 		}
 	}

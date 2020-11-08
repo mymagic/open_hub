@@ -29,7 +29,7 @@ class V1Controller extends Controller
 		foreach ($modules as $moduleKey => $moduleParams) {
 			$modulePath = Yii::getPathOfAlias('modules');
 			$actionsPath = sprintf('%s/%s/actions/wapi/V1Controller', $modulePath, $moduleKey);
-			$files = YsUtil::listDir($actionsPath);
+			$files = ysUtil::listDir($actionsPath);
 			if (!empty($files)) {
 				foreach ($files as $file) {
 					$functionName = basename($file, '.php');

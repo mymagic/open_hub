@@ -160,7 +160,8 @@ class Organization extends OrganizationBase
 			'individualOrganizations' => array(self::HAS_MANY, 'IndividualOrganization', 'organization_code'),
 			'individuals' => array(self::HAS_MANY, 'Individual', array('individual_id' => 'id'), 'through' => 'individualOrganizations'),
 
-			// todo:
+			// event owner cannot be link here as the list can be too large to process
+			'countEventOwners' => [self::STAT, 'EventOwner', 'organization_code', 'condition' => '1=1'],
 			// 'eventOwners' => array(self::HAS_MANY, 'EventOwner', 'organization_code'),
 
 			'activeDisclosedOrganizationFundings' => array(self::HAS_MANY, 'OrganizationFunding', 'organization_id', 'condition' => "is_active='1' AND is_publicized='1'"),
@@ -245,8 +246,12 @@ class Organization extends OrganizationBase
 
 	public static function title2obj($title)
 	{
-		// exiang: spent 3 hrs on the single quote around title. it's important if you passing data from different collation db table columns and do compare with = (equal). Changed to LIKE for safer comparison
-		return Organization::model()->find('t.title=:title', array(':title' => trim($title)));
+		// exiang: spent 3 hrs on the single quote around title. it's important if you passing data from different collation db table columns and do compare with = (equal). Changed to LIKE for safer and accurate comparison
+		// eg. when search for xFIBE Sdn bhd, both 'XFIBE SDN BHD' and 'xFIBE Sdn bhd' will be match with = (equal)
+		// but only 'xFIBE Sdn bhd' will be match with LIKE
+		//return Organization::model()->findAll('TRIM(t.title)=:title', array(':title' => trim($title)));
+
+		return Organization::model()->find('TRIM(t.title) LIKE :title', array(':title' => trim($title)));
 	}
 
 	public static function isTitleExists($title)
@@ -342,7 +347,7 @@ class Organization extends OrganizationBase
 	// pass even if the the email is not valid
 	public function setOrganizationEmail($userEmail, $status = 'approve')
 	{
-		if (!$this->hasUserEmail($userEmail) && YsUtil::isEmailAddress($userEmail)) {
+		if (!$this->hasUserEmail($userEmail) && ysUtil::isEmailAddress($userEmail)) {
 			$o2e = new Organization2Email;
 			$o2e->organization_id = $this->id;
 			$o2e->user_email = $userEmail;
@@ -683,6 +688,11 @@ class Organization extends OrganizationBase
 	public function getDefaultImageLogo()
 	{
 		return 'uploads/organization/logo.default.jpg';
+	}
+
+	public function getDefaultImageLogoUrl()
+	{
+		return StorageHelper::getUrl($this->getDefaultImageLogo());
 	}
 
 	public function isDefaultImageLogo()

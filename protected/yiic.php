@@ -50,6 +50,13 @@ $env = @getenv('YII_CONSOLE_COMMANDS');
 if (!empty($env)) {
 	$app->commandRunner->addCommands($env);
 }
+// add core modules commands
+$coreModules = YeeModule::getCoreModules();
+
+foreach ($coreModules as $moduleKey) {
+	$filePath = sprintf('yeebase/modules/%s/commands', $moduleKey);
+	$app->commandRunner->addCommands($filePath);
+}
 
 // add modules commands
 $modules = YeeModule::getActiveParsableModules();

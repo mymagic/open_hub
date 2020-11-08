@@ -15,7 +15,7 @@
             <?php echo Html::renderBoolean($data->is_active); ?>
             </small>
         </h4></a>
-        <?php echo YsUtil::truncate(($data->text_oneliner)); ?>
+        <?php echo ysUtil::truncate(($data->text_oneliner)); ?>
         <div>
         <?php foreach ($data->tags as $tag): ?>
             <span class="badge badge-info"><?php echo $tag->name; ?></span>

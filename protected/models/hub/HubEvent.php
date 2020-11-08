@@ -60,7 +60,7 @@ class HubEvent extends Component
 
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($event->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($event->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -113,7 +113,7 @@ class HubEvent extends Component
 			if ($eventRegistration->save()) {
 				$transaction->commit();
 			} else {
-				throw new Exception(Yii::app()->controller->modelErrors2String($eventRegistration->getErrors()));
+				throw new Exception(YeeBase::modelErrors2String($eventRegistration->getErrors()));
 			}
 		} catch (Exception $e) {
 			$transaction->rollBack();
@@ -122,6 +122,31 @@ class HubEvent extends Component
 		}
 
 		return $eventRegistration;
+	}
+
+	public function getEventsByOwner($organization, $page = 1, $filter = '', $limitPerPage = 10)
+	{
+		if ($limitPerPage > 30) {
+			$limitPerPage = 30;
+		}
+		$limit = $limitPerPage * $page;
+		$offset = ($page - 1) * $limitPerPage;
+		$filters = array();
+		$bufferFilter = sprintf('e.is_active=1 AND o.id=%s', $organization->id);
+
+		$sqlCount = sprintf('SELECT COUNT(eo.id) FROM event_owner as eo LEFT JOIN event as e ON eo.event_code=e.code LEFT JOIN organization as o ON eo.organization_code=o.code WHERE %s', $bufferFilter);
+
+		$sql = sprintf('SELECT eo.* FROM event_owner as eo LEFT JOIN event as e ON eo.event_code=e.code LEFT JOIN organization as o ON eo.organization_code=o.code WHERE %s ORDER BY e.date_started DESC LIMIT %s, %s', $bufferFilter, $offset, $limitPerPage);
+
+		$return['sql'] = $sql;
+		$return['filters'] = $filters;
+		$return['items'] = EventOwner::model()->findAllBySql($sql);
+		$return['countPageItems'] = count($return['items']);
+		$return['limit'] = $limitPerPage;
+		$return['totalItems'] = Yii::app()->db->createCommand($sqlCount)->queryScalar();
+		$return['totalPages'] = ceil($return['totalItems'] / $limit);
+
+		return $return;
 	}
 
 	public function syncEventToResource($dateStart = '', $dateEnd = '', $limit = 1000000)

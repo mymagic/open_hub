@@ -21,6 +21,10 @@ jobs:
         ini-values: post_max_size=48M, short_open_tag=On, output_buffering=20480  
         tools: phpunit
     
+    - name: Make sure composer at v1
+      working-directory: ./protected
+      run: composer self-update --1
+      
     - name: Install composer dependencies
       working-directory: ./protected
       run: composer install --prefer-dist --no-progress --no-suggest

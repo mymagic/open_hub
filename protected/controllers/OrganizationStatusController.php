@@ -52,10 +52,16 @@ class OrganizationStatusController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete', 'ajaxOrganization'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || ($user->isAdmin==true && $user->isSensitiveDataAdmin==true)',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+			),
+			// skip action ajax from checking the role for some reason. otherwise need to assign these actions for all roles even for view only role
+			array(
+				'allow',
+				'actions' => array('ajaxOrganization'),
+				'users' => array('@'),
 			),
 			array('deny',  // deny all users
 				'users' => array('*'),
@@ -114,8 +120,10 @@ class OrganizationStatusController extends Controller
 	public function actionCreate($organization_id = '')
 	{
 		$model = new OrganizationStatus;
-		$model->organization_id = $organization_id;
 
+		if (!empty($organization_id)) {
+			$model->organization_id = $organization_id;
+		}
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
