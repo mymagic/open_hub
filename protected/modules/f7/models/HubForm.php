@@ -225,7 +225,7 @@ class HubForm
 	protected static function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $index, $realm = 'frontend', $level = 0)
 	{
 		// prevent infinite loop due to bad structure
-		if ($level > 1) {
+		if ($level > 5) {
 			return '';
 		}
 
@@ -1815,9 +1815,8 @@ class HubForm
 			if (strtolower($validation) === 'url' && !filter_var($postedData[$value], FILTER_VALIDATE_URL)) {
 				return "Please enter a valid URL for the field $labelTitle.";
 			}
-		}
-		elseif($tag == 'rating'){
-			if (empty($postedData["voted-".$value])) {
+		} elseif ($tag == 'rating') {
+			if (empty($postedData['voted-' . $value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
 		}
