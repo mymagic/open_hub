@@ -7,3 +7,10 @@ developer:
   author: "Tan Yee Siang"
   organization: "MaGIC"
   email: "yee.siang@mymagic.my"
+contributors:
+  - author: "Developer1"
+    organization: "Organization1"
+    email: "developer1@organization1.com"
+  - author: "Developer2"
+    organization: "Organization2"
+    email: "developer2@organization2.com"

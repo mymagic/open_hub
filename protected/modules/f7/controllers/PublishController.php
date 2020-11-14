@@ -49,6 +49,7 @@ class PublishController extends Controller
 	{
 		parent::init();
 		$this->layoutParams['bodyClass'] = str_replace('gray-bg', 'white-bg', $this->layoutParams['bodyClass']);
+		$this->layoutParams['isShowMenuSubLanguageSelector'] = true;
 	}
 
 	public function actionIndex($slug, $sid = '')
@@ -418,6 +419,10 @@ class PublishController extends Controller
 
 	protected function performViewOrEditTasks($isEnabled, $slug, $sid)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('PublishController::performViewOrEditTasks');
+		}
+
 		if (empty($slug)) {
 			throw new Exception('Incorrect Request');
 		}
@@ -457,6 +462,10 @@ class PublishController extends Controller
 		foreach ($uploadControls as $uploadControl => $value) {
 			$awsPath = $uploadControl . '.aws_path';
 			$session['uploadfiles'] = array($awsPath => $value);
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('PublishController::performViewOrEditTasks');
 		}
 
 		return array($form, $htmlForm, $submission);

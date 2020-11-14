@@ -197,4 +197,24 @@ class F7Module extends WebModule
 
 		return $tabs;
 	}
+
+	public function doOrganizationsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+
+		// todo: f7 form, organization can be use in json so is hard to process. lets assume the field names are: startup_id, organization_id
+		$transaction->commit();
+
+		return array($source, $target);
+	}
+
+	public function doIndividualsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
 }

@@ -123,4 +123,7 @@ return array(
 	'secureFiles' => require(dirname(__FILE__) . '/secureFiles.php'),
 
 	'moduleDisableNoneCore' => filter_var(getenv('MODULE_DISABLE_NONE_CORE', false), FILTER_VALIDATE_BOOLEAN),
+	'disableOverride' => filter_var(getenv('DISABLE_OVERRIDE', false), FILTER_VALIDATE_BOOLEAN),
+	'enableProfileLog' => filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN),
+	'enableDbWriteLog' => false
 );

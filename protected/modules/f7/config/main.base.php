@@ -13,6 +13,7 @@ return array(
 				// f7
 				//'f7/publish/download/<downloadFile>' => 'f7/publish/download',
 				'f7/publish/<slug>' => 'f7/publish/index',
+				'<language:(ms|en|zh)>/f7/publish/<action:(index|view|edit|save|confirm)>/<slug>' => 'f7/publish/<action>',
 				'f7/publish/<action:(index|view|edit|save|revert|revertConfirmed)>/<slug>' => 'f7/publish/<action>',
 				'f7/publish/<action:(index|view|edit|save|revert|revertConfirmed)>/<slug>/<sid>' => 'f7/publish/<action>',
 				'f7/publish/<action:(index|view|edit|save|revert|revertConfirmed)>/<slug>/<sid>/<eid>' => 'f7/publish/<action>',

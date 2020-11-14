@@ -84,4 +84,22 @@ class EsLogModule extends WebModule
 	{
 		return null;
 	}
+
+	public function doOrganizationsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
+
+	public function doIndividualsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
 }

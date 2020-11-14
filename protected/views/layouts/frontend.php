@@ -79,9 +79,6 @@ foreach ($this->menuSub as $key => $menu) {
 </div>
 <!-- /container -->
 
-<!-- // todo: detach MaGIC Connect -->
-<iframe style="border:0; width:1px; height:1px" src="https://<?php echo Yii::app()->params['connectUrl']; ?>/profile"></iframe>
-
 
 <!-- modal-common -->
 <div id="modal-common" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel-common" data-load-url="">

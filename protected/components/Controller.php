@@ -50,6 +50,9 @@ class Controller extends BaseController
 
 	public function init()
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('controllerInit');
+		}
 		parent::init();
 
 		Yii::app()->session['accessBackend'] = false;
@@ -81,6 +84,10 @@ class Controller extends BaseController
 
 		if (Yii::app()->params['environment'] == 'development') {
 			Notice::flash('This is a development environment for developer use only.', Notice_WARNING);
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('controllerInit');
 		}
 	}
 
@@ -489,25 +496,10 @@ class Controller extends BaseController
 			header('Access-Control-Allow-Credentials: true');
 		}
 
-		if (
-			Yii::app()->getModule('interest')
-			&& !Yii::app()->user->isGuest
-			&& Yii::app()->db->schema->getTable('interest', true)
-			&& Yii::app()->db->schema->getTable('interest_user2sdg', true)
-			&& Yii::app()->db->schema->getTable('interest_user2cluster', true)
-			&& Yii::app()->db->schema->getTable('interest_user2startup_stage', true)
-		) {
-			if (empty(Interest::model()->find('user_id=:userId', array(':userId' => Yii::app()->user->id)))) {
-				if (
-					!($action->controller->getId() === 'site' && $action->getId() === 'error') &&
-					!($action->controller->getId() === 'site' && $action->getId() === 'logout') &&
-					!($action->controller->getId() === 'welcome' && $action->getId() === 'index') &&
-					!($action->controller->getId() === 'api' && $action->getId() === 'member') &&
-					!($action->controller->getId() === 'welcome' && $action->getId() === 'skip') &&
-					!($action->controller->getId() === 'v1')
-				) {
-					$this->redirect('/interest/welcome');
-				}
+		$modules = YeeModule::getActiveParsableModules();
+		foreach ($modules as $moduleKey => $moduleParams) {
+			if (method_exists(Yii::app()->getModule($moduleKey), 'beforeAction')) {
+				Yii::app()->getModule($moduleKey)->beforeAction($action);
 			}
 		}
 
@@ -592,26 +584,28 @@ class Controller extends BaseController
 			Yii::app()->end();
 		}*/
 
-		$seolytic = HubSeolytic::getMatchingSeolytic(Yii::app()->request->url);
-		if (!empty($seolytic)) {
-			if (!empty($seolytic->getAttributeDataByLanguage($seolytic, 'title'))) {
-				Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'title'), 'title', null, array(), 'title');
-			}
+		if (!Yii::app()->request->isAjaxRequest) {
+			$seolytic = HubSeolytic::getMatchingSeolytic(Yii::app()->request->url);
+			if (!empty($seolytic)) {
+				if (!empty($seolytic->getAttributeDataByLanguage($seolytic, 'title'))) {
+					Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'title'), 'title', null, array(), 'title');
+				}
 
-			if (!empty($seolytic->getAttributeDataByLanguage($seolytic, 'description'))) {
-				Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'description'), 'description', null, array(), 'description');
+				if (!empty($seolytic->getAttributeDataByLanguage($seolytic, 'description'))) {
+					Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'description'), 'description', null, array(), 'description');
 
-				Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'description'), null, null, array('property' => 'og:description'), 'og:description');
-			}
+					Yii::app()->clientScript->registerMetaTag($seolytic->getAttributeDataByLanguage($seolytic, 'description'), null, null, array('property' => 'og:description'), 'og:description');
+				}
 
-			if (!empty($seolytic->css_header)) {
-				Yii::app()->clientScript->registerCss(sprintf('seolytic-css-%s', $seolytic->id), $seolytic->css_header);
-			}
-			if (!empty($seolytic->js_header)) {
-				Yii::app()->clientScript->registerScript(sprintf('seolytic-jsHeader-%s', $seolytic->id), $seolytic->js_header, CClientScript::POS_HEAD);
-			}
-			if (!empty($seolytic->js_footer)) {
-				Yii::app()->clientScript->registerScript(sprintf('seolytic-jsFooter-%s', $seolytic->id), $seolytic->js_footer, CClientScript::POS_END);
+				if (!empty($seolytic->css_header)) {
+					Yii::app()->clientScript->registerCss(sprintf('seolytic-css-%s', $seolytic->id), $seolytic->css_header);
+				}
+				if (!empty($seolytic->js_header)) {
+					Yii::app()->clientScript->registerScript(sprintf('seolytic-jsHeader-%s', $seolytic->id), $seolytic->js_header, CClientScript::POS_HEAD);
+				}
+				if (!empty($seolytic->js_footer)) {
+					Yii::app()->clientScript->registerScript(sprintf('seolytic-jsFooter-%s', $seolytic->id), $seolytic->js_footer, CClientScript::POS_END);
+				}
 			}
 		}
 

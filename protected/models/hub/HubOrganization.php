@@ -136,6 +136,13 @@ class HubOrganization
 		return self::getActiveOrganizations($email, 'approve');
 	}
 
+	public static function getUserActiveOrganizationTitles($email)
+	{
+		$sql = sprintf("SELECT o.title FROM `organization` as o LEFT JOIN organization2email as o2e ON o2e.organization_id=o.id WHERE o.is_active=1 AND o2e.user_email='%s' AND o2e.status='approve'", $email);
+
+		return Yii::app()->db->createCommand($sql)->queryAll();
+	}
+
 	public static function getOrganizations($email, $status = 'approve')
 	{
 		if ($status == '*') {
@@ -651,17 +658,9 @@ class HubOrganization
 			$sql = sprintf('DELETE FROM tag2organization WHERE organization_id=%s', $source->id);
 			Yii::app()->db->createCommand($sql)->execute();
 
-			// process event_organization
-			/*$sql = sprintf('UPDATE IGNORE event_organization SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
-			Yii::app()->db->createCommand($sql)->execute();
-			$sql = sprintf('DELETE FROM event_organization WHERE organization_id=%s', $source->id);
-			Yii::app()->db->createCommand($sql)->execute(); */
-
 			// process survey_record
 			$sql = sprintf('UPDATE survey_record SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
 			Yii::app()->db->createCommand($sql)->execute();
-
-			// todo: f7 form, organization can be use in json so is hard to process
 
 			// modularize:
 			// instead of getActiveParsableModules, should get all working modules as data in db still need to relink

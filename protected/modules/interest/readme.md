@@ -1,2 +1,1 @@
-
-This module serve as a starting base for your newly created module.
+This module allow members to set interest to provide recommendation.

@@ -33,6 +33,12 @@ class HUB extends Component
 		return $username;
 	}
 
+	// if cacheId is specified, Yii will delete a specific cache value; else flush all
+	public static function clearCache($cacheId = '')
+	{
+		return YeeBase::clearCache($cacheId);
+	}
+
 	public static function renderPartial($viewPath, $data, $return)
 	{
 		// if web
@@ -1451,7 +1457,10 @@ class HUB extends Component
 		// send sms
 		if ($notify->hasSms) {
 			$tmp = self::sendSms($notify->receiverMobileNo, $jsonPayload->msg);
-			$notify->sentSms = (!empty($tmp) && $tmp->messages[0]->status == 0) ? 1 : 0;
+			/*if(!empty($tmp))
+			{
+				$notify->sentSms = ($tmp->messages[0]->status == 0) ? 1 : 0;
+			}*/
 		}
 		// send email
 		if ($notify->hasEmail) {
@@ -1546,19 +1555,19 @@ class HUB extends Component
 
 	//
 	// insight
-	public function getAllActiveInsightItems()
+	public static function getAllActiveInsightItems()
 	{
 		return HubInsight::getAllActiveItems();
 	}
 
-	public function getInsightReports()
+	public static function getInsightReports()
 	{
 		return HubInsight::getReports();
 	}
 
 	//
 	// actFeed
-	public function getUserActFeed($user, $pYear = '', $pServices = '*')
+	public static function getUserActFeed($user, $pYear = '', $pServices = '*')
 	{
 		if (empty($pYear)) {
 			$pYear = date('Y');
@@ -1640,7 +1649,7 @@ class HUB extends Component
 	}
 
 	// todo: cache
-	public function getSystemActFeed($dateStart, $dateEnd, $forceRefresh = 0)
+	public static function getSystemActFeed($dateStart, $dateEnd, $forceRefresh = 0)
 	{
 		// ys: it will be iedal to do caching here at this level, however, caching here will cache the model and it caused error for fixSpatial() function when it is called by toApi() at WAPI level
 		$limit = 30;
@@ -1737,7 +1746,7 @@ class HUB extends Component
 	//
 	// currency
 	// get list of historical exchange rate of a date range, with USD as base
-	public function getCurrencyExchangeRatesHistoricalData($dateStart, $dateEnd)
+	public static function getCurrencyExchangeRatesHistoricalData($dateStart, $dateEnd)
 	{
 		$timestampDateEnd = strtotime($dateEnd);
 		$timestampDateStart = strtotime($dateStart);
@@ -1758,7 +1767,7 @@ class HUB extends Component
 
 	// from api
 	// the base currently only work with USD as it is a free account
-	public function getCurrencyExchangeRatesData($date, $base = 'USD')
+	public static function getCurrencyExchangeRatesData($date, $base = 'USD')
 	{
 		$url = sprintf('https://openexchangerates.org/api/historical/%s.json?app_id=%s', $date, Yii::app()->params['openExchangeRatesAppId']);
 
@@ -1784,7 +1793,7 @@ class HUB extends Component
 	}
 
 	// date in YYYY-mm-dd format
-	public function recordCurrencyExchangeRates($date)
+	public static function recordCurrencyExchangeRates($date)
 	{
 		$baseCurrency = 'USD';
 		$timestampDate = strtotime($date . ' GMT');
@@ -1817,7 +1826,7 @@ class HUB extends Component
 	}
 
 	// from database, if not found, will get from live api and stored in databse
-	public function getCurrencyExchangeRate($fromCurrency, $toCurrency, $date)
+	public static function getCurrencyExchangeRate($fromCurrency, $toCurrency, $date)
 	{
 		$timestampDate = strtotime($date . ' GMT');
 		// enforce: if date is tomorrow and onwards, use today date. i cant forsee the future ya ;)
@@ -1855,7 +1864,7 @@ class HUB extends Component
 		return $rate;
 	}
 
-	public function convertCurrency($amount, $fromCurrency, $toCurrency, $date)
+	public static function convertCurrency($amount, $fromCurrency, $toCurrency, $date)
 	{
 		$status = 'fail';
 		$msg = 'Unknown error';
@@ -1892,7 +1901,7 @@ class HUB extends Component
 
 	//
 	// milestone
-	public function sumMilestoneRevenueRealized()
+	public static function sumMilestoneRevenueRealized()
 	{
 		$sql = "SELECT SUM(JSON_UNQUOTE(JSON_EXTRACT(json_value, CONCAT(SUBSTRING_INDEX(JSON_UNQUOTE(JSON_SEARCH(json_value, 'all', 'true')), '.', 4), '.value')))) AS sum
 		FROM milestone WHERE SUBSTRING_INDEX(JSON_UNQUOTE(JSON_SEARCH(json_value, 'all', 'true')), '.', -1) = 'realized' AND preset_code='revenue'";
@@ -1902,7 +1911,7 @@ class HUB extends Component
 
 	//
 	// organizationFunding
-	public function sumFunding()
+	public static function sumFunding()
 	{
 		$sql = 'SELECT SUM(amount) FROM `organization_funding` as of LEFT JOIN organization as o ON of.organization_id=o.id AND o.is_active=1';
 
@@ -1922,7 +1931,7 @@ class HUB extends Component
 
 	//This method is very destructive
 	//IT will destory all user information we keep in the db.
-	public function RemoveAccountCompletely($email)
+	public static function RemoveAccountCompletely($email)
 	{
 		//Yee Siang Request:
 		//If the requested email is in Admin table we don't honor the request
@@ -2094,7 +2103,7 @@ class HUB extends Component
 	 *
 	 * @return boolean
 	 **/
-	public function roleCheckerAction($role, $controller, $action = '')
+	public static function roleCheckerAction($role, $controller, $action = '')
 	{
 		$roles = explode(',', $role);
 
@@ -2108,34 +2117,61 @@ class HUB extends Component
 			}
 		}
 
-		if (is_numeric($role)) {
-			$column = 'roles.id';
-		} else {
-			$column = 'roles.code';
+		$useCache = Yii::app()->params['cache'];
+		$cacheId = sprintf('%s::%s-%s', 'HUB', 'roleCheckerAction', sha1(json_encode(array('v1', $role, $controller, $action))));
+		$return = Yii::app()->cache->get($cacheId);
+		if ($return === false || $useCache === false) {
+			if (is_numeric($role)) {
+				$column = 'roles.id';
+			} else {
+				$column = 'roles.code';
+			}
+
+			$criteria = new CDbCriteria;
+			$criteria->with = ['roles'];
+
+			$condition = 't.module=:module AND t.controller=:controller AND t.action=:action';
+			$params = array(
+				':module' => !empty($controller->module->id) ? $controller->module->id : '',
+				':controller' => $controller->id,
+				':action' => !empty($action) ? $action : $controller->action->id,
+			);
+			if (isset($filter) && isset($value)) {
+				$condition .= " AND $filter";
+				$params[':role'] = $value;
+			}
+			$criteria->condition = $condition;
+			$criteria->params = $params;
+
+			$criteria->addInCondition($column, $roles);
+			//var_dump($column, $roles);
+
+			// $count = Access::model()->with('roles')->count($condition, $params);
+			$count = Access::model()->isActive()->count($criteria);
+
+			$return = ($count > 0) ? true : false;
+			Yii::app()->cache->set($cacheId, $return, 3600);
 		}
 
-		$criteria = new CDbCriteria;
-		$criteria->with = ['roles'];
+		return $return;
+	}
 
-		$condition = 't.module=:module AND t.controller=:controller AND t.action=:action';
-		$params = array(
-			':module' => !empty($controller->module->id) ? $controller->module->id : '',
-			':controller' => $controller->id,
-			':action' => !empty($action) ? $action : $controller->action->id,
-		);
-		if (isset($filter) && isset($value)) {
-			$condition .= " AND $filter";
-			$params[':role'] = $value;
+	// meta
+	public static function getMetaValue($metaStructureCode, $refId)
+	{
+		$metaStructure = MetaStructure::code2obj($metaStructureCode);
+		if (!empty($metaStructure)) {
+			$metaItem = MetaItem::getObj($metaStructure, $refId);
+
+			return $metaItem->value;
 		}
-		$criteria->condition = $condition;
-		$criteria->params = $params;
+	}
 
-		$criteria->addInCondition($column, $roles);
-		//var_dump($column, $roles);
-
-		// $count = Access::model()->with('roles')->count($condition, $params);
-		$count = Access::model()->isActive()->count($criteria);
-
-		return ($count > 0) ? true : false;
+	public static function setMetaValue($metaStructureCode, $refId, $value)
+	{
+		$metaStructure = MetaStructure::code2obj($metaStructureCode);
+		if (!empty($metaStructure)) {
+			return MetaItem::insertOrUpdate($metaStructure, $refId, $value);
+		}
 	}
 }

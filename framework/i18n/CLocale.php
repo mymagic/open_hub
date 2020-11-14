@@ -57,11 +57,12 @@ class CLocale extends CComponent
 	 */
 	public static function getInstance($id)
 	{
-		static $locales=array();
-		if(isset($locales[$id]))
+		static $locales = array();
+		if (isset($locales[$id])) {
 			return $locales[$id];
-		else
-			return $locales[$id]=new CLocale($id);
+		} else {
+			return $locales[$id] = new CLocale($id);
+		}
 	}
 
 	/**
@@ -70,20 +71,20 @@ class CLocale extends CComponent
 	public static function getLocaleIDs()
 	{
 		static $locales;
-		if($locales===null)
-		{
-			$locales=array();
-			$dataPath=self::$dataPath===null ? dirname(__FILE__).DIRECTORY_SEPARATOR.'data' : self::$dataPath;
-			$folder=@opendir($dataPath);
-			while(($file=@readdir($folder))!==false)
-			{
-				$fullPath=$dataPath.DIRECTORY_SEPARATOR.$file;
-				if(substr($file,-4)==='.php' && is_file($fullPath))
-					$locales[]=substr($file,0,-4);
+		if ($locales === null) {
+			$locales = array();
+			$dataPath = self::$dataPath === null ? dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data' : self::$dataPath;
+			$folder = @opendir($dataPath);
+			while (($file = @readdir($folder)) !== false) {
+				$fullPath = $dataPath . DIRECTORY_SEPARATOR . $file;
+				if (substr($file, -4) === '.php' && is_file($fullPath)) {
+					$locales[] = substr($file, 0, -4);
+				}
 			}
 			closedir($folder);
 			sort($locales);
 		}
+
 		return $locales;
 	}
 
@@ -96,13 +97,15 @@ class CLocale extends CComponent
 	 */
 	protected function __construct($id)
 	{
-		$this->_id=self::getCanonicalID($id);
-		$dataPath=self::$dataPath===null ? dirname(__FILE__).DIRECTORY_SEPARATOR.'data' : self::$dataPath;
-		$dataFile=$dataPath.DIRECTORY_SEPARATOR.$this->_id.'.php';
-		if(is_file($dataFile))
-			$this->_data=require($dataFile);
-		else
-			throw new CException(Yii::t('yii','Unrecognized locale "{locale}".',array('{locale}'=>$id)));
+		$this->_id = self::getCanonicalID($id);
+		$dataPath = self::$dataPath === null ? dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data' : self::$dataPath;
+		$dataFile = $dataPath . DIRECTORY_SEPARATOR . $this->_id . '.php';
+		if (is_file($dataFile)) {
+			$this->_data = require $dataFile;
+		} else {
+			//throw new CException(Yii::t('yii','Unrecognized locale "{locale}".',array('{locale}'=>$id)));
+			throw new CException(Yii::t('yii', 'Unrecognized locale "{locale}". The file Im looking for: ' . $dataFile, array('{locale}' => $id)));
+		}
 	}
 
 	/**
@@ -113,7 +116,7 @@ class CLocale extends CComponent
 	 */
 	public static function getCanonicalID($id)
 	{
-		return strtolower(str_replace('-','_',$id));
+		return strtolower(str_replace('-', '_', $id));
 	}
 
 	/**
@@ -129,8 +132,10 @@ class CLocale extends CComponent
 	 */
 	public function getNumberFormatter()
 	{
-		if($this->_numberFormatter===null)
-			$this->_numberFormatter=new CNumberFormatter($this);
+		if ($this->_numberFormatter === null) {
+			$this->_numberFormatter = new CNumberFormatter($this);
+		}
+
 		return $this->_numberFormatter;
 	}
 
@@ -139,8 +144,10 @@ class CLocale extends CComponent
 	 */
 	public function getDateFormatter()
 	{
-		if($this->_dateFormatter===null)
-			$this->_dateFormatter=new CDateFormatter($this);
+		if ($this->_dateFormatter === null) {
+			$this->_dateFormatter = new CDateFormatter($this);
+		}
+
 		return $this->_dateFormatter;
 	}
 
@@ -200,12 +207,13 @@ class CLocale extends CComponent
 	 * @param boolean $standAlone whether the month name should be returned in stand-alone format
 	 * @return string the month name
 	 */
-	public function getMonthName($month,$width='wide',$standAlone=false)
+	public function getMonthName($month, $width = 'wide', $standAlone = false)
 	{
-		if($standAlone)
+		if ($standAlone) {
 			return isset($this->_data['monthNamesSA'][$width][$month]) ? $this->_data['monthNamesSA'][$width][$month] : $this->_data['monthNames'][$width][$month];
-		else
+		} else {
 			return isset($this->_data['monthNames'][$width][$month]) ? $this->_data['monthNames'][$width][$month] : $this->_data['monthNamesSA'][$width][$month];
+		}
 	}
 
 	/**
@@ -214,12 +222,13 @@ class CLocale extends CComponent
 	 * @param boolean $standAlone whether the month names should be returned in stand-alone format
 	 * @return array month names indexed by month values (1-12)
 	 */
-	public function getMonthNames($width='wide',$standAlone=false)
+	public function getMonthNames($width = 'wide', $standAlone = false)
 	{
-		if($standAlone)
+		if ($standAlone) {
 			return isset($this->_data['monthNamesSA'][$width]) ? $this->_data['monthNamesSA'][$width] : $this->_data['monthNames'][$width];
-		else
+		} else {
 			return isset($this->_data['monthNames'][$width]) ? $this->_data['monthNames'][$width] : $this->_data['monthNamesSA'][$width];
+		}
 	}
 
 	/**
@@ -228,13 +237,14 @@ class CLocale extends CComponent
 	 * @param boolean $standAlone whether the week day name should be returned in stand-alone format
 	 * @return string the weekday name
 	 */
-	public function getWeekDayName($day,$width='wide',$standAlone=false)
+	public function getWeekDayName($day, $width = 'wide', $standAlone = false)
 	{
-		$day=$day%7;
-		if($standAlone)
+		$day = $day % 7;
+		if ($standAlone) {
 			return isset($this->_data['weekDayNamesSA'][$width][$day]) ? $this->_data['weekDayNamesSA'][$width][$day] : $this->_data['weekDayNames'][$width][$day];
-		else
+		} else {
 			return isset($this->_data['weekDayNames'][$width][$day]) ? $this->_data['weekDayNames'][$width][$day] : $this->_data['weekDayNamesSA'][$width][$day];
+		}
 	}
 
 	/**
@@ -243,12 +253,13 @@ class CLocale extends CComponent
 	 * @param boolean $standAlone whether the week day name should be returned in stand-alone format
 	 * @return array the weekday names indexed by weekday values (0-6, 0 means Sunday, 1 Monday, etc.)
 	 */
-	public function getWeekDayNames($width='wide',$standAlone=false)
+	public function getWeekDayNames($width = 'wide', $standAlone = false)
 	{
-		if($standAlone)
+		if ($standAlone) {
 			return isset($this->_data['weekDayNamesSA'][$width]) ? $this->_data['weekDayNamesSA'][$width] : $this->_data['weekDayNames'][$width];
-		else
+		} else {
 			return isset($this->_data['weekDayNames'][$width]) ? $this->_data['weekDayNames'][$width] : $this->_data['weekDayNamesSA'][$width];
+		}
 	}
 
 	/**
@@ -256,7 +267,7 @@ class CLocale extends CComponent
 	 * @param string $width era name width.  It can be 'wide', 'abbreviated' or 'narrow'.
 	 * @return string the era name
 	 */
-	public function getEraName($era,$width='wide')
+	public function getEraName($era, $width = 'wide')
 	{
 		return $this->_data['eraNames'][$width][$era];
 	}
@@ -281,7 +292,7 @@ class CLocale extends CComponent
 	 * @param string $width date format width. It can be 'full', 'long', 'medium' or 'short'.
 	 * @return string date format
 	 */
-	public function getDateFormat($width='medium')
+	public function getDateFormat($width = 'medium')
 	{
 		return $this->_data['dateFormats'][$width];
 	}
@@ -290,7 +301,7 @@ class CLocale extends CComponent
 	 * @param string $width time format width. It can be 'full', 'long', 'medium' or 'short'.
 	 * @return string date format
 	 */
-	public function getTimeFormat($width='medium')
+	public function getTimeFormat($width = 'medium')
 	{
 		return $this->_data['timeFormats'][$width];
 	}
@@ -317,7 +328,7 @@ class CLocale extends CComponent
 	 */
 	public function getPluralRules()
 	{
-		return isset($this->_data['pluralRules']) ? $this->_data['pluralRules'] : array(0=>'true');
+		return isset($this->_data['pluralRules']) ? $this->_data['pluralRules'] : array(0 => 'true');
 	}
 
 	/**
@@ -332,10 +343,10 @@ class CLocale extends CComponent
 		// normalize id
 		$id = $this->getCanonicalID($id);
 		// remove sub tags
-		if(($underscorePosition=strpos($id, '_'))!== false)
-		{
+		if (($underscorePosition = strpos($id, '_')) !== false) {
 			$id = substr($id, 0, $underscorePosition);
 		}
+
 		return $id;
 	}
 
@@ -351,23 +362,18 @@ class CLocale extends CComponent
 		// normalize id
 		$id = $this->getCanonicalID($id);
 		// find sub tags
-		if(($underscorePosition=strpos($id, '_'))!==false)
-		{
+		if (($underscorePosition = strpos($id, '_')) !== false) {
 			$subTag = explode('_', $id);
 			// script sub tags can be distinguished from territory sub tags by length
-			if (strlen($subTag[1])===4)
-			{
+			if (strlen($subTag[1]) === 4) {
 				$id = $subTag[1];
-			}
-			else
-			{
+			} else {
 				$id = null;
 			}
-		}
-		else
-		{
+		} else {
 			$id = null;
 		}
+
 		return $id;
 	}
 
@@ -383,27 +389,20 @@ class CLocale extends CComponent
 		// normalize id
 		$id = $this->getCanonicalID($id);
 		// find sub tags
-		if (($underscorePosition=strpos($id, '_'))!== false)
-		{
+		if (($underscorePosition = strpos($id, '_')) !== false) {
 			$subTag = explode('_', $id);
 			// territory sub tags can be distinguished from script sub tags by length
-			if (isset($subTag[2]) && strlen($subTag[2])<4)
-			{
+			if (isset($subTag[2]) && strlen($subTag[2]) < 4) {
 				$id = $subTag[2];
-			}
-			elseif (strlen($subTag[1])<4)
-			{
+			} elseif (strlen($subTag[1]) < 4) {
 				$id = $subTag[1];
-			}
-			else
-			{
+			} else {
 				$id = null;
 			}
-		}
-		else
-		{
+		} else {
 			$id = null;
 		}
+
 		return $id;
 	}
 
@@ -415,26 +414,18 @@ class CLocale extends CComponent
 	 * @return string the localized name for the id specified. Null if data does not exist.
 	 * @since 1.1.9
 	 */
-	public function getLocaleDisplayName($id=null, $category='languages')
+	public function getLocaleDisplayName($id = null, $category = 'languages')
 	{
 		$id = $this->getCanonicalID($id);
-		if (($category == 'languages') && (isset($this->_data[$category][$id])))
-		{
+		if (($category == 'languages') && (isset($this->_data[$category][$id]))) {
 			return $this->_data[$category][$id];
-		}
-		elseif (($category == 'scripts') && ($val=$this->getScriptID($id)) && (isset($this->_data[$category][$val])))
-		{
+		} elseif (($category == 'scripts') && ($val = $this->getScriptID($id)) && (isset($this->_data[$category][$val]))) {
 			return $this->_data[$category][$val];
-		}
-		elseif (($category == 'territories') && ($val=$this->getTerritoryID($id)) && (isset($this->_data[$category][$val])))
-		{
+		} elseif (($category == 'territories') && ($val = $this->getTerritoryID($id)) && (isset($this->_data[$category][$val]))) {
 			return $this->_data[$category][$val];
-		}
-		elseif (isset($this->_data[$category][$id]))
-		{
+		} elseif (isset($this->_data[$category][$id])) {
 			return $this->_data[$category][$id];
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -447,6 +438,7 @@ class CLocale extends CComponent
 	public function getLanguage($id)
 	{
 		$id = $this->getLanguageID($id);
+
 		return $this->getLocaleDisplayName($id, 'languages');
 	}
 

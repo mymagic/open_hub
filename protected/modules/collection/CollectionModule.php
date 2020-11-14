@@ -256,4 +256,13 @@ class CollectionModule extends WebModule
 
 		return array($source, $target);
 	}
+
+	public function doIndividualsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
 }

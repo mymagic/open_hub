@@ -119,6 +119,24 @@ main:
                     default: false
                     datatype: boolean
                     getter: "Yii::app()->params['moduleDisableNoneCore'];"
+                -   var: params.disableOverride
+                    file: params.php
+                    env: DISABLE_OVERRIDE
+                    title: Disable override functionality
+                    hint: Disable override, the system will ignore it even the override folder exists
+                    example:
+                    default: false
+                    datatype: boolean
+                    getter: "Yii::app()->params['disableOverride'];"
+                -   var: params.enableProfileLog
+                    file: params.php
+                    env: ENABLE_PROFILE_LOG
+                    title: Enable Profiling Log
+                    hint: Show SQL statments and profile log at end of page. Use with caution as it can break API
+                    example:
+                    default: false
+                    datatype: boolean
+                    getter: "Yii::app()->params['enableProfileLog'];"
         -   key: i18n
             title: "Internationalization"
             items:
@@ -246,6 +264,17 @@ main:
                     datatype: password
                     datatype_value:
                     getter: "Yii::app()->components['db']->password"
+                -   var: components.db.schemaCachingDuration
+                    varInstaller: 
+                    file: main.php
+                    env: DB_SCHEMA_CACHE_DURATION
+                    title: Database Schema cache duration
+                    hint: Number of seconds that table metadata can remain valid in cache. Use 0 or negative value to indicate not caching schema. If greater than 0 and the primary cache is enabled, the table metadata will be cached.
+                    example: 
+                    default: 0
+                    datatype: integer
+                    datatype_value:
+                    getter: "Yii::app()->components['db']->schemaCachingDuration"
         -   key: neo4j
             title: "Neo4J"
             items:

@@ -49,6 +49,11 @@ class Interest extends InterestBase
 			Neo4jInterest::model($this)->sync();
 		}
 
+		if (!empty($this->user_id)) {
+			$cacheId = sprintf('%s::%s-%s', 'Interest', 'userCache', sha1(json_encode(array('v1', $this->user_id))));
+			HUB::clearCache($cacheId);
+		}
+
 		return parent::afterSave();
 	}
 

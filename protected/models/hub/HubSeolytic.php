@@ -19,19 +19,28 @@ class HubSeolytic
 {
 	public static function getMatchingSeolytic($urlPath)
 	{
-		$seolytics = Seolytic::model()->findAll(array('condition' => 'is_active=1', 'order' => 'ordering ASC'));
-		if (!empty($seolytics)) {
-			foreach ($seolytics as $seolytic) {
-				//echo sprintf('%s vs %s', $seolytic->path_pattern, $urlPath);exit;
-				$matches = array();
-				preg_match($seolytic->path_pattern, $urlPath, $matches);
-				//print_r($matches);exit;
-				if (!empty($matches)) {
-					return $seolytic;
+		$return = null;
+		$useCache = Yii::app()->params['cache'];
+		$cacheId = sprintf('%s::%s-%s', 'HubSeolytic', 'getMatchingSeolytic', sha1(json_encode(array('v1', $urlPath))));
+		$return = Yii::app()->cache->get($cacheId);
+		if ($return === false || $useCache === false) {
+			$seolytics = Seolytic::model()->findAll(array('condition' => 'is_active=1', 'order' => 'ordering ASC'));
+			if (!empty($seolytics)) {
+				foreach ($seolytics as $seolytic) {
+					//echo sprintf('%s vs %s', $seolytic->path_pattern, $urlPath);exit;
+					$matches = array();
+					preg_match($seolytic->path_pattern, $urlPath, $matches);
+					//print_r($matches);exit;
+					if (!empty($matches)) {
+						$return = $seolytic;
+						break;
+					}
 				}
 			}
+
+			Yii::app()->cache->set($cacheId, $return, 3600);
 		}
 
-		return null;
+		return $return;
 	}
 }
