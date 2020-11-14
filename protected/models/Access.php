@@ -82,20 +82,20 @@ class Access extends AccessBase
 	 * @param string $controler controller file name
 	 * @param mixed $actions string/array of action
 	 * @param mixed $roles string/array of role (available roles: superAdmin, developer, admin, roleManager, adminManager, contentManager, memberManager, reportManager, ecosystem)
-	 * 
+	 *
 	 * @return boolean
-	 **/  
+	 **/
 	public function setAccessRole($module, $controller, $actions, $roles)
 	{
-		if(empty($controller)){
+		if (empty($controller)) {
 			return false;
 		}
 
-		if(!is_array($actions)){
+		if (!is_array($actions)) {
 			$actions = [$actions];
 		}
 
-		if(!is_array($roles)){
+		if (!is_array($roles)) {
 			$roles = [$roles];
 		}
 
@@ -105,15 +105,14 @@ class Access extends AccessBase
 		$actions = array_filter($actions);
 		$roles = array_filter($roles);
 
-		if(!empty($actions)){
-			foreach($actions as $action)
-			{
+		if (!empty($actions)) {
+			foreach ($actions as $action) {
 				$route = [$module, $controller_id, $action];
 				$route = array_filter($route);
 				$route = implode('/', $route);
-				
+
 				$access_id = self::isCodeExists($route, '');
-				if($access_id===false){
+				if ($access_id === false) {
 					$mAccess = new Access;
 					$mAccess->code = $route;
 					$mAccess->title = $route;
@@ -125,15 +124,14 @@ class Access extends AccessBase
 
 					$access_id = $mAccess->id;
 				}
-				
-				if(!empty($access_id) && !empty($roles)){
-					foreach($roles as $role)
-					{
+
+				if (!empty($access_id) && !empty($roles)) {
+					foreach ($roles as $role) {
 						$role_id = Role::code2id($role);
-						if(!empty($role_id)){
+						if (!empty($role_id)) {
 							// check if record already exist
 							$mRole2Access = Role2Access::model()->findByAttributes(['role_id' => $role_id, 'access_id' => $access_id]);
-							if($mRole2Access===null){
+							if ($mRole2Access === null) {
 								$mRole2Access = new Role2Access;
 								$mRole2Access->role_id = $role_id;
 								$mRole2Access->access_id = $access_id;
@@ -144,6 +142,14 @@ class Access extends AccessBase
 				}
 			}
 		}
+
 		return true;
+	}
+
+	protected function afterSave()
+	{
+		HUB::clearCache();
+
+		return parent::afterSave();
 	}
 }

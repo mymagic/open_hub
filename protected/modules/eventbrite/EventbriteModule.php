@@ -132,4 +132,16 @@ class EventbriteModule extends WebModule
 				break;
 		}
 	}
+
+	public function doOrganizationsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+
+		$sql = sprintf("UPDATE eventbrite_organization_webhook SET organization_code = '%s' WHERE organization_code = '%s'", $target->code, $source->code);
+		Yii::app()->db->createCommand($sql)->execute();
+
+		$transaction->commit();
+
+		return array($source, $target);
+	}
 }

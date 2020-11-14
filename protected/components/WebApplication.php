@@ -19,6 +19,10 @@ class WebApplication extends CWebApplication
 {
 	public function createController($route, $owner = null)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('WebApplication::createController');
+		}
+
 		if ($owner === null) {
 			$owner = $this;
 		}
@@ -57,25 +61,34 @@ class WebApplication extends CWebApplication
 
 			// exiang: modification start:
 			// check is override controller files exists, if yes, use it instead
-			$overrideClassFile = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $className . '.php';
-			if (file_exists($overrideClassFile)) {
-				$classFile = $overrideClassFile;
-				$basePath = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'controllers';
+			if (!Yii::app()->params['disableOverride']) {
+				if (Yii::app()->params['enableProfileLog']) {
+					Yii::beginProfile('WebApplication::createController::override');
+				}
+				$overrideClassFile = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $className . '.php';
+				if (file_exists($overrideClassFile)) {
+					$classFile = $overrideClassFile;
+					$basePath = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'controllers';
 
-				// should we override the view?
-				// if yes, user will need to duplicate entire view directory contents to override/views
-				// if no, user will needs to use $this->render('application.overrides.views.site.about'); when rendering views
-				$this->setViewPath(Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'views');
+					// should we override the view?
+					// if yes, user will need to duplicate entire view directory contents to override/views
+					// if no, user will needs to use $this->render('application.overrides.views.site.about'); when rendering views
+					$this->setViewPath(Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'views');
+				}
+
+				// override layouts
+				// if custom layouts found at override folder, system will swtich the base layout path to it
+				$overrideLayoutDirectory = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts';
+				if (is_dir($overrideLayoutDirectory)) {
+					$this->setLayoutPath($overrideLayoutDirectory);
+				}
+
+				Yii::setPathOfAlias('layouts', $this->getLayoutPath());
+
+				if (Yii::app()->params['enableProfileLog']) {
+					Yii::endProfile('WebApplication::createController::override');
+				}
 			}
-
-			// override layouts
-			// if custom layouts found at override folder, system will swtich the base layout path to it
-			$overrideLayoutDirectory = Yii::getPathOfAlias('overrides') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts';
-			if (is_dir($overrideLayoutDirectory)) {
-				$this->setLayoutPath($overrideLayoutDirectory);
-			}
-
-			Yii::setPathOfAlias('layouts', $this->getLayoutPath());
 			// exiang: modification end
 
 			if ($owner->controllerNamespace !== null) {
@@ -98,6 +111,10 @@ class WebApplication extends CWebApplication
 			}
 			$controllerID .= $id;
 			$basePath .= DIRECTORY_SEPARATOR . $id;
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('WebApplication::createController');
 		}
 	}
 }

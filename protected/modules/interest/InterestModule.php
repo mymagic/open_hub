@@ -64,19 +64,19 @@ class InterestModule extends WebModule
 				return;
 			}
 
-			$actions['boilerplatStart'][] = array(
+			/*$actions['boilerplatStart'][] = array(
 				'visual' => 'primary',
 				'label' => 'Backend Action 1',
 				'title' => 'Backend Action 1 short description',
 				'url' => Yii::app()->controller->createUrl('/boilerplatStart/backend/action1', array('id' => $model->id)),
-			);
+			);*/
 		} elseif ($realm == 'cpanel') {
-			$actions['boilerplatStart'][] = array(
+			/*$actions['boilerplatStart'][] = array(
 				'visual' => 'primary',
 				'label' => 'Frontend Action 1',
 				'title' => 'Frontend Action 1 short description',
 				'url' => Yii::app()->controller->createUrl('/boilerplatStart/frontend/action1', array('id' => $model->id)),
-			);
+			);*/
 		}
 	}
 
@@ -314,5 +314,30 @@ class InterestModule extends WebModule
 		$transaction->commit();
 
 		return array($source, $target);
+	}
+
+	public function beforeAction($action)
+	{
+		if (
+			!Yii::app()->user->isGuest
+			/*&& Yii::app()->db->schema->getTable('interest', true)
+			&& Yii::app()->db->schema->getTable('interest_user2sdg', true)
+			&& Yii::app()->db->schema->getTable('interest_user2cluster', true)
+			&& Yii::app()->db->schema->getTable('interest_user2startup_stage', true)*/
+		) {
+			$interest = HubInterest::getInterestByUserId(Yii::app()->user->id);
+			if (empty($interest)) {
+				if (
+					!($action->controller->getId() === 'site' && $action->getId() === 'error') &&
+					!($action->controller->getId() === 'site' && $action->getId() === 'logout') &&
+					!($action->controller->getId() === 'welcome' && $action->getId() === 'index') &&
+					!($action->controller->getId() === 'api' && $action->getId() === 'member') &&
+					!($action->controller->getId() === 'welcome' && $action->getId() === 'skip') &&
+					!($action->controller->getId() === 'v1')
+				) {
+					$this->redirect('/interest/welcome');
+				}
+			}
+		}
 	}
 }

@@ -38,10 +38,16 @@ $config = dirname(__FILE__) . '/../protected/config/main.php';
 include_once dirname(__FILE__) . '/../protected/config/path.php';
 require_once dirname(__FILE__) . '/../protected/components/WebApplication.php';
 
+if (filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN)) {
+	Yii::beginProfile('appRun');
+}
 //$app = Yii::createWebApplication($config);
 $app = new WebApplication($config);
 //$app->attachBehavior('WebBehavior', 'application.yeebase.components.behaviors.WebBehavior');
 $app->run();
+if (filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN)) {
+	Yii::endProfile('appRun');
+}
 
 function envKeySplit($array)
 {

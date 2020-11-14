@@ -21,6 +21,19 @@ class HubInterest
 		return array();
 	}
 
+	public function getInterestByUserId($userId)
+	{
+		$useCache = Yii::app()->params['cache'];
+		$cacheId = sprintf('%s::%s-%s', 'Interest', 'userCache', sha1(json_encode(array('v1', $userId))));
+		$return = Yii::app()->cache->get($cacheId);
+		if ($return === false || $useCache === false) {
+			$return = Interest::model()->find('user_id=:userId', array(':userId' => $userId));
+			Yii::app()->cache->set($cacheId, $return, 3600);
+		}
+
+		return $return;
+	}
+
 	public function getRecommendationForResources()
 	{
 		try {

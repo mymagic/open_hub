@@ -100,15 +100,15 @@ $return = array(
 		// uncomment the following to use a MySQL database
 		'db' => array(
 			'connectionString' => sprintf('mysql:host=%s;port=%d;dbname=%s', getenv('DB_HOST', 'localhost'), getenv('DB_PORT', '3306'), getenv('DB_DATABASE', 'default')),
-			'emulatePrepare' => true,
+			'emulatePrepare' => true, // must set to true or findAll() with params will give error
 			'username' => getenv('DB_USERNAME', 'default'),
 			'password' => getenv('DB_PASSWORD', 'secret'),
 			'charset' => 'utf8',
 			'initSQLs' => array("set time_zone='+00:00';"),
-			'emulatePrepare' => true,
-			'enableParamLogging' => false,
-			'enableProfiling' => false,
+			'enableParamLogging' => filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN),
+			'enableProfiling' => filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN),
 			'pdoClass' => 'NestedPDO',
+			'schemaCachingDuration' => getenv('DB_SCHEMA_CACHE_DURATION', '0'),
 		),
 		'cache' => array(
 			'class' => getenv('CACHE_DRIVER', 'CFileCache'),
@@ -127,6 +127,12 @@ $return = array(
 			'routes' => array(
 				array(
 					'class' => 'CFileLogRoute',
+					'levels' => 'trace, error, warning, info',
+					'logFile' => 'module',
+					'categories' => 'module.*'
+				),
+				array(
+					'class' => 'CFileLogRoute',
 					'levels' => 'error, info',
 					'logFile' => 'paypal',
 					'categories' => 'paypal.*'
@@ -141,12 +147,17 @@ $return = array(
 					'levels' => 'error',
 					'logFile' => 'error.log',
 				),
-				 array(
+				array(
 					'class' => 'application.yeebase.extensions.ys.ProfileFileLogRoute',
 					'levels' => 'profile',
 					'report' => 'callstack',
 					'logFile' => 'db.log',
 				),
+				array(
+					'class' => 'CProfileLogRoute',
+					'report' => 'summary',
+					'enabled' => filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN)
+				)
 			),
 		),
 		'esLog' => array(
@@ -222,9 +233,15 @@ if (!array_key_exists('moduleDisableNoneCore', $return['params']) || (array_key_
 	$handle = opendir($modules_dir);
 	while (false !== ($file = readdir($handle))) {
 		if ($file != '.' && $file != '..' && is_dir($modules_dir . $file) && file_exists($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php')) {
+			//$startTime = Yii::getLogger()->getExecutionTime();
+
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'base.php'));
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.base.php'));
 			$return = CMap::mergeArray($return, include($modules_dir . $file . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'main.php'));
+
+			//$endTime = Yii::getLogger()->getExecutionTime();
+
+			//echo sprintf('<p>%0.5f - %s</p>',$endTime-$startTime, $modules_dir.$file);
 		}
 	}
 	closedir($handle);

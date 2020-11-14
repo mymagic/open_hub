@@ -568,7 +568,7 @@ class BoilerplateStartModule extends WebModule
 	public function doOrganizationsMerge($source, $target)
 	{
 		$transaction = Yii::app()->db->beginTransaction();
-
+		// todo
 		$transaction->commit();
 
 		return array($source, $target);
@@ -577,7 +577,7 @@ class BoilerplateStartModule extends WebModule
 	public function doIndividualsMerge($source, $target)
 	{
 		$transaction = Yii::app()->db->beginTransaction();
-
+		// todo
 		$transaction->commit();
 
 		return array($source, $target);

@@ -61,6 +61,8 @@ class Seolytic extends SeolyticBase
 		// custom code here
 		// ...
 
+		HUB::clearCache();
+
 		return parent::afterSave();
 	}
 

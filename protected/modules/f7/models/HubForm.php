@@ -74,6 +74,10 @@ class HubForm
 
 	public static function convertJsonToHtml($isEnabled, $json, $data, $slug, $sid, $realm = 'frontend')
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::convertJsonToHtml');
+		}
+
 		$htmlBody = '';
 		$htmlForm = '';
 		$decoded = json_decode($json, true);
@@ -87,21 +91,18 @@ class HubForm
 			$jsTags = self::getJavaScripts($jScripts);
 		}
 
-		foreach ($decoded as $item) {
+		foreach ($decoded as $index => $item) {
 			$key = $item['tag'];
 			$value = $item['prop'];
 
 			$members = null;
-			if ($key === 'section') {
-				$members = $item['members'];
-			}
-
 			$innerElements = null;
-			if ($key === 'group') {
+			if (isset($item['members'])) {
+				$members = $item['members'];
 				$innerElements = $item['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $index, $realm, 0);
 		}
 
 		$csrfTokenName = Yii::app()->request->csrfTokenName;
@@ -163,6 +164,10 @@ class HubForm
 			}
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::convertJsonToHtml');
+		}
+
 		return $htmlForm;
 	}
 
@@ -217,82 +222,115 @@ class HubForm
 		return $notifyMaker;
 	}
 
-	protected function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $realm = 'frontend')
+	protected static function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $index, $realm = 'frontend', $level = 0)
 	{
-		// exiang: daren code caused issues in form with suddenly appended upload component at bottom of page
-		// $value = self::switchLanguage($value);
+		// prevent infinite loop due to bad structure
+		if ($level > 1) {
+			return '';
+		}
 
-		$htmlTag = null;
-		switch ($key) {
-			case 'section':
-				$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
-				break;
-			case 'group':
-				$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $realm);
-				break;
-			case 'label':
-				$htmlTag = self::getLabelTag($value, $formType);
-				break;
-			case 'headline':
-				$htmlTag = self::getHeadlineTag($value, $realm);
-				break;
-			case 'html':
-				$htmlTag = self::getCustomHtmlTag($value, $realm);
-				break;
-			case 'break':
-				$htmlTag = self::getBreakTag($value, $realm);
-				break;
-			case 'divider':
-				$htmlTag = self::getDividerTag($value, $realm);
-				break;
-			case 'button':
-				$htmlTag = self::getButtonTag($isEnabled, $value);
-				break;
-			case 'googleplace':
-				$htmlTag = self::getGooglePlaceTag($isEnabled, $value, $decodedData);
-				break;
-			case 'url':
-				$htmlTag = self::getUrlTag($isEnabled, $value, $decodedData);
-				break;
-			case 'email':
-				$htmlTag = self::getEmailTag($isEnabled, $value, $decodedData);
-				break;
-			case 'phone':
-				$htmlTag = self::getPhoneTag($isEnabled, $value, $decodedData);
-				break;
-			case 'textbox':
-				$htmlTag = self::getTextboxTag($isEnabled, $value, $decodedData);
-				break;
-			case 'number':
-				$htmlTag = self::getNumberTag($isEnabled, $value, $decodedData);
-				break;
-			case 'textarea':
-				$htmlTag = self::getTextareaTag($isEnabled, $value, $decodedData);
-				break;
-			case 'list':
-				$htmlTag = self::getListTag($isEnabled, $value, $decodedData, $realm);
-				break;
-			case 'checkbox':
-				$htmlTag = self::getCheckboxTag($isEnabled, $value, $decodedData);
-				break;
-			case 'radio':
-				$htmlTag = self::getRadiobuttonTag($isEnabled, $value, $decodedData);
-				break;
-			case 'booleanButton':
-				$htmlTag = self::getBooleanButtonTag($isEnabled, $value, $decodedData);
-				break;
-			case preg_match('/upload.*/', $key) ? true : false:
-				$htmlTag = self::getUploadTag($isEnabled, $value, $decodedData);
-				break;
-			case 'rating':
-				$htmlTag = self::getRatingTag($isEnabled, $value, $decodedData);
-				break;
-			case 'tabular':
-				$htmlTag = self::getTabularTag($isEnabled, $formType, $value, $decodedData, $realm);
-				break;
-			default:
-				throw new Exception('Item is not supported: ' . $key);
-				break;
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getHtmlTag');
+		}
+
+		try {
+			$htmlTag = null;
+			switch ($key) {
+				case 'section':
+					$htmlTag = self::getSectionTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $index, $realm, $level);
+					break;
+				case 'group':
+					$htmlTag = self::getGroupTag($isEnabled, $formType, $value, $members, $innerElements, $decodedData, $index, $realm, $level);
+					break;
+				case 'label':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getLabelTag($value, $formType);
+					break;
+				case 'headline':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getHeadlineTag($value, $realm);
+					break;
+				case 'html':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getCustomHtmlTag($value, $realm);
+					break;
+				case 'break':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getBreakTag($value, $realm);
+					break;
+				case 'divider':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getDividerTag($value, $realm);
+					break;
+				case 'button':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getButtonTag($isEnabled, $value);
+					break;
+				case 'googleplace':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getGooglePlaceTag($isEnabled, $value, $decodedData);
+					break;
+				case 'url':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getUrlTag($isEnabled, $value, $decodedData);
+					break;
+				case 'email':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getEmailTag($isEnabled, $value, $decodedData);
+					break;
+				case 'phone':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getPhoneTag($isEnabled, $value, $decodedData);
+					break;
+				case 'textbox':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getTextboxTag($isEnabled, $value, $decodedData);
+					break;
+				case 'number':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getNumberTag($isEnabled, $value, $decodedData);
+					break;
+				case 'textarea':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getTextareaTag($isEnabled, $value, $decodedData);
+					break;
+				case 'list':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getListTag($isEnabled, $value, $decodedData, $realm);
+					break;
+				case 'checkbox':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getCheckboxTag($isEnabled, $value, $decodedData);
+					break;
+				case 'radio':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getRadiobuttonTag($isEnabled, $value, $decodedData);
+					break;
+				case 'booleanButton':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getBooleanButtonTag($isEnabled, $value, $decodedData);
+					break;
+				case preg_match('/upload.*/', $key) ? true : false:
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getUploadTag($isEnabled, $value, $decodedData);
+					break;
+				case 'rating':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getRatingTag($isEnabled, $value, $decodedData);
+					break;
+				case 'tabular':
+					$value = self::switchLanguage($value);
+					$htmlTag = self::getTabularTag($isEnabled, $formType, $value, $decodedData, $realm);
+					break;
+				default:
+					throw new Exception('Item is not supported: ' . $key);
+					break;
+			}
+		} catch (Exception $e) {
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getHtmlTag');
 		}
 
 		return $htmlTag;
@@ -514,22 +552,33 @@ class HubForm
 		return $tag;
 	}
 
-	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
+	protected function getGroupTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $index, $realm = 'frontend', $level = 0)
 	{
-		$innerHtml = '';
-		foreach ($innerElements as $element) {
-			$key = $element['tag'];
-			$value = $element['prop'];
-			if ($key === 'group') {
-				// throw new Exception('We dont support multiple level of groupping!');
-				$members = $element['members'];
-				$innerElements = $element['members'];
-			}
-
-			$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getGroupTag-' . $index);
 		}
 
-		$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', self::formatCss($params['css'], $isEnabled), $innerHtml);
+		$innerHtml = '';
+		try {
+			foreach ($innerElements as $innerIndex => $element) {
+				$key = $element['tag'];
+				$value = $element['prop'];
+				if ($key === 'group') {
+					//throw new Exception('We dont support multiple level of groupping!');
+					$members = $element['members'];
+					$innerElements = $element['members'];
+				}
+
+				$innerHtml .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $innerIndex, $realm, $level + 1);
+			}
+
+			$html = sprintf('<div class="form-group margin-bottom-lg %s">%s</div>', self::formatCss($params['css'], $isEnabled), $innerHtml);
+		} catch (Exception $e) {
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getGroupTag-' . $index);
+		}
 
 		return $html;
 	}
@@ -591,13 +640,25 @@ class HubForm
 
 	protected function getCustomHtmlTag($params, $realm = 'frontend')
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getCustomHtmlTag');
+		}
+
 		$html = sprintf('<div>%s</div>', $params['value']);
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getCustomHtmlTag');
+		}
 
 		return $html;
 	}
 
 	protected function getUrlTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getUrlTag');
+		}
+
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -613,11 +674,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getUrlTag');
+		}
+
 		return $html;
 	}
 
 	protected function getEmailTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getEmailTag');
+		}
+
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -633,11 +702,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getEmailTag');
+		}
+
 		return $html;
 	}
 
 	protected function getPhoneTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getPhoneTag');
+		}
+
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -652,6 +729,10 @@ class HubForm
 
 		if (!empty($params['hint'])) {
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getPhoneTag');
 		}
 
 		return $html;
@@ -677,6 +758,10 @@ class HubForm
 			return '';
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getButtonTag');
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 		$btns = '';
 
@@ -696,11 +781,19 @@ class HubForm
             </div>
             ', $params['css1'], $params['css2'], $btns);
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getButtonTag');
+		}
+
 		return $html;
 	}
 
 	protected function getTextboxTag($isEnabled, $params, $decodedData, $linkText = '')
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getTextboxTag');
+		}
+
 		if (isset($params['value'])) {
 			$value = $params['value'];
 		}
@@ -774,11 +867,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getTextboxTag');
+		}
+
 		return $html;
 	}
 
 	protected function getNumberTag($isEnabled, $params, $decodedData, $linkText = '')
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getNumberTag');
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 
 		$modelClass = $params['model_mapping'][$params['name']];
@@ -837,6 +938,10 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getNumberTag');
+		}
+
 		return $html;
 	}
 
@@ -854,6 +959,10 @@ class HubForm
 
 	protected function getTextareaTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getTextareaTag');
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
@@ -865,11 +974,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getTextareaTag');
+		}
+
 		return $html;
 	}
 
 	protected function getListTag($isEnabled, $params, $decodedData, $realm = 'frontend')
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getListTag');
+		}
+
 		$html = '';
 		$options = '';
 		$disable = $isEnabled ? '' : 'disabled';
@@ -881,9 +998,9 @@ class HubForm
 
 		if (isset($params['model_mapping'])) {
 			$dataClass = $params['model_mapping'][$params['name']];
-			$orgs = self::getMappedModelData($dataClass, $params['model_mapping']);
+			$list = self::getMappedModelData($dataClass, $params['model_mapping']);
 
-			if ((empty($orgs) || count($orgs) === 0) && strtolower($dataClass) === 'organization') {
+			if ((empty($list) || count($list) === 0) && strtolower($dataClass) === 'organization') {
 				return self::getTextboxTag($isEnabled, $params, $decodedData, 'Create');
 			}
 		}
@@ -898,7 +1015,7 @@ class HubForm
 
 			$options .= $defaultItem;
 
-			if (empty($orgs) || count($orgs) === 0) {
+			if (empty($list) || count($list) === 0) {
 				foreach ($params['items'] as $item) {
 					if ($selectedItem === $item['text']) {
 						$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
@@ -907,7 +1024,7 @@ class HubForm
 					}
 				}
 			} else {
-				foreach ($orgs as $item) {
+				foreach ($list as $item) {
 					// $item = ucwords(strtolower($item)); // ys: need to remove this line although might break as it should not be formatted and can break preset
 					if ($selectedItem === $item) {
 						$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
@@ -927,11 +1044,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getListTag');
+		}
+
 		return $html;
 	}
 
 	protected function getCheckboxTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getCheckboxTag');
+		}
+
 		$html = '';
 		$disable = $isEnabled ? '' : 'disabled';
 
@@ -988,11 +1113,19 @@ class HubForm
 			//structure is wrong or missing isGroup property.
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getCheckboxTag');
+		}
+
 		return $html;
 	}
 
 	protected function getRadiobuttonTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getRadiobuttonTag');
+		}
+
 		$radioHTML = '';
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -1041,11 +1174,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getRadiobuttonTag');
+		}
+
 		return $html;
 	}
 
 	protected function getBooleanButtonTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getBooleanButtonTag');
+		}
+
 		$radioHTML = '';
 
 		$disable = $isEnabled ? '' : 'disabled';
@@ -1079,11 +1220,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endPRofile('HubForm::getBooleanButtonTag');
+		}
+
 		return $html;
 	}
 
-	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $realm = 'frontend')
+	protected function getSectionTag($isEnabled, $formType, $params, $members, $innerElements, $decodedData, $index, $realm = 'frontend', $level = 0)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getSectionTag-' . $index);
+		}
+
 		if ($params['mode'] == 'accordion') {
 			$html = sprintf('<div class="panel-group margin-bottom-lg %s" id="%s" role="tablist" aria-multiselectable="true" style="%s">', $params['class'], $params['name'], $params['style']);
 
@@ -1102,19 +1251,19 @@ class HubForm
 		$htmlBody = '';
 		$seen = 0;
 		$label = '';
-		foreach ($members as $element) {
+		foreach ($members as $innerIndex => $element) {
 			$key = $element['tag'];
 			$value = $element['prop'];
 			$members = null;
 			if ($key === 'section') {
 				$members = $element['members'];
 			} elseif ($key == 'group') {
-				// throw new Exception('We dont support multiple level of groupping!');
+				//throw new Exception('We dont support multiple level of groupping!');
 				$members = $element['members'];
 				$innerElements = $element['members'];
 			}
 
-			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $realm);
+			$htmlBody .= self::getHtmlTag($isEnabled, $key, $formType, $value, $members, $innerElements, $decodedData, $innerIndex, $realm, $level + 1);
 		}
 
 		$html .= $htmlBody;
@@ -1125,14 +1274,23 @@ class HubForm
 			$html .= '</section>';
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getSectionTag-' . $index);
+		}
+
 		return $html;
 	}
 
 	protected function getUploadTag($isEnabled, $params, $decodedData)
 	{
 		if (is_null($params)) {
-			return;
+			return '';
 		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getUploadTag');
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 
 		// stupid hardcoded 'uploadfile.aws_path'
@@ -1163,11 +1321,19 @@ class HubForm
 		}
 		$html .= '</div>';
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getUploadTag');
+		}
+
 		return $html;
 	}
 
 	public function getRatingTag($isEnabled, $params, $decodedData)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getRatingTag');
+		}
+
 		if (substr($params['name'], 0, strlen('voted-')) != 'voted-') {
 			$params['name'] = sprintf('voted-%s', $params['name']);
 		}
@@ -1265,11 +1431,19 @@ class HubForm
 			$html .= sprintf('<span class="help-block"><small>%s</small></span>', $params['hint']);
 		}
 
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getRatingTag');
+		}
+
 		return $html;
 	}
 
 	public function getTabularTag($isEnabled, $formType, $params, $decodedData, $realm)
 	{
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::beginProfile('HubForm::getTabularTag');
+		}
+
 		$disable = $isEnabled ? '' : 'disabled';
 		$seed = explode('-', $params['name'])[1];
 		$value = empty($decodedData[$params['name']]) ? $params['value'] : $decodedData[$params['name']];
@@ -1377,30 +1551,39 @@ class HubForm
 
 					switch ($key) {
 						case 'label':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getLabelTag($itemParams, $formType);
 							break;
 						case 'url':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getUrlTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'email':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getEmailTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'phone':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getPhoneTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'textbox':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getTextboxTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'number':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getNumberTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'textarea':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getTextareaTag($isEnabled, $itemParams, $decodedData);
 							break;
 						case 'list':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getListTag($isEnabled, $itemParams, $decodedData, $realm);
 							break;
 						case 'booleanButton':
+							$itemParams = self::switchLanguage($itemParams);
 							$htmlTag = self::getBooleanButtonTag($isEnabled, $itemParams, $decodedData);
 							break;
 						default:
@@ -1458,6 +1641,10 @@ class HubForm
 				}
 			}); 
 			</script>', $params['name'], $params['name'], $params['name'], $limitTabularDynamicRow, $params['name'], $params['name'], $params['name'], $params['name']);
+		}
+
+		if (Yii::app()->params['enableProfileLog']) {
+			Yii::endProfile('HubForm::getTabularTag');
 		}
 
 		return $html;
@@ -1629,6 +1816,11 @@ class HubForm
 				return "Please enter a valid URL for the field $labelTitle.";
 			}
 		}
+		elseif($tag == 'rating'){
+			if (empty($postedData["voted-".$value])) {
+				return empty($error) ? "$labelTitle is required." : $error;
+			}
+		}
 		/*elseif ($tag === 'upload') {
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
@@ -1662,14 +1854,16 @@ class HubForm
 		if (empty($model)) {
 			return '';
 		}
-		$organizations = array();
-		try {
-			$organizations = HubOrganization::getUserActiveOrganizations(HUB::getSessionUsername());
-		} catch (Exception $e) {
-		}
 
 		if (strtolower($model) == 'organization') {
-			return array_map(create_function('$o', 'return $o->title;'), $organizations);
+			$organizations = array();
+			try {
+				$organizations = HubOrganization::getUserActiveOrganizationTitles(HUB::getSessionUsername());
+			} catch (Exception $e) {
+				return '';
+			}
+
+			return array_map(create_function('$o', 'return $o[title];'), $organizations);
 		} elseif (strtolower($model) == 'industry') {
 			$industries = array_map(create_function('$t', 'return $t[title];'), Industry::model()->isActive()->findAll(array('order' => 'title')));
 

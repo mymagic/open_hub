@@ -337,4 +337,22 @@ class JourneyModule extends WebModule
 
 		return $tabs;
 	}
+
+	public function doOrganizationsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
+
+	public function doIndividualsMerge($source, $target)
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		// todo
+		$transaction->commit();
+
+		return array($source, $target);
+	}
 }
