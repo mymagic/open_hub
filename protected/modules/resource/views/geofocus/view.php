@@ -29,6 +29,14 @@ $this->menu = array(
 
 <h1><?php echo Yii::t('backend', 'View Resource Geofocus'); ?></h1>
 
+<div class="well text-right">
+	<?php if ($model->is_active): ?>
+	<a class="btn btn-danger" href="<?php echo $this->createUrl('deactivate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-trash') ?> <?php echo Yii::t('backend', 'Deactivate') ?></a>
+	<?php else: ?>
+	<a class="btn btn-warning" href="<?php echo $this->createUrl('activate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-recycle') ?> <?php echo Yii::t('backend', 'Activate') ?></a>
+	<?php endif; ?>
+</div>
+
 <div class="crud-view">
 <?php $this->widget('application.components.widgets.DetailView', array(
 	'data' => $model,
@@ -36,6 +44,7 @@ $this->menu = array(
 		'id',
 		'slug',
 		//'title',
+		array('name' => 'is_active', 'type' => 'raw', 'value' => Html::renderBoolean($model->is_active)),
 		array('label' => $model->attributeLabel('date_added'), 'value' => Html::formatDateTime($model->date_added, 'long', 'medium')),
 		array('label' => $model->attributeLabel('date_modified'), 'value' => Html::formatDateTime($model->date_modified, 'long', 'medium')),
 	),

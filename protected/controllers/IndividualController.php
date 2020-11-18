@@ -51,8 +51,8 @@ class IndividualController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('overview', 'list', 'view', 'create', 'update', 'admin', 'getTagsBackend', 'merge', 'getIndividualNodes', 'doMerge', 'doMergeConfirmed',
-				'getIndividual2Emails', 'deleteIndividual2Email', 'addIndividual2Email', 'toggleIndividual2EmailStatus', 'requestJoinEmail', ),
+				'actions' => array('overview', 'list', 'view', 'create', 'update', 'admin', 'adminTrash', 'getTagsBackend', 'merge', 'getIndividualNodes', 'doMerge', 'doMergeConfirmed',
+				'getIndividual2Emails', 'deleteIndividual2Email', 'addIndividual2Email', 'toggleIndividual2EmailStatus', 'requestJoinEmail', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -136,6 +136,72 @@ class IndividualController extends Controller
 			'tabs' => $tabs,
 			'user' => $user,
 		));
+	}
+
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->full_name]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->full_name]), Notice_INFO);
+			$this->redirect(array('individual/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Individual '#%s - %s'", $model->id, $model->full_name), 'individual', array('trigger' => 'IndividualController::actionDeactivateConfirmed', 'model' => 'Individual', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Individual '{title}' is successfully deactivated.", ['{title}' => $model->full_name]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate individual '{title}' due to unknown reason.", ['{title}' => $model->full_name]), Notice_ERROR);
+		}
+
+		$this->redirect(array('individual/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->full_name]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->full_name]), Notice_INFO);
+			$this->redirect(array('individual/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Individual '#%s - %s'", $model->id, $model->full_name), 'individual', array('trigger' => 'IndividualController::actionActivateConfirmed', 'model' => 'Individual', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Individual '{title}' is successfully activated.", ['{title}' => $model->full_name]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate individual '{title}' due to unknown reason.", ['{title}' => $model->full_name]), Notice_ERROR);
+		}
+
+		$this->redirect(array('individual/view', 'id' => $id));
 	}
 
 	public function actionOverview()
@@ -249,7 +315,6 @@ class IndividualController extends Controller
 	{
 		$model = new Individual('search');
 		$model->unsetAttributes();  // clear any default values
-		$model->is_active = 1;
 
 		if (isset($_GET['Individual'])) {
 			$model->attributes = $_GET['Individual'];
@@ -257,8 +322,27 @@ class IndividualController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
+			'model' => $model,
+		));
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Individual('search');
+		$model->unsetAttributes();  // clear any default values
+
+		if (isset($_GET['Individual'])) {
+			$model->attributes = $_GET['Individual'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', array(
 			'model' => $model,
 		));
 	}

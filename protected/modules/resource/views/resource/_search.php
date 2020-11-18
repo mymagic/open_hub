@@ -141,19 +141,7 @@
 			<?php echo $form->bsBooleanList($model, 'is_featured', array('nullable' => true)); ?>
 		</div>
 	</div>
-	
-		
-	
 
-
-		
-	<div class="form-group hidden">
-		<?php echo $form->bsLabelFx2($model, 'is_active', array('required' => false)); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_active', array('nullable' => true)); ?>
-		</div>
-	</div>
-	
 		
 	
 

@@ -335,7 +335,7 @@ class InterestModule extends WebModule
 					!($action->controller->getId() === 'welcome' && $action->getId() === 'skip') &&
 					!($action->controller->getId() === 'v1')
 				) {
-					$this->redirect('/interest/welcome');
+					Yii::app()->request->redirect('/interest/welcome');
 				}
 			}
 		}

@@ -18,6 +18,7 @@
 		'class' => 'form-horizontal crud-form',
 		'role' => 'form',
 		'enctype' => 'multipart/form-data',
+		'action' => $model->isNewRecord ? $this->createProxyUrl('/seolytic/create') : $this->createProxyUrl('/seolytic/update', array('id' => $model->id))
 	)
 )); ?>
 

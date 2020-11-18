@@ -54,13 +54,13 @@ class EventGroupController extends Controller
 				'users' => ['*'],
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => ['list', 'view', 'admin'],
+				'actions' => ['list', 'view', 'admin', 'adminTrash'],
 				'users' => ['@'],
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => ['create', 'update', 'delete'],
+				'actions' => ['create', 'update', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'],
 				'users' => ['@'],
 				// 'expression' => '$user->isSuperAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -202,6 +202,72 @@ class EventGroupController extends Controller
 		]);
 	}
 
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('eventGroup/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Event Group '#%s - %s'", $model->id, $model->title), 'eventGroup', array('trigger' => 'EventGroupController::actionDeactivateConfirmed', 'model' => 'EventGroup', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Event Group '{title}' is successfully deactivated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate event group '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('eventGroup/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('eventGroup/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Event Group '#%s - %s'", $model->id, $model->title), 'eventGroup', array('trigger' => 'EventGroupController::actionActivateConfirmed', 'model' => 'EventGroup', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Event Group '{title}' is successfully activated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate event group '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('eventGroup/view', 'id' => $id));
+	}
+
 	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
@@ -258,8 +324,26 @@ class EventGroupController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', [
+			'model' => $model,
+		]);
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new EventGroup('search');
+		$model->unsetAttributes();  // clear any default values
+		if (isset($_GET['EventGroup'])) {
+			$model->attributes = $_GET['EventGroup'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', [
 			'model' => $model,
 		]);
 	}

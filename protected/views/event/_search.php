@@ -133,6 +133,15 @@
 	</div>
 	
 		
+	<div class="form-group">
+		<?php echo $form->bsLabelFx2($model, 'is_cancelled', array('required' => false)); ?>
+		<div class="col-sm-10">
+			<?php echo $form->bsBooleanList($model, 'is_cancelled', array('nullable' => true)); ?>
+		</div>
+	</div>
+	
+		
+		
 	
 
 
@@ -261,15 +270,6 @@
 	</div>
 
 
-		
-	<div class="form-group">
-		<?php echo $form->bsLabelFx2($model, 'is_active', array('required' => false)); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_active', array('nullable' => true)); ?>
-		</div>
-	</div>
-	
-		
 	
 
 

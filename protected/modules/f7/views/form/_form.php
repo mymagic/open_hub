@@ -127,15 +127,6 @@
 		</div>
 	</div>
 
-
-	<div class="form-group <?php echo $model->hasErrors('is_active') ? 'has-error' : '' ?>">
-		<?php echo $form->bsLabelEx2($model, 'is_active'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_active'); ?>
-			<?php echo $form->bsError($model, 'is_active'); ?>
-		</div>
-	</div>
-
 	<div class="form-group <?php echo $model->hasErrors('is_multiple') ? 'has-error' : '' ?>">
 		<?php echo $form->bsLabelEx2($model, 'is_multiple'); ?>
 		<div class="col-sm-10">

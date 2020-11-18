@@ -46,7 +46,7 @@ class ResourceController extends Controller
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('delete', 'admin', 'getTagsBackend'),
+				'actions' => array('delete', 'admin', 'adminTrash', 'getTagsBackend', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -380,8 +380,35 @@ class ResourceController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
+			'model' => $model,
+			'realm' => $realm,
+		));
+	}
+
+	public function actionAdminTrash($realm = 'backend')
+	{
+		if (empty($realm)) {
+			$realm = 'backend';
+		}
+		if ($realm == 'cpanel') {
+			$this->layout = 'layouts.cpanel';
+		}
+		$this->pageTitle = Yii::t('app', 'Manage Resources');
+
+		$model = new Resource('search');
+		$model->unsetAttributes();  // clear any default values
+		if (isset($_GET['Resource'])) {
+			$model->attributes = $_GET['Resource'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', array(
 			'model' => $model,
 			'realm' => $realm,
 		));
@@ -539,5 +566,71 @@ class ResourceController extends Controller
 		}
 		$return['results'] = $results;
 		$this->outputJsonRaw($return);
+	}
+
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('resource/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Resource '#%s - %s'", $model->id, $model->title), 'resource', array('trigger' => 'ResourceController::actionDeactivateConfirmed', 'model' => 'Resource', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Resource '{title}' is successfully deactivated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate resource '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('resource/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('resource/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Resource '#%s - %s'", $model->id, $model->title), 'resource', array('trigger' => 'ResourceController::actionActivateConfirmed', 'model' => 'Resource', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Resource '{title}' is successfully activated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate resource '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('resource/view', 'id' => $id));
 	}
 }

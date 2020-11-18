@@ -54,7 +54,7 @@ class EventController extends Controller
 				'users' => ['*'],
 			],
 			['allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration'],
+				'actions' => ['list', 'view', 'create', 'update', 'admin', 'adminTrash', 'adminNoRegistration', 'overview', 'timeline', 'getTagsBackend', 'sendSurvey', 'sendSurveyConfirmed', 'exportRegistration', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'],
 				'users' => ['@'],
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -307,7 +307,6 @@ class EventController extends Controller
 	{
 		$model = new Event('search');
 		$model->unsetAttributes();  // clear any default values
-		$model->is_active = 1;
 
 		if (isset($_GET['Event'])) {
 			$model->attributes = $_GET['Event'];
@@ -315,10 +314,95 @@ class EventController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', [
 			'model' => $model,
 		]);
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Event('search');
+		$model->unsetAttributes();  // clear any default values
+
+		if (isset($_GET['Event'])) {
+			$model->attributes = $_GET['Event'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', [
+			'model' => $model,
+		]);
+	}
+
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('event/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Event '#%s - %s'", $model->id, $model->title), 'event', array('trigger' => 'EventController::actionDeactivateConfirmed', 'model' => 'Event', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Event '{title}' is successfully deactivated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate event '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('event/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('event/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Event '#%s - %s'", $model->id, $model->title), 'event', array('trigger' => 'EventController::actionActivateConfirmed', 'model' => 'Event', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Event '{title}' is successfully activated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate event '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('event/view', 'id' => $id));
 	}
 
 	public function actionAdminNoRegistration()

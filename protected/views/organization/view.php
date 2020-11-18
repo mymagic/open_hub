@@ -17,6 +17,14 @@ if ($realm == 'backend') {
 
 <?php if ($realm == 'backend') : ?><h1 class="collectible" data-collection-table_name="organization" data-collection-ref_id="<?php echo $model->id; ?>"><?php echo $this->pageTitle ?></h1>
 
+	<div class="well text-right">
+		<?php if ($model->is_active): ?>
+		<a class="btn btn-danger" href="<?php echo $this->createUrl('deactivate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-trash') ?> <?php echo Yii::t('backend', 'Deactivate') ?></a>
+		<?php else: ?>
+		<a class="btn btn-warning" href="<?php echo $this->createUrl('activate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-recycle') ?> <?php echo Yii::t('backend', 'Activate') ?></a>
+		<?php endif; ?>
+	</div>
+
 	<?php foreach ($model->impacts as $impact) : ?>
 		<?php $inputImpacts .= sprintf('<span class="label">%s</span>&nbsp;', $impact->title) ?>
 	<?php endforeach; ?>

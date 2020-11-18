@@ -43,7 +43,7 @@ class MemberController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions' => array('view', 'admin', 'create', 'createConnect',
+				'actions' => array('view', 'admin', 'adminTrash', 'create', 'createConnect',
 					'block', 'blockConfirmed', 'unblock', 'unblockConfirmed',
 					'terminate', 'terminateConfirmed', 'permit', 'permitConfirmed',
 					'resetPassword', 'resetPasswordConfirmed',
@@ -350,7 +350,7 @@ class MemberController extends Controller
 		$member = $this->loadModel($id);
 		if ($member->user->is_active == 1) {
 			Notice::page(
-				Yii::t('notice', 'Are you sure to block this member user {username}? Blocked member user will not beable to login.', ['{username}' => $member->user->username]),
+				Yii::t('notice', "Are you sure to block this member user {username}?\n\nBlocked member user will not beable to login and the account will be move to the recycle bin. Then, if required, you may unblock and restore this member user anytime.", ['{username}' => $member->user->username]),
 				Notice_WARNING,
 			array('url' => $this->createUrl('blockConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
 			);
@@ -383,7 +383,7 @@ class MemberController extends Controller
 		$member = $this->loadModel($id);
 		if ($member->user->is_active == 0) {
 			Notice::page(
-				Yii::t('notice', 'Are you sure to unblock this member user {username}? Unblocked member user is active and will beable to login again.', ['{username}' => $member->user->username]),
+				Yii::t('notice', "Are you sure to unblock this member user {username}?\n\nUnblocked member user is active and will beable to login again.", ['{username}' => $member->user->username]),
 				Notice_WARNING,
 			array('url' => $this->createUrl('unblockConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
 			);
@@ -514,8 +514,26 @@ class MemberController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
+			'model' => $model,
+		));
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Member('search');
+		$model->unsetAttributes();  // clear any default values
+		if (isset($_GET['Member'])) {
+			$model->attributes = $_GET['Member'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', array(
 			'model' => $model,
 		));
 	}

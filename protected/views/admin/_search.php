@@ -40,13 +40,6 @@
 		</div>
 	</div>
 	
-	<div class="form-group">
-		<?php echo $form->bsLabelEx2($model, 'user.is_active'); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsBooleanList($model, 'is_active', array('nullable' => true)); ?>
-		</div>
-	</div>
-	
 	
 	<div class="form-group">
 		<?php echo $form->bsLabelEx2($model, 'date_added'); ?>

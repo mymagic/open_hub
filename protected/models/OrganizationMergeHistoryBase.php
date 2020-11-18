@@ -23,7 +23,7 @@
 			 * @property integer $src_organization_id
 			 * @property integer $dest_organization_id
 			 * @property string $dest_organization_title
-			 * @property integer $admin_code
+			 * @property integer $user_id
 			 * @property integer $date_action
 			 * @property integer $date_added
 			 * @property integer $date_modified
@@ -81,7 +81,7 @@
  		return array(
 			'srcOrganization' => array(self::BELONGS_TO, 'Organization', 'src_organization_id'),
 			'destOrganization' => array(self::BELONGS_TO, 'Organization', 'dest_organization_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'admin_code'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
  	}
 
@@ -95,7 +95,7 @@
 		'src_organization_id' => Yii::t('app', 'Source Organization'),
 		'dest_organization_id' => Yii::t('app', 'Destination Organization'),
 		'dest_organization_title' => Yii::t('app', 'Destination Organization Title'),
-		'admin_code' => Yii::t('app', 'Admin'),
+		'user_id' => Yii::t('app', 'Admin'),
 		'date_action' => Yii::t('app', 'Date Action'),
 		'date_added' => Yii::t('app', 'Date Added'),
 		'date_modified' => Yii::t('app', 'Date Modified'),
@@ -126,7 +126,7 @@
  		$criteria->compare('src_organization_id', $this->src_organization_id);
  		$criteria->compare('dest_organization_id', $this->dest_organization_id);
  		$criteria->compare('dest_organization_title', $this->dest_organization_title);
- 		$criteria->compare('admin_code', $this->admin_code);
+ 		$criteria->compare('user_id', $this->user_id);
  		if (!empty($this->sdate_action) && !empty($this->edate_action)) {
  			$sTimestamp = strtotime($this->sdate_action);
  			$eTimestamp = strtotime("{$this->edate_action} +1 day");
@@ -157,7 +157,7 @@
 			'sourceOrganization' => $this->src_organization_id,
 			'destinationOrganization' => $this->dest_organization_id,
 			'destinationOrganizationTitle' => $this->dest_organization_title,
-			'adminCode' => $this->admin_code,
+			'user_id' => $this->user_id,
 			'dateAction' => $this->date_action,
 			'fDateAction' => $this->renderDateAction(),
 			'dateAdded' => $this->date_added,
@@ -246,7 +246,7 @@
  				$this->date_modified = time();
  			}
 
- 			$this->admin_code = Yii::app()->user->id;
+ 			$this->user_id = Yii::app()->user->id;
  			$this->date_action = time();
 
  			return true;

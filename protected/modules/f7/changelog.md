@@ -9,6 +9,7 @@ Added
   - fixed checkbox component bugs created @mahboubian
   - added feature to improve textbox and list component to support `$preset[FIELD_NAME]`
   - fixed missing submission id in notice url after save submission
+  - added deactivated/activate separate view for intake and form admin
   
 
 ## 1.2

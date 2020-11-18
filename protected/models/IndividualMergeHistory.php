@@ -99,7 +99,7 @@ class IndividualMergeHistory extends IndividualMergeHistoryBase
 		return array(
 			'srcIndividual' => array(self::BELONGS_TO, 'Individual', 'src_individual_id'),
 			'destIndividual' => array(self::BELONGS_TO, 'Individual', 'dest_individual_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'admin_code'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 }

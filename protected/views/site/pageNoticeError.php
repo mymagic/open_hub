@@ -9,7 +9,7 @@ $this->pageTitle = Yii::app()->name . ' - ' . Yii::t('core', 'Error');
 			<h4 class="modal-title"><i class="glyphicon glyphicon-minus-sign"></i>&nbsp;<?php echo !empty($title) ? $title : Yii::t('core', 'Error') ?></h4>
 		</div>
 		<div class="modal-body">
-			<div class="message"><?php echo($message); ?></div>
+			<div class="message"><?php echo(Html::encodeDisplay($message)); ?></div>
 			<?php if (!empty($htmlMessage)): ?><div class="htmlMessage text"><?php echo $htmlMessage; ?></div><?php endif; ?>
 		</div>
 		<div class="modal-footer">

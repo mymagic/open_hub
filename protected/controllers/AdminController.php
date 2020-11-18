@@ -43,7 +43,7 @@ class AdminController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions' => array('admin', 'create', 'createConnect', 'view',
+				'actions' => array('admin', 'adminTrash', 'create', 'createConnect', 'view',
 					'block', 'blockConfirmed', 'unblock', 'unblockConfirmed',
 					'resetPassword', 'resetPasswordConfirmed',
 				),
@@ -126,7 +126,7 @@ class AdminController extends Controller
 
 		if ($admin->user->is_active == 1) {
 			Notice::page(
-				Yii::t('notice', "Are you sure to block this admin user '{username}'? Blocked admin user will not beable to login.", ['{username}' => $admin->user->username]),
+				Yii::t('notice', "Are you sure to block this admin user '{username}'? \n\nBlocked admin user will not beable to login and the account will be move to the recycle bin. Then, if required, you may unblock and restore this admin user anytime.", ['{username}' => $admin->user->username]),
 				Notice_WARNING,
 			array('url' => $this->createUrl('blockConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
 			);
@@ -165,7 +165,7 @@ class AdminController extends Controller
 
 		if ($admin->user->is_active == 0) {
 			Notice::page(
-				Yii::t('notice', "Are you sure to unblock this admin user '{username}'? Unblocked admin user is active and will beable to login again.", ['{username}' => $admin->user->username]),
+				Yii::t('notice', "Are you sure to unblock this admin user '{username}'?\n\nUnblocked admin user is active and will beable to login again.", ['{username}' => $admin->user->username]),
 				Notice_WARNING,
 			array('url' => $this->createUrl('unblockConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
 			);
@@ -483,8 +483,26 @@ class AdminController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
+			'model' => $model,
+		));
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Admin('search');
+		$model->unsetAttributes();  // clear any default values
+		if (isset($_GET['Admin'])) {
+			$model->attributes = $_GET['Admin'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', array(
 			'model' => $model,
 		));
 	}

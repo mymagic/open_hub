@@ -225,7 +225,7 @@ class HubForm
 	protected static function getHtmlTag($isEnabled = true, $key, $formType, $value, $members, $innerElements, $decodedData, $index, $realm = 'frontend', $level = 0)
 	{
 		// prevent infinite loop due to bad structure
-		if ($level > 1) {
+		if ($level > 5) {
 			return '';
 		}
 
@@ -843,7 +843,7 @@ class HubForm
                         </div>
                         <div class="form-group margin-bottom">
                                 <label for="form-label org-name-modal">Organization Name</label>
-                                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="Enter organization name">
+                                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="Enter organization name" maxlength="90">
                         </div>
                         <div class="form-group margin-bottom">
                                 <label for="form-label org-url-modal">Website</label>
@@ -914,7 +914,7 @@ class HubForm
                         </div>
                         <div class="form-group margin-bottom">
                                 <label for="form-label org-name-modal">Company Name</label>
-                                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="Enter Company name">
+                                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="Enter Company name" maxlength="90">
                         </div>
                         <div class="form-group margin-bottom">
                                 <label for="form-label org-url-modal">Website</label>
@@ -1018,18 +1018,18 @@ class HubForm
 			if (empty($list) || count($list) === 0) {
 				foreach ($params['items'] as $item) {
 					if ($selectedItem === $item['text']) {
-						$options .= sprintf('<option value="%s" selected>%s</option>', $item['text'], $item['text']);
+						$options .= sprintf('<option value="%s" selected>%s</option>', CHtml::encode($item['text']), $item['text']);
 					} else {
-						$options .= sprintf('<option value="%s">%s</option>', $item['text'], $item['text']);
+						$options .= sprintf('<option value="%s">%s</option>', CHtml::encode($item['text']), $item['text']);
 					}
 				}
 			} else {
 				foreach ($list as $item) {
 					// $item = ucwords(strtolower($item)); // ys: need to remove this line although might break as it should not be formatted and can break preset
 					if ($selectedItem === $item) {
-						$options .= sprintf('<option value="%s" selected>%s</option>', $item, $item);
+						$options .= sprintf('<option value="%s" selected>%s</option>', CHtml::encode($item), $item);
 					} else {
-						$options .= sprintf('<option value="%s">%s</option>', $item, $item);
+						$options .= sprintf('<option value="%s">%s</option>', CHtml::encode($item), $item);
 					}
 				}
 			}
@@ -1815,9 +1815,8 @@ class HubForm
 			if (strtolower($validation) === 'url' && !filter_var($postedData[$value], FILTER_VALIDATE_URL)) {
 				return "Please enter a valid URL for the field $labelTitle.";
 			}
-		}
-		elseif($tag == 'rating'){
-			if (empty($postedData["voted-".$value])) {
+		} elseif ($tag == 'rating') {
+			if (empty($postedData['voted-' . $value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
 		}
