@@ -86,6 +86,7 @@ $( document ).ready(function() {
                 if(data.status=='success')
                 {
                     $('#Organization-Modal').modal('toggle');
+					$('.button-draft, .button-submit').prop('disabled', true);
                     location.reload(true);
                 }
             });

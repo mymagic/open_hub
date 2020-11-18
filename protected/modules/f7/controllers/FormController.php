@@ -40,7 +40,7 @@ class FormController extends Controller
 			),
 			array(
 				'allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'export', 'import', 'importConfirmed', 'builder'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'adminTrash', 'export', 'builder', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -223,6 +223,72 @@ class FormController extends Controller
 		$this->redirect(array('form/admin'));
 	}
 
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('form/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Form '#%s - %s'", $model->id, $model->title), 'form', array('trigger' => 'FormController::actionDeactivateConfirmed', 'model' => 'Form', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Form '{title}' is successfully deactivated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate form '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('form/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('form/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Form '#%s - %s'", $model->id, $model->title), 'form', array('trigger' => 'FormController::actionActivateConfirmed', 'model' => 'Form', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Form '{title}' is successfully activated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate form '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('form/view', 'id' => $id));
+	}
+
 	/**
 	 * Index.
 	 */
@@ -258,10 +324,29 @@ class FormController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
 			'model' => $model,
 		));
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Form('search');
+		$model->unsetAttributes();  // clear any default values
+
+		if (isset($_GET['Form'])) {
+			$model->attributes = $_GET['Form'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', [
+			'model' => $model,
+		]);
 	}
 
 	public function actionExport($id, $status = '', $stage = '', $format = 'csv')
@@ -290,19 +375,6 @@ class FormController extends Controller
 			fputcsv($out, $fields);
 		}
 		fclose($out);
-	}
-
-	public function actionImport($id)
-	{
-		Notice::page(Yii::t('backend', 'You are about to import F7 form submissions to the Central. New organization from submission will be added. Click OK to continue. (Mohammad hardcoded this, it is sucks and kind of useless)'), Notice_WARNING, array(
-			'url' => $this->createUrl('form/importConfirmed', array('id' => $id)),
-			'cancelUrl' => $this->createUrl("form/view?id=$id"),
-		));
-	}
-
-	public function actionImportConfirmed($id)
-	{
-		Notice::page(Yii::t('core', 'Not implemented'));
 	}
 
 	public function actionBuilder()

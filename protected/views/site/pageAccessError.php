@@ -10,7 +10,7 @@ $this->pageTitle = Yii::app()->name . ' - ' . Yii::t('core', 'Error');
 		</div>
 		<div class="modal-body">
 			<div class="message">
-                <p><?php echo Html::encode($message); ?></p>
+                <p><?php echo Html::encodeDisplay($message); ?></p>
 
                 <?php if (!Yii::app()->user->isGuest && !empty(Yii::app()->user->username)): ?>
                 <p class="text-muted"><small>You are currently login as: &nbsp;<img src="<?php echo ImageHelper::thumb(100, 100, $this->user->profile->image_avatar) ?>" class="img-circle" style="width:24px; height:24px" /> <strong><?php echo Yii::app()->user->username ?></strong></small></p>

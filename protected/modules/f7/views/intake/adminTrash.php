@@ -4,7 +4,7 @@
 
 $this->breadcrumbs = array(
 	Yii::t('backend', 'Intakes') => array('index'),
-	Yii::t('backend', 'Manage'),
+	Yii::t('backend', 'Manage Deleted'),
 );
 
 $this->menu = array(
@@ -25,10 +25,10 @@ $('.search-form form').submit(function(){
 ?>
 
 <ul class="nav nav-pills nav-pills-title" role="tablist">
-  <li role="presentation" class="active"><a href="<?php echo $this->createUrl('admin') ?>"><?php echo Yii::t('backend', 'Active') ?></a></li>
-  <li role="presentation" class=""><a href="<?php echo $this->createUrl('adminTrash') ?>"><?php echo Html::faIcon('fa fa-trash') ?><?php echo Yii::t('backend', 'Deleted') ?></a></li>
+  <li role="presentation" class=""><a href="<?php echo $this->createUrl('admin') ?>"><?php echo Yii::t('backend', 'Active') ?></a></li>
+  <li role="presentation" class="active"><a href="<?php echo $this->createUrl('adminTrash') ?>"><?php echo Html::faIcon('fa fa-trash') ?><?php echo Yii::t('backend', 'Deleted') ?></a></li>
 </ul>
-<h1><?php echo Yii::t('backend', 'Manage Intakes'); ?></h1>
+<h1><?php echo Yii::t('backend', 'Deleted Intakes'); ?></h1>
 
 
 <div class="panel panel-default">
@@ -52,21 +52,21 @@ $('.search-form form').submit(function(){
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
 		'title',
 		array('name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
-		// array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => false),
 		array('name' => 'is_highlight', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_highlight)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',
-			'template' => '{view}{update}{trash}',
+			'template' => '{view}{restore}',
 			'buttons' => array(
 				'view' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'view'); }),
 				'update' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'update'); }),
 				//'delete' => array('visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'delete'); }),
-				'trash' => array(
-					'url' => 'Yii::app()->controller->createUrl("intake/deactivate", array("id"=>$data->id))',
-					'label' => '<i class="fa fa-trash"></i>',
-					'options' => array('class' => 'btn btn-sm btn-danger'),
-					'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'deactivate'); }),
+				'restore' => array(
+					'url' => 'Yii::app()->controller->createUrl("intake/activate", array("id"=>$data->id))',
+					'label' => '<i class="fa fa-recycle"></i>',
+					'options' => array('class' => 'btn btn-sm btn-warning'),
+					'visible' => function () { return HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), Yii::app()->controller, 'activate'); }),
 			),
 		),
 	),

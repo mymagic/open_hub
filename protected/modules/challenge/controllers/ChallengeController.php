@@ -44,7 +44,7 @@ class ChallengeController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete', 'order', 'getTagsBackend'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'adminTrash', 'order', 'getTagsBackend', 'deactivate', 'deactivateConfirmed', 'activate', 'activateConfirmed'),
 				'users' => array('@'),
 				// 'expression' => '$user->isSuperAdmin==true || $user->isAdmin==true',
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -163,6 +163,72 @@ class ChallengeController extends Controller
 		}
 	}
 
+	public function actionDeactivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 1) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to deactivate this record '{title}'? \n\nDeactivated record will be move to the recycle bin. Then, if required, you may restore this record anytime.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('deactivateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already deactivated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('challenge/view', 'id' => $id));
+		}
+	}
+
+	public function actionDeactivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 0;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("deactivated Challenge '#%s - %s'", $model->id, $model->title), 'challenge', array('trigger' => 'ChallengeController::actionDeactivateConfirmed', 'model' => 'Challenge', 'action' => 'deactivateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Challenge '{title}' is successfully deactivated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to deactivate challenge '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('challenge/view', 'id' => $id));
+	}
+
+	public function actionActivate($id)
+	{
+		$model = $this->loadModel($id);
+
+		if ($model->is_active == 0) {
+			Notice::page(
+				Yii::t('notice', "Are you sure to activate this record '{title}'? \n\nActivated record will be restore and move out from the recycle bin.", ['{title}' => $model->title]),
+				Notice_WARNING,
+			array('url' => $this->createUrl('activateConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('view', array('id' => $id)))
+			);
+		} else {
+			Notice::flash(Yii::t('notice', "Record '{title}' is already activated.", ['{title}' => $model->title]), Notice_INFO);
+			$this->redirect(array('challenge/view', 'id' => $id));
+		}
+	}
+
+	public function actionActivateConfirmed($id)
+	{
+		$model = $this->loadModel($id);
+
+		$model->is_active = 1;
+
+		if ($model->save()) {
+			Yii::app()->esLog->log(sprintf("activated Challenge '#%s - %s'", $model->id, $model->title), 'challenge', array('trigger' => 'ChallengeController::actionActivateConfirmed', 'model' => 'Challenge', 'action' => 'activateConfirmed', 'id' => $model->id));
+
+			Notice::flash(Yii::t('notice', "Challenge '{title}' is successfully activated.", ['{title}' => $model->title]), Notice_SUCCESS);
+		} else {
+			Notice::flash(Yii::t('notice', "Failed to activate challenge '{title}' due to unknown reason.", ['{title}' => $model->title]), Notice_ERROR);
+		}
+
+		$this->redirect(array('challenge/view', 'id' => $id));
+	}
+
 	/**
 	 * Index
 	 */
@@ -199,10 +265,29 @@ class ChallengeController extends Controller
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
 		}
+		$model->is_active = 1;
 
 		$this->render('admin', array(
 			'model' => $model,
 		));
+	}
+
+	public function actionAdminTrash()
+	{
+		$model = new Challenge('search');
+		$model->unsetAttributes();  // clear any default values
+
+		if (isset($_GET['Challenge'])) {
+			$model->attributes = $_GET['Challenge'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
+		$model->is_active = 0;
+
+		$this->render('adminTrash', [
+			'model' => $model,
+		]);
 	}
 
 	public function actionAjaxOrganization($term = '', $id = '')

@@ -31,6 +31,14 @@ $this->menu = array(
 
 <h1><?php echo Yii::t('challenge', 'View Challenge'); ?></h1>
 
+<div class="well text-right">
+	<?php if ($model->is_active): ?>
+	<a class="btn btn-danger" href="<?php echo $this->createUrl('deactivate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-trash') ?> <?php echo Yii::t('backend', 'Deactivate') ?></a>
+	<?php else: ?>
+	<a class="btn btn-warning" href="<?php echo $this->createUrl('activate', array('id' => $model->id)) ?>"><?php echo Html::faIcon('fa fa-recycle') ?> <?php echo Yii::t('backend', 'Activate') ?></a>
+	<?php endif; ?>
+</div>
+
 <div class="crud-view">
 <?php $this->widget('application.components.widgets.DetailView', array(
 	'data' => $model,

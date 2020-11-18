@@ -99,7 +99,7 @@ class OrganizationMergeHistory extends OrganizationMergeHistoryBase
 		return array(
 			'srcOrganization' => array(self::BELONGS_TO, 'Organization', 'src_organization_id'),
 			'destOrganization' => array(self::BELONGS_TO, 'Organization', 'dest_organization_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'admin_code'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 }

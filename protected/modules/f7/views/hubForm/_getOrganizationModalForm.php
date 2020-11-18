@@ -18,7 +18,7 @@
             </div>
             <div class="form-group margin-bottom">
                 <label for="form-label org-name-modal required"><?php echo !empty($modifier['title']['label']) ? $modifier['title']['label'] : Yii::t('f7', 'Organization / Company / Project Name') ?></label>
-                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="<?php echo !empty($modifier['title']['placeholder']) ? $modifier['title']['placeholder'] : Yii::t('f7', 'Insert Organization / Company / Project Name here') ?>" />
+                <input type="text" class="form-control" id="org-name-modal" name="org-name-modal" placeholder="<?php echo !empty($modifier['title']['placeholder']) ? $modifier['title']['placeholder'] : Yii::t('f7', 'Insert Organization / Company / Project Name here') ?>" maxlength="90" />
             </div>
             <div class="form-group margin-bottom">
                 <label for="form-label org-url-modal"><?php echo !empty($modifier['url_website']['label']) ? $modifier['url_website']['label'] : Yii::t('f7', 'Website URL') ?></label>

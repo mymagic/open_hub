@@ -281,7 +281,7 @@ class Resource extends ResourceBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		$return['is_active'] = Yii::t('app', 'Published?');
+		$return['is_active'] = Yii::t('app', 'Published');
 		$return['is_blocked'] = Yii::t('app', 'Blocked By Admin?');
 		$return['organization'] = Yii::t('app', 'Organization');
 		$return['organizations'] = Yii::t('app', 'Companies');

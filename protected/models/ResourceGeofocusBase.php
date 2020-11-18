@@ -238,7 +238,7 @@
  	{
  		if (parent::beforeSave()) {
  			if ($this->is_active == '') {
- 				$this->is_active = null;
+ 				//$this->is_active = null;
  			}
 
  			// auto deal with date added and date modified
@@ -250,7 +250,7 @@
 
  			// save as null if empty
  			if (empty($this->is_active) && $this->is_active !== 0) {
- 				$this->is_active = null;
+ 				// $this->is_active = null;
  			}
 
  			return true;

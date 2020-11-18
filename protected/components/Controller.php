@@ -452,6 +452,11 @@ class Controller extends BaseController
 		$this->menuSide['logout'] = array('label'=>'<i class="fa fa-fw fa-sign-out"></i>&nbsp;'.Yii::t('app','Logout'), 'url'=>array('site/logout'));*/
 	}
 
+	public function createProxyUrl($urlPart, $urlParams = array())
+	{
+		return YeeBase::createProxyUrl($this, $urlPart, $urlParams);
+	}
+
 	public function generateUrlGetUploadedFile($path, $absolute = false)
 	{
 		if ($path == '') {

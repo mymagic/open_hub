@@ -478,14 +478,4 @@ class Individual extends IndividualBase
 	{
 		return HubComment::getActiveIndividualComments($this, $limit);
 	}
-
-	public function getHasMergeTo()
-	{
-		return !empty($this->individualMergeSource) ? true : false;
-	}
-
-	public function getBeenMergeWith()
-	{
-		return !empty($this->individualMergeDestination) ? true : false;
-	}
 }
