@@ -22,7 +22,8 @@ class CpanelController extends Controller
 			),
 			array(
 				'allow',
-				'actions' => array('portfolio', 'experience', 'createExperience'),
+				'actions' => array('portfolio', 'enablePortfolio', 'disablePortfolio',
+				'experience', 'createExperience'),
 				'users' => array('@'),
 			),
 			array(
@@ -67,6 +68,30 @@ class CpanelController extends Controller
 		}
 
 		$this->render('portfolio', array('model' => $model));
+	}
+
+	public function actionEnablePortfolio()
+	{
+		$model = HubCv::getOrCreateCvPortfolio($this->user);
+		$model->visibility = 'public';
+		$model->save();
+
+		$return['data'] = $model->toApi();
+		$return['meta']['input']['userId'] = $this->user->id;
+
+		return $this->outputJsonSuccess($return['data'], $return['meta']);
+	}
+
+	public function actionDisablePortfolio()
+	{
+		$model = HubCv::getOrCreateCvPortfolio($this->user);
+		$model->visibility = 'private';
+		$model->save();
+
+		$return['data'] = $model->toApi();
+		$return['meta']['input']['userId'] = $this->user->id;
+
+		return $this->outputJsonSuccess($return['data'], $return['meta']);
 	}
 
 	public function actionExperience()

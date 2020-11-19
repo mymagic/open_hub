@@ -1,10 +1,6 @@
 <div class="px-8 py-6 shadow-panel">
-    <h2>Manage Portfolio</h2>
-    <p></p>
+    <h2><?php echo Yii::t('cv', 'Manage Portfolio') ?> <span class="pull-right"> <?php echo Html::faIcon('fa fa-spinner fa-spin margin-right-md') ?><input type="checkbox" id="switch-enablePublic" class="js-switch" <?php echo ($model->visibility == 'public') ? 'checked' : '' ?> /></span></h2>
 
-
-
-    <div class="form-new org-padding">
 
     <?php $form = $this->beginWidget('ActiveForm', array(
 		'id' => 'cv-portfolio-form',
@@ -14,20 +10,15 @@
 		// See class documentation of CActiveForm for details on this.
 		'enableAjaxValidation' => false,
 		'htmlOptions' => array(
-			'class' => 'form-horizontal crud-form',
+			'class' => 'form-horizontal crud-form margin-top-lg',
 			'role' => 'form',
 			'enctype' => 'multipart/form-data',
+			'data-lang-public_access_success' => Yii::t('cv', 'Your portfolio is now available for public access'),
+			'data-lang-public_access_fail' => Yii::t('cv', 'Failed to set your portfolio for public access'),
+			'data-lang-private_access_success' => Yii::t('cv', 'Your portfolio is now hidden from public access'),
+			'data-lang-private_access_fail' => Yii::t('cv', 'Failed to hide your portfolio from public access')
 		)
 	)); ?>
-
-
-    <div class="form-group <?php echo $model->hasErrors('visibility') ? 'has-error' : '' ?>">
-        <?php echo $form->bsLabelEx3($model, 'visibility'); ?>
-        <div class="col-sm-9">
-            <?php echo $form->bsEnumDropDownList($model, 'visibility'); ?>
-            <?php echo $form->bsError($model, 'visibility'); ?>
-        </div>
-    </div>
 
     <div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
         <?php echo $form->bsLabelEx3($model, 'slug'); ?>
@@ -174,5 +165,79 @@
 
     <?php $this->endWidget(); ?>
 
-    </div><!-- form -->
 </div>
+
+
+<?php Yii::app()->clientScript->registerScript('cv-cpanel-portfolio', "
+    var switchEnablePublic = document.querySelector('#switch-enablePublic');
+    switchEnablePublic.onchange = function() {
+		$('.fa-spinner').show();
+
+        if(switchEnablePublic.checked)
+        {
+            $.get(baseUrl+'/cv/cpanel/enablePortfolio', function(json) 
+            {
+                if(json.status == 'success')
+                {
+                    if(json.data.visibility == 'public')
+                    {
+                        toastr.success($('#cv-portfolio-form').data('lang-public_access_success'));
+
+                        $('#cv-portfolio-form').show();
+                    }
+                    else
+                    {
+                        toastr.success($('#cv-portfolio-form').data('lang-publicaccess_fail'));
+                    }
+                }
+                else
+                {
+                    toastr.error('Opps, something went wrong. '+json.msg)
+                }
+                
+            }).always(function() {
+                $('.fa-spinner').hide();
+            });
+        }
+        else
+        {
+            $.get(baseUrl+'/cv/cpanel/disablePortfolio', function(json) 
+            {
+                if(json.status == 'success')
+                {
+                    if(json.data.visibility == 'public')
+                    {
+                        toastr.success($('#cv-portfolio-form').data('lang-private_access_success'));
+
+                        $('#cv-portfolio-form').hide();
+                    }
+                    else
+                    {
+                        toastr.success($('#cv-portfolio-form').data('lang-private_access_fail'));
+                    }
+                }
+                else
+                {
+                    toastr.error('Opps, something went wrong. '+json.msg)
+                }
+                
+            }).always(function() {
+                $('.fa-spinner').hide();
+            });
+            
+           
+        }
+    };
+
+    $('.fa-spinner').hide();
+    if(switchEnablePublic.checked)
+    {
+        $('#cv-portfolio-form').show();
+    }
+    else
+    {
+        $('#cv-portfolio-form').hide();
+    }
+    
+");
+?>

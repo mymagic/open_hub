@@ -106,7 +106,7 @@
 			<?php if ($model->is_looking_internship): ?><li><?php echo Html::faIcon('fa-check text-info') ?> Internship</li><?php endif; ?>
 			<?php if ($model->is_looking_apprenticeship): ?><li><?php echo Html::faIcon('fa-check text-info') ?> Apprenticeship</li><?php endif; ?>
 		</ul>
-		<div class="text-center"><a class="btn btn-info" data-toggle="modal" data-target="#modal-contact">CONTACT ME</a></div>
+		<div class="text-center hidden"><a class="btn btn-info" data-toggle="modal" data-target="#modal-contact">CONTACT ME</a></div>
 	</div>
 </div>
 

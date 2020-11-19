@@ -59,13 +59,17 @@ class FrontendController extends Controller
 	{
 		$portfolio = CvPortfolio::slug2obj($slug);
 
+		if (empty($portfolio)) {
+			Notice::page(Yii::t('cv', 'Page not found'), Notice_INFO);
+		}
+
 		// visibility
 		if ($portfolio->visibility == 'protected' && Yii::app()->user->isGuest) {
-			Notice::page(Yii::t('app', 'This portfolio only open to registered user'), Notice_INFO);
+			Notice::page(Yii::t('cv', 'This portfolio only open to registered user'), Notice_INFO);
 		}
 
 		if ($portfolio->visibility == 'private' && Yii::app()->user->id != $portfolio->member->user->id) {
-			Notice::page(Yii::t('app', 'This is a private portfolio accessible by its owner only'), Notice_INFO);
+			Notice::page(Yii::t('cv', 'This is a private portfolio accessible by its owner only'), Notice_INFO);
 		}
 
 		$attendedPrograms = $portfolio->getAttendedPrograms();
