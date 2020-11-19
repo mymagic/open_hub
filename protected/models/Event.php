@@ -384,13 +384,25 @@ class Event extends EventBase
 		return $result;
 	}
 
-	public function hasEventRegistration()
+	public function hasEventRegistration($email = '')
 	{
-		if (!empty($this->eventRegistrations)) {
-			return true;
-		}
+		// check if has any event registration if email not supplied
+		if ($email == '') {
+			if (!empty($this->eventRegistrations)) {
+				return true;
+			}
 
-		return false;
+			return false;
+		}
+		// check if has specific event registration of the supplied email
+		else {
+			return EventRegistration::model()->exists('event_id=:eventId AND email=:email', array(':eventId' => $this->id, ':email' => $email));
+		}
+	}
+
+	public function getEventRegistrations($email = '')
+	{
+		return EventRegistration::model()->findAll('event_id=:eventId AND email=:email', array(':eventId' => $this->id, ':email' => $email));	
 	}
 
 	public function hasEventOrganization()

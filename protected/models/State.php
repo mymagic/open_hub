@@ -71,6 +71,18 @@ class State extends StateBase
 		if (!empty($model)) {
 			$value = $model->title;
 		}
+
 		return $value;
+	}
+
+	public function findByTitle($title, $countryCode = '')
+	{
+		if (!empty($countryCode)) {
+			$model = self::model()->find('t.title LIKE :title', array(':title' => '%' . $title . '%'));
+		} else {
+			$model = self::model()->find('t.title LIKE :title AND t.country_code=:countryCode', array(':title' => '%' . $title . '%', ':countryCode' => $countryCode));
+		}
+
+		return $model;
 	}
 }

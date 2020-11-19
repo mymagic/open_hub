@@ -538,9 +538,15 @@ class BoilerplateStartModule extends WebModule
 			'date_modified' => 'integer',
 		));
 
+		// alterColumn(string $table, string $column, string $type)
 		$migration->alterColumn('boilerplate_start', 'organization_title', 'varchar(255) NULL');
 
-		$migration->createIndex('boilerplate_start', 'boilerplate_start', array('organization_title', 'var1'), true);*/
+		// createIndex(string $name, string $table, string|array $columns, boolean $unique=false)
+		$migration->createIndex('boilerplate_start', 'boilerplate_start', array('organization_title', 'var1'), true);
+
+		// addForeignKey(string $name, string $table, string|array $columns, string $refTable, string|array $refColumns, string $delete=NULL, string $update=NULL)
+		// RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+		// $migration->addForeignKey('fk_boilerplate_start-foreign_table_id', 'boilerplate_start', 'foreign_table_id', 'foreign_table', 'id', 'CASCADE', 'CASCADE');*/
 
 		return true;
 	}

@@ -68,7 +68,13 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 
 	<div class="row sticky">
 		<?php echo $form->labelEx($model, 'buildSetting'); ?>
-		<p><?php echo (!empty($model->buildSetting)) ? $model->buildSetting->getBuildFilePath() : '-'; ?></p>
+		<?php if (!empty($model->buildSetting)): ?>
+		<p><?php echo $model->buildSetting->getBuildFilePath() ?><br />
+		<div style="height:150px; overflow:scroll; border:1px solid #ccc; color:#666"><pre><?php print_r($model->buildSetting->getBuildArray()) ?></pre></div>
+		</p>
+		<?php else: ?>
+			<p>Corresponding build setting file not found yet...</p>
+		<?php endif; ?>
 		<div class="tooltip">
 			Build configuration file to tell generator how to build this model.
 		</div>
