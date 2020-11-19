@@ -12,4 +12,10 @@ return array(
 			),
 		),
 	),
+	'modules' => array(
+		'cv' => array(
+			'isFrontendEnabled' => true,
+			'isCpanelEnabled' => true,
+		),
+	),
 );

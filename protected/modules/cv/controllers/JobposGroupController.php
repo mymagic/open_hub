@@ -1,6 +1,6 @@
 <?php
 
-class CvPortfolioController extends Controller
+class JobposGroupController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to 'layouts.backend', meaning
@@ -11,6 +11,12 @@ class CvPortfolioController extends Controller
 	public function actions()
 	{
 		return array(
+			'order' => array(
+				'class' => 'application.yeebase.extensions.OrderColumn.OrderAction',
+				'modelClass' => 'CvJobposGroup',
+				'pkName' => 'id',
+				'backToAction' => 'admin',
+			),
 		);
 	}
 
@@ -21,6 +27,7 @@ class CvPortfolioController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -37,7 +44,7 @@ class CvPortfolioController extends Controller
 				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions' => array('list', 'view', 'create', 'update', 'admin'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete', 'order'),
 				'users' => array('@'),
 				// 'expression'=>"\$user->isAdmin==true",
 				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
@@ -65,18 +72,15 @@ class CvPortfolioController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new CvPortfolio;
+		$model = new CvJobposGroup;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if (isset($_POST['CvPortfolio'])) {
-			$model->attributes = $_POST['CvPortfolio'];
-
-			$model->imageFile_avatar = UploadedFile::getInstance($model, 'imageFile_avatar');
+		if (isset($_POST['CvJobposGroup'])) {
+			$model->attributes = $_POST['CvJobposGroup'];
 
 			if ($model->save()) {
-				UploadManager::storeImage($model, 'avatar', $model->tableName());
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -98,13 +102,10 @@ class CvPortfolioController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if (isset($_POST['CvPortfolio'])) {
-			$model->attributes = $_POST['CvPortfolio'];
-
-			$model->imageFile_avatar = UploadedFile::getInstance($model, 'imageFile_avatar');
+		if (isset($_POST['CvJobposGroup'])) {
+			$model->attributes = $_POST['CvJobposGroup'];
 
 			if ($model->save()) {
-				UploadManager::storeImage($model, 'avatar', $model->tableName());
 				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
@@ -115,11 +116,26 @@ class CvPortfolioController extends Controller
 	}
 
 	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionDelete($id)
+	{
+		$this->loadModel($id)->delete();
+
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if (!isset($_GET['ajax'])) {
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+	}
+
+	/**
 	 * Index
 	 */
 	public function actionIndex()
 	{
-		$this->redirect(array('cv-portfolio/admin'));
+		$this->redirect(array('cv-jobpos-group/admin'));
 	}
 
 	/**
@@ -127,7 +143,8 @@ class CvPortfolioController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider = new CActiveDataProvider('CvPortfolio');
+		$dataProvider = new CActiveDataProvider('CvJobposGroup');
+		$dataProvider->criteria->order = 'ordering ASC';
 		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
 
@@ -141,10 +158,10 @@ class CvPortfolioController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model = new CvPortfolio('search');
+		$model = new CvJobposGroup('search');
 		$model->unsetAttributes();  // clear any default values
-		if (isset($_GET['CvPortfolio'])) {
-			$model->attributes = $_GET['CvPortfolio'];
+		if (isset($_GET['CvJobposGroup'])) {
+			$model->attributes = $_GET['CvJobposGroup'];
 		}
 		if (Yii::app()->request->getParam('clearFilters')) {
 			EButtonColumnWithClearFilters::clearFilters($this, $model);
@@ -159,12 +176,12 @@ class CvPortfolioController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return CvPortfolio the loaded model
+	 * @return CvJobposGroup the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model = CvPortfolio::model()->findByPk($id);
+		$model = CvJobposGroup::model()->findByPk($id);
 		if ($model === null) {
 			throw new CHttpException(404, 'The requested page does not exist.');
 		}
@@ -173,11 +190,11 @@ class CvPortfolioController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param CvPortfolio $model the model to be validated
+	 * @param CvJobposGroup $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if (isset($_POST['ajax']) && $_POST['ajax'] === 'cv-portfolio-form') {
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'cv-jobpos-group-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

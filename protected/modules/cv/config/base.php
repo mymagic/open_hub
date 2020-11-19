@@ -10,6 +10,8 @@ return array(
 		'cv' => array(
 			'var1' => '',
 			'var2' => '',
+			'isFrontendEnabled' => true,
+			'isCpanelEnabled' => true,
 			'modelBehaviors' => array(
 				'Organization' => array(
 					'class' => 'application.modules.cv.components.CvOrganizationBehavior',

@@ -74,7 +74,9 @@ class CvExperience extends CvExperienceBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		// $return['title'] = Yii::t('app', 'Custom Name');
+		$return['country_code'] = Yii::t('app', 'Country');
+		$return['genre'] = Yii::t('app', 'Type of Experience');
+		$return['organization_name'] = Yii::t('app', 'Organization');
 
 		return $return;
 	}
@@ -85,11 +87,11 @@ class CvExperience extends CvExperienceBase
 			$addressParts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($this->full_address));
 			/*$this->address_line1 = $addressParts['line1'];
 			$this->address_line2 = $addressParts['line2'];
-			$this->address_zip = $addressParts['zipcode'];
+			$this->address_zip = $addressParts['zipcode'];*/
 			if (!empty($addressParts['city'])) {
-				$this->address_city = $addressParts['city'];
+				$this->location = $addressParts['city'];
 			}
-			*/
+
 			if (!empty($addressParts['countryCode'])) {
 				$this->country_code = $addressParts['countryCode'];
 			}
@@ -114,5 +116,7 @@ class CvExperience extends CvExperienceBase
 		if ($this->genre == 'project') {
 			return 'fa-folder';
 		}
+
+		return 'fa-certificate';
 	}
 }

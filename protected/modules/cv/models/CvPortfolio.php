@@ -182,6 +182,7 @@ class CvPortfolio extends CvPortfolioBase
 		'image_avatar' => Yii::t('app', 'Avatar'),
 		'text_short_description' => Yii::t('app', 'Short Description'),
 		'text_address_residential' => Yii::t('app', 'Current Address'),
+		'latlong_address_residential' => Yii::t('app', 'Current Address Location'),
 		'text_onliner' => Yii::t('app', 'Oneliner'),
 		//'high_academy_experience_id' => Yii::t('app', 'Highest Academy'),
 		'is_looking_fulltime' => Yii::t('app', 'Fulltime'),
@@ -190,9 +191,9 @@ class CvPortfolio extends CvPortfolioBase
 		'is_looking_internship' => Yii::t('app', 'Internship'),
 		'is_looking_apprenticeship' => Yii::t('app', 'Apprenticeship'),
 		'is_looking_cofounder' => Yii::t('app', 'Co-Founder'),
-		'json_social' => Yii::t('app', 'Json Social'),
-		'json_extra' => Yii::t('app', 'Json Extra'),
-		'is_active' => Yii::t('app', 'Is Active'),
+		'json_social' => Yii::t('app', 'Social Links'),
+		'json_extra' => Yii::t('app', 'Extra'),
+		'is_active' => Yii::t('app', 'Active'),
 		'date_added' => Yii::t('app', 'Date Added'),
 		'date_modified' => Yii::t('app', 'Date Modified'),
 		);
@@ -204,11 +205,10 @@ class CvPortfolio extends CvPortfolioBase
 			$addressParts = HubGeo::geocoder2AddressParts(HubGeo::address2Geocoder($this->text_address_residential));
 			/*$this->address_line1 = $addressParts['line1'];
 			$this->address_line2 = $addressParts['line2'];
-			$this->address_zip = $addressParts['zipcode'];
+			$this->address_zip = $addressParts['zipcode'];*/
 			if (!empty($addressParts['city'])) {
-				$this->address_city = $addressParts['city'];
+				$this->location = $addressParts['city'];
 			}
-			*/
 			if (!empty($addressParts['countryCode'])) {
 				$this->country_code = $addressParts['countryCode'];
 			}

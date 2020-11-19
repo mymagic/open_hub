@@ -39,11 +39,19 @@ class HubCv
 
 		if ($portfolio === null) {
 			$portfolio = self::createCvPortfolio($user, $params);
+			$oriModel = clone $portfolio;
 		} else {
+			$oriModel = clone $portfolio;
+
 			// update attributes
 			$portfolio->attributes = $params['cvPortfolio'];
 
-			if ($portfolio->save(false)) {
+			// convert full address to parts and store
+			if (($oriModel->text_address_residential != $portfolio->text_address_residential) && !empty($portfolio->text_address_residential)) {
+				$portfolio->resetAddressParts();
+			}
+
+			if ($portfolio->save()) {
 				UploadManager::storeImage($portfolio, 'avatar', $portfolio->tableName());
 			}
 		}
@@ -61,6 +69,7 @@ class HubCv
 		$transaction = Yii::app()->db->beginTransaction();
 		try {
 			$portfolio = new CvPortfolio();
+			$oriModel = clone $portfolio;
 			$portfolio->scenario = 'createCvPortfolio';
 
 			$params['cvPortfolio']['user_id'] = $user->id;
@@ -73,7 +82,8 @@ class HubCv
 				$portfolio->image_avatar = $portfolio->getDefaultImageAvatar();
 			}
 
-			if (!empty($portfolio->text_address_residential)) {
+			// convert full address to parts and store
+			if (($oriModel->text_address_residential != $portfolio->text_address_residential) && !empty($portfolio->text_address_residential)) {
 				$portfolio->resetAddressParts();
 			}
 

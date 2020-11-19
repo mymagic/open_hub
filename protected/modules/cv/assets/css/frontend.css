@@ -1,0 +1,174 @@
+#profileView-avatar
+{
+	background:none;
+}
+
+#site-profileView #profileView-avatar
+{
+	margin:30px 0 15px 0 !important;
+	padding:0 !important;
+	width:150px;
+	height:150px;
+}
+
+#site-profileView h1
+{
+	margin:0; padding:0;
+	text-transform: uppercase;
+	font-weight:bold;
+	font-size:170%;
+	color:black;
+}
+
+#site-profileView .text-subline
+{
+	font-size:100%;
+	font-weight:bold;
+}
+
+#profileView-socialLink
+{
+	margin-top:24px;
+}
+#profileView-socialLink ul
+{
+	list-style-type:none;
+	margin:0; padding:0;
+}
+
+#profileView-socialLink ul li
+{
+	display:inline;
+	margin:0 1em 0 1em;
+}
+
+#profileView-socialLink ul a
+{
+	color:#878787;
+	font-weight:bold;
+}
+
+#profileView-shortDesc
+{
+	margin:32px auto;
+	font-size:13pt;
+	max-width:800px;
+}
+
+
+
+#profileView-mainBox
+{
+	padding:20px;
+	padding-bottom:50px;
+	background:white;
+	font-size:120% !important;
+}
+
+#profileView-mainBox li {margin-bottom:1.2em;}
+#profileView-mainBox li .dd{font-size:100% !important; margin-left:1.5em;}
+#profileView-mainBox li .fa{margin-left:5px;}
+
+#profileView-mainBox #skillsets .label
+{
+	padding:6px;
+	margin-bottom:3px;
+	font-weight:normal;
+	font-size:90%;
+	border-radius:3px;
+	display: inline-block;
+}
+
+#profileView-subBox h3
+{
+	margin-bottom:1.5em;
+}
+
+#profileView-subBox
+{
+	padding:20px;
+	background:#424242;
+	color:white;
+}
+#profileView-subBox ul
+{
+	padding:0;
+	list-style-type:none;
+	font-size:12pt;
+	margin-bottom:1.5em;
+} 
+.box-experience
+{
+	padding:20px;
+	background:white;
+	margin-bottom:18px;
+}
+.box-experience-endorsed
+{
+	background: #fcfbf2 !important; /* Old browsers */
+}
+.box-experience .endorsed
+{
+	position:absolute;
+	top:0;
+	right:1em;
+}
+.box-experience-endorsed h3
+{
+	margin-right:100px;
+}
+
+#site-browseProfile
+{
+	margin-top:3em;
+}
+#site-browseProfile .box-filter label, #site-browseProfile .lead
+{
+	font-weight:normal;
+	color:white;
+}
+#site-browseProfile .box-filter
+{
+	padding:20px;
+	background:#424242;
+	margin-bottom:1em;
+	font-size:11pt;
+}
+#boxFilter-location .glyphicon
+{
+	color:#aaa;
+}
+.box-portfolio
+{
+	height:150px;
+	background:white;
+	padding:10px 20px 10px 20px;
+}
+
+.box-portfolio .lead
+{
+	color:black !important;
+	font-weight:bold !important;
+	margin:0; margin-bottom:5px;
+}
+
+.box-portfolio .avatar
+{
+	width:100px;
+	margin-top:-20px;
+	margin-right:-10px;
+}
+
+#list-filters{padding:1em; border-bottom:1px solid #ddd;}
+#list-filters .label
+{
+	display:inline-block;
+	padding:5px;
+	border-radius:3px;
+	margin-bottom:2px;
+	height:22px;
+}
+.float-left {float: left; position: relative; top: -10px; margin-right: 15px;}
+.float-right {float: right; position: relative; top: -10px; margin-right: 15px;}
+#list-portfolio {clear: both; position: relative}
+#list-portfolio .item { }

@@ -20,146 +20,157 @@
 		)
 	)); ?>
 
-    <?php echo Notice::inline(Yii::t('core', 'Fields with <span class="required">*</span> are required.')); ?>
-    <?php if ($model->hasErrors()): ?>
-        <?php echo $form->bsErrorSummary($model); ?>
-    <?php endif; ?>
 
-
-
-        <div class="form-group <?php echo $model->hasErrors('visibility') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'visibility'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsEnumDropDownList($model, 'visibility'); ?>
-                <?php echo $form->bsError($model, 'visibility'); ?>
-            </div>
+    <div class="form-group <?php echo $model->hasErrors('visibility') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'visibility'); ?>
+        <div class="col-sm-9">
+            <?php echo $form->bsEnumDropDownList($model, 'visibility'); ?>
+            <?php echo $form->bsError($model, 'visibility'); ?>
         </div>
+    </div>
 
-
-        <div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'slug'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsTextField($model, 'slug'); ?>
-                <?php echo $form->bsError($model, 'slug'); ?>
-            </div>
+    <div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'slug'); ?>
+        <div class="col-sm-2">
+            <?php echo $form->bsTextField($model, 'slug'); ?>
+            <?php echo $form->bsError($model, 'slug'); ?>
         </div>
-
-        <div class="form-group <?php echo $model->hasErrors('display_name') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'display_name'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsTextField($model, 'display_name'); ?>
-                <?php echo $form->bsError($model, 'display_name'); ?>
-            </div>
-        </div>
-
-        <div class="form-group <?php echo $model->hasErrors('text_oneliner') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'text_oneliner'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsTextField($model, 'text_oneliner'); ?>
-                <?php echo $form->bsError($model, 'text_oneliner'); ?>
-            </div>
-        </div>
-
-        <div class="form-group <?php echo $model->hasErrors('image_avatar') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'image_avatar'); ?>
-            <div class="col-sm-9">
-            <div class="row">
-                <div class="col-sm-2 text-left">
-                <?php echo Html::activeThumb($model, 'image_avatar'); ?>
-                </div>
-                <div class="col-sm-8">
-                <?php echo Html::activeFileField($model, 'imageFile_avatar'); ?>
-                <?php echo $form->bsError($model, 'image_avatar'); ?>
-                </div>
-            </div>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('text_address_residential') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'text_address_residential'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsTextArea($model, 'text_address_residential', array('rows' => 2)); ?>
-                <?php echo $form->bsError($model, 'text_address_residential'); ?>
-            </div>
-        </div>
-
-
-
-        <div class="form-group <?php echo $model->hasErrors('text_short_description') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'text_short_description'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 2)); ?>
-                <?php echo $form->bsError($model, 'text_short_description'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_fulltime') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_fulltime'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_fulltime'); ?>
-                <?php echo $form->bsError($model, 'is_looking_fulltime'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_contract') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_contract'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_contract'); ?>
-                <?php echo $form->bsError($model, 'is_looking_contract'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_freelance') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_freelance'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_freelance'); ?>
-                <?php echo $form->bsError($model, 'is_looking_freelance'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_cofounder') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_cofounder'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_cofounder'); ?>
-                <?php echo $form->bsError($model, 'is_looking_cofounder'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_internship') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_internship'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_internship'); ?>
-                <?php echo $form->bsError($model, 'is_looking_internship'); ?>
-            </div>
-        </div>
-
-
-        <div class="form-group <?php echo $model->hasErrors('is_looking_apprenticeship') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelEx3($model, 'is_looking_apprenticeship'); ?>
-            <div class="col-sm-9">
-                <?php echo $form->bsBooleanList($model, 'is_looking_apprenticeship'); ?>
-                <?php echo $form->bsError($model, 'is_looking_apprenticeship'); ?>
-            </div>
-        </div>
-
-
-
-
+    </div>
             
-        <!-- many2many -->
-        <!-- /many2many -->
+    <div class="form-group <?php echo $model->hasErrors('display_name') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'display_name'); ?>
+        <div class="col-sm-5">
+            <?php echo $form->bsTextField($model, 'display_name'); ?>
+            <?php echo $form->bsError($model, 'display_name'); ?>
+        </div>
+    </div>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-9">
-                <?php echo $form->bsBtnSubmit(Yii::t('core', 'Save')); ?>
+    <div class="form-group <?php echo $model->hasErrors('text_oneliner') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'text_oneliner'); ?>
+        <div class="col-sm-9">
+            <?php echo $form->bsTextField($model, 'text_oneliner'); ?>
+            <?php echo $form->bsError($model, 'text_oneliner'); ?>
+        </div>
+    </div>
+
+    <div class="form-group <?php echo $model->hasErrors('image_avatar') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'image_avatar'); ?>
+        <div class="col-sm-9">
+        <div class="row">
+            <div class="col-sm-2 text-left">
+            <?php echo Html::activeThumb($model, 'image_avatar'); ?>
+            </div>
+            <div class="col-sm-8">
+            <?php echo Html::activeFileField($model, 'imageFile_avatar'); ?>
+            <?php echo $form->bsError($model, 'image_avatar'); ?>
             </div>
         </div>
+        </div>
+    </div>
+
+    <div class="form-group <?php echo $model->hasErrors('text_short_description') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'text_short_description'); ?>
+        <div class="col-sm-9">
+            <?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 2)); ?>
+            <?php echo $form->bsError($model, 'text_short_description'); ?>
+        </div>
+    </div>
+
+    <div class="form-group <?php echo $model->hasErrors('text_address_residential') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'text_address_residential'); ?>
+        <div class="col-sm-9">
+            <?php echo $form->bsTextArea($model, 'text_address_residential', array('rows' => 2)); ?>
+            <?php echo $form->bsError($model, 'text_address_residential'); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class=" control-label col-sm-3" for=""><?php echo Yii::t('cv', 'Social Links')?></label>
+        <div class="col-sm-9">
+            
+                <div class="input-group">
+                    <div class="input-group-addon bg-default btn-sm" id=""><?php echo Html::faIcon('fa-globe fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_website', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlWebsite"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_website'); ?>
+
+                <div class="input-group">
+                    <div class="input-group-addon bg-default btn-sm" id=""><?php echo Html::faIcon('fa-linkedin fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_linkedin', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlLinkedin"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_linkedin'); ?>
+
+                <div class="input-group margin-top-sm">
+                    <div class="input-group-addon bg-default btn-sm" id=""><?php echo Html::faIcon('fa-facebook fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_facebook', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlFacebook"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_facebook'); ?>
+
+                <div class="input-group margin-top-sm">
+                    <div class="input-group-addon bg-default btn-sm" id=""><?php echo Html::faIcon('fa-twitter fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_twitter', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlTwitter"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_twitter'); ?>
+
+                <div class="input-group margin-top-sm">
+                    <div class="input-group-addon bg-default btn-sm"><?php echo Html::faIcon('fa-github fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_github', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlGithub"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_github'); ?>
+
+                <div class="input-group margin-top-sm">
+                    <div class="input-group-addon bg-default btn-sm"><?php echo Html::faIcon('fa-stack-overflow fa-fw') ?></div>
+                    <?php echo $form->bsTextField($model, 'url_stackoverflow', array('placeholder' => 'http://')); ?>
+                    <a class="btn btn-success input-group-addon" id="btn-urlStackoverflow"><?php echo Html::faIcon('fa-external-link') ?></a>
+                </div>
+                <?php echo $form->bsError($model, 'url_stackoverflow'); ?>
+            
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class=" control-label col-sm-3" for=""><?php echo Yii::t('cv', 'I am looking for')?></label>
+        <div class="col-sm-9">
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_fulltime'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_fulltime') ?></span>
+            </label></div>
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_contract'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_contract') ?></span>
+            </label></div>
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_freelance'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_freelance') ?></span>
+            </label></div>
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_cofounder'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_cofounder') ?></span>
+            </label></div>
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_internship'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_internship') ?></span>
+            </label></div>
+            <div class="col-xs-6 col-sm-4"><label class="checkbox-inline">
+                <?php echo $form->bsCheckbox($model, 'is_looking_apprenticeship'); ?>
+                <span><?php echo $model->getAttributeLabel('is_looking_apprenticeship') ?></span>
+            </label></div>
+        </div>
+    </div>
+        
+    <!-- many2many -->
+    <!-- /many2many -->
+
+    <div class="form-group margin-top-2x">
+        <div class="col-sm-offset-2 col-sm-9">
+            <?php echo $form->bsBtnSubmit(Yii::t('core', 'Save')); ?>
+        </div>
+    </div>
 
     <?php $this->endWidget(); ?>
 

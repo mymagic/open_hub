@@ -54,20 +54,6 @@
 		</div>
 	</div>
 	
-		
-	
-
-
-		
-	<div class="form-group">
-		<?php echo $form->bsLabelFx2($model, 'jobpos_id', array('required' => false)); ?>
-		<div class="col-sm-10">
-			<?php echo $form->bsForeignKeyDropDownList($model, 'jobpos_id', array('nullable' => true)); ?>
-		</div>
-	</div>
-	
-		
-	
 
 
 		

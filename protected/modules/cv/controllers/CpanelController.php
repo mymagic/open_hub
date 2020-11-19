@@ -22,7 +22,7 @@ class CpanelController extends Controller
 			),
 			array(
 				'allow',
-				'actions' => array('portfolio', 'experience'),
+				'actions' => array('portfolio', 'experience', 'createExperience'),
 				'users' => array('@'),
 			),
 			array(
@@ -43,6 +43,10 @@ class CpanelController extends Controller
 		$this->activeMenuCpanel = 'list';
 		$this->layoutParams['containerFluid'] = false;
 		$this->layoutParams['enableGlobalSearchBox'] = false;
+
+		if (!Yii::app()->getModule('cv')->isCpanelEnabled) {
+			Notice::page(Yii::t('cv', 'This page has been disabled by admin'), Notice_INFO);
+		}
 	}
 
 	public function actionIndex()
@@ -53,14 +57,13 @@ class CpanelController extends Controller
 	public function actionPortfolio()
 	{
 		$this->activeMenuCpanel = 'portfolio';
-		$user = User::model()->findByPk(Yii::app()->user->id);
 
-		$model = HubCv::getOrCreateCvPortfolio($user);
+		$model = HubCv::getOrCreateCvPortfolio($this->user);
 		if (isset($_POST['CvPortfolio'])) {
 			$params['cvPortfolio'] = $_POST['CvPortfolio'];
 			$params['cvPortfolio']['imageFile_avatar'] = UploadedFile::getInstance($model, 'imageFile_avatar');
 
-			$model = HubCv::getOrCreateCvPortfolio($user, $params);
+			$model = HubCv::getOrCreateCvPortfolio($this->user, $params);
 		}
 
 		$this->render('portfolio', array('model' => $model));
@@ -69,6 +72,40 @@ class CpanelController extends Controller
 	public function actionExperience()
 	{
 		$this->activeMenuCpanel = 'experience';
-		$this->render('experience');
+
+		$model = new CvExperience('search');
+		$model->unsetAttributes();
+		if (isset($_GET['CvExperience'])) {
+			$model->attributes = $_GET['CvExperience'];
+		}
+
+		$portfolio = HubCv::getOrCreateCvPortfolio($this->user);
+		$model->cv_portfolio_id = $portfolio->id;
+
+		$this->render('experience', array(
+			'model' => $model, 'portfolio' => $portfolio
+		));
+	}
+
+	public function actionCreateExperience()
+	{
+		$this->pageTitle = 'Add New Experience';
+		$this->activeMenuCpanel = 'experience';
+
+		$portfolio = HubCv::getOrCreateCvPortfolio($this->user);
+
+		$model = new CvExperience();
+		if (isset($_POST['CvExperience'])) {
+			$model->attributes = $_POST['CvExperience'];
+			$model->cv_portfolio_id = $portfolio->id;
+
+			if ($model->save()) {
+				$this->redirect(array('experience'));
+			}
+		}
+
+		$this->render('createExperience', array(
+			'model' => $model, 'portfolio' => $portfolio
+		));
 	}
 }

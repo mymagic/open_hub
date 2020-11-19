@@ -9,6 +9,8 @@ class CvModule extends WebModule
 	public $organizationId;
 	public $var1;
 	public $var2;
+	public $isFrontendEnabled = true;
+	public $isCpanelEnabled = true;
 
 	// this method is called when the module is being created
 	// you may place code here to customize the module
@@ -84,12 +86,14 @@ class CvModule extends WebModule
 				'url' => Yii::app()->controller->createUrl('/cv/backend/action1', array('id' => $model->id)),
 			);
 		} elseif ($realm == 'cpanel') {
-			$actions['cv'][] = array(
-				'visual' => 'primary',
-				'label' => 'Frontend Action 1',
-				'title' => 'Frontend Action 1 short description',
-				'url' => Yii::app()->controller->createUrl('/cv/frontend/action1', array('id' => $model->id)),
-			);
+			if (Yii::app()->getModule('cv')->isCpanelEnabled) {
+				$actions['cv'][] = array(
+					'visual' => 'primary',
+					'label' => 'Frontend Action 1',
+					'title' => 'Frontend Action 1 short description',
+					'url' => Yii::app()->controller->createUrl('/cv/frontend/action1', array('id' => $model->id)),
+				);
+			}
 		}
 
 		return $actions;
@@ -448,7 +452,7 @@ class CvModule extends WebModule
 						'label' => Yii::t('app', 'My Portfolio'),
 						'url' => '/cv/cpanel',
 						'active' => $controller->activeMenuCpanel == 'cv' ? true : false,
-						'visible' => true,
+						'visible' => Yii::app()->getModule('cv')->isCpanelEnabled,
 						'icon' => 'fa-file-powerpoint-o'
 					)
 				);
@@ -461,14 +465,14 @@ class CvModule extends WebModule
 						'label' => Yii::t('app', 'My Portfolio'),
 						'url' => '/cv/cpanel/portfolio',
 						'active' => $controller->activeMenuCpanel == 'portfolio' ? true : false,
-						'visible' => true,
+						'visible' => Yii::app()->getModule('cv')->isCpanelEnabled,
 						'icon' => 'fa-file-powerpoint-o'
 					),
 					array(
 						'label' => Yii::t('app', 'My Experiences'),
 						'url' => '/cv/cpanel/experience',
 						'active' => $controller->activeMenuCpanel == 'experience' ? true : false,
-						'visible' => true,
+						'visible' => Yii::app()->getModule('cv')->isCpanelEnabled,
 						'icon' => 'fa-caret-right'
 					),
 				);
@@ -484,19 +488,19 @@ class CvModule extends WebModule
 						'linkOptions' => array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'),
 						'items' => array(
 							array(
-								'label' => Yii::t('cv', 'Portfolio'), 'url' => array('//cv/cvPortfolio/admin'),
+								'label' => Yii::t('cv', 'Portfolio'), 'url' => array('//cv/portfolio/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'cvPortfolio', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'portfolio', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
 							),
 							array(
-								'label' => Yii::t('cv', 'Job Position'), 'url' => array('//cv/cvJobpos/admin'),
+								'label' => Yii::t('cv', 'Job Position'), 'url' => array('//cv/jobpos/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'cvJobpos', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'jobpos', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
 							),
 							array(
-								'label' => Yii::t('cv', 'Job Position Group'), 'url' => array('//cv/cvJobposGroup/admin'),
+								'label' => Yii::t('cv', 'Job Position Group'), 'url' => array('//cv/jobposGroup/admin'),
 								// 'visible' => Yii::app()->user->getState('accessBackend') == true),
-								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'cvJobposGroup', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
+								'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'jobposGroup', 'action' => (object)['id' => 'admin'], 'module' => (object)['id' => 'cv']])
 							),
 						),
 					),
@@ -634,7 +638,7 @@ class CvModule extends WebModule
 				'is_looking_internship' => 'boolean NOT NULL DEFAULT 0',
 				'is_looking_apprenticeship' => 'boolean NOT NULL DEFAULT 0',
 				'visibility' => 'string NULL',
-				'is_active' => 'boolean NOT NULL DEFAULT 0',
+				'is_active' => 'boolean NOT NULL DEFAULT 1',
 				'json_social' => 'text NULL',
 				'json_extra' => 'text NULL',
 				'date_added' => 'integer',
@@ -680,7 +684,7 @@ class CvModule extends WebModule
 				'month_start' => 'string NOT NULL',
 				'year_end' => 'integer NULL',
 				'month_end' => 'string NULL',
-				'is_active' => 'boolean NOT NULL DEFAULT 0',
+				'is_active' => 'boolean NOT NULL DEFAULT 1',
 				'json_extra' => 'text NULL',
 				'date_added' => 'integer',
 				'date_modified' => 'integer',
