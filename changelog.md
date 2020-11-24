@@ -1,3 +1,7 @@
+## 0.6.453
+- update version number
+- removed deleted files
+
 ## 0.6.452
 - fixed missing migration m201116_070657_rename_column_merge_history
 
