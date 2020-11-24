@@ -1,3 +1,6 @@
+## 0.6.452
+- fixed missing migration m201116_070657_rename_column_merge_history
+
 ## 0.6.450
 - added module cv
 - separated deleted items from active items in backend admin view
