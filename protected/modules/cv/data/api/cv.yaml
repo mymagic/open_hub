@@ -1,0 +1,53 @@
+swagger: '2.0'
+info:
+  description: Provides CV of our members
+  version: "v1"
+  title: CV
+  # put the contact info for your development or API team
+  contact:
+    email: yee.siang@mymagic.my
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: public
+  description: Public API calls available to any developers
+- name: admin
+  description: Secured admin only API calls
+- name: internal
+  description: Internal API calls available to in-house developers only
+paths:
+  /getCvExperiences:
+    post:
+      tags:
+      - public
+      summary: Get list of composed experiences for a particular portfolio
+      description: Get list of composed experiences for a particular portfolio, in pagination limit to 30 items per page.
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - in: formData
+        name: username
+        type: string
+        description: username (email) of a member with portfolio. Portfolio can be in any visibility
+        required: false
+        x-example: user@email.com
+      - in: formData
+        name: page
+        type: integer
+        description: Page number to show
+        default: 1
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+basePath: /v1
+# Added by API Auto Mocking Plugin
+host: api-central.mymagic.my
+# Added by API Auto Mocking Plugin
+schemes:
+ - https

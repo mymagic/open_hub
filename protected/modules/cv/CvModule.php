@@ -571,7 +571,9 @@ class CvModule extends WebModule
 
 		// comment off code block below to initialize database structure for this module
 		if ($forceReset) {
-			$migration->dropForeignKey('fk_cv_portfolio-high_academy_experience_id', 'cv_portfolio');
+			if (Yii::app()->db->schema->getTable('cv_portfolio', true)) {
+				$migration->dropForeignKey('fk_cv_portfolio-high_academy_experience_id', 'cv_portfolio');
+			}
 
 			if (Yii::app()->db->schema->getTable('cv_experience', true)) {
 				$migration->dropTable('cv_experience');
@@ -618,7 +620,7 @@ class CvModule extends WebModule
 				'id' => 'pk',
 				'user_id' => 'integer NOT NULL',
 				'slug' => 'string NULL',
-				'jobpos_id' => 'integer NULL',
+				'cv_jobpos_id' => 'integer NULL',
 				'organization_name' => 'string NULL', // map to 'at' in legacy field
 				'location' => 'string NULL',
 				// 'city_id' => 'integer NULL',
@@ -629,6 +631,7 @@ class CvModule extends WebModule
 				'display_name' => 'string NOT NULL',
 				'image_avatar' => 'string NULL',
 				'high_academy_experience_id' => 'integer NULL',
+				'current_job_experience_id' => 'integer NULL',
 				'text_oneliner' => 'string NULL',
 				'text_short_description' => 'text NULL',
 				'is_looking_fulltime' => 'boolean NOT NULL DEFAULT 0',
@@ -655,14 +658,15 @@ class CvModule extends WebModule
 		$migration->alterColumn('cv_portfolio', 'visibility', "ENUM('public', 'protected', 'private') DEFAULT 'public'");
 
 		$migration->createIndex('user_id', 'cv_portfolio', 'user_id', false);
-		$migration->createIndex('jobpos_id', 'cv_portfolio', 'jobpos_id', false);
+		$migration->createIndex('cv_jobpos_id', 'cv_portfolio', 'cv_jobpos_id', false);
 		$migration->createIndex('country_code', 'cv_portfolio', 'country_code', false);
 		$migration->createIndex('state_code', 'cv_portfolio', 'state_code', false);
 		$migration->createIndex('high_academy_experience_id', 'cv_portfolio', 'high_academy_experience_id', false);
+		$migration->createIndex('current_job_experience_id', 'cv_portfolio', 'current_job_experience_id', false);
 		$migration->createIndex('is_active', 'cv_portfolio', 'is_active', false);
 
 		$migration->addForeignKey('fk_cv_portfolio-user_id', 'cv_portfolio', 'user_id', 'user', 'id', 'CASCADE', 'CASCADE');
-		$migration->addForeignKey('fk_cv_portfolio-jobpos_id', 'cv_portfolio', 'jobpos_id', 'cv_jobpos_group', 'id', 'SET NULL', 'CASCADE');
+		$migration->addForeignKey('fk_cv_portfolio-cv_jobpos_id', 'cv_portfolio', 'cv_jobpos_id', 'cv_jobpos', 'id', 'SET NULL', 'CASCADE');
 		$migration->addForeignKey('fk_cv_portfolio-country_code', 'cv_portfolio', 'country_code', 'country', 'code', 'SET NULL', 'CASCADE');
 		$migration->addForeignKey('fk_cv_portfolio-state_code', 'cv_portfolio', 'state_code', 'state', 'code', 'SET NULL', 'CASCADE');
 
@@ -709,6 +713,7 @@ class CvModule extends WebModule
 		$migration->addForeignKey('fk_cv_experience-state_code', 'cv_experience', 'state_code', 'state', 'code', 'SET NULL', 'CASCADE');
 
 		$migration->addForeignKey('fk_cv_portfolio-high_academy_experience_id', 'cv_portfolio', 'high_academy_experience_id', 'cv_experience', 'id', 'SET NULL', 'CASCADE');
+		$migration->addForeignKey('fk_cv_portfolio-current_job_experience_id', 'cv_portfolio', 'current_job_experience_id', 'cv_experience', 'id', 'SET NULL', 'CASCADE');
 
 		return true;
 	}

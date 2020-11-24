@@ -74,10 +74,16 @@ class HubCv
 
 			$params['cvPortfolio']['user_id'] = $user->id;
 			$portfolio->attributes = $params['cvPortfolio'];
-			$portfolio->display_name = $user->profile->full_name;
+			if (empty($portfolio->display_name)) {
+				$portfolio->display_name = !empty($user->profile->full_name) ? $user->profile->full_name : 'User';
+			}
 
 			if (!empty(UploadedFile::getInstance($portfolio, 'imageFile_avatar'))) {
 				$portfolio->imageFile_avatar = UploadedFile::getInstance($portfolio, 'imageFile_avatar');
+			} elseif (!empty($portfolio->urlImageRemote_avatar)) {
+				$ruf = new RemoteUploadedFile;
+				$ruf->setUrl($portfolio->urlImageRemote_avatar);
+				$portfolio->imageRemote_avatar = $ruf;
 			} else {
 				$portfolio->image_avatar = $portfolio->getDefaultImageAvatar();
 			}
@@ -89,6 +95,8 @@ class HubCv
 
 			if ($portfolio->save()) {
 				UploadManager::storeImage($portfolio, 'avatar', $portfolio->tableName());
+
+				RemoteUploadManager::storeImage($portfolio, 'avatar', $portfolio->tableName());
 
 				//$log = Yii::app()->esLog->log(sprintf("'%s' created '%s'", HUB::getSessionUsername(), $organization->title), 'organization', array('trigger' => 'HUB::createOrganization', 'model' => 'Organization', 'action' => 'create', 'id' => $organization->id, 'organizationId' => $organization->id), '', array('userEmail' => $params['userEmail']));
 

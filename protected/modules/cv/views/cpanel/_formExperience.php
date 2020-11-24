@@ -1,38 +1,28 @@
 
-<div class="row">
-	<div class="col-sm-9">
-		<?php if (Yii::app()->user->getFlash('updateExperience-success')): ?>
-			<?php echo Notice::inline(Yii::t('app', 'Portfolio saved successfully!'), Notice_SUCCESS); ?>
-		<?php else: ?>
-			<?php echo Notice::inline(Yii::t('core', 'Fields with <span class="required">*</span> are required.')); ?>
-		<?php endif; ?>
-	</div>
-	<div class="col-sm-3 text-right">
-        <span class="btn-group btn-group-md">
-            <a href="<?php echo $this->createUrl('cpanel/experience') ?>" class="btn btn-default"><?php echo Html::faIcon('fa-arrow-circle-left') ?> Cancel</a>
-            <?php echo $form->bsBtnSubmit($model->isNewRecord ? Yii::t('core', 'Create') : Yii::t('core', 'Save')); ?>
-        </span>
-	</div>
-</div>
-
+<?php echo Notice::inline(Yii::t('core', 'Fields with <span class="required">*</span> are required.')); ?>
 
 <div class="row">
 	<div class="col-sm-6">
-		<div class="form-group <?php echo $model->hasErrors('genre') ? 'has-error' : '' ?>">
-			<?php echo $form->bsLabelFx0($model, 'genre'); ?>
-			<div class="">
-				<?php echo $form->bsEnumDropDownList($model, 'genre'); ?>
-				<?php echo $form->bsError($model, 'genre'); ?>
+		<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group <?php echo $model->hasErrors('genre') ? 'has-error' : '' ?>">
+				<?php echo $form->bsLabelFx0($model, 'genre', array('label' => Yii::t('cv', 'Type'))); ?>
+				<div class="">
+					<?php echo $form->bsEnumDropDownList($model, 'genre'); ?>
+					<?php echo $form->bsError($model, 'genre'); ?>
+				</div>
 			</div>
 		</div>
-        
-        <div class="form-group <?php echo $model->hasErrors('title') ? 'has-error' : '' ?>">
-            <?php echo $form->bsLabelFx0($model, 'title'); ?>
-            <div class="">
-                <?php echo $form->bsTextField($model, 'title'); ?>
-                <?php echo $form->bsError($model, 'title'); ?>
-            </div>
-        </div>
+        <div class="col-sm-8">
+			<div class="form-group <?php echo $model->hasErrors('title') ? 'has-error' : '' ?>">
+				<?php echo $form->bsLabelFx0($model, 'title'); ?>
+				<div class="">
+					<?php echo $form->bsTextField($model, 'title'); ?>
+					<?php echo $form->bsError($model, 'title'); ?>
+				</div>
+			</div>
+		</div>
+		</div>
 
         <div class="form-group <?php echo $model->hasErrors('organization_name') ? 'has-error' : '' ?>">
             <?php echo $form->bsLabelFx0($model, 'organization_name'); ?>
@@ -97,7 +87,7 @@
 		<div class="form-group <?php echo $model->hasErrors('text_short_description') ? 'has-error' : '' ?>">
 			<?php echo $form->bsLabelFx0($model, 'text_short_description'); ?>
 			<div class="">
-				<?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 20)); ?>
+				<?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 16)); ?>
 				<?php echo $form->bsError($model, 'text_short_description'); ?>
 			</div>
 		</div>

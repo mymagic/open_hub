@@ -20,7 +20,7 @@
 	<?php echo Html::encode($data->slug); ?>
 	<br />
 
-	<b><?php echo Html::encode($data->getAttributeLabel('jobpos_id')); ?>:</b>
+	<b><?php echo Html::encode($data->getAttributeLabel('cv_jobpos_id')); ?>:</b>
 	<?php echo Html::encode($data->cvJobpos->title); ?>
 	<br />
 

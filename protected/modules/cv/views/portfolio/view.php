@@ -24,7 +24,7 @@ $this->menu = array(
 		'id',
 		array('name' => 'user_id', 'value' => $model->user->username),
 		'slug',
-		array('name' => 'jobpos_id', 'value' => $model->cvJobpos->title),
+		array('name' => 'cv_jobpos_id', 'value' => $model->cvJobpos->title),
 		'organization_name',
 		'location',
 		array('name' => 'text_address_residential', 'type' => 'raw', 'value' => nl2br($model->text_address_residential)),

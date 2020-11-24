@@ -17,7 +17,7 @@ class FrontendController extends Controller
 		return array(
 			array(
 				'allow',
-				'actions' => array('index'),
+				'actions' => array('index', 'portfolio', 'listExperiences', 'clearSearchTag'),
 				'users' => array('*'),
 			),
 			array(
@@ -50,9 +50,52 @@ class FrontendController extends Controller
 		}
 	}
 
-	public function actionIndex()
+	public function actionIndex($jobr = '', $look = '', $loc = '')
 	{
-		$this->render('index');
+		$searchModel = new CvSearchForm('search');
+
+		if (isset($_GET['CvSearchForm'])) {
+			$searchModel->attributes = $_GET['CvSearchForm'];
+		}
+
+		// not login
+		if (Yii::app()->user->isGuest) {
+			$searchModel->visibility = 'public';
+		} else {
+			$user = Yii::app()->user;
+			$portfolio = HubCv::getCvPortfolioByUser($user);
+
+			if (!empty($portfolio)) {
+				$searchModel->visibility = 'private';
+				$searchModel->portfolioId = $portfolio->id;
+			} else {
+				$searchModel->visibility = 'protected';
+			}
+		}
+
+		$this->render('index', array('searchModel' => $searchModel, 'dataProvider' => $searchModel->search()));
+	}
+
+	public function actionClearSearchTag($group, $value, $url)
+	{
+		$url = urldecode($url);
+		$urlParts = parse_url($url);
+
+		parse_str($urlParts['query'], $queryParts);
+		// array need special treatment, eg: $group == 'jobrs' || $group == 'looks'
+		if (is_array($queryParts['CvSearchForm'][$group])) {
+			foreach ($queryParts['CvSearchForm'][$group] as $index => $item) {
+				if ($item == $value) {
+					unset($queryParts['CvSearchForm'][$group][$index]);
+				}
+			}
+		} else {
+			$queryParts['CvSearchForm'][$group] = '';
+		}
+
+		$queryString = http_build_query($queryParts);
+		$newUrl = sprintf('%s?%s', $urlParts['path'], $queryString);
+		$this->redirect($newUrl);
 	}
 
 	public function actionPortfolio($slug)
@@ -72,10 +115,8 @@ class FrontendController extends Controller
 			Notice::page(Yii::t('cv', 'This is a private portfolio accessible by its owner only'), Notice_INFO);
 		}
 
-		$attendedPrograms = $portfolio->getAttendedPrograms();
-		//print_r($attendedPrograms);exit;
-		$items = $portfolio->getComposedExperiences();
-		//echo "<pre>";print_r($programs);exit;
+		//$attendedPrograms = $portfolio->getAttendedPrograms();
+		//$items = $portfolio->getComposedExperiences();
 		$skillsets = $portfolio->getDistinctSkillset();
 		sort($skillsets);
 		//echo "<pre>";print_r($skillsets);exit;
@@ -134,6 +175,29 @@ class FrontendController extends Controller
 		}*/
 
 		// $this->render('portfolio', array('model' => $portfolio, 'items'=>$items, 'attendedPrograms'=>$attendedPrograms, 'skillsets'=>$skillsets,'contactForm'=>$contactForm));
-		$this->render('portfolio', array('model' => $portfolio, 'items' => $items, 'attendedPrograms' => $attendedPrograms, 'skillsets' => $skillsets));
+		$this->render('portfolio', array('model' => $portfolio, 'skillsets' => $skillsets));
+	}
+
+	public function actionListExperiences($portfolioId, $page = 1)
+	{
+		$client = new \GuzzleHttp\Client(['base_uri' => Yii::app()->params['baseApiUrl'] . '/']);
+
+		try {
+			$cv = CvPortfolio::model()->findByPk($portfolioId);
+			$response = $client->post(
+				'getCvExperiences',
+			[
+				'form_params' => [
+					'username' => $cv->user->username,
+					'page' => $page,
+				],
+				'verify' => false,
+			]
+			);
+		} catch (Exception $e) {
+			$this->outputJsonFail($e->getMessage());
+		}
+
+		$this->outputJsonRaw($response->getBody());
 	}
 }

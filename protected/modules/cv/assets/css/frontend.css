@@ -102,10 +102,13 @@
 	padding:20px;
 	background:white;
 	margin-bottom:18px;
+	/* box-shadow: 1px 1px 8px #eeeeee; */
+	border: 1px solid #eee;
 }
 .box-experience-endorsed
 {
 	background: #fcfbf2 !important; /* Old browsers */
+	border: 1px solid #ecebe2 !important;
 }
 .box-experience .endorsed
 {

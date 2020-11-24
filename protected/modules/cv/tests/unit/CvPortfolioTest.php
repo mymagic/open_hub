@@ -65,7 +65,7 @@ class CvJobposTest extends CDbTestCase
 			array(
 				'display_name' => 'Foo Bar',
 				'user_id' => $user->id,
-				'jobpos_id' => $jobpos->id,
+				'cv_jobpos_id' => $jobpos->id,
 				'text_oneliner' => 'Hello World!',
 				'text_short_description' => 'Bla Bla Bla...',
 				'organization_name' => 'MaGIC',
@@ -163,7 +163,7 @@ class CvJobposTest extends CDbTestCase
 		$params['cvPortfolio'] = array(
 			'display_name' => 'Foo Bar',
 			'user_id' => $user->id,
-			'jobpos_id' => $jobpos->id,
+			'cv_jobpos_id' => $jobpos->id,
 			'text_oneliner' => 'Hello World!',
 			'text_short_description' => 'Bla Bla Bla...',
 			'organization_name' => 'MaGIC',

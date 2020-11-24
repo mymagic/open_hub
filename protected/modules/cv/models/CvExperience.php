@@ -74,9 +74,10 @@ class CvExperience extends CvExperienceBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		$return['country_code'] = Yii::t('app', 'Country');
-		$return['genre'] = Yii::t('app', 'Type of Experience');
-		$return['organization_name'] = Yii::t('app', 'Organization');
+		$return['country_code'] = Yii::t('cv', 'Country');
+		$return['genre'] = Yii::t('cv', 'Type of Experience');
+		$return['organization_name'] = Yii::t('cv', 'Organization');
+		$return['text_short_description'] = Yii::t('cv', 'Short Description');
 
 		return $return;
 	}
@@ -90,6 +91,9 @@ class CvExperience extends CvExperienceBase
 			$this->address_zip = $addressParts['zipcode'];*/
 			if (!empty($addressParts['city'])) {
 				$this->location = $addressParts['city'];
+			}
+			else{
+				$this->location = '';
 			}
 
 			if (!empty($addressParts['countryCode'])) {
@@ -108,15 +112,15 @@ class CvExperience extends CvExperienceBase
 	public function getFaIcon()
 	{
 		if ($this->genre == 'job') {
-			return 'fa-briefcase';
+			return 'text-muted fa-briefcase';
 		}
 		if ($this->genre == 'study') {
-			return 'fa-graduation-cap';
+			return 'text-muted fa-graduation-cap';
 		}
 		if ($this->genre == 'project') {
-			return 'fa-folder';
+			return 'text-muted fa-folder';
 		}
 
-		return 'fa-certificate';
+		return 'text-muted fa-certificate';
 	}
 }

@@ -25,6 +25,36 @@ class TestController extends Controller
 		);
 	}
 
+	public function actionExperienceStateCountry($id)
+	{
+		$exp = CvExperience::model()->findByPk($id);
+		echo '<pre>';
+		echo 'Before Save<br>';
+		print_r($exp);
+
+		//$exp->full_address = '642-A, Jln Yong Pak Khian, Tmn Nam Yang, Ujong Pasir, 75050 Melaka';
+		$exp->full_address = '130, Jln Warisan Indah 8/16, Kota Warisan, 43900 Selangor';
+		$exp->resetAddressParts();
+		$exp->save();
+
+		echo 'After Save<br>';
+		print_r($exp);
+	}
+
+	public function actionGetExperiences($username)
+	{
+		$limit = 30;
+		$user = HUB::getUserByUsername($username);
+		$portfolio = HubCv::getCvPortfolioByUser($user);
+		$data = $portfolio->gaugeComposedExperiences();
+		echo '<pre>';
+		print_r($data);
+		$data = $portfolio->getComposedExperiences(1, $limit);
+
+		echo '<pre>';
+		print_r($data);
+	}
+
 	public function actionCvOrganizationBehavior()
 	{
 		$organization = new Organization;

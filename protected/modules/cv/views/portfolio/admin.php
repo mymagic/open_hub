@@ -47,6 +47,7 @@ $('.search-form form').submit(function(){
 	'filter' => $model,
 	'columns' => array(
 		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
+		array('name' => 'image_avatar', 'type' => 'raw', 'value' => 'Html::activeThumb($data, "image_avatar", array("width"=>32))', 'filter' => false, 'htmlOptions' => array('class' => 'text-center')),
 		'slug',
 		'display_name',
 		array('name' => 'visibility', 'cssClassExpression' => 'enum', 'value' => '$data->formatEnumVisibility($data->visibility)', 'headerHtmlOptions' => array('class' => 'enum'), 'filter' => $model->getEnumVisibility(false, true)),

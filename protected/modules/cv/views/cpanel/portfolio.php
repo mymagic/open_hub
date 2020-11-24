@@ -24,8 +24,8 @@
         <?php echo $form->bsLabelEx3($model, 'slug'); ?>
         <div class="col-sm-2">
             <?php echo $form->bsTextField($model, 'slug'); ?>
-            <?php echo $form->bsError($model, 'slug'); ?>
         </div>
+        <div class="10"><?php echo $form->bsError($model, 'slug'); ?></div>
     </div>
             
     <div class="form-group <?php echo $model->hasErrors('display_name') ? 'has-error' : '' ?>">
@@ -36,6 +36,14 @@
         </div>
     </div>
 
+    <div class="form-group <?php echo $model->hasErrors('cv_jobpos_id') ? 'has-error' : '' ?>">
+        <?php echo $form->bsLabelEx3($model, 'cv_jobpos_id'); ?>
+        <div class="col-sm-9">
+            <?php echo $form->bsForeignKeyDropDownList($model, 'cv_jobpos_id', array('nullable' => true)); ?>
+            <?php echo $form->bsError($model, 'cv_jobpos_id'); ?>
+        </div>
+    </div>
+    
     <div class="form-group <?php echo $model->hasErrors('text_oneliner') ? 'has-error' : '' ?>">
         <?php echo $form->bsLabelEx3($model, 'text_oneliner'); ?>
         <div class="col-sm-9">

@@ -9,6 +9,9 @@ class CvPortfolio extends CvPortfolioBase
 	public $url_github;
 	public $url_stackoverflow;
 
+	public $urlImageRemote_avatar;
+	public $imageRemote_avatar;
+
 	public static function model($class = __CLASS__)
 	{
 		return parent::model($class);
@@ -129,7 +132,7 @@ class CvPortfolio extends CvPortfolioBase
 			array('url_website, url_linkedin, url_twitter, url_facebook, url_github, url_stackoverflow', 'url'),
 
 			array('user_id, display_name', 'required'),
-			array('user_id, jobpos_id, high_academy_experience_id, is_looking_fulltime, is_looking_contract, is_looking_freelance, is_looking_cofounder, is_looking_internship, is_looking_apprenticeship, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('user_id, cv_jobpos_id, high_academy_experience_id, current_job_experience_id, is_looking_fulltime, is_looking_contract, is_looking_freelance, is_looking_cofounder, is_looking_internship, is_looking_apprenticeship, is_active, date_added, date_modified', 'numerical', 'integerOnly' => true),
 			array('organization_name, location, display_name, image_avatar', 'length', 'max' => 255),
 			array('state_code', 'length', 'max' => 12),
 			array('country_code', 'length', 'max' => 2),
@@ -137,9 +140,10 @@ class CvPortfolio extends CvPortfolioBase
 			array('visibility', 'length', 'max' => 9),
 			array('text_address_residential, latlong_address_residential, text_short_description', 'safe'),
 			array('imageFile_avatar', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
+			array('urlImageRemote_avatar', 'url'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, slug, jobpos_id, organization_name, location, text_address_residential, latlong_address_residential, state_code, country_code, display_name, image_avatar, high_academy_experience_id, text_oneliner, text_short_description, is_looking_fulltime, is_looking_contract, is_looking_freelance, is_looking_cofounder, is_looking_internship, is_looking_apprenticeship, visibility, is_active, json_social, json_extra, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, url_website, url_linkedin, url_twitter, url_facebook, url_github, url_stackoverflow', 'safe', 'on' => 'search'),
+			array('id, user_id, slug, cv_jobpos_id, organization_name, location, text_address_residential, latlong_address_residential, state_code, country_code, display_name, image_avatar, high_academy_experience_id, current_job_experience_id, text_oneliner, text_short_description, is_looking_fulltime, is_looking_contract, is_looking_freelance, is_looking_cofounder, is_looking_internship, is_looking_apprenticeship, visibility, is_active, json_social, json_extra, date_added, date_modified, sdate_added, edate_added, sdate_modified, edate_modified, url_website, url_linkedin, url_twitter, url_facebook, url_github, url_stackoverflow', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -158,7 +162,8 @@ class CvPortfolio extends CvPortfolioBase
 
 			'country' => array(self::BELONGS_TO, 'Country', 'country_code'),
 			'highAcademyExperience' => array(self::BELONGS_TO, 'CvExperience', 'high_academy_experience_id'),
-			'cvJobpos' => array(self::BELONGS_TO, 'CvJobpos', 'jobpos_id'),
+			'currentJobExperience' => array(self::BELONGS_TO, 'CvExperience', 'current_job_experience_id'),
+			'cvJobpos' => array(self::BELONGS_TO, 'CvJobpos', 'cv_jobpos_id', 'order' => 'title ASC'),
 			'state' => array(self::BELONGS_TO, 'State', 'state_code'),
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 
@@ -174,7 +179,7 @@ class CvPortfolio extends CvPortfolioBase
 		'id' => Yii::t('app', 'ID'),
 		'user_id' => Yii::t('app', 'User'),
 		'slug' => Yii::t('app', 'Slug'),
-		'jobpos_id' => Yii::t('app', 'Job Role'),
+		'cv_jobpos_id' => Yii::t('app', 'I am'),
 		'location' => Yii::t('app', 'Location'),
 		'state_code' => Yii::t('app', 'State'),
 		'country_code' => Yii::t('app', 'Country'),
@@ -183,8 +188,9 @@ class CvPortfolio extends CvPortfolioBase
 		'text_short_description' => Yii::t('app', 'Short Description'),
 		'text_address_residential' => Yii::t('app', 'Current Address'),
 		'latlong_address_residential' => Yii::t('app', 'Current Address Location'),
-		'text_onliner' => Yii::t('app', 'Oneliner'),
-		//'high_academy_experience_id' => Yii::t('app', 'Highest Academy'),
+		'text_oneliner' => Yii::t('app', 'Oneliner'),
+		'high_academy_experience_id' => Yii::t('app', 'Highest Academy'),
+		'current_job_experience_id' => Yii::t('app', 'Current Job'),
 		'is_looking_fulltime' => Yii::t('app', 'Fulltime'),
 		'is_looking_contract' => Yii::t('app', 'Contract'),
 		'is_looking_freelance' => Yii::t('app', 'Freelance'),
@@ -222,53 +228,108 @@ class CvPortfolio extends CvPortfolioBase
 		}
 	}
 
-	public function getRegisteredPrograms()
-	{
-		$sql = sprintf('SELECT e.*, YEAR(FROM_UNIXTIME(date_started)) AS year_start, MONTH(FROM_UNIXTIME(date_started)) AS month_start, 
-			YEAR(FROM_UNIXTIME(date_ended)) AS year_end, MONTH(FROM_UNIXTIME(date_ended)) AS month_end
-			FROM `event` as e, `event_registration` as er, cv_portfolio as f, user as u, user2email as u2e 
-			WHERE e.is_active=1 AND e.is_cancelled=0 AND f.user_id=u.id AND e.id=er.event_id AND (er.email=u.username OR (u.id=f.user_id AND u2e.is_verify=1 AND er.email=u2e.user_email)) AND u.username="%s"
-			GROUP BY e.id ORDER BY e.date_started DESC', $this->user->username);
-		//echo $sql;exit;
-		return Yii::app()->db->createCommand($sql)->queryAll();
-	}
-
 	public function getAttendedPrograms()
 	{
-		$sql = sprintf('SELECT e.*, YEAR(FROM_UNIXTIME(date_started)) AS year_start, MONTH(FROM_UNIXTIME(date_started)) AS month_start, 
-			YEAR(FROM_UNIXTIME(date_ended)) AS year_end, MONTH(FROM_UNIXTIME(date_ended)) AS month_end
-			FROM `event` as e, `event_registration` as er, cv_portfolio as f, user as u, user2email as u2e 
-			WHERE e.is_active=1 AND e.is_cancelled=0 AND er.is_attended=1 AND f.user_id=u.id AND e.id=er.event_id AND (er.email=u.username OR (u.id=f.user_id AND u2e.is_verify=1 AND er.email=u2e.user_email)) AND u.username="%s"
-			GROUP BY e.id ORDER BY e.date_started DESC', $this->user->username);
-		//echo $sql;exit;
-		return Yii::app()->db->createCommand($sql)->queryAll();
+		$sql = sprintf('SELECT e.*, YEAR(FROM_UNIXTIME(date_started)) AS year_start, MONTH(FROM_UNIXTIME(date_started)) AS month_start, YEAR(FROM_UNIXTIME(date_ended)) AS year_end, MONTH(FROM_UNIXTIME(date_ended)) AS month_end FROM 
+		`event` as e LEFT JOIN `event_registration` as er ON e.id=er.event_id LEFT JOIN user2email as u2e ON er.email=u2e.user_email, cv_portfolio as f LEFT JOIN user as u ON f.user_id=u.id 
+		WHERE e.is_active=1 AND e.is_cancelled=0 AND 
+		er.is_attended=1 AND  (er.email=u.username OR (u2e.is_verify=1 AND er.email=u2e.user_email)) AND u.username=:username
+		GROUP BY e.id ORDER BY e.date_started DESC');
+
+		return Yii::app()->db->createCommand($sql)->bindParam(':username', $this->user->username, PDO::PARAM_STR)->queryAll();
 	}
 
-	public function getComposedExperiences()
+	public function gaugeComposedExperiences()
 	{
-		$programs = $this->getAttendedPrograms();
+		$sql = 'SELECT COUNT(*) FROM (
+			(SELECT e.id 
+			FROM `event_registration` AS er 
+			LEFT JOIN `event` as e ON e.id=er.event_id
+			LEFT JOIN user as u ON u.username=er.email
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			GROUP BY e.id)
+		
+			UNION ALL
+			(SELECT e.id 
+			FROM `event_registration` AS er 
+			LEFT JOIN `event` as e ON e.id=er.event_id
+			LEFT JOIN user2email as u2e On u2e.user_email=er.email AND u2e.is_verify=1
+			LEFT JOIN user as u ON u.id=u2e.user_id
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			GROUP BY e.id)
 
-		$experiences = $this->activeCvExperiencesSorted;
-		foreach ($programs as $p) {
-			$items[] = array('ym' => $p['year_start'] . sprintf('%02d', $p['month_start']), 'type' => 'program',
-				'year_start' => $p['year_start'], 'month_start' => $p['month_start'], 'year_end' => $p['year_end'], 'month_end' => $p['month_end'],
-				'title' => $p['title'], 'genre' => 'others', 'country_code' => $p['country_code'], 'state_code' => $p['state_code'], 'location' => $p['at'], 'text_short_desciption' => '', 'organization_name' => $p['organization_name'],
-				'faIcon' => 'fa-star text-warning', 'is_endorsed' => true,
-				//'node'=>$p,
-			);
-		}
-		foreach ($experiences as $e) {
-			$items[] = array('ym' => $e['year_start'] . sprintf('%02d', $e['month_start']), 'type' => 'experience',
-				'year_start' => $e['year_start'], 'month_start' => $e['month_start'], 'year_end' => $e['year_end'], 'month_end' => $e['month_end'],
-				'title' => $e->title, 'genre' => $e->genre, 'country_code' => $e->country_code, 'state_code' => $e->state_code, 'location' => $e->location, 'text_short_desciption' => $e->text_short_description, 'organization_name' => $e->organization_name,
-				'faIcon' => $e->getFaIcon(), 'is_endorsed' => false,
-				//'node'=>$e,
-			);
-		}
-		usort($items, 'self::cmp');
-		$items = array_reverse($items);
+			UNION ALL
+		
+			(SELECT e.id AS id 
+			FROM `cv_experience` as e 
+			LEFT JOIN cv_portfolio as f ON f.id=e.cv_portfolio_id 
+			LEFT JOIN user as u ON f.user_id=u.id 
+			WHERE e.is_active=1 AND u.username=:username
+			GROUP BY e.id
+			)
+		) results';
 
-		return $items;
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindParam(':username', $this->user->username, PDO::PARAM_STR);
+
+		return $command->queryScalar();
+	}
+
+	public function getComposedExperiences($page = 1, $limit = 30)
+	{
+		$sql = "SELECT * FROM (
+			(SELECT 'event' AS genre, e.id AS id, e.title AS title, '' as organization_name, er.email as email, e.at AS location, e.address_country_code AS countryCode, e.address_state_code AS stateCode, '' AS description, '1' AS isEndorsed, 'fa-star text-warning' AS faIcon,
+			e.date_started AS dateStarted,
+			YEAR(FROM_UNIXTIME(date_started)) AS yearStart, MONTH(FROM_UNIXTIME(date_started)) AS monthStart, MONTHNAME(FROM_UNIXTIME(date_started)) AS monthNameStart,
+			YEAR(FROM_UNIXTIME(date_ended)) AS yearEnd, MONTH(FROM_UNIXTIME(date_ended)) AS monthEnd 
+			FROM `event_registration` AS er 
+			LEFT JOIN `event` as e ON e.id=er.event_id
+			LEFT JOIN user as u ON u.username=er.email
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			GROUP BY e.id)
+		
+			UNION ALL
+
+			(SELECT 'event' AS genre, e.id AS id, e.title AS title, '' as organization_name, er.email as email, e.at AS location, e.address_country_code AS countryCode, e.address_state_code AS stateCode, '' AS description, '1' AS isEndorsed, 'fa-star text-warning' AS faIcon,
+			e.date_started AS dateStarted,
+			YEAR(FROM_UNIXTIME(date_started)) AS yearStart, MONTH(FROM_UNIXTIME(date_started)) AS monthStart, MONTHNAME(FROM_UNIXTIME(date_started)) AS monthNameStart,
+			YEAR(FROM_UNIXTIME(date_ended)) AS yearEnd, MONTH(FROM_UNIXTIME(date_ended)) AS monthEnd 
+			FROM `event_registration` AS er 
+			LEFT JOIN `event` as e ON e.id=er.event_id
+			LEFT JOIN user2email as u2e On u2e.user_email=er.email AND u2e.is_verify=1
+			LEFT JOIN user as u ON u.id=u2e.user_id
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			GROUP BY e.id)
+
+			UNION ALL
+		
+			(SELECT e.genre AS genre, e.id AS id, e.title AS title, e.organization_name as organization_name, u.username as email, e.location AS location, e.country_code AS countryCode, e.state_code AS stateCode, e.text_short_description AS description, '0' AS isEndorsed, '' AS faIcon,
+			UNIX_TIMESTAMP( CONCAT( e.year_start, '-', COALESCE(e.month_start, 1), '-', '1' ) ) AS dateStarted,
+			e.year_start AS yearStart, e.month_start AS monthStart, MONTHNAME( CONCAT( e.year_start, '-', e.month_start, '-', '1' ) ) AS monthNameStart,
+			e.year_end AS yearEnd, e.month_end AS monthEnd 
+			FROM `cv_experience` as e 
+			LEFT JOIN cv_portfolio as f ON f.id=e.cv_portfolio_id 
+			LEFT JOIN user as u ON f.user_id=u.id 
+			WHERE e.is_active=1 AND u.username=:username
+			GROUP BY e.id
+			)
+		) results ORDER BY dateStarted DESC LIMIT :limit OFFSET :offset";
+
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindParam(':username', $this->user->username, PDO::PARAM_STR);
+		$command->bindValue(':limit', $limit, PDO::PARAM_INT);
+		$command->bindValue(':offset', ($page - 1) * $limit, PDO::PARAM_INT);
+
+		$return = $command->queryAll();
+
+		foreach ($return as &$r) {
+			if ($r['isEndorsed'] != '1') {
+				$experience = CvExperience::model()->findByPk($r['id']);
+				$r['faIcon'] = $experience->getFaIcon();
+			}
+		}
+
+		return $return;
 	}
 
 	public function cmp($a, $b)
@@ -297,5 +358,50 @@ class CvPortfolio extends CvPortfolioBase
 	public static function slug2obj($slug)
 	{
 		return CvPortfolio::model()->find('t.slug=:slug', array(':slug' => trim($slug)));
+	}
+
+	public static function getLookingList()
+	{
+		return array(
+			array('code' => 'fulltime', 'title' => 'Full Time'),
+			array('code' => 'contract', 'title' => 'Contract'),
+			array('code' => 'freelance', 'title' => 'Freelance'),
+			array('code' => 'cofounder', 'title' => 'Co-Founder'),
+			array('code' => 'internship', 'title' => 'Internship'),
+			array('code' => 'apprenticeship', 'title' => 'Apprenticeship'),
+		);
+	}
+
+	public static function lookingCode2Title($code)
+	{
+		$tmp = self::getLookingList();
+		foreach ($tmp as $t) {
+			if ($t['code'] == $code) {
+				return $t['title'];
+			}
+		}
+	}
+
+	public function isNotLookingAnything()
+	{
+		$return = true;
+		$tmps = self::getLookingList();
+		foreach ($tmps as $tmp) {
+			$var = sprintf('is_looking_%s', $tmp['code']);
+			if ($this->{$var} == 1) {
+				return false;
+			}
+		}
+
+		return $return;
+	}
+
+	public function getPublicUrl($controller, $isAbsoluteUrl = false)
+	{
+		if ($isAbsoluteUrl) {
+			return $controller->createAbsoluteUrl('/cv/frontend/portfolio', array('slug' => $this->slug));
+		} else {
+			return $controller->createUrl('/cv/frontend/portfolio', array('slug' => $this->slug));
+		}
 	}
 }

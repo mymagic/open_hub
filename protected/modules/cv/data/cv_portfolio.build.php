@@ -46,7 +46,7 @@ return array(
 	),
 	'foreignKey' => array(
 		'user_id' => array('relationName' => 'user', 'model' => 'User', 'foreignReferAttribute' => 'username'),
-		'jobpos_id' => array('relationName' => 'cvJobpos', 'model' => 'CvJobpos', 'foreignReferAttribute' => 'title'),
+		'cv_jobpos_id' => array('relationName' => 'cvJobpos', 'model' => 'CvJobpos', 'foreignReferAttribute' => 'title'),
 		'state_code' => array('relationName' => 'state', 'model' => 'State', 'foreignReferAttribute' => 'title'),
 		'country_code' => array('relationName' => 'country', 'model' => 'Country', 'foreignReferAttribute' => 'printable_name'),
 		//'high_academy_experience_id' => array('relationName' => 'highestAcademyExperience', 'model' => 'CvExperience', 'foreignReferAttribute' => 'title'),
