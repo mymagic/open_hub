@@ -1,4 +1,9 @@
-## 0.6.420
+## 0.6.450
+- added module cv
+- separated deleted items from active items in backend admin view
+- added modal layout
+- fixed f7 filter not functioning on backend due to javascript conflicting with vue by removing form builder
+
 ## 0.6.343
 - completed #9 detach authentication & authorization from MaGIC connect
 - fixed #28 embed code need longer char length than 32 chars
