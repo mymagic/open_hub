@@ -2,6 +2,9 @@
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/app.js', CClientScript::POS_END); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/backend.js', CClientScript::POS_END); ?>
 
+<?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css'); ?>
+<?php Yii::app()->getClientScript()->registerScriptFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js'); ?>
+
 
 <?php
 $modules = YeeModule::getActiveParsableModules();
@@ -19,16 +22,6 @@ foreach ($modules as $moduleKey => $moduleParams) {
 ?>
 <?php Yii::app()->getClientScript()->registerCssFile('https://fonts.googleapis.com/css?family=Montserrat'); ?>
 </head>
-
-<!-- flashes -->
-<?php if (!$this->layoutParams['hideFlashes'] && Notice::hasFlashes()) : ?>
-<div class="row">
-    <div id="layout-flashNotice">
-        <?php echo Notice::renderFlashes(); ?>
-    </div>
-</div>
-<?php endif; ?>
-<!-- /flashes -->
 
 <!-- nav-main -->
 <div class="row border-bottom white-bg">
@@ -72,7 +65,7 @@ foreach ($modules as $moduleKey => $moduleParams) {
 
 
 			<form class="navbar-form navbar-right" action="<?php echo $this->createUrl('/journey/backend/search'); ?>" method="GET">
-				<div class="form-group">
+				<div class="form-group nopadding">
 					<input name="keyword" type="text" class="form-control" placeholder="Search" size="12" value="<?php echo Yii::app()->request->getParam('keyword'); ?>" pattern=".{2,}" />
 				</div>
 				<button type="submit" class="btn btn-primary">Go</button>
@@ -131,15 +124,15 @@ foreach ($modules as $moduleKey => $moduleParams) {
 <div id="block-spinner" class="hidden">
 	<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
 	<span class="sr-only">Loading...</span>
-	<h3 class="margin-top-2x"><?php echo Yii::t('core', 'Loading...'); ?></h3>
+	<h3 class="margin-top-2x text-white"><?php echo Yii::t('core', 'Loading...'); ?></h3>
 </div>
 
 <?php $this->endContent(); ?>
 
 
 <?php Yii::app()->clientScript->registerScript(
-							'settings-script',
-							<<<EOD
+'settings-script',
+<<<EOD
 updateQuickInfo();
 setInterval(function() {updateQuickInfo();}, 10000);
 EOD

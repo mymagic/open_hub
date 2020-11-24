@@ -125,35 +125,35 @@ $return = array(
 		'log' => array(
 			'class' => 'CLogRouter',
 			'routes' => array(
-				array(
+				'module' => array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'trace, error, warning, info',
 					'logFile' => 'module',
 					'categories' => 'module.*'
 				),
-				array(
+				'paypal' => array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'error, info',
 					'logFile' => 'paypal',
 					'categories' => 'paypal.*'
 				),
-				array(
+				'all' => array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'trace, info, warning',
 					'logFile' => 'all.log',
 				),
-				array(
+				'error' => array(
 					'class' => 'CFileLogRoute',
 					'levels' => 'error',
 					'logFile' => 'error.log',
 				),
-				array(
+				'db' => array(
 					'class' => 'application.yeebase.extensions.ys.ProfileFileLogRoute',
 					'levels' => 'profile',
 					'report' => 'callstack',
 					'logFile' => 'db.log',
 				),
-				array(
+				'profile' => array(
 					'class' => 'CProfileLogRoute',
 					'report' => 'summary',
 					'enabled' => filter_var(getenv('ENABLE_PROFILE_LOG', false), FILTER_VALIDATE_BOOLEAN)

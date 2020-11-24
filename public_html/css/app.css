@@ -817,3 +817,34 @@ div.form-control-multiline {
         transform: rotate(360deg);
     }
 }
+
+
+
+#form-milestone-values .ibox-content .col
+{
+  padding:5px;
+}
+#form-milestone-values .form-group .input-group, #form-milestone-values .form-group .input-group .input-group-addon
+{
+  border:0;
+  padding:2px;
+}
+
+#form-milestone-values .form-group .input-group .input-weekValue{
+  border:0;
+  padding:2px;
+  border-bottom:1px solid #aaa;
+}
+
+
+.flashNotices .notice .close{
+    margin-right:0.5em;
+    font-size:180%;
+}
+
+
+.paragraph {
+    font-weight: 400;
+}
+  
+.btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info{color:white !important;}

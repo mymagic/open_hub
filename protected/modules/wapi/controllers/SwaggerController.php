@@ -81,6 +81,9 @@ class SwaggerController extends Controller
 
 	public function actionGetApiDef($code, $format, $module = '')
 	{
+		// disable profiling for all action
+		Yii::app()->log->routes['profile']->enabled = false;
+
 		if (empty($module)) {
 			$dataPath = Yii::getPathOfAlias('data');
 			$filePath = sprintf('%s/api/%s.%s', $dataPath, $code, $format);

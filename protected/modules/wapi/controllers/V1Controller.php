@@ -64,6 +64,9 @@ class V1Controller extends Controller
 		// swagger
 		// Content-Type, api_key, Authorization
 
+		// disable profiling for all actions
+		Yii::app()->log->routes['profile']->enabled = false;
+
 		return parent::beforeAction($action);
 	}
 

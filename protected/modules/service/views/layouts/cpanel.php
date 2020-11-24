@@ -11,7 +11,7 @@
 </header>
 
 
-<?php $this->beginContent('layouts.frontend-no-header'); ?>
+<?php $this->beginContent('layouts.plain'); ?>
 
 <div class="container">
     <h2><?php echo $this->module->cpanelNavItems($this)[0]['label'] ?></h2>

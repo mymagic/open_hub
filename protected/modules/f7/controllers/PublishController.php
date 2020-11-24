@@ -381,14 +381,22 @@ class PublishController extends Controller
 		} else {
 			throw new Exception('File type is not supported');
 		}
+
 		header('Content-Description: File Transfer');
 		header('Content-Type: ' . $contentType);
 		header('Content-Disposition: inline; filename="' . $downloadFile . '"');
 		header('Content-Transfer-Encoding: binary');
 		header('Accept-Ranges: bytes');
 
-		flush(); // Flush system output buffer
+		// UPDATE 23/11/2020 This code solves the corrupt zip and excel files issue
+		while (ob_get_level()) {
+			ob_end_clean();
+		}
+
+		// flush(); // Flush system output buffer
 		readfile($downloadLink);
+		ob_start();
+
 		Yii::app()->end();
 	}
 

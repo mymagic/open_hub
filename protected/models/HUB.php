@@ -156,6 +156,7 @@ class HUB extends Component
 
 	public static function getOrCreateUser($username, $extra = array())
 	{
+		$username = trim($username);
 		$user = User::model()->username2obj($username);
 		if ($user === null) {
 			$result = self::createLocalMember($username, $extra['fullname']);

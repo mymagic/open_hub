@@ -577,7 +577,13 @@ class Controller extends BaseController
 		// todo: dangerous http origin, need to limit it
 		header('Access-Control-Allow-Origin: *');
 		header('Content-type: application/json');
-		$this->renderJSON($data);
+		if (is_array($data)) {
+			$this->renderJSON($data);
+		}
+		// if data is json string, direct output it
+		else {
+			echo $data;
+		}
 		Yii::app()->end();
 	}
 

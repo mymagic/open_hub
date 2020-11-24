@@ -1,7 +1,7 @@
 <?php $this->beginContent('layouts.frontend'); ?>
 
 <div class="container">
-    <?php if ($this->cpanelMenuInterface === 'cpanelNavOrganizationInformation') {
+    <?php if ($this->cpanelMenuInterface === 'cpanelNavOrganizationInformation'):
 	?>
         <div class="col-md-12">
             <h2 style="margin: 0;" class="break-word"><?php echo HubCpanel::cpanelNavItems($this, ($this->cpanelMenuInterface === 'cpanelNavOrganizationInformation') ? 'organization-information' : 'default')[0]['label'] ?></h2>
@@ -9,12 +9,9 @@
                 <p><?php echo Yii::t('app', 'Back to Organization List') ?></p>
             </a>
         </div>
-    <?php
-} else {
-		?>
+    <?php else: ?>
         <h2><?php echo HubCpanel::cpanelNavItems($this, ($this->cpanelMenuInterface === 'cpanelNavOrganizationInformation') ? 'organization-information' : 'default')[0]['label'] ?></h2>
-    <?php
-	} ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-3 mb-12">

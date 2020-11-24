@@ -1816,7 +1816,12 @@ class HubForm
 				return "Please enter a valid URL for the field $labelTitle.";
 			}
 		} elseif ($tag == 'rating') {
-			if (empty($postedData['voted-' . $value])) {
+			// Check if $value has "voted-" in it.
+			if (strpos($value, 'voted-') == false) {
+				$value = 'voted-' . $value;
+			}
+			
+			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}
 		}
