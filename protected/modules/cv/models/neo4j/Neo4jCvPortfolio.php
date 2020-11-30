@@ -25,9 +25,9 @@ class Neo4jCvPortfolio extends Neo4j
 	 * @OGM\Property(type="string")
 	 */
 	protected $display_name;
+
 	public $entityManager;
 	public $repository;
-
 
 	public function __construct($model = '')
 	{
@@ -35,12 +35,10 @@ class Neo4jCvPortfolio extends Neo4j
 		$this->setAttributes($model);
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param s $id
@@ -50,7 +48,6 @@ class Neo4jCvPortfolio extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -59,7 +56,6 @@ class Neo4jCvPortfolio extends Neo4j
 		return $this->id;
 	}
 
-
 	/**
 	 * @param s $display_name
 	 */
@@ -67,7 +63,6 @@ class Neo4jCvPortfolio extends Neo4j
 	{
 		$this->display_name = $value;
 	}
-
 
 	/**
 	 * @return string

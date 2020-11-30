@@ -30,8 +30,10 @@
 
 <div class="row">
 <div class="col col-sm-7 col-sm-offset-1">
+	<!-- start of profileView-mainBox -->
 	<div id="profileView-mainBox" class="rounded-md">
 	<ul class="fa-ul">
+		<?php if (!empty($model->hasLocalityInfo())): ?>
 		<li>
 			<?php echo Html::faIcon('fa-map-marker fa-lg fa fa-li') ?>
 			<span class="dd">
@@ -40,26 +42,11 @@
 				<?php echo $model->country->printable_name ?>
 			</span>
 		</li>
+		<?php endif; ?>
 		<?php if (!empty($model->highAcademyExperience)): ?>
 		<li>
 			<?php echo Html::faIcon('fa-graduation-cap fa-lg fa fa-li') ?>
-			<span class="dd"><?php echo $model->highAcademyExperience->title ?> <?php if (!empty($model->highAcademyExperience->location)): ?> at <?php echo $model->highAcademyExperience->location ?><?php endif; ?></span>
-		</li>
-		<?php endif; ?>
-		<?php if (!empty($attendedPrograms)): ?>
-		<li>
-			<?php echo Html::faIcon('fa-star fa-lg fa fa-li text-warning') ?>
-			<div class="dd">
-				<?php $count = 0; $limit = 5; $total = count($attendedPrograms); foreach ($attendedPrograms as $p): ?>
-					<?php if ($count < $limit): ?>
-						<?php echo $p['title'] ?><br />
-						<?php $count++; ?>						
-					<?php endif; ?>
-				<?php endforeach; ?>
-				<?php if ($total > $limit): ?>
-					<span class="text-muted text-sm"><i><?php echo Yii::t('cv', 'and')?> <?php echo $total - $limit ?> <?php echo Yii::t('cv', 'more')?>...</i></span>
-				<?php endif; ?>
-			</div>
+			<span class="dd"><?php echo $model->highAcademyExperience->title ?> <?php if (!empty($model->highAcademyExperience->organization_name)): ?> at <?php echo $model->highAcademyExperience->organization_name ?><?php endif; ?></span>
 		</li>
 		<?php endif; ?>
 	</ul>
@@ -74,7 +61,7 @@
 		</div>
 	<?php endif; ?>
 	</div>
-	
+	<!-- /start of profileView-mainBox -->
 	
 	<div id="vue-cv-frontend-portfolio" class="margin-top-lg margin-bottom-3x">
 	<input type="hidden" name="portfolioId" :value="portfolioId = '<?php echo $model->id ?>'" />

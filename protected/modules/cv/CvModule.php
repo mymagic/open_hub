@@ -513,20 +513,25 @@ class CvModule extends WebModule
 
 	public function getAsService($interface)
 	{
-		// $btn = '';
-		// // interface type ex: idea, resource, mentor, activate, atas, sea
-		// switch ($interface) {
-		// 	case 'activate': {
-		// 			$btn = array(
-		// 				array(
-		// 					'title' => 'Check out Challenges',
-		// 					'url' => array('//activate')
-		// 				)
-		// 			);
-		// 			break;
-		// 		}
-		// }
-		// return $btn;
+		$btn = '';
+		// interface type ex: idea, resource, mentor, activate, atas, sea
+		switch ($interface) {
+			case 'cv': {
+				$btn = array(
+					array(
+						'title' => Yii::t('cv', 'Browse Talents'),
+						'url' => Yii::app()->controller->createUrl('/cv/frontend/index')
+					),
+					array(
+						'title' => Yii::t('cv', 'My Porfolio'),
+						'url' => Yii::app()->controller->createUrl('/cv/cpanel/index')
+					)
+				);
+				break;
+			}
+		}
+
+		return $btn;
 	}
 
 	public function getSharedAssets($forInterface = '*')
@@ -562,17 +567,20 @@ class CvModule extends WebModule
 
 	public function install($forceReset = false)
 	{
-		return self::installDb($forceReset);
+		return self::installDb($forceReset) && self::installUpload();
 	}
 
 	public function installDb($forceReset = false)
 	{
 		$migration = new Migration();
+		$migration->execute('SET foreign_key_checks = 0;');
 
 		// comment off code block below to initialize database structure for this module
 		if ($forceReset) {
 			if (Yii::app()->db->schema->getTable('cv_portfolio', true)) {
 				$migration->dropForeignKey('fk_cv_portfolio-high_academy_experience_id', 'cv_portfolio');
+				$migration->dropForeignKey('fk_cv_portfolio-current_job_experience_id', 'cv_portfolio');
+				$migration->dropForeignKey('fk_cv_portfolio-cv_jobpos_id', 'cv_portfolio');
 			}
 
 			if (Yii::app()->db->schema->getTable('cv_experience', true)) {
@@ -715,7 +723,14 @@ class CvModule extends WebModule
 		$migration->addForeignKey('fk_cv_portfolio-high_academy_experience_id', 'cv_portfolio', 'high_academy_experience_id', 'cv_experience', 'id', 'SET NULL', 'CASCADE');
 		$migration->addForeignKey('fk_cv_portfolio-current_job_experience_id', 'cv_portfolio', 'current_job_experience_id', 'cv_experience', 'id', 'SET NULL', 'CASCADE');
 
+		$migration->execute('SET foreign_key_checks = 1;');
+
 		return true;
+	}
+
+	public function installUpload()
+	{
+		return LocalUploadManager::storeImage(new CvPortfolio, 'avatar', 'cv_portfolio', Yii::getPathOfAlias('cv.uploads') . '/cv_portfolio/avatar.default.jpg');
 	}
 
 	public function getBackendAdvanceSearch($controller, $searchFormModel)

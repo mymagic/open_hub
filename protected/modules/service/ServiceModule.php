@@ -143,6 +143,13 @@ class ServiceModule extends WebModule
 				}
 			case 'cpanelNavOrganizationInformation': {
 				}
+			case 'backendNavDev': {
+				return array(
+					array('label' => Yii::t('service', 'Service'), 'url' => array('/service/service/admin'), 'visible' => Yii::app()->user->getState('accessBackend') == true)
+				);
+
+				break;
+			}
 		}
 	}
 
@@ -177,23 +184,7 @@ class ServiceModule extends WebModule
 		$migration = Yii::app()->db->createCommand();
 		//$migration = new Migration();
 		if ($forceReset) {
-			if (Yii::app()->db->schema->getTable('boilerplate_start', true)) {
-				$migration->dropTable('boilerplate_start');
-			}
 		}
-
-		$migration->createTable('boilerplate_start', array(
-			'id' => 'pk',
-			'organization_title' => 'string NOT NULL',
-			'var1' => 'integer NOT NULL',
-			'json_extra' => 'text NULL',
-			'date_added' => 'integer',
-			'date_modified' => 'integer',
-		));
-
-		$migration->alterColumn('boilerplate_start', 'organization_title', 'varchar(255) NULL');
-
-		$migration->createIndex('boilerplate_start', 'boilerplate_start', array('organization_title', 'var1'), true);
 
 		return true;
 	}

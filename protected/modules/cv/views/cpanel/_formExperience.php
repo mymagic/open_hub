@@ -35,7 +35,8 @@
         <div class="form-group <?php echo $model->hasErrors('full_address') ? 'has-error' : '' ?>">
             <?php echo $form->bsLabelFx0($model, 'full_address'); ?>
             <div class="">
-                <?php echo $form->bsTextArea($model, 'full_address', array('rows' => 2)); ?>
+				<?php echo $form->bsTextArea($model, 'full_address', array('rows' => 2)); ?>
+				<span class="help-block"><?php echo Yii::t('cv', "Don't worry, we will not display your full address to public. Only the city, state and country are show.") ?></span>
                 <?php echo $form->bsError($model, 'full_address'); ?>
             </div>
         </div>

@@ -163,7 +163,7 @@ class CvPortfolio extends CvPortfolioBase
 			'country' => array(self::BELONGS_TO, 'Country', 'country_code'),
 			'highAcademyExperience' => array(self::BELONGS_TO, 'CvExperience', 'high_academy_experience_id'),
 			'currentJobExperience' => array(self::BELONGS_TO, 'CvExperience', 'current_job_experience_id'),
-			'cvJobpos' => array(self::BELONGS_TO, 'CvJobpos', 'cv_jobpos_id', 'order' => 'title ASC'),
+			'cvJobpos' => array(self::BELONGS_TO, 'CvJobpos', 'cv_jobpos_id', 'order' => 'cvJobpos.title ASC'),
 			'state' => array(self::BELONGS_TO, 'State', 'state_code'),
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 
@@ -245,17 +245,7 @@ class CvPortfolio extends CvPortfolioBase
 			(SELECT e.id 
 			FROM `event_registration` AS er 
 			LEFT JOIN `event` as e ON e.id=er.event_id
-			LEFT JOIN user as u ON u.username=er.email
-			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
-			GROUP BY e.id)
-		
-			UNION ALL
-			(SELECT e.id 
-			FROM `event_registration` AS er 
-			LEFT JOIN `event` as e ON e.id=er.event_id
-			LEFT JOIN user2email as u2e On u2e.user_email=er.email AND u2e.is_verify=1
-			LEFT JOIN user as u ON u.id=u2e.user_id
-			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND er.email IN (SELECT u2e.user_email as email FROM user AS u LEFT JOIN user2email as u2e On u2e.user_id=u.id AND u2e.is_verify=1 WHERE u.username=:username UNION SELECT :username as email)
 			GROUP BY e.id)
 
 			UNION ALL
@@ -284,23 +274,9 @@ class CvPortfolio extends CvPortfolioBase
 			YEAR(FROM_UNIXTIME(date_ended)) AS yearEnd, MONTH(FROM_UNIXTIME(date_ended)) AS monthEnd 
 			FROM `event_registration` AS er 
 			LEFT JOIN `event` as e ON e.id=er.event_id
-			LEFT JOIN user as u ON u.username=er.email
-			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
+			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND er.email IN (SELECT u2e.user_email as email FROM user AS u LEFT JOIN user2email as u2e On u2e.user_id=u.id AND u2e.is_verify=1 WHERE u.username=:username UNION SELECT :username as email)
 			GROUP BY e.id)
 		
-			UNION ALL
-
-			(SELECT 'event' AS genre, e.id AS id, e.title AS title, '' as organization_name, er.email as email, e.at AS location, e.address_country_code AS countryCode, e.address_state_code AS stateCode, '' AS description, '1' AS isEndorsed, 'fa-star text-warning' AS faIcon,
-			e.date_started AS dateStarted,
-			YEAR(FROM_UNIXTIME(date_started)) AS yearStart, MONTH(FROM_UNIXTIME(date_started)) AS monthStart, MONTHNAME(FROM_UNIXTIME(date_started)) AS monthNameStart,
-			YEAR(FROM_UNIXTIME(date_ended)) AS yearEnd, MONTH(FROM_UNIXTIME(date_ended)) AS monthEnd 
-			FROM `event_registration` AS er 
-			LEFT JOIN `event` as e ON e.id=er.event_id
-			LEFT JOIN user2email as u2e On u2e.user_email=er.email AND u2e.is_verify=1
-			LEFT JOIN user as u ON u.id=u2e.user_id
-			WHERE er.is_attended=1 AND e.is_active=1 AND e.is_cancelled=0 AND u.username=:username
-			GROUP BY e.id)
-
 			UNION ALL
 		
 			(SELECT e.genre AS genre, e.id AS id, e.title AS title, e.organization_name as organization_name, u.username as email, e.location AS location, e.country_code AS countryCode, e.state_code AS stateCode, e.text_short_description AS description, '0' AS isEndorsed, '' AS faIcon,
@@ -403,5 +379,14 @@ class CvPortfolio extends CvPortfolioBase
 		} else {
 			return $controller->createUrl('/cv/frontend/portfolio', array('slug' => $this->slug));
 		}
+	}
+
+	public function hasLocalityInfo()
+	{
+		if (!empty($this->country_code) || !empty($this->state_code) || !empty($this->location)) {
+			return true;
+		}
+
+		return false;
 	}
 }

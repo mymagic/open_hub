@@ -111,8 +111,12 @@ class FrontendController extends Controller
 			Notice::page(Yii::t('cv', 'This portfolio only open to registered user'), Notice_INFO);
 		}
 
-		if ($portfolio->visibility == 'private' && Yii::app()->user->id != $portfolio->member->user->id) {
-			Notice::page(Yii::t('cv', 'This is a private portfolio accessible by its owner only'), Notice_INFO);
+		if ($portfolio->visibility == 'private' || $portfolio->is_active != 1) {
+			if (Yii::app()->user->id != $portfolio->user->id) {
+				Notice::page(Yii::t('cv', 'This is a private portfolio accessible by its owner only'), Notice_INFO);
+			} else {
+				Notice::flash(Yii::t('cv', 'You are accessing your own portfolio in private visibility now. Please publish it for public access.'));
+			}
 		}
 
 		//$attendedPrograms = $portfolio->getAttendedPrograms();

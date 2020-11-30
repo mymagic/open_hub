@@ -274,7 +274,7 @@ class HUB extends Component
 		}
 
 		// bookmarked services
-		$bookmarks = self::listServiceBookmarkByUser($user);
+		$bookmarks = HubService::listBookmarkByUser($user);
 		if (!empty($bookmarks)) {
 			foreach ($bookmarks as $bookmark) {
 				$json['services'][] = array(
@@ -1070,58 +1070,6 @@ class HUB extends Component
 	}
 
 	//
-	// service
-	public static function getAllActiveServices()
-	{
-		return Service::model()->findAllByAttributes(array('is_active' => 1));
-	}
-
-	public static function getServiceSlug($slug)
-	{
-		return Service::model()->findByAttributes(array('slug' => $slug));
-	}
-
-	public static function listServiceBookmarkable()
-	{
-		$return = Service::model()->isActive()->isBookmarkable()->findAll(array('order' => 'slug ASC'));
-
-		return $return;
-	}
-
-	public static function setServiceBookmarkByUser($user, $csvServices)
-	{
-		if (empty($csvServices)) {
-			throw new Exception(Yii::t('app', 'You must insert at least one service to bookmark'));
-		}
-		$csvServices = explode(',', $csvServices);
-
-		if (!empty($csvServices)) {
-			// clear all existing service of user
-			Service2User::model()->deleteAll("user_id='{$user->id}'");
-
-			foreach ($csvServices as $serviceSlug) {
-				$serviceSlug = trim($serviceSlug);
-				$service = self::getServiceSlug($serviceSlug);
-				if ($service->canBookmarkByUser($user->id)) {
-					$service2user = new Service2User();
-					$service2user->user_id = $user->id;
-					$service2user->service_id = $service->id;
-					$service2user->save();
-				}
-			}
-		}
-
-		return self::listServiceBookmarkByUser($user);
-	}
-
-	public static function listServiceBookmarkByUser($user)
-	{
-		$return = Service2User::model()->with('service')->findAll(array('condition' => sprintf("user_id='%s'", $user->id), 'order' => 'service.slug ASC'));
-
-		return $return;
-	}
-
-	//
 	// master
 	public static function getAllActiveLegalForms($countryCode = 'MY')
 	{
@@ -1576,7 +1524,7 @@ class HUB extends Component
 
 		$registeredServices = $result = array();
 
-		$tmps = self::getAllActiveServices();
+		$tmps = HubService::getAllActiveServices();
 		foreach ($tmps as $tmp) {
 			$allServices[] = $tmp->slug;
 			$registeredServices[$tmp->slug] = $tmp->title;

@@ -44,27 +44,26 @@ class FrontendController extends Controller
 
 	public function actionIndex()
 	{
-		$service_list = HUB::listServiceBookmarkable();
-		$service_list_array = array();
+		$services = HubService::listBookmarkable();
+		$result = array();
 		//$selected_service_list = HUB::listServiceBookmarkByUser($user);
 		$modules = YeeModule::getActiveParsableModules();
 
-		foreach ($service_list as $key => $service) {
-			$buttons = array();
+		foreach ($services as $key => $service) {
+			$actions = array();
 			foreach ($modules as $moduleKey => $moduleParams) {
 				if (method_exists(Yii::app()->getModule($moduleKey), 'getAsService')) {
-					$button = Yii::app()->getModule($moduleKey)->getAsService($service->slug);
-					foreach ($button as $btn) {
-						array_push($buttons, $btn);
+					$tmps = Yii::app()->getModule($moduleKey)->getAsService($service->slug);
+					foreach ($tmps as $action) {
+						array_push($actions, $action);
 					}
 				}
 			}
-			$service_list_array[$key] = array(
+			$result[$key] = array(
 				'data' => $service,
-				'button' => $buttons
+				'actions' => $actions
 			);
 		}
-
-		$this->render('index', array('service_list' => $service_list_array));
+		$this->render('index', array('services' => $result));
 	}
 }

@@ -25,6 +25,11 @@ class TestController extends Controller
 		);
 	}
 
+	public function actionInstallUpload()
+	{
+		Yii::app()->getModule('cv')->installUpload();
+	}
+
 	public function actionExperienceStateCountry($id)
 	{
 		$exp = CvExperience::model()->findByPk($id);

@@ -2,7 +2,7 @@
 
 class CvSearchForm extends FormModel
 {
-	public $jobrs;
+	public $jobpos;
 	public $looks;
 	public $location;
 	public $skillset;
@@ -15,7 +15,7 @@ class CvSearchForm extends FormModel
 
 	public function hasFilter()
 	{
-		if (!empty($this->jobrs) || !empty($this->looks) || !empty($this->location) || !empty($this->skillset) || !empty($this->program)) {
+		if (!empty($this->jobpos) || !empty($this->looks) || !empty($this->location) || !empty($this->skillset) || !empty($this->program)) {
 			return true;
 		}
 
@@ -26,7 +26,7 @@ class CvSearchForm extends FormModel
 	{
 		return array(
 			// You should validate your search parameters here
-			array('jobrs, looks, location, skillset, program, name, visibility', 'safe'),
+			array('jobpos, looks, location, skillset, program, name, visibility', 'safe'),
 		);
 	}
 
@@ -60,8 +60,8 @@ class CvSearchForm extends FormModel
 			);
 		}
 
-		if (!empty($this->cvJobpos)) {
-			$criteria->addInCondition('t.cv_jobpos_id', $this->jobrs);
+		if (!empty($this->jobpos)) {
+			$criteria->addInCondition('t.cv_jobpos_id', $this->jobpos);
 		}
 
 		if (!empty($this->looks)) {
@@ -79,7 +79,7 @@ class CvSearchForm extends FormModel
 			'criteria' => $criteria,
 			'sort' => array(
 				//'defaultOrder'=>'t.date_modified DESC',
-				'defaultOrder' => 't.display_name ASC, t.date_modified DESC',
+				//'defaultOrder' => 't.display_name ASC, t.date_modified DESC',
 				//'defaultOrder'=>'if(t.image_avatar="" or t.image_avatar is null, 1, 0), t.image_avatar, SUBSTRING(t.display_name, 1, 1) ASC',
 			),
 			'pagination' => array(

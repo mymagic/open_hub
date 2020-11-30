@@ -1,11 +1,7 @@
 ## 1.1
 Added
-  - commandline to create new module easily base on this boilerplate template
+  - insert service item
 
-Changed
-
-## 1.0
+## 0.2
 Added
-  - created boilerplate template
-
-Changed
+  - created cv module

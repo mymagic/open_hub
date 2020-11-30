@@ -247,9 +247,7 @@ class Controller extends BaseController
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'startupStage', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'legalform', 'action' => (object)['id' => 'admin']]) ||
 					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'country', 'action' => (object)['id' => 'admin']]) ||
-					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'state', 'action' => (object)['id' => 'admin']]) ||
-					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'city', 'action' => (object)['id' => 'admin']]) ||
-					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'service', 'action' => (object)['id' => 'admin']])
+					HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'state', 'action' => (object)['id' => 'admin']])
 				),
 				'active' => $this->activeMenuMain == 'masterData' ? true : false,
 				'itemOptions' => array('class' => 'dropdown'), 'submenuOptions' => array('class' => 'dropdown-menu'),
@@ -315,14 +313,7 @@ class Controller extends BaseController
 						'label' => Yii::t('app', 'City'), 'url' => array('/city/admin'),
 						// 'visible' => Yii::app()->user->getState('isSuperAdmin') == true
 						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'city', 'action' => (object)['id' => 'admin']])
-					),
-
-					// developer only
-					array(
-						'label' => Yii::t('app', 'Service') . ' <span class="label label-warning">dev</span>', 'url' => array('/service/admin'),
-						// 'visible' => Yii::app()->user->getState('isDeveloper'),
-						'visible' => HUB::roleCheckerAction(Yii::app()->user->getState('rolesAssigned'), (object)['id' => 'service', 'action' => (object)['id' => 'admin']])
-					),
+					)
 				),
 			),
 			array(

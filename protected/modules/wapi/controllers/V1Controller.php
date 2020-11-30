@@ -577,7 +577,7 @@ class V1Controller extends Controller
 	// service
 	public function actionListServiceBookmarkable()
 	{
-		$tmps = HUB::listServiceBookmarkable();
+		$tmps = HubService::listBookmarkable();
 		foreach ($tmps as $tmp) {
 			$result[] = $tmp->toApi();
 		}
@@ -598,7 +598,7 @@ class V1Controller extends Controller
 			if (!$user->is_active) {
 				throw new Exception(sprintf('User %s is not active', $username));
 			}
-			$tmps = HUB::setServiceBookmarkByUser($user, $services);
+			$tmps = HubService::setBookmarkByUser($user, $services);
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();
 			}
@@ -620,7 +620,7 @@ class V1Controller extends Controller
 			if (!$user->is_active) {
 				throw new Exception(sprintf('User %s is not active', $username));
 			}
-			$tmps = HUB::listServiceBookmarkByUser($user);
+			$tmps = HubService::listBookmarkByUser($user);
 			foreach ($tmps as $tmp) {
 				$result[] = $tmp->toApi();
 			}

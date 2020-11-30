@@ -22,8 +22,11 @@
 
     <div class="form-group <?php echo $model->hasErrors('slug') ? 'has-error' : '' ?>">
         <?php echo $form->bsLabelEx3($model, 'slug'); ?>
-        <div class="col-sm-2">
-            <?php echo $form->bsTextField($model, 'slug'); ?>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <span class="input-group-addon gray-bg"><a href="<?php echo $model->getPublicUrl($this, true) ?>" target="_blank"><?php echo $this->createAbsoluteUrl('/cv/frontend/portfolio', array('slug' => '')); ?></a></span>
+                <?php echo $form->bsTextField($model, 'slug'); ?>
+            </div>
         </div>
         <div class="10"><?php echo $form->bsError($model, 'slug'); ?></div>
     </div>
@@ -70,7 +73,7 @@
     <div class="form-group <?php echo $model->hasErrors('text_short_description') ? 'has-error' : '' ?>">
         <?php echo $form->bsLabelEx3($model, 'text_short_description'); ?>
         <div class="col-sm-9">
-            <?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 2)); ?>
+            <?php echo $form->bsTextArea($model, 'text_short_description', array('rows' => 8)); ?>
             <?php echo $form->bsError($model, 'text_short_description'); ?>
         </div>
     </div>
@@ -79,6 +82,7 @@
         <?php echo $form->bsLabelEx3($model, 'text_address_residential'); ?>
         <div class="col-sm-9">
             <?php echo $form->bsTextArea($model, 'text_address_residential', array('rows' => 2)); ?>
+            <span class="help-block"><?php echo Yii::t('cv', "Don't worry, we will not display your full address to public. Only the city, state and country are show. This information is required to match job nearby to your locality.") ?></span>
             <?php echo $form->bsError($model, 'text_address_residential'); ?>
         </div>
     </div>
@@ -166,7 +170,7 @@
     <!-- /many2many -->
 
     <div class="form-group margin-top-2x">
-        <div class="col-sm-offset-2 col-sm-9">
+        <div class="col-sm-offset-3 col-sm-9">
             <?php echo $form->bsBtnSubmit(Yii::t('core', 'Save')); ?>
         </div>
     </div>
@@ -195,7 +199,7 @@
                     }
                     else
                     {
-                        toastr.success($('#cv-portfolio-form').data('lang-publicaccess_fail'));
+                        toastr.success($('#cv-portfolio-form').data('lang-public_access_fail'));
                     }
                 }
                 else
@@ -213,7 +217,7 @@
             {
                 if(json.status == 'success')
                 {
-                    if(json.data.visibility == 'public')
+                    if(json.data.visibility == 'private')
                     {
                         toastr.success($('#cv-portfolio-form').data('lang-private_access_success'));
 

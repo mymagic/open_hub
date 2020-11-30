@@ -20,23 +20,23 @@
 	)); ?>
 
 	
-	<!-- jobr -->
-	<div id="boxFilter-jobr" class="box-filter rounded-md">
+	<!-- jobpos -->
+	<div id="boxFilter-jobpos" class="box-filter rounded-md">
 		<p class="lead"><?php echo Yii::t('cv', 'Job Role') ?></p>
 		<div class="checkbox checkbox-info">
-			<?php echo $form->checkboxList($searchModel, 'jobrs', ysUtil::convertToKeyValueArray(CvJobpos::model()->getForeignReferList(), 'key', 'title'))?>
+			<?php echo $form->checkboxList($searchModel, 'jobpos', ysUtil::convertToKeyValueArray(CvJobpos::model()->getForeignReferList(), 'key', 'title'))?>
 		</div>
 	</div>
-	<!-- /jobr -->
+	<!-- /jobpos -->
 	
-	<!-- jobType -->
-	<div id="boxFilter-jobType" class="box-filter rounded-md">
+	<!-- looks -->
+	<div id="boxFilter-looks" class="box-filter rounded-md">
 		<p class="lead"><?php echo Yii::t('cv', 'Looking for') ?></p>
 		<div class="checkbox checkbox-info">
 			<?php echo $form->checkboxList($searchModel, 'looks', ysUtil::convertToKeyValueArray(CvPortfolio::getLookingList(), 'code', 'title')) ?>
 		</div>
 	</div>
-	<!-- /jobType -->
+	<!-- /looks -->
 	
 	<!-- location -->
 	<div id="boxFilter-location" class="box-filter rounded-md">
@@ -93,8 +93,8 @@
 
 <div id="list-filters" class="margin-bottom-2x">
 <span class="text-muted"><?php echo Yii::t('cv', 'Filter(s)')?>:</span>
-<?php if (!empty($_GET['CvSearchForm']['jobrs'])): foreach ($_GET['CvSearchForm']['jobrs'] as $g): ?>
-	<a class="btn btn-info btn-xs" href="<?php echo $this->createUrl('/cv/frontend/clearSearchTag', array('group' => 'jobrs', 'value' => $g, 'url' => urlencode(Yii::app()->request->url)))?>"><?php echo Html::faIcon('fa-remove') ?> <?php echo ucwords(CvJobPos::id2title($g)) ?></a>
+<?php if (!empty($_GET['CvSearchForm']['jobpos'])): foreach ($_GET['CvSearchForm']['jobpos'] as $g): ?>
+	<a class="btn btn-info btn-xs" href="<?php echo $this->createUrl('/cv/frontend/clearSearchTag', array('group' => 'jobpos', 'value' => $g, 'url' => urlencode(Yii::app()->request->url)))?>"><?php echo Html::faIcon('fa-remove') ?> <?php echo ucwords(CvJobPos::id2title($g)) ?></a>
 <?php endforeach; endif; ?>
 <?php if (!empty($_GET['CvSearchForm']['looks'])): foreach ($_GET['CvSearchForm']['looks'] as $g): ?>
 	<a class="btn btn-info btn-xs" href="<?php echo $this->createUrl('/cv/frontend/clearSearchTag', array('group' => 'looks', 'value' => $g, 'url' => urlencode(Yii::app()->request->url)))?>"><?php echo Html::faIcon('fa-remove') ?> <?php echo ucwords(CvPortfolio::lookingCode2Title($g)) ?></a>

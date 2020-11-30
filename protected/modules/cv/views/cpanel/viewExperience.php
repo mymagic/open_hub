@@ -24,7 +24,11 @@
 </div>
 
 <?php 
-	$this->layoutParams['overrideModalFooterHtml'] = '';
+	$this->layoutParams['overrideModalFooterHtml'] = sprintf(
+		'<a class="pull-left btn btn-danger" id="btn-cv-deleteExperience" href="%s">%s</a>',
+		$this->createUrl('cpanel/deleteExperience', array('id' => $model->id)),
+	Yii::t('cv', 'Delete')
+	);
 
 	if ($model->genre == 'job' || $model->genre == 'study') {
 		$htmlSetExperience = '';

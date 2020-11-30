@@ -19,11 +19,11 @@ class HubSeolytic
 {
 	public static function getMatchingSeolytic($urlPath)
 	{
-		$return = null;
 		$useCache = Yii::app()->params['cache'];
 		$cacheId = sprintf('%s::%s-%s', 'HubSeolytic', 'getMatchingSeolytic', sha1(json_encode(array('v1', $urlPath))));
 		$return = Yii::app()->cache->get($cacheId);
 		if ($return === false || $useCache === false) {
+			$return = '';
 			$seolytics = Seolytic::model()->findAll(array('condition' => 'is_active=1', 'order' => 'ordering ASC'));
 			if (!empty($seolytics)) {
 				foreach ($seolytics as $seolytic) {

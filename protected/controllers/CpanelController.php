@@ -359,7 +359,7 @@ class CpanelController extends Controller
 		$result_array['status'] = 0;
 		if (!empty($_POST)) {
 			$user = Yii::app()->user;
-			$selected_service_list = HUB::listServiceBookmarkByUser($user);
+			$selected_service_list = HubService::listBookmarkByUser($user);
 
 			$current_service_list = array();
 			if (!empty($selected_service_list)) {
@@ -378,7 +378,7 @@ class CpanelController extends Controller
 
 			$user = Yii::app()->user;
 			if (!empty($service_list)) {
-				$selected_service_list = HUB::setServiceBookmarkByUser($user, $merged_service_list);
+				$selected_service_list = HubService::setBookmarkByUser($user, $merged_service_list);
 				if (count($selected_service_list)) {
 					$result_array['status'] = 1;
 				} else {
@@ -396,7 +396,7 @@ class CpanelController extends Controller
 
 	public function actionActivity()
 	{
-		$tmps = HUB::listServiceBookmarkable();
+		$tmps = HubService::listBookmarkable();
 
 		foreach ($tmps as $service) {
 			$serviceList[] = array('id' => $service->slug, 'label' => $service->title);

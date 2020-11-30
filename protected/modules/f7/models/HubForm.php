@@ -1817,7 +1817,7 @@ class HubForm
 			}
 		} elseif ($tag == 'rating') {
 			// Check if $value has "voted-" in it.
-			if (strpos($value, 'voted-') == false) {
+			if (strpos($value, 'voted-') !== 0) {
 				$value = 'voted-' . $value;
 			}
 			

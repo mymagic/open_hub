@@ -9,7 +9,7 @@ class CpanelController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete, setExperienceStudy, setExperienceJob', // we only allow deletion via POST request
+			'postOnly + setExperienceStudy, setExperienceJob', // we only allow deletion via POST request
 		);
 	}
 
@@ -24,7 +24,7 @@ class CpanelController extends Controller
 			array(
 				'allow',
 				'actions' => array('portfolio', 'enablePortfolio', 'disablePortfolio',
-				'experience', 'createExperience', 'deleteExperience', 'listExperiences', 'viewExperience', 'updateExperience', 'setExperienceStudy', 'setExperienceJob'),
+				'experience', 'createExperience', 'deleteExperience', 'deleteExperienceConfirmed', 'listExperiences', 'viewExperience', 'updateExperience', 'setExperienceStudy', 'setExperienceJob'),
 				'users' => array('@'),
 			),
 			array(
@@ -269,12 +269,20 @@ class CpanelController extends Controller
 
 	public function actionDeleteExperience($id)
 	{
-		$this->loadExperienceModel($id)->delete();
+		$model = $this->loadExperienceModel($id);
 
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if (!isset($_GET['ajax'])) {
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('experience'));
-		}
+		Notice::page(Yii::t('cv', "Are you confirm to delete experience '{title}'?", array('{title}' => $model->title)), Notice_WARNING, array('url' => $this->createUrl('deleteExperienceConfirmed', array('id' => $id)), 'cancelUrl' => $this->createUrl('experience')));
+	}
+
+	public function actionDeleteExperienceConfirmed($id)
+	{
+		$model = $this->loadExperienceModel($id);
+		$oriModel = clone $model;
+		$model->delete();
+
+		Notice::flash(Yii::t('cv', "Experience '{title}' is successfully deleted.", ['{title}' => $oriModel->title]), Notice_SUCCESS);
+
+		$this->redirect(array('experience'));
 	}
 
 	public function actionListExperiences($page = 1)
