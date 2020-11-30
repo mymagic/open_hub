@@ -1,7 +1,7 @@
 code: "service"
 version: "1.0"
 title: "Services"
-oneliner: "List out all the services offered by MaGIC"
+oneliner: "List out all the services offered by the owner"
 lastUpdate: "2019-17-12"
 developer:
   author: "Rosaan Ramasamy"
