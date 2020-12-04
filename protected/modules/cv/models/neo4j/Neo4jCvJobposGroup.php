@@ -28,19 +28,16 @@ class Neo4jCvJobposGroup extends Neo4j
 	public $entityManager;
 	public $repository;
 
-
 	public function __construct($model = '')
 	{
 		$this->init();
 		$this->setAttributes($model);
 	}
 
-
 	public function model($model = '')
 	{
 		return new self($model);
 	}
-
 
 	/**
 	 * @param s $id
@@ -50,7 +47,6 @@ class Neo4jCvJobposGroup extends Neo4j
 		$this->id = $value;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -59,7 +55,6 @@ class Neo4jCvJobposGroup extends Neo4j
 		return $this->id;
 	}
 
-
 	/**
 	 * @param s $title
 	 */
@@ -67,7 +62,6 @@ class Neo4jCvJobposGroup extends Neo4j
 	{
 		$this->title = $value;
 	}
-
 
 	/**
 	 * @return string

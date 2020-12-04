@@ -1,3 +1,4 @@
-<h4>Boilerplate Start</h4>
-<ol>
-</ol>
+<h4>BoilerplateStart</h4>
+<ul>
+    <li>Todo: insert your individual merge preview details here</li>
+</ul>

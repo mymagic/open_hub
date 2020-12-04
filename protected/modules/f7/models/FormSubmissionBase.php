@@ -5,23 +5,20 @@
  * This is the model class for table "form_submission".
  *
  * The followings are the available columns in table 'form_submission':
-	* @property integer $id
-	* @property string $code
-	* @property string $form_code
-	* @property integer $user_id
-	* @property string $json_data
-	* @property string $status
-	* @property string $stage
-	* @property integer $date_submitted
-	* @property integer $date_added
-	* @property integer $date_modified
-	* @property string $json_extra
-	* @property string $process_by
-	* @property integer $date_processed
- *
- * The followings are the available model relations:
- * @property Form $form
- * @property User $user
+			 * @property integer $id
+			 * @property string $code
+			 * @property string $form_code
+			 * @property integer $form_id
+			 * @property integer $user_id
+			 * @property string $json_data
+			 * @property string $status
+			 * @property string $stage
+			 * @property integer $date_submitted
+			 * @property integer $date_added
+			 * @property integer $date_modified
+			 * @property string $json_extra
+			 * @property string $process_by
+			 * @property integer $date_processed
  */
  class FormSubmissionBase extends ActiveRecordBase
  {
@@ -69,14 +66,14 @@
  		// will receive user inputs.
  		return array(
 			array('code, form_code, stage', 'required'),
-			array('user_id, date_submitted, date_added, date_modified, date_processed', 'numerical', 'integerOnly' => true),
+			array('form_id, user_id, date_submitted, date_added, date_modified, date_processed', 'numerical', 'integerOnly' => true),
 			array('code, form_code', 'length', 'max' => 64),
 			array('status', 'length', 'max' => 6),
 			array('stage', 'length', 'max' => 255),
 			array('process_by', 'length', 'max' => 128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, form_code, user_id, json_data, status, stage, date_submitted, date_added, date_modified, json_extra, process_by, date_processed, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified, sdate_processed, edate_processed', 'safe', 'on' => 'search'),
+			array('id, code, form_code, form_id, user_id, json_data, status, stage, date_submitted, date_added, date_modified, json_extra, process_by, date_processed, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified, sdate_processed, edate_processed', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -108,6 +105,7 @@
 		'id' => Yii::t('app', 'ID'),
 		'code' => Yii::t('app', 'Code'),
 		'form_code' => Yii::t('app', 'Form Code'),
+		'form_id' => Yii::t('app', 'Form'),
 		'user_id' => Yii::t('app', 'User'),
 		'json_data' => Yii::t('app', 'Json Data'),
 		'status' => Yii::t('app', 'Status'),
@@ -150,6 +148,7 @@
  		$criteria->compare('id', $this->id);
  		$criteria->compare('code', $this->code, true);
  		$criteria->compare('form_code', $this->form_code, true);
+ 		$criteria->compare('form_id', $this->form_id);
  		$criteria->compare('user_id', $this->user_id);
  		$criteria->compare('json_data', $this->json_data, true);
  		$criteria->compare('status', $this->status);
@@ -191,6 +190,7 @@
 			'id' => $this->id,
 			'code' => $this->code,
 			'formCode' => $this->form_code,
+			'formId' => $this->form_id,
 			'userId' => $this->user_id,
 			'jsonData' => $this->json_data,
 			'status' => $this->status,
@@ -322,6 +322,9 @@
  			}
 
  			// save as null if empty
+ 			if (empty($this->form_id) && $this->form_id !== 0) {
+ 				$this->form_id = null;
+ 			}
  			if (empty($this->user_id) && $this->user_id !== 0) {
  				$this->user_id = null;
  			}

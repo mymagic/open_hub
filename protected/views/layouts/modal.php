@@ -2,7 +2,8 @@
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl . '/javascript/app.js', CClientScript::POS_END); ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/javascript/frontend.js', CClientScript::POS_END); ?>
 
-<?php // Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/mymagic.css'); ?>
+
+<?php // Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl . '/css/mymagic.css');?>
 <?php Yii::app()->getClientScript()->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css'); ?>
 <?php Yii::app()->getClientScript()->registerScriptFile('https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js'); ?>
 
@@ -33,7 +34,11 @@
     </div>
     <?php if ($this->layoutParams['showModalFooter']): ?>
     <div class="modal-footer">
+        <?php if (!empty($this->layoutParams['overrideModalFooterHtml'])): ?>
+            <?php echo $this->layoutParams['overrideModalFooterHtml'] ?>
+        <?php else: ?>
         <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo Yii::t('app', 'Close') ?></button>
+        <?php endif; ?>
         
     </div>
     <?php endif; ?>

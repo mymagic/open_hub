@@ -320,7 +320,7 @@ class PublishController extends Controller
 		if ($submission->status === 'draft') {
 			$this->redirect($url);
 		} else {
-			Notice::page($htmlMessage, Notice_WARNING, array('url' => $url, 'urlLabel' => Yii::t('f7', 'Continue Editing'), 'cancelLabel' => Yii::t('f7', 'No'), 'cancelUrl' => $urlCancel));
+			Notice::page('', Notice_WARNING, array('htmlMessage' => $htmlMessage, 'url' => $url, 'urlLabel' => Yii::t('f7', 'Continue Editing'), 'cancelLabel' => Yii::t('f7', 'No'), 'cancelUrl' => $urlCancel));
 		};
 	}
 

@@ -69,6 +69,7 @@ class IndividualOrganization extends IndividualOrganizationBase
 	{
 		// custom code here
 		// ...
+		$this->organization_id = $this->organization->id;
 
 		return parent::beforeSave();
 	}

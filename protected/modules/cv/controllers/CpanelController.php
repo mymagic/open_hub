@@ -118,6 +118,9 @@ class CpanelController extends Controller
 		$this->layout = 'layouts.plain';
 		$this->layoutParams['modalDialogClass'] = 'modal-lg';
 
+		// disable mixpanel as its js caused jquery modal submit issue redirected to json straight
+		Yii::app()->params['enableMixPanel'] = false;
+
 		$this->pageTitle = 'Add New Experience';
 		$this->activeMenuCpanel = 'experience';
 
@@ -172,6 +175,9 @@ class CpanelController extends Controller
 	{
 		$this->layout = 'layouts.plain';
 		$this->layoutParams['modalDialogClass'] = 'modal-lg';
+
+		// disable mixpanel as its js caused jquery modal submit issue redirected to json straight
+		Yii::app()->params['enableMixPanel'] = false;
 
 		$this->pageTitle = 'Update Experience';
 		$this->activeMenuCpanel = 'experience';

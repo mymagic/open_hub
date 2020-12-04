@@ -224,7 +224,10 @@ $this->menu = [
 		'dataProvider' => $modelEventRegistration->searchRegistration(),
 		'enableSorting' => false,
 		'columns' => [
-			['name' => 'id', 'value' => '($row+1) + ($this->grid->dataProvider->pagination->currentPage * $this->grid->dataProvider->pagination->pageSize)', 'headerHtmlOptions' => [], 'header' => 'No'],
+			array(
+				'header' => Yii::t('app', 'No.'),
+				'value' => '$row+1',
+			),
 			['header' => 'Email', 'value' => '$data->email'],
 			['header' => 'Name', 'value' => '$data->full_name'],
 			['header' => 'Phone', 'value' => '$data->phone'],

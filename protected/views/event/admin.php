@@ -55,8 +55,11 @@ $('.search-form form').submit(function(){
 		array('name' => 'title', 'type' => 'raw', 'value' => 'sprintf("%s \ <b>%s</b>", $data->eventGroup->title, $data->title)'),
 		array('name' => 'date_started', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_started, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 		//'at',
+
+		array('header' => sprintf('%s / %s', Yii::t('app', 'Attendance'), Yii::t('app', 'Registration')), 'type' => 'raw', 'value' => 'sprintf("%s / %s", $data->countAttended, $data->countRegistration)', 'headerHtmlOptions' => array('class' => 'text-center'), 'htmlOptions' => array('class' => 'text-center'), 'filter' => false),
+
 		array('name' => 'is_cancelled', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_cancelled)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
-		array('name' => 'is_survey_enabled', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_survey_enabled)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		// array('name' => 'is_survey_enabled', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_survey_enabled)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
 
 		array(
 			'class' => 'application.components.widgets.ButtonColumn',

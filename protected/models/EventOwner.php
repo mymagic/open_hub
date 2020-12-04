@@ -56,6 +56,9 @@ class EventOwner extends EventOwnerBase
 			$this->as_role_code = 'owner';
 		}
 
+		$this->organization_id = $this->organization->id;
+		$this->event_id = $this->event->id;
+
 		return parent::beforeSave();
 	}
 

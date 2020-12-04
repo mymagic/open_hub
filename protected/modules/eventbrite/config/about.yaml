@@ -1,5 +1,5 @@
 code: "eventbrite"
-version: "1.3"
+version: "1.4"
 title: "Eventbrite"
 oneliner: "Integration with Eventbrite services"
 lastUpdate: "2020-10-05"

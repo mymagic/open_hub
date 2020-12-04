@@ -8,6 +8,7 @@
 			 * @property integer $id
 			 * @property string $code
 			 * @property string $event_group_code
+			 * @property integer $event_group_id
 			 * @property string $title
 			 * @property string $text_short_desc
 			 * @property string $url_website

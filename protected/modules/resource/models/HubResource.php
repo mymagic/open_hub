@@ -400,4 +400,9 @@ class HubResource
 
 		return Organization::model()->findAllBySql($sql);
 	}
+
+	public static function getResourcesFromOrganization($organization)
+	{
+		return Resource::model()->findAllBySql(sprintf('SELECT r.* FROM resource AS r LEFT JOIN resource2organization as r2o ON r2o.resource_id=r.id WHERE r2o.organization_id=%s', $organization->id));
+	}
 }

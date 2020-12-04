@@ -71,6 +71,18 @@
  {
  	public $uploadPath;
 
+ 	// m2m
+ 	public $inputImpacts;
+ 	public $inputSdgs;
+ 	public $imageRemote_logo;
+ 	public $inputPersonas;
+ 	public $inputIndustries;
+ 	public $inputClassifications;
+ 	public $inputCountries;
+ 	public $inputBackendTags;
+
+ 	public static $skipM2M = false;
+
  	public $imageFile_logo;
  	public $sdate_added;
  	public $edate_added;
@@ -473,9 +485,32 @@
  			$this->is_active = intval($this->is_active);
  		}
 
+ 		if (!self::$skipM2M) {
+ 			$this->loadM2M();
+ 		}
+
+ 		return parent::afterFind();
+ 	}
+
+ 	public function loadM2M()
+ 	{
  		$this->tag_backend = $this->backend->toString();
 
- 		parent::afterFind();
+ 		foreach ($this->impacts as $impact) {
+ 			$this->inputImpacts[] = $impact->id;
+ 		}
+ 		foreach ($this->sdgs as $sdg) {
+ 			$this->inputSdgs[] = $sdg->id;
+ 		}
+ 		foreach ($this->personas as $persona) {
+ 			$this->inputPersonas[] = $persona->id;
+ 		}
+ 		foreach ($this->industries as $industry) {
+ 			$this->inputIndustries[] = $industry->id;
+ 		}
+ 		foreach ($this->classifications as $classification) {
+ 			$this->inputClassifications[] = $classification->id;
+ 		}
  	}
 
  	public function behaviors()

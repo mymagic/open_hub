@@ -31,6 +31,10 @@ class Form extends FormBase
 			'intakes' => array(self::HAS_MANY, 'Intake', 'intake_id', 'through' => 'form2intakes'),
 			'formSubmissions' => array(self::HAS_MANY, 'FormSubmission', 'form_code'),
 
+			'countSubmission' => [self::STAT, 'FormSubmission', 'form_id', 'condition' => '1=1'],
+			'countSubmissionDraft' => [self::STAT, 'FormSubmission', 'form_id', 'condition' => "status='draft'"],
+			'countSubmissionSubmit' => [self::STAT, 'FormSubmission', 'form_id', 'condition' => "status='submit'"],
+
 			// meta
 			'metaStructures' => array(self::HAS_MANY, 'MetaStructure', '', 'on' => sprintf('metaStructures.ref_table=\'%s\'', $this->tableName())),
 			'metaItems' => array(self::HAS_MANY, 'MetaItem', '', 'on' => 'metaItems.ref_id=t.id AND metaItems.meta_structure_id=metaStructures.id', 'through' => 'metaStructures'),
@@ -114,12 +118,15 @@ class Form extends FormBase
 		$return = parent::attributeLabels();
 
 		// custom code here
-		$return['text_short_description'] = Yii::t('app', 'Short Description');
-		$return['is_multiple'] = Yii::t('app', 'Allow multiple submission');
-		$return['json_structure'] = Yii::t('app', 'Form Structure');
-		$return['json_stage'] = Yii::t('app', 'Stage Pipeline');
-		$return['json_event_mapping'] = Yii::t('app', 'Event Mapping Instruction');
-		$return['json_extra'] = Yii::t('app', 'Extra');
+		$return['text_short_description'] = Yii::t('f7', 'Short Description');
+		$return['is_multiple'] = Yii::t('f7', 'Allow multiple submission');
+		$return['is_active'] = Yii::t('f7', 'Active');
+		$return['is_login_required'] = Yii::t('f7', 'Login Required');
+		$return['text_note'] = Yii::t('app', 'f7 (visible at backend only)');
+		$return['json_structure'] = Yii::t('f7', 'Form Structure');
+		$return['json_stage'] = Yii::t('f7', 'Stage Pipeline');
+		$return['json_event_mapping'] = Yii::t('f7', 'Event Mapping Instruction');
+		$return['json_extra'] = Yii::t('f7', 'Extra');
 
 		return $return;
 	}
@@ -301,7 +308,15 @@ class Form extends FormBase
 		$criteria->compare('t.id', $this->id, false, $params['compareOperator']);
 		$criteria->compare('t.code', $this->code, true, $params['compareOperator']);
 		$criteria->compare('t.slug', $this->slug, true, $params['compareOperator']);
+
 		$criteria->compare('t.title', $this->title, true, $params['compareOperator']);
+		// either form or intake title
+		$criteria2 = new CDbCriteria();
+		$criteria2->together = true;
+		$criteria2->with = ['intakes'];
+		$criteria2->compare('intakes.title', $this->title, true, 'OR');
+		$criteria->mergeWith($criteria2, 'OR');
+
 		if (!empty($this->sdate_open) && !empty($this->edate_open)) {
 			$sTimestamp = strtotime($this->sdate_open);
 			$eTimestamp = strtotime("{$this->edate_open} +1 day");
@@ -332,13 +347,6 @@ class Form extends FormBase
 		}
 		$criteria->compare('type', $this->type, false, $params['compareOperator']);
 		$criteria->compare('text_note', $this->text_note, true, $params['compareOperator']);
-
-		// either form or intake title
-		$criteria2 = new CDbCriteria();
-		$criteria2->together = true;
-		$criteria2->with = ['intakes'];
-		$criteria2->compare('intakes.title', $this->title, true, 'OR');
-		$criteria->mergeWith($criteria2, 'OR');
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,

@@ -9,6 +9,7 @@
 			 * @property string $code
 			 * @property integer $sample_group_id
 			 * @property string $sample_zone_code
+			 * @property integer $sample_zone_id
 			 * @property string $title_en
 			 * @property string $title_ms
 			 * @property string $title_zh

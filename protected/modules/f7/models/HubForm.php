@@ -415,20 +415,27 @@ class HubForm
                 ', $item);
 			}
 		}
-
+		
+		// allow multiple value selected to be send and use inArray instead of equal
+		// if single value received, change it to an array
+		if(!is_array($condition)) {
+			$condition = [$condition];
+		}
+			  
 		$tag = sprintf('
         %s
         $( "#%s" ).change(function() {
-        if ($("#%s option:selected").text() == \'%s\')
-        {
-          %s
-        }
-        else
-        {
-          %s
-        }
-      });
-    ', $negate, $caller, $caller, $condition, $content, $negate);
+			var arr = %s;
+        	if ($.inArray($("#%s option:selected").text(), arr)>-1)
+        	{
+          		%s
+        	}
+        	else
+        	{
+          		%s
+        	}
+      	});
+    	', $negate, $caller, json_encode($condition), $caller, $content, $negate);
 
 		return $tag;
 	}
@@ -1820,7 +1827,7 @@ class HubForm
 			if (strpos($value, 'voted-') !== 0) {
 				$value = 'voted-' . $value;
 			}
-			
+
 			if (empty($postedData[$value])) {
 				return empty($error) ? "$labelTitle is required." : $error;
 			}

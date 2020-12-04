@@ -7,6 +7,7 @@
  * The followings are the available columns in table 'eventbrite_organization_webhook':
 			 * @property integer $id
 			 * @property string $organization_code
+			 * @property integer $organization_id
 			 * @property string $as_role_code
 			 * @property string $eventbrite_account_id
 			 * @property string $eventbrite_oauth_secret

@@ -1,5 +1,5 @@
 code: "sample"
-version: "1.1.0"
+version: "1.5"
 title: "Sample"
 oneliner: "DO NOT copy from this module to create new one, use boilerplateStart instead. Developer use this module to test the completeness of module architecture."
 lastUpdate: "2019-09-19"

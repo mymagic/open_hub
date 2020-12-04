@@ -93,4 +93,13 @@ class Tag2Organization extends Tag2OrganizationBase
 
 		return $return;
 	}
+
+	public function insertTag2Organization($tag_id, $organization_id, $value = '')
+	{
+		$tag2Organization = new Tag2Organization();
+		$tag2Organization->tag_id = $tag_id;
+		$tag2Organization->organization_id = $organization_id;
+
+		return $tag2Organization->save(false);
+	}
 }

@@ -3,13 +3,13 @@ $this->pageTitle = Yii::app()->name . ' - ' . Yii::t('core', 'Info');
 ?>
 
 <div role="dialog" >
-<div class="<?php echo !empty($htmlMessage) ? 'modal-dialog-page' : 'modal-dialog'?>">
+<div class="<?php echo (!empty($htmlMessage) && strlen($htmlMessage) > 200) ? 'modal-dialog-page' : 'modal-dialog'?>">
 	<div class="modal-content">
 		<div class="modal-header text-info">
 			<h4 class="modal-title"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;<?php echo Yii::t('core', 'Info') ?></h4>
 		</div>
 		<div class="modal-body">
-		<div class="message"><?php echo(Html::encodeDisplay($message)); ?></div>
+			<?php if (!empty($message)): ?><div class="message"><?php echo(Html::encodeDisplay($message)); ?></div><?php endif; ?>
 			<?php if (!empty($htmlMessage)): ?><div class="htmlMessage text"><?php echo $htmlMessage; ?></div><?php endif; ?>
 		</div>
 		<div class="modal-footer">

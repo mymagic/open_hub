@@ -165,16 +165,10 @@ class ResourceModule extends WebModule
 		$transaction = Yii::app()->db->beginTransaction();
 
 		// process resource2organization
-		$sql = sprintf('UPDATE IGNORE resource2organization SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
+		$sql = sprintf('UPDATE resource2organization SET organization_id=%s WHERE organization_id=%s', $target->id, $source->id);
 		Yii::app()->db->createCommand($sql)->execute();
-		$sql = sprintf('DELETE FROM resource2organization WHERE organization_id=%s', $source->id);
-		Yii::app()->db->createCommand($sql)->execute();
-
-		// process resource2organization_funding
-		$sql = sprintf('UPDATE IGNORE resource2organization_funding SET organization_funding_id=%s WHERE organization_funding_id=%s', $target->id, $source->id);
-		Yii::app()->db->createCommand($sql)->execute();
-		$sql = sprintf('DELETE FROM resource2organization_funding WHERE organization_funding_id=%s', $source->id);
-		Yii::app()->db->createCommand($sql)->execute();
+		/*$sql = sprintf('DELETE FROM resource2organization WHERE organization_id=%s', $source->id);
+		Yii::app()->db->createCommand($sql)->execute();*/
 
 		$transaction->commit();
 

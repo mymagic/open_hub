@@ -2,13 +2,13 @@
 /* @var $this CvExperienceController */
 /* @var $model CvExperience */
 
-$this->breadcrumbs=array(
-	Yii::t('backend', 'Cv Experiences')=>array('index'),
+$this->breadcrumbs = array(
+	Yii::t('backend', 'Cv Experiences') => array('index'),
 	Yii::t('backend', 'Manage'),
 );
 
-$this->menu=array(
-	array('label'=>Yii::t('app','Create CvExperience'), 'url'=>array('/cv/cvExperience/create')),
+$this->menu = array(
+	array('label' => Yii::t('app', 'Create CvExperience'), 'url' => array('/cv/cvExperience/create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -30,26 +30,26 @@ $('.search-form form').submit(function(){
 </div>
 <div id="collapse-cvExperienceSearch" class="panel-collapse collapse">
 	<div class="panel-body search-form">
-	<?php $this->renderPartial('_search',array(
-		'model'=>$model,
+	<?php $this->renderPartial('_search', array(
+		'model' => $model,
 	)); ?>
 	</div>
 </div>
 </div>
 
 <?php $this->widget('application.components.widgets.GridView', array(
-	'id'=>'cv-experience-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		array('name'=>'id', 'cssClassExpression'=>'id', 'value'=>$data->id, 'headerHtmlOptions'=>array('class'=>'id')),
-		array('name'=>'genre', 'cssClassExpression'=>'enum', 'value'=>'$data->formatEnumGenre($data->genre)', 'headerHtmlOptions'=>array('class'=>'enum'), 'filter'=>$model->getEnumGenre(false, true)), 
+	'id' => 'cv-experience-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
+		array('name' => 'id', 'cssClassExpression' => 'id', 'value' => $data->id, 'headerHtmlOptions' => array('class' => 'id')),
+		array('name' => 'genre', 'cssClassExpression' => 'enum', 'value' => '$data->formatEnumGenre($data->genre)', 'headerHtmlOptions' => array('class' => 'enum'), 'filter' => $model->getEnumGenre(false, true)),
 		'title',
-		array('name'=>'is_active', 'cssClassExpression'=>'boolean', 'type'=>'raw', 'value'=>'Html::renderBoolean($data->is_active)', 'headerHtmlOptions'=>array('class'=>'boolean'), 'filter'=>$model->getEnumBoolean()), 
-		array('name'=>'date_modified', 'cssClassExpression'=>'date', 'value'=>'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions'=>array('class'=>'date'), 'filter'=>false),
+		array('name' => 'is_active', 'cssClassExpression' => 'boolean', 'type' => 'raw', 'value' => 'Html::renderBoolean($data->is_active)', 'headerHtmlOptions' => array('class' => 'boolean'), 'filter' => $model->getEnumBoolean()),
+		array('name' => 'date_modified', 'cssClassExpression' => 'date', 'value' => 'Html::formatDateTime($data->date_modified, \'medium\', false)', 'headerHtmlOptions' => array('class' => 'date'), 'filter' => false),
 
 		array(
-			'class'=>'application.components.widgets.ButtonColumn',
-			'buttons' => array('delete' => array('visible'=>false)),		),
+			'class' => 'application.components.widgets.ButtonColumn',
+			'buttons' => array('delete' => array('visible' => false)),		),
 	),
 )); ?>

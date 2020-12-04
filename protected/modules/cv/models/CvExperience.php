@@ -91,8 +91,7 @@ class CvExperience extends CvExperienceBase
 			$this->address_zip = $addressParts['zipcode'];*/
 			if (!empty($addressParts['city'])) {
 				$this->location = $addressParts['city'];
-			}
-			else{
+			} else {
 				$this->location = '';
 			}
 

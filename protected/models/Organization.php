@@ -22,15 +22,7 @@ class Organization extends OrganizationBase
 		return parent::model($class);
 	}
 
-	public $inputImpacts;
-	public $inputSdgs;
-	public $imageRemote_logo;
-	public $inputPersonas;
-	public $inputIndustries;
-	public $inputClassifications;
-	public $inputCountries;
 	public $searchAccessEmails;
-	public $inputBackendTags;
 	public $searchBackendTags;
 	public $searchIndividual;
 
@@ -162,7 +154,7 @@ class Organization extends OrganizationBase
 
 			// event owner cannot be link here as the list can be too large to process
 			'countEventOwners' => [self::STAT, 'EventOwner', 'organization_code', 'condition' => '1=1'],
-			// 'eventOwners' => array(self::HAS_MANY, 'EventOwner', 'organization_code'),
+			//'eventOwners' => array(self::HAS_MANY, 'EventOwner', 'organization_code'),
 
 			'activeDisclosedOrganizationFundings' => array(self::HAS_MANY, 'OrganizationFunding', 'organization_id', 'condition' => "is_active='1' AND is_publicized='1'"),
 			'activeOrganizationFundings' => array(self::HAS_MANY, 'OrganizationFunding', 'organization_id', 'condition' => "is_active='1'"),
@@ -385,23 +377,8 @@ class Organization extends OrganizationBase
 		if (empty($this->image_logo)) {
 			$this->image_logo = $this->getDefaultImageLogo();
 		}
-		foreach ($this->impacts as $impact) {
-			$this->inputImpacts[] = $impact->id;
-		}
-		foreach ($this->sdgs as $sdg) {
-			$this->inputSdgs[] = $sdg->id;
-		}
-		foreach ($this->personas as $persona) {
-			$this->inputPersonas[] = $persona->id;
-		}
-		foreach ($this->industries as $industry) {
-			$this->inputIndustries[] = $industry->id;
-		}
-		foreach ($this->classifications as $classification) {
-			$this->inputClassifications[] = $classification->id;
-		}
 
-		parent::afterFind();
+		return parent::afterFind();
 	}
 
 	public function searchAdvance($keyword)

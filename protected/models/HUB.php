@@ -2057,7 +2057,7 @@ class HUB extends Component
 		$roles = explode(',', $role);
 
 		/*
-		 * if user session is System Admin and role supplied
+		 * if user session is System Admin and checkAccess supplied
 		 */
 		if (in_array('superAdmin', $roles)) {
 			// this checkAccess is defined in _accessView & _accessForm to check the route is been set to that role. so if it has been set then do not return true
@@ -2066,9 +2066,14 @@ class HUB extends Component
 			}
 		}
 
+		$moduleId = !empty($controller->module->id) ? $controller->module->id : '';
+		$controllerId = $controller->id;
+		$actionId = !empty($action) ? $action : $controller->action->id;
+
 		$useCache = Yii::app()->params['cache'];
-		$cacheId = sprintf('%s::%s-%s', 'HUB', 'roleCheckerAction', sha1(json_encode(array('v1', $role, $controller, $action))));
+		$cacheId = sprintf('%s::%s-%s', 'HUB', 'roleCheckerAction', sha1(json_encode(array('v1', $role, $moduleId, $controllerId, $actionId))));
 		$return = Yii::app()->cache->get($cacheId);
+
 		if ($return === false || $useCache === false) {
 			if (is_numeric($role)) {
 				$column = 'roles.id';
@@ -2081,9 +2086,9 @@ class HUB extends Component
 
 			$condition = 't.module=:module AND t.controller=:controller AND t.action=:action';
 			$params = array(
-				':module' => !empty($controller->module->id) ? $controller->module->id : '',
-				':controller' => $controller->id,
-				':action' => !empty($action) ? $action : $controller->action->id,
+				':module' => $moduleId,
+				':controller' => $controllerId,
+				':action' => $actionId,
 			);
 			if (isset($filter) && isset($value)) {
 				$condition .= " AND $filter";
@@ -2098,11 +2103,14 @@ class HUB extends Component
 			// $count = Access::model()->with('roles')->count($condition, $params);
 			$count = Access::model()->isActive()->count($criteria);
 
-			$return = ($count > 0) ? true : false;
+			// $return = ($count > 0) ? true : false;
+			$return = $count;
+
+			// store cache value as an integer instead of boolean
 			Yii::app()->cache->set($cacheId, $return, 3600);
 		}
 
-		return $return;
+		return ($return > 0) ? true : false;
 	}
 
 	// meta

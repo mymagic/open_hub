@@ -64,6 +64,19 @@ class Country extends CountryBase
 		if (!empty($model)) {
 			$value = $model->name;
 		}
+
+		return $value;
+	}
+
+	public function name2code($name)
+	{
+		$model = self::model()->find('t.name=:name', array(':name' => $name));
+
+		$value = '';
+		if (!empty($model)) {
+			$value = $model->code;
+		}
+
 		return $value;
 	}
 }

@@ -101,7 +101,11 @@ $this->menu = array(
 	'filter' => $modelSubmission,
 	'viewData' => array('formId' => $model->id),
 	'columns' => array(
-		'id',
+		//'id',
+		array(
+			'header' => Yii::t('app', 'No.'),
+			'value' => '$row+1',
+		),
 		array('name' => 'username', 'value' => '$data->user->username'),
 		// array('name'=>'Details', 'type'=>'raw', 'value'=>'$data->renderBackendDetails()', 'filter'=>false),
 		array('name' => 'details', 'type' => 'raw', 'value' => '$data->renderBackendDetails()'),

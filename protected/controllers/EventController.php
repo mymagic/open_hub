@@ -141,16 +141,16 @@ class EventController extends Controller
 		$model = $this->loadModel($id);
 		$this->pageTitle = Yii::t('app', "View '{EventTitle}'", ['{EventTitle}' => $model->title]);
 
-		$modelEventRegistration = new EventRegistration('search');
-		$modelEventRegistration->unsetAttributes();
-		$modelEventRegistration->event_id = $id;
-
 		// check for member access, not admin
 		if (!Yii::app()->user->accessBackend) {
 			if (!$model->canAccessByUserEmail(Yii::app()->user->username)) {
 				Notice::page(Yii::t('notice', 'Invalid Access'));
 			}
 		}
+
+		$modelEventRegistration = new EventRegistration('search');
+		$modelEventRegistration->unsetAttributes();
+		$modelEventRegistration->event_id = $id;
 
 		$actions = [];
 		$user = User::model()->findByPk(Yii::app()->user->id);

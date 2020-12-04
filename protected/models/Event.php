@@ -68,6 +68,7 @@ class Event extends EventBase
 	{
 		// custom code here
 		// ...
+		$this->event_group_id = $this->eventGroup->id;
 
 		return parent::beforeSave();
 	}
@@ -107,24 +108,24 @@ class Event extends EventBase
 	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
-		return [
-			['code, title, date_started, vendor', 'required'],
-			['date_started, date_ended, is_paid_event, is_cancelled, is_active, is_survey_enabled, date_added, date_modified', 'numerical', 'integerOnly' => true],
-			['code, event_group_code, vendor_code', 'length', 'max' => 64],
-			['title, genre, funnel', 'length', 'max' => 128],
-			['url_website, at, full_address, email_contact', 'length', 'max' => 255],
-			['vendor', 'length', 'max' => 32],
+		return array(
+			array('code, title, date_started, vendor', 'required'),
+			array('date_started, date_ended, is_paid_event, is_cancelled, is_active, is_survey_enabled, date_added, date_modified', 'numerical', 'integerOnly' => true),
+			array('code, event_group_code, vendor_code', 'length', 'max' => 64),
+			array('title, genre, funnel', 'length', 'max' => 128),
+			array('url_website, at, full_address, email_contact', 'length', 'max' => 255),
+			array('vendor', 'length', 'max' => 32),
 			array('address_zip', 'length', 'max' => 16),
 			array('address_line1, address_line2, address_city, address_state', 'length', 'max' => 128),
-			['address_country_code', 'length', 'max' => 2],
-			['address_state_code', 'length', 'max' => 6],
-			['text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'],
+			array('address_country_code', 'length', 'max' => 2),
+			array('address_state_code', 'length', 'max' => 6),
+			array('text_short_desc, latlong_address, tag_backend, inputIndustries, inputPersonas, inputStartupStages', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			['id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, address_line1, address_line2, address_zip, address_city, address_state, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'],
+			array('id, code, event_group_code, title, text_short_desc, url_website, date_started, date_ended, is_paid_event, genre, funnel, vendor, vendor_code, at, address_country_code, address_state_code, full_address, address_line1, address_line2, address_zip, address_city, address_state, latlong_address, email_contact, is_cancelled, is_active, is_survey_enabled,, json_original, json_extra, date_added, date_modified, sdate_started, edate_started, sdate_ended, edate_ended, sdate_added, edate_added, sdate_modified, edate_modified, tag_backend, inputBackendTags, searchBackendTags', 'safe', 'on' => 'search'),
 			// meta
-			['_dynamicData', 'safe'],
-		];
+			array('_dynamicData', 'safe'),
+		);
 	}
 
 	public function attributeLabels()
@@ -143,6 +144,9 @@ class Event extends EventBase
 		$return['address_state_code'] = Yii::t('app', 'Address State');
 		$return['latlong_address'] = Yii::t('app', 'Address Location');
 		$return['email_contact'] = Yii::t('app', 'Contact Email');
+
+		$return['is_cancelled'] = Yii::t('app', 'Cancelled');
+		$return['is_survey_enabled'] = Yii::t('app', 'Survey Enabled');
 
 		$return['searchBackendTags'] = Yii::t('app', 'Backend Tags');
 		$return['inputBackendTags'] = Yii::t('app', 'Backend Tags');
@@ -402,7 +406,7 @@ class Event extends EventBase
 
 	public function getEventRegistrations($email = '')
 	{
-		return EventRegistration::model()->findAll('event_id=:eventId AND email=:email', array(':eventId' => $this->id, ':email' => $email));	
+		return EventRegistration::model()->findAll('event_id=:eventId AND email=:email', array(':eventId' => $this->id, ':email' => $email));
 	}
 
 	public function hasEventOrganization()

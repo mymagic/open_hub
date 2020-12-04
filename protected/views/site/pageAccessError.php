@@ -3,14 +3,14 @@ $this->pageTitle = Yii::app()->name . ' - ' . Yii::t('core', 'Error');
 ?>
 
 <div role="dialog" >
-<div class="<?php echo !empty($htmlMessage) ? 'modal-dialog-page' : 'modal-dialog'?>">
+<div class="<?php echo (!empty($htmlMessage) && strlen($htmlMessage) > 200) ? 'modal-dialog-page' : 'modal-dialog'?>">
 	<div class="modal-content">
 		<div class="modal-header text-danger">
 			<h4 class="modal-title"><i class="glyphicon glyphicon-minus-sign"></i>&nbsp;<?php echo !empty($title) ? $title : Yii::t('core', 'Error') ?></h4>
 		</div>
 		<div class="modal-body">
 			<div class="message">
-                <p><?php echo Html::encodeDisplay($message); ?></p>
+                <?php if (!empty($message)): ?><p><?php echo Html::encodeDisplay($message); ?></p><?php endif;?>
 
                 <?php if (!Yii::app()->user->isGuest && !empty(Yii::app()->user->username)): ?>
                 <p class="text-muted"><small>You are currently login as: &nbsp;<img src="<?php echo ImageHelper::thumb(100, 100, $this->user->profile->image_avatar) ?>" class="img-circle" style="width:24px; height:24px" /> <strong><?php echo Yii::app()->user->username ?></strong></small></p>

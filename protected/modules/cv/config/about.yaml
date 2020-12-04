@@ -1,7 +1,7 @@
 code: "cv"
 version: "1.1"
 title: "Cv"
-oneliner: "CV for member to showoff their portfolio and get connected to startup who are looking for talent"
+oneliner: "CV for member to list their portfolio and get connected to startup who are looking for talent"
 lastUpdate: "2020-10-22"
 developer:
   author: "Tan Yee Siang"

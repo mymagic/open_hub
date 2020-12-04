@@ -27,14 +27,14 @@ class FormSubmission extends FormSubmissionBase
 		// will receive user inputs.
 		return array(
 			array('code, form_code, stage', 'required'),
-			array('user_id, date_submitted, date_added, date_modified, date_processed', 'numerical', 'integerOnly' => true),
+			array('form_id, user_id, date_submitted, date_added, date_modified, date_processed', 'numerical', 'integerOnly' => true),
 			array('code, form_code', 'length', 'max' => 64),
 			array('status', 'length', 'max' => 6),
 			array('stage', 'length', 'max' => 255),
 			array('process_by', 'length', 'max' => 128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, code, form_code, username, details, json_data, status, stage, json_extra, process_by, date_submitted, date_added, date_modified, date_processed, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified, sdate_processed, edate_processed', 'safe', 'on' => 'search'),
+			array('id, code, form_code, form_id, username, details, json_data, status, stage, json_extra, process_by, date_submitted, date_added, date_modified, date_processed, sdate_submitted, edate_submitted, sdate_added, edate_added, sdate_modified, edate_modified, sdate_processed, edate_processed', 'safe', 'on' => 'search'),
 			// meta
 			array('_dynamicData', 'safe'),
 		);
@@ -116,6 +116,7 @@ class FormSubmission extends FormSubmissionBase
 	{
 		// custom code here
 		// ...
+		$this->form_id = $this->form->id;
 
 		return parent::beforeSave();
 	}

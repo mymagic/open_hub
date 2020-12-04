@@ -54,6 +54,7 @@ class IndustryKeyword extends IndustryKeywordBase
 	{
 		// custom code here
 		// ...
+		$this->industry_id = $this->industry->id;
 
 		return parent::beforeSave();
 	}

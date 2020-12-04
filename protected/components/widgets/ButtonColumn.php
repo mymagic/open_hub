@@ -43,10 +43,9 @@ class ButtonColumn extends CButtonColumn
 	protected function renderFilterCellContent()
 	{
 		if ($this->isResetFilterEnabled) {
-
 			$arrParams = ['clearFilters' => '1'];
-			// adding extra parameters from GET method if there is any  
-			if(!empty($_GET)){
+			// adding extra parameters from GET method if there is any
+			if (!empty($_GET)) {
 				$arrParams = array_merge($_GET, $arrParams);
 			}
 

@@ -1,3 +1,7 @@
+## 1.5
+Added
+  - added `form_id` to `form_submission` table and related model
+
 ## 1.4
 Added
   - added brandCode to json_extra for Intake model

@@ -1,19 +1,19 @@
 <?php
+
 class ClassificationController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to 'layouts.backend', meaning
 	 * using two-column layout. See 'protected/views/layouts/backend.php'.
 	 */
-	public $layout='layouts.backend';
+	public $layout = 'layouts.backend';
 
 	public function actions()
 	{
-		return array
-		(
- 		);
+		return array(
+		);
 	}
-	
+
 	/**
 	 * @return array action filters
 	 */
@@ -21,7 +21,7 @@ class ClassificationController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request		
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -34,17 +34,17 @@ class ClassificationController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
-				'users'=>array('*'),
+				'actions' => array('index'),
+				'users' => array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create', 'update', 'admin' and 'delete' actions
-				'actions'=>array('list','view','create','update','admin','delete' ),
-				'users'=>array('@'),
+				'actions' => array('list', 'view', 'create', 'update', 'admin', 'delete'),
+				'users' => array('@'),
 				// 'expression'=>"\$user->isAdmin==true",
-				'expression'=>'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
+				'expression' => 'HUB::roleCheckerAction(Yii::app()->user->getState("rolesAssigned"), Yii::app()->controller)',
 			),
 			array('deny',  // deny all users
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
@@ -55,8 +55,8 @@ class ClassificationController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+		$this->render('view', array(
+			'model' => $this->loadModel($id),
 		));
 	}
 
@@ -66,24 +66,21 @@ class ClassificationController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Classification;
+		$model = new Classification;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Classification']))
-		{
-			$model->attributes=$_POST['Classification'];
+		if (isset($_POST['Classification'])) {
+			$model->attributes = $_POST['Classification'];
 
-	
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$this->render('create', array(
+			'model' => $model,
 		));
 	}
 
@@ -94,28 +91,25 @@ class ClassificationController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Classification']))
-		{
-			$model->attributes=$_POST['Classification'];
+		if (isset($_POST['Classification'])) {
+			$model->attributes = $_POST['Classification'];
 
-
-			if($model->save())
-			{
-				$this->redirect(array('view','id'=>$model->id));
+			if ($model->save()) {
+				$this->redirect(array('view', 'id' => $model->id));
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
+		$this->render('update', array(
+			'model' => $model,
 		));
 	}
 
-		/**
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -125,10 +119,11 @@ class ClassificationController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
+		if (!isset($_GET['ajax'])) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
 	}
-	
+
 	/**
 	 * Index
 	 */
@@ -142,12 +137,12 @@ class ClassificationController extends Controller
 	 */
 	public function actionList()
 	{
-		$dataProvider=new CActiveDataProvider('Classification');
-				$dataProvider->pagination->pageSize = 5;
+		$dataProvider = new CActiveDataProvider('Classification');
+		$dataProvider->pagination->pageSize = 5;
 		$dataProvider->pagination->pageVar = 'page';
-		
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
 		));
 	}
 
@@ -156,13 +151,17 @@ class ClassificationController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Classification('search');
+		$model = new Classification('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Classification'])) $model->attributes=$_GET['Classification'];
-		if(Yii::app()->request->getParam('clearFilters')) EButtonColumnWithClearFilters::clearFilters($this,$model);
+		if (isset($_GET['Classification'])) {
+			$model->attributes = $_GET['Classification'];
+		}
+		if (Yii::app()->request->getParam('clearFilters')) {
+			EButtonColumnWithClearFilters::clearFilters($this, $model);
+		}
 
-		$this->render('admin',array(
-			'model'=>$model,
+		$this->render('admin', array(
+			'model' => $model,
 		));
 	}
 
@@ -175,9 +174,10 @@ class ClassificationController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Classification::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Classification::model()->findByPk($id);
+		if ($model === null) {
+			throw new CHttpException(404, 'The requested page does not exist.');
+		}
 		return $model;
 	}
 
@@ -187,8 +187,7 @@ class ClassificationController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='classification-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'classification-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

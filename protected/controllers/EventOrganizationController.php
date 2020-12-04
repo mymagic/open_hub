@@ -244,14 +244,14 @@ class EventOrganizationController extends Controller
 				[D] Country of Origin
 				[E] Description
 				[F] One Linear
-				[G] Industry (skip)
+				[G] Industry
 				[H] Logo URL
 				[I] Year Founded
 				[J] as_role_code
 				[K] Fundraised (Before) (skip)
 				[L] Revenue (Before) (skip)
 				[M] Team Size (Before) (skip)
-
+				[N] Is Bumi (Yes/No)
 				[O] Founder Name #1
 				[P] Founder Email #1
 				[Q] Founder Contact No #1
@@ -280,6 +280,7 @@ class EventOrganizationController extends Controller
 					$params['organization']['one_liner'] = $row['F'];
 					$params['organization']['text_short_description'] = $row['E'];
 					$params['organization']['year_founded'] = $row['I'];
+					$params['organization']['address_country_code'] = Country::name2code($row['D']);
 					$organization = HubOrganization::getOrCreateOrganization($organizationTitle, $params);
 
 					// load remote image
@@ -293,6 +294,18 @@ class EventOrganizationController extends Controller
 								RemoteUploadManager::storeImage($organization, 'logo', $organization->tableName());
 							}
 						}
+					}
+
+					// add industry
+					$industry = Industry::model()->findByAttributes(array('slug' => $row['D']));
+					$organization->addIndustry($industry->id);
+					$organization->save();
+
+					// add insertTag2Organization:bumi
+					// If bumi only insert tag 2 organization
+					if ($row['N'] == 'Yes') {
+						$tag_id = 1;
+						Tag2Organization::insertTag2Organization($tag_id, $organization->id);
 					}
 
 					// add event_organization

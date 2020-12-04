@@ -76,6 +76,7 @@ class Milestone extends MilestoneBase
 		// custom code here
 		// ...
 		$this->jsonArray_extra->viewMode = $this->viewMode;
+		$this->user_id = $this->username0->id;
 
 		return parent::beforeSave();
 	}

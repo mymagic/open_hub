@@ -12,6 +12,7 @@ class m201116_070657_rename_column_merge_history extends CDbMigration
 	public function down()
 	{
 		echo "m201116_070657_rename_column_merge_history does not support migration down.\n";
+
 		return false;
 	}
 
