@@ -1,4 +1,4 @@
-# OpenHub
+# MaGIC OpenHub
 
 ![OpenHub Banner](/docs/assets/images/openhub_banner.jpg)
 
