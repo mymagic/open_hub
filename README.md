@@ -2,7 +2,7 @@
 
 ![OpenHub Banner](/docs/assets/images/openhub_banner.jpg)
 
-OpenHub is an open source ecosystem management digital tool designed to help track startups, founders, activities and resources in a local startup ecosystem for ecosystem developers. It is written in PHP, fully customizable, supports all basic services needs, multilingual support and localizable, has a fully responsive design (both front and back office) and many more.
+OpenHub is an open source ecosystem management digital tool designed to help track startups, founders, activities and resources in a local startup ecosystem for ecosystem developers. It is written in PHP, fully customizable, supports all basic operation services needs, multilingual and localization support, has a fully responsive design (both front and back office) and many more.
 
 It is originally developed by [Malaysian Global Innovation & Creativity Centre's](https://www.mymagic.my) internal Tech team to power [MaGIC Central](https://central.mymagic.my), the team decided to open source OpenHub to enable more local startup ecosystems to accelerate their growth.
 
